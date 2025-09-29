@@ -1,6 +1,7 @@
 # Copyright © 2022-2025 IT ENGINEERING MANAGEMENT INC,
 #                       <https://github.com/team113>
-# Copyright © 2025 Ideas Networks Solutions S.A., <https://github.com/tapopa>
+# Copyright © 2025 Ideas Networks Solutions S.A.,
+#                       <https://github.com/tapopa>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU Affero General Public License v3.0 as published by the
@@ -19,11 +20,11 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: {{ printf "%s.conf" (include "tapopa.fullname" .) | quote }}
+  name: {{ printf "%s.conf" (include "tapopa-messenger.fullname" .) | quote }}
   namespace: {{ .Release.Namespace | quote }}
   labels:
-    helm.sh/chart: {{ include "tapopa.chart" . | quote }}
-    app.kubernetes.io/name: {{ include "tapopa.name" . | quote }}
+    helm.sh/chart: {{ include "tapopa-messenger.chart" . | quote }}
+    app.kubernetes.io/name: {{ include "tapopa-messenger.name" . | quote }}
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
   {{- with .Values.labels }}

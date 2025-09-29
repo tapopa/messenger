@@ -35,7 +35,7 @@ jobs:
       - pubspec
       - test-e2e
       - test-unit
-      # - validate-publish
+      #- validate-publish # TODO: Re-enable once ready to ship iOS and Android.
     runs-on: ubuntu-latest
     steps:
       - run: true
@@ -92,7 +92,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        chart: ["tapopa"]
+        chart: ["tapopa-messenger"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -117,8 +117,7 @@ jobs:
 
   validate-publish:
     name: validate (${{ matrix.store }})
-    # TODO: Remove `false` when ready to ship iOS and Android.
-    if: false
+    if: ${{ false }} # TODO: Remove once ready to ship iOS and Android.
     needs: ["build"]
     strategy:
       matrix:
@@ -258,8 +257,7 @@ jobs:
         platform:
           - apk
           - appbundle
-          # TODO: Replace with `ipa` when Apple team is assigned.
-          - ios
+          - ios # TODO: Replace with `ipa` once Apple team is assigned.
           - macos
           - web
           - windows
@@ -323,7 +321,7 @@ jobs:
                         platforms="android,ios,web" \
                         web-id=${{ secrets.FCM_WEB_APP_ID }} \
                         bundle-id=${{ secrets.FCM_BUNDLE_ID }}
-        # TODO: Include `apk appbundle ipa` when FCM is ready for those.
+        # TODO: Include `apk appbundle ipa` once FCM is ready for those.
         if: ${{ contains('web', matrix.platform) }}
       - name: Configure FCM (Firebase Cloud Messaging) service worker
         run: echo '${{ secrets.FIREBASE_CREDENTIALS_JS }}'
@@ -352,8 +350,8 @@ jobs:
           > android/app/keystore.jks
           echo "${{ secrets.ANDROID_PROPERTIES }}" \
           > android/key.properties
-        # TODO: Remove `false` when ready for Android codesign.
-        if: false
+        # TODO: Re-enable once ready for Android codesign.
+        if: ${{ false && contains('apk appbundle', matrix.platform)}}
 
       - name: Prepare iOS signing resources
         run: |
@@ -393,8 +391,8 @@ jobs:
           APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.APP_STORE_KEY }}
           BUILD_CERTIFICATE_BASE64: ${{ secrets.IOS_SIGNING_CERTIFICATE }}
           P12_PASSWORD: ${{ secrets.IOS_SIGNING_CERTIFICATE_PASSWORD }}
-        # TODO: Remove `false` when ready for iOS codesign.
-        if: false
+        # TODO: Re-enable once ready for iOS codesign.
+        if: ${{ false && matrix.platform == 'ipa' }}
 
       # TODO: Add the following `split-debug-info`, when self-hosted Sentry
       #       supports debug symbols:
@@ -467,8 +465,8 @@ jobs:
           BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.MACOS_PROVISION_PROFILE }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
           P12_PASSWORD: ${{ secrets.MACOS_SIGNING_CERTIFICATE_PASSWORD }}
-        # TODO: Remove `false` when ready for macOS codesign.
-        if: false
+        # TODO: Re-enable once ready for macOS codesign.
+        if: ${{ false && matrix.platform == 'macos' }}
 
       - name: Parse application name from Git repository name
         id: app
@@ -484,11 +482,17 @@ jobs:
       - run: mv build/app/outputs/bundle/release/app-release.aab
                 artifacts/${{ steps.app.outputs.group1 }}-android.aab
         if: ${{ matrix.platform == 'appbundle' }}
+      - run: mv build/ios/ipa/messenger.ipa
+                artifacts/${{ steps.app.outputs.group1 }}-ios.ipa
+        # TODO: Re-enable once `ipa` is re-enabled.
+        if: ${{ false && matrix.platform == 'ipa' }}
+      # TODO: Remove once `ipa` is re-enabled.
       - run: mkdir -p dist/ && mv *.app dist/  # `.app` executable is a folder itself
-        working-directory: ${{ (matrix.platform == 'ios'
-                                && 'build/ios/iphoneos/')
-                            ||     'build/macos/Build/Products/Release/' }}
-        if: ${{ contains('ios macos', matrix.platform) }}
+        working-directory: build/ios/iphoneos/
+        if: ${{ matrix.platform == 'ios' }}
+      - run: mkdir -p dist/ && mv *.app dist/  # `.app` executable is a folder itself
+        working-directory: build/macos/Build/Products/Release/
+        if: ${{ matrix.platform == 'macos' }}
 
       - name: Notarize and staple macOS application
         run: |
@@ -509,8 +513,10 @@ jobs:
           APPLE_ID: ${{ secrets.NOTARY_APPLE_ID }}
           TEAM_ID: ${{ secrets.NOTARY_TEAM_ID }}
           PASSWORD: ${{ secrets.NOTARY_PASSWORD }}
-        # TODO: Remove `false` when ready for macOS notarization.
-        if: false
+        # TODO: Re-enable once ready for macOS notarization.
+        if: ${{ false && matrix.platform == 'macos'
+             && (github.ref == 'refs/heads/main'
+                 || startsWith(github.ref, 'refs/tags/v')) }}
 
       - uses: thedoctor0/zip-release@0.7.6
         with:
@@ -582,15 +588,17 @@ jobs:
           source $RUNNER_TEMP/venv/bin/activate
           security delete-keychain $(keychain get-default)
           keychain use-login
-        # TODO: Remove `false` when ready for iOS codesign.
-        if: false
+        # TODO: Re-enable once ready for iOS codesign.
+        if: ${{ false && always()
+             && matrix.platform == 'ipa' }}
 
       - name: Cleanup macOS codesign resources
         run: |
           rm -rf ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.provisionprofile
           security delete-keychain $RUNNER_TEMP/app-signing.keychain-db
-        # TODO: Remove `false` when ready for macOS codesign.
-        if: false
+        # TODO: Re-enable once ready for macOS codesign.
+        if: ${{ false && always()
+             && matrix.platform == 'macos' }}
 
   build-linux:
     name: build (linux)
@@ -737,32 +745,37 @@ jobs:
       - run: mkdir -p build/web/
       - run: unzip *.zip -d build/web/
 
-      # TODO: Uncomment ready to ship the provided platforms.
-      # - run: mkdir -p build/web/artifacts/
-      # - uses: actions/download-artifact@v5
-      #   with:
-      #     name: build-apk-${{ github.run_number }}
-      #     path: build/web/artifacts/
-      # - uses: actions/download-artifact@v5
-      #   with:
-      #     name: build-appbundle-${{ github.run_number }}
-      #     path: build/web/artifacts/
-      # - uses: actions/download-artifact@v5
-      #   with:
-      #     name: build-ipa-${{ github.run_number }}
-      #     path: build/web/artifacts/
-      # - uses: actions/download-artifact@v5
-      #   with:
-      #     name: build-linux-${{ github.run_number }}
-      #     path: build/web/artifacts/
-      # - uses: actions/download-artifact@v5
-      #   with:
-      #     name: build-macos-${{ github.run_number }}
-      #     path: build/web/artifacts/
-      # - uses: actions/download-artifact@v5
-      #   with:
-      #     name: build-windows-${{ github.run_number }}
-      #     path: build/web/artifacts/
+      - run: mkdir -p build/web/artifacts/
+      - uses: actions/download-artifact@v5
+        with:
+          name: build-apk-${{ github.run_number }}
+          path: build/web/artifacts/
+        if: ${{ false }} # TODO: Re-enable once ready to ship Android.
+      - uses: actions/download-artifact@v5
+        with:
+          name: build-appbundle-${{ github.run_number }}
+          path: build/web/artifacts/
+        if: ${{ false }} # TODO: Re-enable once ready to ship Android.
+      - uses: actions/download-artifact@v5
+        with:
+          name: build-ipa-${{ github.run_number }}
+          path: build/web/artifacts/
+        if: ${{ false }} # TODO: Re-enable once ready to ship iOS.
+      - uses: actions/download-artifact@v5
+        with:
+          name: build-linux-${{ github.run_number }}
+          path: build/web/artifacts/
+        if: ${{ false }} # TODO: Re-enable once ready to ship Linux.
+      - uses: actions/download-artifact@v5
+        with:
+          name: build-macos-${{ github.run_number }}
+          path: build/web/artifacts/
+        if: ${{ false }} # TODO: Re-enable once ready to ship macOS.
+      - uses: actions/download-artifact@v5
+        with:
+          name: build-windows-${{ github.run_number }}
+          path: build/web/artifacts/
+        if: ${{ false }} # TODO: Re-enable once ready to ship Windows.
 
       # TODO: Refactor when actions/download-artifact#176 is implemented:
       #       https://github.com/actions/download-artifact/issues/176
@@ -1029,7 +1042,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
-        chart: ["tapopa"]
+        chart: ["tapopa-messenger"]
     runs-on: ubuntu-latest
     steps:
       - id: skip
@@ -1129,8 +1142,7 @@ jobs:
   #       the same `versionCode`, because Google Play expects it to be unique
   #       and errors on duplicates uploading.
   publish:
-    # TODO: Remove `false` when ready to publish iOS and Android.
-    if: false
+    if: ${{ false }} # TODO: Remove once ready to ship iOS and Android.
     needs:
       - build
       - build-linux
@@ -1240,7 +1252,7 @@ jobs:
       - dartdoc
       - dartfmt
       - docker-push
-      # - publish
+      #- publish # TODO: Re-enable once ready to ship iOS and Android.
       - test-e2e
       - test-unit
     runs-on: ubuntu-latest
@@ -1267,34 +1279,40 @@ jobs:
         run: echo "link=${{ github.server_url }}/${{ github.repository }}/milestone/$(sed -n '/^## \[${{ steps.semver.outputs.group1 }}\]/,/Milestone/{s/.*milestone.\([0-9]*\).*/\1/p;}' CHANGELOG.md)"
              >> $GITHUB_OUTPUT
 
-      # - uses: actions/download-artifact@v5
-      #   with:
-      #     name: build-apk-${{ github.run_number }}
-      #     path: artifacts/
-      # - uses: actions/download-artifact@v5
-      #   with:
-      #     name: build-appbundle-${{ github.run_number }}
-      #     path: artifacts/
-      # - uses: actions/download-artifact@v5
-      #   with:
-      #     name: build-ipa-${{ github.run_number }}
-      #     path: artifacts/
-      # - uses: actions/download-artifact@v5
-      #   with:
-      #     name: build-linux-${{ github.run_number }}
-      #     path: artifacts/
-      # - uses: actions/download-artifact@v5
-      #   with:
-      #     name: build-macos-${{ github.run_number }}
-      #     path: artifacts/
+      - uses: actions/download-artifact@v5
+        with:
+          name: build-apk-${{ github.run_number }}
+          path: artifacts/
+        if: ${{ false }} # TODO: Re-enable once ready to ship Android.
+      - uses: actions/download-artifact@v5
+        with:
+          name: build-appbundle-${{ github.run_number }}
+          path: artifacts/
+        if: ${{ false }} # TODO: Re-enable once ready to ship Android.
+      - uses: actions/download-artifact@v5
+        with:
+          name: build-ipa-${{ github.run_number }}
+          path: artifacts/
+        if: ${{ false }} # TODO: Re-enable once ready to ship iOS.
+      - uses: actions/download-artifact@v5
+        with:
+          name: build-linux-${{ github.run_number }}
+          path: artifacts/
+        if: ${{ false }} # TODO: Re-enable once ready to ship Linux.
+      - uses: actions/download-artifact@v5
+        with:
+          name: build-macos-${{ github.run_number }}
+          path: artifacts/
+        if: ${{ false }} # TODO: Re-enable once ready to ship macOS.
       - uses: actions/download-artifact@v5
         with:
           name: build-web-${{ github.run_number }}
           path: artifacts/
-      # - uses: actions/download-artifact@v5
-      #   with:
-      #     name: build-windows-${{ github.run_number }}
-      #     path: artifacts/
+      - uses: actions/download-artifact@v5
+        with:
+          name: build-windows-${{ github.run_number }}
+          path: artifacts/
+        if: ${{ false }} # TODO: Re-enable once ready to ship Windows.
 
       - uses: actions/download-artifact@v5
         with:

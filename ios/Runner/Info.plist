@@ -31,7 +31,7 @@
 			<string>com.tapopa.messenger</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>gapopa</string>
+				<string>tapopa</string>
 			</array>
 		</dict>
 	</array>

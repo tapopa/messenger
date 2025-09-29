@@ -39,7 +39,7 @@ import sqlite3
   ) -> Bool {
     let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
     let utilsChannel = FlutterMethodChannel(
-      name: "team113.flutter.dev/ios_utils",
+      name: "tapopa.flutter.dev/ios_utils",
       binaryMessenger: controller.binaryMessenger)
     utilsChannel.setMethodCallHandler({
       [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in

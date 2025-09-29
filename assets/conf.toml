@@ -160,7 +160,7 @@
 # URL of the repository (or anything else) for users to report bugs to.
 #
 # Default:
-#   repository = "https://github.com/team113/messenger/issues"
+#   repository = "https://github.com/tapopa/messenger/issues"
 
 [geo]
 # URL address of IP geolocation API server.

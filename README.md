@@ -1,5 +1,5 @@
 [Messenger](https://tapopa.com) by Tapopa
-====================
+=========================================
 
 Docs: [main](https://tapopa.github.io/messenger/main/) ([release](https://tapopa.github.io/messenger/release/))  
 [Changelog](https://github.com/tapopa/messenger/blob/main/CHANGELOG.md)  

@@ -684,7 +684,7 @@ endif
 
 minikube-mount-pid = $(word 1,$(shell ps | grep -v grep \
                                          | grep 'minikube mount' \
-                                         | grep 'team113-messenger'))
+                                         | grep 'tapopa-messenger'))
 
 # Bootstrap Minikube cluster (local Kubernetes) for development environment.
 #
@@ -727,7 +727,7 @@ endef
 # Helm commands #
 #################
 
-helm-chart := $(or $(chart),tapopa)
+helm-chart := $(or $(chart),tapopa-messenger)
 helm-chart-dir := helm/$(helm-chart)
 
 helm-cluster = $(or $(cluster),minikube)
@@ -797,7 +797,7 @@ endif
 # Lint project Helm chart.
 #
 # Usage:
-#	make helm.lint [chart=tapopa]
+#	make helm.lint [chart=tapopa-messenger]
 
 helm.lint:
 	helm lint $(helm-chart-dir)/
@@ -806,7 +806,7 @@ helm.lint:
 # Build Helm package from project Helm chart.
 #
 # Usage:
-#	make helm.package [chart=tapopa]
+#	make helm.package [chart=tapopa-messenger]
 #	                  [out-dir=(.cache/helm|<dir-path>)] [clean=(no|yes]]
 
 helm-package-dir = $(or $(out-dir),.cache/helm)
@@ -822,7 +822,7 @@ endif
 # Create and push Git tag to release project Helm chart.
 #
 # Usage:
-#	make helm.release [chart=tapopa]
+#	make helm.release [chart=tapopa-messenger]
 
 helm-git-tag = helm/$(helm-chart)/$(strip \
 	$(shell grep -m1 'version: ' $(helm-chart-dir)/Chart.yaml | cut -d' ' -f2))
@@ -867,7 +867,7 @@ ifeq ($(rebuild),yes)
 	@make docker.image no-cache=$(no-cache) minikube=yes tag=dev
 endif
 ifeq ($(minikube-mount-pid),)
-	minikube mount "$(PWD):/mount/team113-messenger" &
+	minikube mount "$(PWD):/mount/tapopa-messenger" &
 endif
 endif
 ifeq ($(helm-cluster),review)

@@ -73,7 +73,7 @@ Future<void> main(List<String> argv) async {
         'btn_call_cut_video',
         'btn_call_do_not_cut_video',
 
-        // TODO: Remove when desktop apps are shipped.
+        // TODO: Remove once desktop apps are shipped.
         'label_desktop_apps',
       ],
       help: 'Labels to ignore in `.ftl` files (supports regular expressions).',

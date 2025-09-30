@@ -135,7 +135,6 @@ btn_change_account_desc =
     Change
     account
 btn_change_password = Change password
-btn_check_for_updates = Check for updates
 btn_clear = Clear
 btn_clear_cache = Clear cache
 btn_clear_chat = Clear chat
@@ -165,7 +164,6 @@ btn_download_as = Download as
 btn_download_version = Download {$version}
 btn_edit = Edit
 btn_email = E-mail
-btn_feedback = Feedback
 btn_file = File
 btn_find_in_chat = Find in chat
 btn_forgot_password = Forgot your password?
@@ -173,7 +171,6 @@ btn_forward = Forward
 btn_forward_message = Forward message
 btn_gallery = Gallery
 btn_guest = Guest
-btn_help = Help
 btn_hide = Hide
 btn_hide_interface = Hide interface
 btn_info = Information
@@ -191,7 +188,6 @@ btn_mute_chats = Mute chats
 btn_next = Next
 btn_ok = OK
 btn_open = Open
-btn_open_separately = open in new window
 btn_participants = Members
 btn_participants_desc =
     Group
@@ -210,8 +206,6 @@ btn_remove_account = Remove account from the list
 btn_reply = Reply
 btn_reply_message = Reply to message
 btn_report = Report
-btn_report_a_bug = Report a bug
-btn_report_a_concern = Report a violation
 btn_resend = Resend
 btn_resend_message = Resend message
 btn_save = Save
@@ -219,10 +213,8 @@ btn_save_all = Save all
 btn_save_my_credentials_for_one_click = Save my credentials for one-click sign in
 btn_save_to_gallery = Save to gallery
 btn_save_to_gallery_all = Save all to galley
-btn_schedule_an_interview = Schedule an interview
 btn_select = Select
 btn_select_messages = Select messages
-btn_send_application = Send an application
 btn_send_one_time_code = Send one-time code
 btn_set_password = Set password
 btn_set_your_prices = Set your prices
@@ -245,7 +237,6 @@ btn_unmute_chat = Unmute chat
 btn_unmute_chats = Unmute chats
 btn_upload = Upload
 btn_video_call = Video call
-btn_work_with_us = Work with us
 colon_space = :{" "}
 comma_space = ,{" "}
 country_ac = Ascension Island
@@ -767,8 +758,6 @@ label_avatar_updated1 = {$author}
 label_avatar_updated2 = {" "}updated avatar
 label_away = away
 label_background = Background
-label_besides_freelance_is_an_option_too1 = Besides, we offer an opportunity to collaborate as a freelance developer. The list of tasks and terms of cooperation can be found on the{" "}
-label_besides_freelance_is_an_option_too2 = Freelance.
 label_block = Block
 label_block_date = Block date
 label_block_reason = Block reason
@@ -810,27 +799,6 @@ label_chats = Chats
 label_chats_and_groups = Chats and groups: {$count}
 label_city_country_activated_at = {$city}, {$country} • {$at}
 label_clear_history = Clear chat
-label_code_requirements = Requirements for the code
-label_code_requirements_contribution_guide1 = - the code must follow the{" "}
-label_code_requirements_contribution_guide2 = Contribution Guide
-label_code_requirements_contribution_guide3 = ;
-label_code_requirements_documentation1 = - the code must be covered with documentation following the rules of{" "}
-label_code_requirements_documentation2 = Effective Dart: Documentation
-label_code_requirements_documentation3 = ;
-label_code_requirements_tests = - the code must be covered with unit, widget, and/or integration tests (if necessary).
-label_conditions = Conditions
-label_conditions_backend_developer =
-    - Remote work;
-    - Daily payments;
-    - 4-, 6- or 8-hour work day;
-    - Time tracking and payment for overtime;
-    - Relocation possible.
-label_conditions_frontend_developer =
-    - Remote work;
-    - Daily payments;
-    - 4-, 6- or 8-hour work day;
-    - Time tracking and payment for overtime;
-    - Relocation possible.
 label_confidentiality = Confidentiality
 label_connection_lost = Connection lost
 label_connection_restored = Connection restored
@@ -889,10 +857,6 @@ label_files_downloaded = Files downloaded
 label_files_saved_to_gallery = Files are saved to the gallery
 label_for_authors = For authors
 label_for_promoters = For promoters
-label_for_learning_use_our_flutter_incubator1 = If you would like to learn/improve your knowledge of Flutter, you can use our{" "}
-label_for_learning_use_our_flutter_incubator2 = Sandbox.
-label_for_learning_use_our_rust_incubator1 = If you would like to learn/improve your knowledge of Rust, you can use our{" "}
-label_for_learning_use_our_rust_incubator2 = Sandbox.
 label_forward_message = Forward message
 label_forwarded_message = Forwarded message
 label_forwarded_messages = {$count ->
@@ -964,11 +928,6 @@ label_microphone_changed = Microphone has been changed to {$microphone}
 label_mobile_apps = Mobile apps
 label_monetization_details = Monetization details
 label_monetization_history = Monetization history
-label_money = Money
-label_money_freelance =
-    - payment upon completion of the task. A task is considered completed when it passes the review.
-    - the payment is sent based on a service agreement and/or an invoice.
-    - the payment is made with cryptocurrency USDT or USDC.
 label_monolog_created = Chat created
 label_mute_or_unmute_chats = Mute or unmute chats
 label_mute_slash_unmute_microphone = Mute/Unmute microphone
@@ -987,8 +946,6 @@ label_no_chats = No chats
 label_no_limit = ∞
 label_no_messages = No messages
 label_no_notes = Private chat
-label_no_updates_are_available_subtitle = You have the latest version installed
-label_no_updates_are_available_title = No updates are available
 label_no_users = No users
 label_no_welcome_message = Welcome message has not been added
 label_noise_suppression = Noise suppression
@@ -1049,56 +1006,17 @@ label_recover_account_description = Specify your Gapopa ID, login or E-mail.
 label_recovery_code = Recovery code
 label_recovery_code_sent = The verification code has been sent to the verified E-mail added to this account. Enter the code below.
 label_recovery_enter_new_password = Enter the new password below.
-label_regulations = Regulation
-label_regulations_freelance =
-    1. Choose a task from the list below
-    2. Make a fork of the project and form a PR (Pull Request)
-    3. Contact the frontend team (the button below) and send a request, including:
-        - your GitHub login
-        - PR (Pull Request) number
-        - the expected date of completion of the task (deadline)
-        - the expected method of solving the task
-    4. In the response message you will receive a confirmation that the task is assigned to you (the task status will change to “In progress”)
-    5. While working on the task you should push commit of your task at least once every 72 hours.
-    6. The frontend team has the right to refuse to continue collaboration if the code you offered for review is of obviously low quality.
 label_remove_member = Remove from the group
 label_repeat_password = Confirm password
-label_replace_this_text_with_concern = Describe the concern.
-label_replace_this_text_with_feedback = Feedback.
 label_replies = [{$count} {$count ->
     [1] reply
     *[other] replies
     }]
 label_report = Report
-label_requirements = Requirements
-label_requirements_backend_developer =
-    - knowledge of Rust;
-    - understanding FFl and UB;
-    - skill in code optimisation and ability to use code profiling instruments;
-    - understanding the principles of functioning of client-server web applications;
-    - understanding the principles of designing database structures;
-    - understanding the principles of DDD and layered architecture;
-    - skill in writing unit and functional tests;
-    - experience in working with Git;
-    - skill in using Unix-like operating systems;
-    - skill in reading and understanding technical literature in English;
-    - ability to provide high-quality audio and video communication.
-label_requirements_frontend_developer =
-    - knowledge of GraphQL and WebSocket;
-    - skill in code documentation;
-    - skill in covering code with unit and/or integration tests;
-    - understanding the principles of DDD and clean architecture;
-    - experience in working with Git;
-    - skill in reading and understanding technical literature in English;
-    - ability to provide high-quality audio and video communication.
 label_resend = Resend
 label_resend_timeout =
     Resend
     ({$timeout})
-label_review = Review
-label_review_freelance =
-    - a completed task should pass the review of the code;
-    - the request for the review of the completed task, comments, clarifications, and arguments should be posted publicly on GitHub in the corresponding issue or pull request.
 label_saved_files = Downloaded files
 label_screen_sharing = Screen sharing
 label_search = Search
@@ -1116,7 +1034,6 @@ label_sign_in_with_password = Sign in with password
 label_sign_up = Create account
 label_sign_up_with_password = Sign up with password
 label_signed_in = Signed in
-label_source_code = Source code
 label_speaker_changed = Speaker has been changed to {$speaker}
 label_status = Status
 label_storage = Storage
@@ -1124,41 +1041,11 @@ label_subtitle_participants = {$count} {$count ->
     [1] member
     *[other] members
 }
-label_support_service = Support service
 label_synchronization = Synchronization...
 label_tab_chats = Chats
 label_tab_menu = Menu
 label_tab_partner = Partner
 label_tab_wallet = Wallet
-label_tasks = Tasks
-label_tech_stack = Tech Stack
-label_tech_stack_backend_developer =
-    - Rust - langauge;
-    - actix-web - web-framework;
-    - CockroachDB - database;
-    - baza - file storage;
-    - Medea - media server;
-    - Firebase - push notifications;
-    - GraphQL - API;
-    - Cucumber - E2E testing.
-label_tech_stack_freelance =
-    - Dart - language;
-    - Flutter - Framework;
-    - GetX - Dependency Injection and State Management;
-    - Navigator 2.0 (Router) - navigation;
-    - Drift - local database;
-    - Firebase - push notifications;
-    - GraphQL and Artemis - communication with backend;
-    - Gherkin - E2E testing.
-label_tech_stack_frontend_developer =
-    - Language - Dart;
-    - Flutter - Framework;
-    - GetX - Dependency Injection and State Management;
-    - Navigator 2.0 (Router) - navigation;
-    - Drift - local database;
-    - Firebase - push notifications;
-    - GraphQL and Artemis - communication with backend;
-    - Gherkin - E2E testing.
 label_terminate_sessions = Terminate session(s)
 label_terms_and_privacy_policy = Terms & Privacy Policy
 label_text_status = Text status
@@ -1210,20 +1097,9 @@ label_was_at = last seen {$at}
 label_was_removed = {$author} left the group
 label_was_removed1 = {$author}
 label_was_removed2 = {" "}left the group
-label_we_welcome = Advantage is:
-label_we_welcome_backend_developer =
-    - навык работы с языками C, C++;
-    - навык работы по CQRS+ES парадигме;
-    - навык работы с технологиями Memcached, Redis, RabbitMQ, MongoDB, Cassandra, Kafka;
-    - навык работы с другими языками Java, Go, Python, Ruby, TypeScript, JavaScript.
 label_welcome_message = Welcome message
 label_welcome_message_description = Welcome message is automatically displayed to the users who added you to their chats list, but it is not displayed to the users added by you.
 label_welcome_message_hint = Add, edit, delete
-label_what_we_can_help_you_with = How can we help you?
-label_work_with_us = Work with us
-label_work_with_us_desc =
-    Work
-    with us
 label_you = You
 label_you_can_use_randomly_generated_link = You can use a generated link or create your own.
 label_you_were_added_to_group = You have been added to the group

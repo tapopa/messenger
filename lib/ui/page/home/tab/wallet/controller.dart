@@ -53,11 +53,8 @@ class WalletTabController extends GetxController {
   }
 
   Future<void> _fetchIp() async {
-    final IpGeoLocation? ip = await _sessionService.fetch();
-
-    if (ip != null) {
-      fields.value.applyCountry(IsoCode.fromJson(ip.countryCode));
-      fields.refresh();
-    }
+    final IpGeoLocation ip = await _sessionService.fetch();
+    fields.value.applyCountry(IsoCode.fromJson(ip.countryCode));
+    fields.refresh();
   }
 }

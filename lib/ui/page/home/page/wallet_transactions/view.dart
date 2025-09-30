@@ -22,14 +22,14 @@ import '/ui/page/home/page/chat/widget/back_button.dart';
 import '/ui/page/home/widget/app_bar.dart';
 import 'controller.dart';
 
-class PromotionView extends StatelessWidget {
-  const PromotionView({super.key});
+class WalletTransactionsView extends StatelessWidget {
+  const WalletTransactionsView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: PromotionController(),
-      builder: (PromotionController c) {
+      init: WalletTransactionsController(),
+      builder: (WalletTransactionsController c) {
         return Scaffold(
           appBar: CustomAppBar(
             leading: const [SizedBox(width: 4), StyledBackButton()],

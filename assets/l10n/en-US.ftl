@@ -39,6 +39,8 @@ btn_add_account = Add account
 btn_add_account_with_desc =
     Add
     account
+btn_add_funds = Top up wallet
+btn_add_funds_subtitle = PayPal
 btn_add_participant = Add member
 btn_add_participant_desc =
     Add
@@ -840,6 +842,8 @@ label_count_seconds = {$count} { $count ->
        [1] second
        *[other] seconds
    }
+label_country = Country
+label_country_selection = Select country
 label_create_group = Group creation
 label_create_link = Create link
 label_critical_update_is_available = Current version is no longer supported
@@ -914,6 +918,7 @@ label_incoming_call = Incoming call
 label_information = Information
 label_installation_error = Installation error
 label_installation_error_description = Web App is already installed or not available in your browser
+label_instant_top_up = Instant top up
 label_interface = Interface
 label_introduction_description =
     You have access to your account during one year or until:
@@ -1012,6 +1017,8 @@ label_password_not_set2 = Access to the account may be lost.
 label_password_or_one_time_code = Password or one-time code
 label_password_set = Password has been set
 label_payouts_and_information = Withdraws & Information
+label_paypal = PayPal
+label_paypal_is_not_available_in_this_country = PayPal is not available in this country
 label_personal_data_deletion = Delete account
 label_personal_data_deletion_description1 = This process is{" "}
 label_personal_data_deletion_description2 = IRREVERSIBLE
@@ -1192,6 +1199,8 @@ label_visits_count = Clicks: {$count}
 label_voice_processing = Voice processing
 label_wait_seconds = Wait {$for} s
 label_waiting_for_connection = Waiting for connection...
+label_wallet = Wallet
+label_wallet_history = Wallet history
 label_warning = Warning
 label_warning_uppercase = WARNING
 label_was_added = {$author} joined via direct link

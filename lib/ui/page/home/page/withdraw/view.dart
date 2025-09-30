@@ -18,6 +18,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '/ui/page/home/page/chat/widget/back_button.dart';
+import '/ui/page/home/widget/app_bar.dart';
 import 'controller.dart';
 
 class WithdrawView extends StatelessWidget {
@@ -28,7 +30,12 @@ class WithdrawView extends StatelessWidget {
     return GetBuilder(
       init: WithdrawController(),
       builder: (WithdrawController c) {
-        return Scaffold(body: Center(child: Text('$runtimeType')));
+        return Scaffold(
+          appBar: CustomAppBar(
+            leading: const [SizedBox(width: 4), StyledBackButton()],
+          ),
+          body: Center(child: Text('$runtimeType')),
+        );
       },
     );
   }

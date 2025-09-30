@@ -32,12 +32,14 @@ import 'page/affiliate/view.dart';
 import 'page/chat/info/view.dart';
 import 'page/chat/view.dart';
 import 'page/contact/view.dart';
+import 'page/deposit/view.dart';
 import 'page/my_profile/view.dart';
 import 'page/partner_transactions/view.dart';
 import 'page/prices/view.dart';
 import 'page/promotion/view.dart';
 import 'page/statistics/view.dart';
 import 'page/user/view.dart';
+import 'page/wallet_transactions/view.dart';
 import 'page/withdraw/view.dart';
 
 /// [Routes.home] page [RouterDelegate] that builds the nested [Navigator].
@@ -184,6 +186,22 @@ class HomeRouterDelegate extends RouterDelegate<RouteConfiguration>
             key: ValueKey('WithdrawPage'),
             name: Routes.withdraw,
             child: WithdrawView(),
+          ),
+        );
+      } else if (route.startsWith(Routes.deposit)) {
+        pages.add(
+          const CustomPage(
+            key: ValueKey('DepositPage'),
+            name: Routes.deposit,
+            child: DepositView(),
+          ),
+        );
+      } else if (route.startsWith(Routes.walletTransactions)) {
+        pages.add(
+          const CustomPage(
+            key: ValueKey('WalletTransactionsPage'),
+            name: Routes.walletTransactions,
+            child: WalletTransactionsView(),
           ),
         );
       }

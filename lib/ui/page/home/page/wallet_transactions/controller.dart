@@ -15,28 +15,6 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '/ui/page/home/page/chat/widget/back_button.dart';
-import '/ui/page/home/widget/app_bar.dart';
-import 'controller.dart';
-
-class PromotionView extends StatelessWidget {
-  const PromotionView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return GetBuilder(
-      init: PromotionController(),
-      builder: (PromotionController c) {
-        return Scaffold(
-          appBar: CustomAppBar(
-            leading: const [SizedBox(width: 4), StyledBackButton()],
-          ),
-          body: Center(child: Text('$runtimeType')),
-        );
-      },
-    );
-  }
-}
+class WalletTransactionsController extends GetxController {}

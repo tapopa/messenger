@@ -293,7 +293,9 @@ class RouterState extends ChangeNotifier {
             last == Routes.contacts ||
             last == Routes.chats ||
             last == Routes.menu ||
-            last == Routes.user) {
+            last == Routes.user ||
+            last == Routes.wallet ||
+            last == Routes.partner) {
           last = Routes.home;
         }
 

@@ -39,6 +39,8 @@ btn_add_account = Добавить аккаунт
 btn_add_account_with_desc =
     Добавить
     аккаунт
+btn_add_funds = Пополнить кошелёк
+btn_add_funds_subtitle = PayPal
 btn_add_participant = Добавить участника
 btn_add_participant_desc =
     Добавить
@@ -854,6 +856,8 @@ label_count_seconds = {$count} { $count ->
         *[other] секунд
     }
 label_critical_update_is_available = Текущая версия не поддерживается
+label_country = Страна
+label_country_selection = Выбрать страну
 label_create_group = Создание группы
 label_create_link = Создать ссылку
 label_current_password = Текущий пароль
@@ -927,6 +931,7 @@ label_incoming_call = Входящий звонок
 label_information = Информация
 label_installation_error = Ошибка установки
 label_installation_error_description = Веб приложение уже установлено или недоступно в Вашем браузере
+label_instant_top_up = Мгновенное пополнение
 label_interface = Интерфейс
 label_introduction_description =
     Доступ к аккаунту сохраняется в течение одного года или пока:
@@ -1025,6 +1030,8 @@ label_password_not_set2 = Доступ к аккаунту может быть �
 label_password_or_one_time_code = Пароль или одноразовый код
 label_password_set = Пароль задан
 label_payouts_and_information = Вывод средств и информация
+label_paypal = PayPal
+label_paypal_is_not_available_in_this_country = PayPal недоступен в этой стране
 label_personal_data_deletion = Удалить аккаунт
 label_personal_data_deletion_description1 = Данный процесс{" "}
 label_personal_data_deletion_description2 = НЕОБРАТИМ
@@ -1208,6 +1215,8 @@ label_visits_count = Кликов: {$count}
 label_voice_processing = Обработка голоса
 label_wait_seconds = Подождите {$for} с
 label_waiting_for_connection = Ожидание подключения...
+label_wallet = Кошелёк
+label_wallet_history = История кошелька
 label_warning = Внимание
 label_warning_uppercase = ВНИМАНИЕ
 label_was_added = {$author} вступил(а) по прямой ссылке

@@ -1377,9 +1377,11 @@ Widget _downloads(BuildContext context, MyProfileController c) {
             child: SvgIcon(SvgIcons.logo, height: 21),
           ),
         ),
-      SizedBox(height: 20),
-      LineDivider('label_mobile_apps'.l10n),
-      SizedBox(height: 16),
+      if (Config.appStoreUrl.isNotEmpty || Config.googlePlayUrl.isNotEmpty) ...[
+        SizedBox(height: 20),
+        LineDivider('label_mobile_apps'.l10n),
+        SizedBox(height: 16),
+      ],
       if (Config.appStoreUrl.isNotEmpty) ...[
         DownloadButton.appStore(),
         const SizedBox(height: 8),

@@ -39,6 +39,8 @@ btn_add_account = Agregar cuenta
 btn_add_account_with_desc =
     Agregar
     cuenta
+btn_add_funds = Recargar billetera
+btn_add_funds_subtitle = PayPal
 btn_add_participant = Añadir miembro
 btn_add_participant_desc =
     Añadir
@@ -842,6 +844,8 @@ label_count_seconds =
         *[other] segundos
     }
 label_critical_update_is_available = La versión actual ya no es compatible
+label_country = País
+label_country_selection = Seleccionar país
 label_create_group = Creación de grupo
 label_create_link = Crear enlace
 label_current_password = Contrseña actual
@@ -916,6 +920,7 @@ label_incoming_call = Llamada entrante
 label_information = Información
 label_installation_error = Error de instalación
 label_installation_error_description = La aplicación web ya está instalada o no está disponible en su navegador
+label_instant_top_up = Recarga instantánea
 label_interface = Interface
 label_introduction_description =
     Tendrá acceso a su cuenta durante un año o hasta que:
@@ -1014,6 +1019,8 @@ label_password_not_set2 = Podría perder el acceso a la cuenta.
 label_password_or_one_time_code = Contraseña o código desechable
 label_password_set = Contraseña configurada
 label_payouts_and_information = Retiros e información
+label_paypal = PayPal
+label_paypal_is_not_available_in_this_country = Paypal no está disponible en este país
 label_personal_data_deletion = Eliminar la cuenta
 label_personal_data_deletion_description1 = Este proceso es{" "}
 label_personal_data_deletion_description2 = IRREVERSIBLE
@@ -1195,6 +1202,8 @@ label_visits_count = Clicks: {$count}
 label_voice_processing = Procesamiento de voz
 label_wait_seconds = Espere {$for} s
 label_waiting_for_connection = Esperando conexión...
+label_wallet = Billetera
+label_wallet_history = Historial de la billetera
 label_warning = Atención
 label_warning_uppercase = ATENCIÓN
 label_was_added = {$author} se unió por enlace directo

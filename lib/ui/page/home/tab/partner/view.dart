@@ -26,6 +26,7 @@ import '/ui/page/home/widget/app_bar.dart';
 import '/ui/widget/line_divider.dart';
 import '/ui/widget/menu_button.dart';
 import '/ui/widget/svg/svg.dart';
+import '/ui/widget/widget_button.dart';
 import 'controller.dart';
 
 /// View of the `HomeTab.partner` tab.
@@ -59,14 +60,17 @@ class PartnerTabView extends StatelessWidget {
             ),
             actions: [
               Obx(() {
-                return Text(
-                  'currency_amount'.l10nfmt({
-                    'amount': (c.balance.value + c.hold.value)
-                        .toDouble()
-                        .withSpaces,
-                  }),
-                  style: style.fonts.big.regular.onBackground.copyWith(
-                    color: style.colors.primary,
+                return WidgetButton(
+                  onPressed: router.partnerTransactions,
+                  child: Text(
+                    'currency_amount'.l10nfmt({
+                      'amount': (c.balance.value + c.hold.value)
+                          .toDouble()
+                          .withSpaces,
+                    }),
+                    style: style.fonts.big.regular.onBackground.copyWith(
+                      color: style.colors.primary,
+                    ),
                   ),
                 );
               }),

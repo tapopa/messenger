@@ -392,9 +392,6 @@ Widget _block(BuildContext context, MyProfileController c, int i) {
     case ProfileTab.legal:
       return const SizedBox();
 
-    case ProfileTab.support:
-      return const SizedBox();
-
     case ProfileTab.logout:
       return const CustomSafeArea(
         top: false,

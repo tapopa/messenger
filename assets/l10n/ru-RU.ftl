@@ -814,7 +814,6 @@ label_clear_history = Очистить чат
 label_confidentiality = Конфиденциальность
 label_connection_lost = Связь потеряна
 label_connection_restored = Связь восстановлена
-label_contact_us_via_provided_email = Свяжитесь с нами по e-mail {$email}.
 label_copied = Скопировано
 label_copy = Копировать
 label_count_gb = {$count} GB

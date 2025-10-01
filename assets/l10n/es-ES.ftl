@@ -802,7 +802,6 @@ label_clear_history = Borrar el chat
 label_confidentiality = Privacidad
 label_connection_lost = Conexión perdida
 label_connection_restored = Conexión restablecida
-label_contact_us_via_provided_email = Contáctenos por e-mail {$email}.
 label_copied = Copiado
 label_copy = Copiar
 label_count_gb = {$count} GB

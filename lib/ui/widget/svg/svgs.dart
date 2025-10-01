@@ -1562,12 +1562,6 @@ class SvgIcons {
     height: 19,
   );
 
-  static const SvgData directLink = SvgData(
-    'assets/icons/direct_link.svg',
-    width: 32.04,
-    height: 33.5,
-  );
-
   static const SvgData notesSmall = SvgData(
     'assets/icons/notes_small.svg',
     width: 19,
@@ -1974,12 +1968,6 @@ class SvgIcons {
     'assets/icons/wallet_opened.svg',
     width: 34.01,
     height: 29.73,
-  );
-
-  static const SvgData walletClosed = SvgData(
-    'assets/icons/wallet_closed.svg',
-    width: 34.01,
-    height: 26,
   );
 
   static const SvgData payPal = SvgData(

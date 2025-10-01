@@ -26,25 +26,33 @@ import '/ui/widget/svg/svg.dart';
 import '/ui/widget/modal_popup.dart';
 import 'controller.dart';
 
+/// View for choosing an [IsoCode].
 class SelectCountryView extends StatelessWidget {
   const SelectCountryView({
     super.key,
-    this.only = const {},
+    this.available = const {},
     this.restricted = const {},
   });
 
-  final Set<IsoCode> only;
+  /// [IsoCode] available.
+  ///
+  /// If empty, then this parameter is ignored.
+  final Set<IsoCode> available;
+
+  /// [IsoCode]s restricted.
+  ///
+  /// If empty, then this parameter is ignored.
   final Set<IsoCode> restricted;
 
   /// Displays a [SelectCountryView] wrapped in a [ModalPopup].
   static Future<IsoCode?> show<T>(
     BuildContext context, {
-    Set<IsoCode> only = const {},
+    Set<IsoCode> available = const {},
     Set<IsoCode> restricted = const {},
   }) {
     return ModalPopup.show(
       context: context,
-      child: SelectCountryView(only: only, restricted: restricted),
+      child: SelectCountryView(available: available, restricted: restricted),
     );
   }
 
@@ -69,8 +77,8 @@ class SelectCountryView extends StatelessWidget {
             Expanded(
               child: Obx(() {
                 final codes = IsoCode.values.where((e) {
-                  if (only.isNotEmpty) {
-                    if (!only.contains(e)) {
+                  if (available.isNotEmpty) {
+                    if (!available.contains(e)) {
                       return false;
                     }
                   }

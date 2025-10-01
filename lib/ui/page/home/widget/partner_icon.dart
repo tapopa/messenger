@@ -19,10 +19,14 @@ import 'package:flutter/material.dart';
 
 import '/ui/widget/svg/svg.dart';
 
+/// Widget displaying [SvgIcons.partner] with the provided [balance].
 class PartnerIcon extends StatelessWidget {
   const PartnerIcon({super.key, this.balance = 0, this.visible = true});
 
+  /// Number to display over the icon.
   final double balance;
+
+  /// Indicator whether [balance] should be visible at all.
   final bool visible;
 
   @override
@@ -68,6 +72,12 @@ class PartnerIcon extends StatelessWidget {
     );
   }
 
+  /// Returns a [String] shrinking down the [balance] to append `m` or `k`.
+  ///
+  /// For example:
+  /// - 1 000.0 -> "1k"
+  /// - 92 000.0 -> "92k"
+  /// - 52 100 000.0 -> "52M"
   String _balance(double balance) {
     if (balance < 1000) {
       return balance.toInt().toString();

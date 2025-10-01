@@ -16,9 +16,13 @@
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
 import 'package:get/get.dart';
-import '../../../../../widget/text_field.dart';
+import '/ui/widget/text_field.dart';
 
+/// Controller of a [SelectCountryView].
 class SelectCountryController extends GetxController {
+  /// Query to search [IsoCode]s for.
   final RxnString query = RxnString();
+
+  /// [TextFieldState] of a search field to search [IsoCode]s.
   final TextFieldState search = TextFieldState();
 }

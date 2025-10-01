@@ -208,7 +208,7 @@ extension BuildProviderExtension on DepositKind {
             context,
             country: country?.value,
             onCode: (code) => country?.value = code,
-            only: IsoCodeExtension.available(this),
+            available: IsoCodeExtension.available(this),
             error: error,
           );
         }),
@@ -281,7 +281,7 @@ extension BuildProviderExtension on DepositKind {
                         if (paypal.country.value == null) {
                           final result = await SelectCountryView.show(
                             context,
-                            only: IsoCodeExtension.available(this),
+                            available: IsoCodeExtension.available(this),
                           );
                           if (result != null) {
                             paypal.country.value = result;
@@ -342,7 +342,7 @@ Widget _countryButton(
   BuildContext context, {
   IsoCode? country,
   void Function(IsoCode)? onCode,
-  Set<IsoCode> only = const {},
+  Set<IsoCode> available = const {},
   Set<IsoCode> restricted = const {},
   bool error = false,
 }) {
@@ -351,7 +351,7 @@ Widget _countryButton(
     onPressed: () async {
       final result = await SelectCountryView.show(
         context,
-        only: only,
+        available: available,
         restricted: restricted,
       );
 

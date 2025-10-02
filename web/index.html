@@ -92,14 +92,6 @@
       overscroll-behavior-x: none;
     }
 
-    .content {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      -webkit-transform: translate(-50%, -50%);
-      transform: translate(-50%, -50%);
-    }
-
     .shimmer {
       color: grey;
       display: inline-block;
@@ -115,21 +107,6 @@
       100% {
         -webkit-mask-position: left
       }
-    }
-
-    .bar {
-      border: #DEDEDE solid 0.5px;
-      background-color: #63b4ff;
-      display: flex;
-      flex-direction: row;
-      height: 56px;
-      justify-content: center;
-      box-shadow: 0px 0px 5px rgba(0, 0, 0, .2);
-      align-items: center;
-      font-size: 21px;
-      max-width: 380px;
-      width: 380px;
-      margin: 3px auto;
     }
 
     .chats-bar {
@@ -184,20 +161,6 @@
       background-color: #fff;
     }
 
-    .blocked {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      width: 284px;
-      max-width: 284px;
-      margin: auto;
-      padding: 0px 48px;
-      border-radius: 12px;
-      border: #DEDEDE solid 0.5px;
-      background-color: #fff;
-    }
-
     .main {
       width: 100%;
       height: 100%;
@@ -207,27 +170,9 @@
       align-items: center;
     }
 
-    .content {
-      position: relative;
-      margin: auto;
-      width: 500px;
-      max-height: 320px;
-    }
-
     .row {
       display: flex;
       flex-direction: row;
-    }
-
-    .spacer {
-      flex-grow: 100;
-    }
-
-    .row-start {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: left;
     }
 
     .sticked-top {
@@ -246,12 +191,6 @@
       right: 0;
     }
 
-    .coins {
-      position: absolute;
-      right: 0px;
-      top: 0px;
-    }
-
     .navigation {
       background-color: #fff;
       display: flex;
@@ -266,22 +205,6 @@
       padding: 0px 13px;
       width: calc(350px - 26px);
       max-width: calc(350px - 26px);
-    }
-
-    .footer {
-      border: #DEDEDE solid 0.5px;
-      background-color: #63b4ff;
-      display: flex;
-      flex-direction: row;
-      text-align: center;
-      height: 56px;
-      box-shadow: 0px 0px 5px rgba(0, 0, 0, .2);
-      align-items: center;
-      align-content: center;
-      justify-content: center;
-      font-size: 21px;
-      width: calc(100% - 20px);
-      margin: 3px 10px;
     }
 
     .field {
@@ -313,14 +236,6 @@
       font-size: 21px;
       width: calc(100%);
       position: fixed;
-    }
-
-    .top-gap {
-      margin-top: 0px;
-    }
-
-    .bottom-gap {
-      margin-top: 0px;
     }
 
     .circle-loader {
@@ -415,39 +330,11 @@
       flex-direction: column;
     }
 
-    .avatar37 {
-      width: 74px;
-      height: 74px;
-      line-height: 74px;
-      border-radius: 50%;
-      background: linear-gradient(#1cf340, #09a722);
-      text-align: center;
-      color: #fff;
-      font-size: 13px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
-
     @media only screen and (max-width: 600px) {
-      .bar {
-        display: none;
-      }
-
       .block {
         width: 100%;
         max-width: 100%;
         margin: 3px 10px;
-      }
-
-      .blocked {
-        width: calc(100% - 100px);
-        max-width: calc(100% - 100px);
-      }
-
-      .bottom-gap {
-        margin-top: 56px;
       }
 
       .left-chats,
@@ -484,14 +371,6 @@
     }
 
     @media only screen and (min-width: 600px) {
-      .footer {
-        display: none;
-      }
-
-      .top-gap {
-        margin-top: 55px;
-      }
-
       .chats-bar {
         width: 350px;
         max-width: 350px;
@@ -766,15 +645,12 @@
       }
 
       if (person) {
-        document.getElementById("avatar37-image").remove();
-        document.getElementById("avatar37").style.background = "rgba(0, 0, 0, 0.13)";
         document.getElementById("welcome-title").style.background = "rgba(0, 0, 0, 0.13)";
         document.getElementById("welcome-title").style.borderRadius = "14px";
         document.getElementById("welcome-title").style.width = "140px";
         document.getElementById("welcome-title").style.height = "34px";
         document.getElementById("welcome-title").innerHTML = "";
         document.getElementById("welcome-subtitle").innerHTML = "Messenger by Tapopa";
-        document.getElementById("coins").src = "/assets/assets/images/coins_tapopa.svg";
       }
     }
   </script>

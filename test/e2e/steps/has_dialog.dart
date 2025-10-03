@@ -55,7 +55,7 @@ final StepDefinitionGeneric hasDialogWithUser =
         final provider = GraphQlProvider();
         provider.token = context.world.sessions[user.name]?.token;
         var chat = await provider.createDialogChat(
-          context.world.sessions[user.name]!.userId,
+          context.world.sessions[other.name]!.userId,
         );
         context.world.sessions[user.name]?.dialog = chat.id;
         provider.disconnect();

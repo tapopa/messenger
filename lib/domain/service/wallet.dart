@@ -17,12 +17,16 @@
 
 import 'package:get/get.dart';
 
-import '/ui/widget/text_field.dart';
+import '/domain/repository/wallet.dart';
+import 'disposable_service.dart';
 
-class WalletTransactionsController extends GetxController {
-  final RxBool expanded = RxBool(false);
-  final RxSet<String> ids = RxSet();
+/// Service responsible for [MyUser] wallet functionality.
+class WalletService extends DisposableService {
+  WalletService(this._walletRepository);
 
-  final TextFieldState search = TextFieldState();
-  final RxnString query = RxnString();
+  /// [AbstractWalletRepository] managing the wallet data.
+  final AbstractWalletRepository _walletRepository;
+
+  /// Returns the balance [MyUser] has in its wallet.
+  RxDouble get balance => _walletRepository.balance;
 }

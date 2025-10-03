@@ -1021,6 +1021,7 @@ label_resend_timeout =
 label_saved_files = Archivos descargados
 label_screen_sharing = Compartimiento de pantalla
 label_search = Buscar
+label_search_dots = Buscar...
 label_selected = Seleccionado: {$count}
 label_send_message_hint = Mensaje...
 label_sessions_terminated = Sesión(es) terminada(s)

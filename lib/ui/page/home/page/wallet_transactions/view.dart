@@ -18,8 +18,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '/l10n/l10n.dart';
+import '/themes.dart';
+import '/ui/page/home/page/chat/message_field/view.dart';
 import '/ui/page/home/page/chat/widget/back_button.dart';
 import '/ui/page/home/widget/app_bar.dart';
+import '/ui/widget/animated_button.dart';
+import '/ui/widget/svg/svg.dart';
+import '/ui/widget/text_field.dart';
 import 'controller.dart';
 
 class WalletTransactionsView extends StatelessWidget {
@@ -33,10 +39,88 @@ class WalletTransactionsView extends StatelessWidget {
         return Scaffold(
           appBar: CustomAppBar(
             leading: const [SizedBox(width: 4), StyledBackButton()],
+            actions: [
+              AnimatedButton(
+                onPressed: () {
+                  c.expanded.toggle();
+                  c.ids.clear();
+                },
+                decorator: (child) => Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 20, 8),
+                  child: child,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 4, 0, 4),
+                  child: Obx(() {
+                    return SvgIcon(
+                      c.expanded.value ? SvgIcons.viewFull : SvgIcons.viewShort,
+                    );
+                  }),
+                ),
+              ),
+            ],
           ),
-          body: Center(child: Text('$runtimeType')),
+          body: Builder(
+            builder: (_) {
+              final List<Widget> children = [];
+
+              return Column(
+                children: [
+                  Expanded(
+                    child: ListView(
+                      reverse: true,
+                      children: [
+                        const SizedBox(height: 8),
+                        ...children,
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                  ),
+                  _search(context, c),
+                ],
+              );
+            },
+          ),
         );
       },
+    );
+  }
+
+  Widget _search(BuildContext context, WalletTransactionsController c) {
+    final style = Theme.of(context).style;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: style.cardColor,
+        boxShadow: [
+          CustomBoxShadow(
+            blurRadius: 8,
+            color: style.colors.onBackgroundOpacity13,
+          ),
+        ],
+      ),
+      constraints: const BoxConstraints(minHeight: 57),
+
+      child: Row(
+        children: [
+          const SizedBox(width: 16),
+          const SvgIcon(SvgIcons.search),
+          Expanded(
+            child: Theme(
+              data: MessageFieldView.theme(context),
+              child: ReactiveTextField(
+                dense: true,
+                state: c.search,
+                hint: 'label_search_dots'.l10n,
+                style: style.fonts.medium.regular.onBackground,
+                onChanged: () {
+                  c.query.value = c.search.text.isEmpty ? null : c.search.text;
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

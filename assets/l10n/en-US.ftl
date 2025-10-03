@@ -1019,6 +1019,7 @@ label_resend_timeout =
 label_saved_files = Downloaded files
 label_screen_sharing = Screen sharing
 label_search = Search
+label_search_dots = Search...
 label_selected = Selected: {$count}
 label_send_message_hint = Message...
 label_sessions_terminated = Session(s) terminated

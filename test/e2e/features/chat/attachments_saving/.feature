@@ -22,6 +22,9 @@ Feature: Attachments downloading
     And Bob has dialog with Alice
     And I sign in as Alice
     And I pause for 2 seconds
+    And I wait until `IntroductionView` is present
+    And I scroll `IntroductionScrollable` until `ProceedButton` is present
+    And I tap `ProceedButton` button
     And I am in chat with Bob
 
   Scenario: Attachments can be downloaded

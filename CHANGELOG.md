@@ -17,13 +17,13 @@ All user visible changes to this project will be documented in this file. This p
     - Home page:
         - Wallet and monetization tabs. ([#2])
     - Wallet tab:
-        - Top up and transactions pages. ([#3])
+        - Top up and transactions pages. ([#4])
 - Deployment:
     - [Helm] chart. ([#1])
 
 [#1]: /../../pull/1
 [#2]: /../../pull/2
-[#3]: /../../pull/3
+[#4]: /../../pull/4
 
 
 

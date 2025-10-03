@@ -1981,4 +1981,16 @@ class SvgIcons {
     width: 54,
     height: 29,
   );
+
+  static const SvgData viewFull = SvgData(
+    'assets/icons/view_full.svg',
+    width: 20.8,
+    height: 20.92,
+  );
+
+  static const SvgData viewShort = SvgData(
+    'assets/icons/view_short.svg',
+    width: 20.8,
+    height: 15.92,
+  );
 }

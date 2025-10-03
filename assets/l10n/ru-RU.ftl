@@ -1033,6 +1033,7 @@ label_resend_timeout =
 label_saved_files = Скачанные файлы
 label_screen_sharing = Демонстрация экрана
 label_search = Поиск
+label_search_dots = Поиск...
 label_selected = Выбрано: {$count}
 label_send_message_hint = Сообщение...
 label_sessions_terminated = Сессия(и) завершена(ы)

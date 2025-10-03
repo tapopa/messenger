@@ -17,12 +17,7 @@
 
 import 'package:get/get.dart';
 
-import '/ui/widget/text_field.dart';
-
-class WalletTransactionsController extends GetxController {
-  final RxBool expanded = RxBool(false);
-  final RxSet<String> ids = RxSet();
-
-  final TextFieldState search = TextFieldState();
-  final RxnString query = RxnString();
+/// [MyUser] wallet repository interface.
+abstract class AbstractWalletRepository {
+  RxDouble get balance;
 }

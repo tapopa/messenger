@@ -182,6 +182,7 @@ btn_info = Información
 btn_install_android = Archivo .apk para Android
 btn_install_ios = Archivo .ipa para iOS
 btn_install_web_app = Instalar la aplicación web
+btn_invoice = Factura
 btn_leave_group = Salir del grupo
 btn_login_and_password = Usuario y contraseña
 btn_logout = Salir
@@ -832,7 +833,9 @@ label_delete_email = Eliminar el e-mail
 label_delete_message = ¿Eliminar el mensaje?
 label_delete_messages = ¿Eliminar los mensajes?
 label_deleted_account = Cuenta Eliminada
+label_description = Description
 label_desktop_apps = Aplicaciones para computadora
+label_details = Detalles
 label_device_by_default = Por defecto - {$device}
 label_dialog_created = Diálogo creado
 label_dialog_created_by_link = Diálogo creado mediante enlace directo
@@ -874,6 +877,9 @@ label_forwarded_messages =
         [1] Mensaje reeinviado
        *[other] Mensajes reenviados
     }
+label_from_earnings_lowercase = de ganancias
+label_from_purchases_lowercase = de compras
+label_from_sales_lowercase = de ventas
 label_group_created = Grupo creado
 label_group_created_by = {$author} creó el grupo
 label_group_created_by1 = {$author}
@@ -908,6 +914,7 @@ label_introduction_description =
 label_introduction_description_email = E-mail no agregado. El acceso a su cuenta se perderá en caso de olvidar la contraseña.
 label_introduction_for_one_time = Para guardar el acceso a su cuenta, establezca una contraseña, un nombre de usuario o un correo electrónico en la configuración de su perfil.
 label_ios_android_windows_macos_linux = iOS, Android, Windows, macOS, Linux
+label_it_works_for_years = It works for years
 label_b = {$amount} B
 label_kb = {$amount} KB
 label_mb = {$amount} MB
@@ -980,10 +987,70 @@ label_one_time_password = Código desechable
 label_online = en línea
 label_open_calls_in_app = En la misma ventana
 label_open_calls_in_window = En una ventana separada
+label_operation_completed = Completado
+label_operation_failed = Falló
+label_operation_in_progress = En progreso
 label_order_payment = Ordene su retiro
 label_outgoing_call = Llamando
 label_participants = Miembros: {$count}
 label_participants_of = Miembros: {$a} de {$b}
+label_partner_links = Partner links
+label_partner_number_tapopa_author = Partner number Tapopa-Author
+label_partner_number_tapopa_partner = Partner number Tapopa-Partner
+label_partner_percentage = Partner percentage
+label_partner_program_links_description1 =
+    You can create a partner link for any Tapopa user in their profile.
+
+    The partner link you create belongs to you and is controlled by you. You have the right to change where your partner link leads to.
+
+    A partner link makes it possible for Tapopa to recognize that a user who has created an account or visited an author has been invited by you. At the time of account creation and/or first author visit, the{" "}
+label_partner_program_links_description2 = partner number Tapopa-Partner
+label_partner_program_links_description3 = {" "}and/or{" "}
+label_partner_program_links_description4 = partner number Tapopa-Author
+label_partner_program_links_description5 = {" "}is assigned.
+label_partner_program_tapopa_author = Partner program Tapopa-Author
+label_partner_program_tapopa_author_number =
+    Partner number Tapopa-Author is the number of the promoter who invited the user to the author.
+
+    Your partner number Tapopa-Author is assigned to the visitor invited by you at the moment of the first visit to the author. It cannot be changed.
+
+    In order for Tapopa to recognize your partner number Tapopa-Author, it is necessary that the user invited by you visits the author using your partner link.
+label_partner_program_tapopa_author_percentage =
+    You are credited with the partner percentage of the amount of every purchase made by users invited by you.
+
+    The partner percentage is fixed for the visitor at the moment of the first visit to the author. It cannot be changed.
+
+    If the author decides to change his partner percentage, it will only affect sales to new visitors.
+label_partner_program_tapopa_partner = Partner program Tapopa-Partner
+label_partner_program_tapopa_partner_description =
+    You receive 1% of each purchase made by the client invited by you.
+
+    You receive 1% of each sale of the author invited by you.
+
+    You receive 10% of income received within the partner program Tapopa-Partner by the promoter invited by you.
+label_partner_program_tapopa_partner_number =
+    An invited user is a user who has been assigned a partner number Tapopa-Partner.
+
+    The partner number Tapopa-Partner is the number of the promoter who invited the visitor.
+
+    When a visitor clicks the “Guest” or “Create an account” button, Tapopa will assign them your partner number Tapopa-Partner.
+
+    In order for Tapopa to recognize your partner number Tapopa-Partner, it is necessary that the user invited by you visits the author using your partner link.
+label_partner_programs = Programas de partners
+label_partner_programs_easy_description =
+    Share link & make money.
+
+    Percentage of purchases, percentage of sales, percentage of earnings. It does not matter whether your link invited a buyer, a seller or a promoter.
+
+    The user, invited by you, is linked to you forever. Sooner or later they will buy, sell or earn money.
+
+    The time, you spend on the internet, should not only be interesting but also profitable.
+label_partner_program_tapopa_partner_description =
+    You receive 1% of each purchase made by the client invited by you.
+
+    You receive 1% of each sale of the author invited by you.
+
+    You receive 10% of income received within the partner program Tapopa-Partner by the promoter invited by you.
 label_password = Сontraseña
 label_password_changed = Contraseña cambiada
 label_password_not_set1 = La contraseña no esta configurada.{" "}
@@ -1074,8 +1141,12 @@ label_terms_and_privacy_policy = Condiciones y Política de Privacidad
 label_text_status = Estatus del texto
 label_text_status_description = Hasta 26 caracteres
 label_text_status_hint = Estatus del texto. Máximo 25 símbolos.
+label_thats_easy = That's easy
 label_this_device = Este dispositivo
 label_to_restore_chats_use_search = Para recuperar los chats, utiliza la búsqueda
+label_top_up_bonus_with_id = Bono de recarga. ID de transacción: {$id}.
+label_top_up_paypal = Bono de recarga. PayPal.
+label_transaction_id = Transacción ID
 label_typing = Escribiendo
 label_unknown = Desconocido
 label_unknown_chat_direct_link = Este enlace directo no es válido
@@ -1134,6 +1205,7 @@ label_your_num = Su Gapopa ID
 label_your_password = Su contraseña
 label_your_statistics = Su estadística
 label_your_status = Su estatus
+label_your_transactions = Sus transacciones
 plus =  +
 question_mark = ?
 space = {" "}

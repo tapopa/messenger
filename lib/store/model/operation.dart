@@ -21,13 +21,16 @@ import 'version.dart';
 
 /// Persisted in storage [Operation]'s [value].
 class DtoOperation implements Comparable<DtoOperation> {
-  DtoOperation(this.value, this.version);
+  DtoOperation(this.value, this.version, {this.cursor});
 
   /// Persisted [Operation] model.
   final Operation value;
 
-  /// Cursor of the [value].
+  /// Version of the [value].
   final OperationVersion version;
+
+  /// Cursor of the [value].
+  final OperationsCursor? cursor;
 
   /// Returns the [OperationId] of the [value].
   OperationId get id => value.id;
@@ -49,6 +52,6 @@ class OperationVersion extends Version {
 }
 
 /// Cursor of [Operation]s.
-class OperationCursor extends NewType<String> {
-  OperationCursor(super.val);
+class OperationsCursor extends NewType<String> {
+  OperationsCursor(super.val);
 }

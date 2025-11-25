@@ -15,8 +15,11 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+// ignore_for_file: avoid_types_as_parameter_names
+
 import '/api/backend/schema.dart' show OperationStatus, OperationDepositKind;
 import '/util/new_type.dart';
+import 'country.dart';
 import 'precise_date_time/precise_date_time.dart';
 import 'price.dart';
 
@@ -34,7 +37,7 @@ abstract class Operation {
   final OperationId id;
 
   /// Sequential number of this [Operation].
-  final OperationId num;
+  final OperationNum num;
 
   /// [Status] of this [Operation].
   final OperationStatus status;
@@ -54,7 +57,7 @@ class OperationDeposit extends Operation {
     super.status = OperationStatus.completed,
     required super.amount,
     required super.createdAt,
-    this.kind = OperationDepositKind.PAYPAL,
+    this.kind = OperationDepositKind.paypal,
     required this.billingCountry,
     this.invoice,
   });

@@ -15,33 +15,7 @@
 # along with this program. If not, see
 # <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-query Operations(
-    $origin: OperationOrigin!
-    $by: OperationsFilter
-    $pagination: OperationsPagination
-) {
-    operations(
-        origin: $origin
-        by: $by
-        pagination: $pagination
-    ) {
-        edges {
-            node {
-                __typename
-                ... on OperationDeposit {
-                    ...OperationDeposit
-                }
-                ... on OperationDepositBonus {
-                    ...OperationDepositBonus
-                }
-            }
-            cursor
-        }
-        pageInfo {
-            __typename
-            ...PageInfo
-        }
-        totalCount
-        ver
-    }
+fragment Price on Price {
+    sum
+    currency
 }

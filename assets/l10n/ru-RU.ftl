@@ -182,6 +182,7 @@ btn_info = Информация
 btn_install_android = .apk файл для Android
 btn_install_ios = .ipa файл для iOS
 btn_install_web_app = Установить Веб приложение
+btn_invoice = Счёт-фактура
 btn_leave_group = Покинуть группу
 btn_login_and_password = Логин и пароль
 btn_logout = Выйти
@@ -842,9 +843,11 @@ label_delete_chat = Удалить чат(ы)
 label_delete_chats = Удалить чат(ы)
 label_delete_email = Удалить E-mail
 label_delete_message = Удалить сообщение?
-label_deleted_account = Удалённый Aккаунт
 label_delete_messages = Удалить сообщения?
+label_deleted_account = Удалённый Aккаунт
+label_description = Description
 label_desktop_apps = Приложения для компьютера
+label_details = Детали
 label_device_by_default = По умолчанию - {$device}
 label_dialog_created = Диалог создан
 label_dialog_created_by_link = Диалог создан по прямой ссылке
@@ -885,6 +888,9 @@ label_forwarded_messages = {$count ->
     [1] Пересланное сообщение
     *[other] Пересланные сообщения
 }
+label_from_earnings_lowercase = от заработка
+label_from_purchases_lowercase = от покупок
+label_from_sales_lowercase = от продаж
 label_group_created = Группа создана
 label_group_created_by = {$author} создал(а) группу
 label_group_created_by1 = {$author}
@@ -919,6 +925,7 @@ label_introduction_description =
 label_introduction_description_email = E-mail не добавлен. Если вы забудете пароль, доступ к аккаунту будет утерян.
 label_introduction_for_one_time = Чтобы не потерять доступ к аккаунту, задайте пароль, логин или e-mail в настройках Вашего профиля.
 label_ios_android_windows_macos_linux = iOS, Android, Windows, macOS, Linux
+label_it_works_for_years = It works for years
 label_b = {$amount} Б
 label_kb = {$amount} КБ
 label_mb = {$amount} МБ
@@ -991,10 +998,64 @@ label_one_time_password = Одноразовый код
 label_online = онлайн
 label_open_calls_in_app = В том же окне
 label_open_calls_in_window = В отдельном окне
+label_operation_completed = Завершено
+label_operation_failed = Неуспешно
+label_operation_in_progress = В процессе
 label_order_payment = Закажите свою выплату
 label_outgoing_call = Звоним
 label_participants = Участников: {$count}
 label_participants_of = Участников: {$a} из {$b}
+label_partner_links = Partner links
+label_partner_number_tapopa_author = Partner number Tapopa-Author
+label_partner_number_tapopa_partner = Partner number Tapopa-Partner
+label_partner_percentage = Partner percentage
+label_partner_program_links_description1 =
+    You can create a partner link for any Tapopa user in their profile.
+
+    The partner link you create belongs to you and is controlled by you. You have the right to change where your partner link leads to.
+
+    A partner link makes it possible for Tapopa to recognize that a user who has created an account or visited an author has been invited by you. At the time of account creation and/or first author visit, the{" "}
+label_partner_program_links_description2 = partner number Tapopa-Partner
+label_partner_program_links_description3 = {" "}and/or{" "}
+label_partner_program_links_description4 = partner number Tapopa-Author
+label_partner_program_links_description5 = {" "}is assigned.
+label_partner_program_tapopa_author = Partner program Tapopa-Author
+label_partner_program_tapopa_author_number =
+    Partner number Tapopa-Author is the number of the promoter who invited the user to the author.
+
+    Your partner number Tapopa-Author is assigned to the visitor invited by you at the moment of the first visit to the author. It cannot be changed.
+
+    In order for Tapopa to recognize your partner number Tapopa-Author, it is necessary that the user invited by you visits the author using your partner link.
+label_partner_program_tapopa_author_percentage =
+    You are credited with the partner percentage of the amount of every purchase made by users invited by you.
+
+    The partner percentage is fixed for the visitor at the moment of the first visit to the author. It cannot be changed.
+
+    If the author decides to change his partner percentage, it will only affect sales to new visitors.
+label_partner_program_tapopa_partner = Partner program Tapopa-Partner
+label_partner_program_tapopa_partner_description =
+    You receive 1% of each purchase made by the client invited by you.
+
+    You receive 1% of each sale of the author invited by you.
+
+    You receive 10% of income received within the partner program Tapopa-Partner by the promoter invited by you.
+label_partner_program_tapopa_partner_number =
+    An invited user is a user who has been assigned a partner number Tapopa-Partner.
+
+    The partner number Tapopa-Partner is the number of the promoter who invited the visitor.
+
+    When a visitor clicks the “Guest” or “Create an account” button, Tapopa will assign them your partner number Tapopa-Partner.
+
+    In order for Tapopa to recognize your partner number Tapopa-Partner, it is necessary that the user invited by you visits the author using your partner link.
+label_partner_programs = Партнёрские программы
+label_partner_programs_easy_description =
+    Share link & make money.
+
+    Percentage of purchases, percentage of sales, percentage of earnings. It does not matter whether your link invited a buyer, a seller or a promoter.
+
+    The user, invited by you, is linked to you forever. Sooner or later they will buy, sell or earn money.
+
+    The time, you spend on the internet, should not only be interesting but also profitable.
 label_password = Пароль
 label_password_changed = Пароль изменён
 label_password_not_set1 = Пароль не задан.{" "}
@@ -1086,8 +1147,12 @@ label_terms_and_privacy_policy = Условия и Политика конфид
 label_text_status = Текстовый статус
 label_text_status_description = Максимум 25 символов
 label_text_status_hint = Текстовый статус. Макс. 25 символов.
+label_thats_easy = That's easy
 label_this_device = Это устройство
 label_to_restore_chats_use_search = Чтобы восстановить чаты, воспользуйтесь поиском.
+label_top_up_bonus_with_id = Бонус пополнения. ID транзакции: {$id}.
+label_top_up_paypal = Пополнение. PayPal.
+label_transaction_id = ID транзакции
 label_typing = Печатает
 label_unknown = Неизвестно
 label_unknown_chat_direct_link = Данная прямая ссылка недействительна
@@ -1145,6 +1210,7 @@ label_your_num = Ваш Gapopa ID
 label_your_password = Ваш пароль
 label_your_statistics = Ваша статистика
 label_your_status = Ваш статус
+label_your_transactions = Ваши транзакции
 plus =  +
 question_mark = ?
 space = {" "}

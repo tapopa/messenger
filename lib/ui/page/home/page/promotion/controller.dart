@@ -17,4 +17,6 @@
 
 import 'package:get/get.dart';
 
-class PromotionController extends GetxController {}
+class PromotionController extends GetxController {
+  final RxBool percentEditing = RxBool(false);
+}

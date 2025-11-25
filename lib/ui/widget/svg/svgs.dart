@@ -2113,4 +2113,28 @@ class SvgIcons {
     width: 20.8,
     height: 15.92,
   );
+
+  static const SvgData operationCanceled = SvgData(
+    'assets/icons/operation_canceled.svg',
+    width: 13,
+    height: 13,
+  );
+
+  static const SvgData operationDone = SvgData(
+    'assets/icons/operation_done.svg',
+    width: 13,
+    height: 9,
+  );
+
+  static const SvgData operationSending = SvgData(
+    'assets/icons/operation_sending.svg',
+    width: 13,
+    height: 13,
+  );
+
+  static const SvgData copySmallThick = SvgData(
+    'assets/icons/copy_small_thick.svg',
+    width: 13,
+    height: 16,
+  );
 }

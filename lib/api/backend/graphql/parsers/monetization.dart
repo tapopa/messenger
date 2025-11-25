@@ -15,6 +15,7 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import '../../../../domain/model/promo_share.dart';
 import '/domain/model/country.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/price.dart';
@@ -380,3 +381,125 @@ List<String?>?
 fromDartListNullableInvoiceNullableToGraphQLListNullableInvoiceNullable(
   List<Invoice?>? v,
 ) => v?.map((e) => fromDartInvoiceNullableToGraphQLInvoiceNullable(e)).toList();
+
+// OperationsCursor
+
+OperationsCursor fromGraphQLOperationsCursorToDartOperationsCursor(String v) =>
+    OperationsCursor(v);
+String fromDartOperationsCursorToGraphQLOperationsCursor(OperationsCursor v) =>
+    v.val;
+List<OperationsCursor>
+fromGraphQLListOperationsCursorToDartListOperationsCursor(List<Object?> v) => v
+    .map((e) => fromGraphQLOperationsCursorToDartOperationsCursor(e as String))
+    .toList();
+List<String> fromDartListOperationsCursorToGraphQLListOperationsCursor(
+  List<OperationsCursor> v,
+) =>
+    v.map((e) => fromDartOperationsCursorToGraphQLOperationsCursor(e)).toList();
+List<OperationsCursor>?
+fromGraphQLListNullableOperationsCursorToDartListNullableOperationsCursor(
+  List<Object?>? v,
+) => v
+    ?.map((e) => fromGraphQLOperationsCursorToDartOperationsCursor(e as String))
+    .toList();
+List<String>?
+fromDartListNullableOperationsCursorToGraphQLListNullableOperationsCursor(
+  List<OperationsCursor>? v,
+) => v
+    ?.map((e) => fromDartOperationsCursorToGraphQLOperationsCursor(e))
+    .toList();
+
+OperationsCursor?
+fromGraphQLOperationsCursorNullableToDartOperationsCursorNullable(String? v) =>
+    v == null ? null : OperationsCursor(v);
+String? fromDartOperationsCursorNullableToGraphQLOperationsCursorNullable(
+  OperationsCursor? v,
+) => v?.val;
+List<OperationsCursor?>
+fromGraphQLListOperationsCursorNullableToDartListOperationsCursorNullable(
+  List<Object?> v,
+) => v
+    .map(
+      (e) => fromGraphQLOperationsCursorNullableToDartOperationsCursorNullable(
+        e as String?,
+      ),
+    )
+    .toList();
+List<String?>
+fromDartListOperationsCursorNullableToGraphQLListOperationsCursorNullable(
+  List<OperationsCursor?> v,
+) => v
+    .map(
+      (e) =>
+          fromDartOperationsCursorNullableToGraphQLOperationsCursorNullable(e),
+    )
+    .toList();
+List<OperationsCursor?>?
+fromGraphQLListNullableOperationsCursorNullableToDartListNullableOperationsCursorNullable(
+  List<Object?>? v,
+) => v
+    ?.map(
+      (e) => fromGraphQLOperationsCursorNullableToDartOperationsCursorNullable(
+        e as String?,
+      ),
+    )
+    .toList();
+List<String?>?
+fromDartListNullableOperationsCursorNullableToGraphQLListNullableOperationsCursorNullable(
+  List<OperationsCursor?>? v,
+) => v
+    ?.map(
+      (e) =>
+          fromDartOperationsCursorNullableToGraphQLOperationsCursorNullable(e),
+    )
+    .toList();
+
+// Percentage
+
+Percentage fromGraphQLPercentageToDartPercentage(String v) => Percentage(v);
+String fromDartPercentageToGraphQLPercentage(Percentage v) => v.val;
+List<Percentage> fromGraphQLListPercentageToDartListPercentage(
+  List<Object?> v,
+) => v.map((e) => fromGraphQLPercentageToDartPercentage(e as String)).toList();
+List<String> fromDartListPercentageToGraphQLListPercentage(
+  List<Percentage> v,
+) => v.map((e) => fromDartPercentageToGraphQLPercentage(e)).toList();
+List<Percentage>? fromGraphQLListNullablePercentageToDartListNullablePercentage(
+  List<Object?>? v,
+) => v?.map((e) => fromGraphQLPercentageToDartPercentage(e as String)).toList();
+List<String>? fromDartListNullablePercentageToGraphQLListNullablePercentage(
+  List<Percentage>? v,
+) => v?.map((e) => fromDartPercentageToGraphQLPercentage(e)).toList();
+
+Percentage? fromGraphQLPercentageNullableToDartPercentageNullable(String? v) =>
+    v == null ? null : Percentage(v);
+String? fromDartPercentageNullableToGraphQLPercentageNullable(Percentage? v) =>
+    v?.val;
+List<Percentage?> fromGraphQLListPercentageNullableToDartListPercentageNullable(
+  List<Object?> v,
+) => v
+    .map(
+      (e) =>
+          fromGraphQLPercentageNullableToDartPercentageNullable(e as String?),
+    )
+    .toList();
+List<String?> fromDartListPercentageNullableToGraphQLListPercentageNullable(
+  List<Percentage?> v,
+) => v
+    .map((e) => fromDartPercentageNullableToGraphQLPercentageNullable(e))
+    .toList();
+List<Percentage?>?
+fromGraphQLListNullablePercentageNullableToDartListNullablePercentageNullable(
+  List<Object?>? v,
+) => v
+    ?.map(
+      (e) =>
+          fromGraphQLPercentageNullableToDartPercentageNullable(e as String?),
+    )
+    .toList();
+List<String?>?
+fromDartListNullablePercentageNullableToGraphQLListNullablePercentageNullable(
+  List<Percentage?>? v,
+) => v
+    ?.map((e) => fromDartPercentageNullableToGraphQLPercentageNullable(e))
+    .toList();

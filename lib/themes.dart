@@ -27,8 +27,12 @@ part 'themes.g.dart';
 
 /// Application themes constants.
 @SoundFonts({
+  'giant': {
+    'bold': ['currencyPrimary'],
+    'regular': ['onBackground'],
+  },
   'largest': {
-    'bold': ['onBackground', 'onPrimary'],
+    'bold': ['onBackground', 'onPrimary', 'currencyPrimary'],
     'regular': ['onBackground', 'onPrimary', 'secondary'],
   },
   'larger': {
@@ -124,6 +128,8 @@ class Themes {
       decline: const Color(0xFFFF0000),
       danger: const Color(0xFFF44336),
       warning: const Color(0xFFFF9800),
+      currencyPrimary: const Color(0xFF08A521),
+      currencySecondary: const Color.fromRGBO(8, 165, 34, 0.4),
       userColors: const [
         Color(0xFFD2B334),
         Color(0xFF2192FF),
@@ -180,8 +186,10 @@ class Themes {
       secondaryHighlightDarkest: colors.secondaryHighlightDarkest,
       onPrimary: colors.onPrimary,
       danger: colors.danger,
+      currencyPrimary: colors.currencyPrimary,
       bold: FontWeight.w700,
       regular: FontWeight.w400,
+      giant: 36,
       largest: 27,
       larger: 24,
       large: 21,
@@ -749,6 +757,8 @@ class Palette {
     required this.danger,
     required this.warning,
     required this.userColors,
+    required this.currencyPrimary,
+    required this.currencySecondary,
   }) : primaryOpacity20 = primaryOpacity20 ?? primary.withValues(alpha: 0.20),
        primaryDarkOpacity70 =
            primaryDarkOpacity70 ?? primaryDark.withValues(alpha: 0.70),
@@ -1089,6 +1099,9 @@ class Palette {
   /// Used for [AvatarWidget]s and [UserName]s.
   final List<Color> userColors;
 
+  final Color currencyPrimary;
+  final Color currencySecondary;
+
   /// Linear interpolation between two [Palette] objects based on a given [t]
   /// value.
   static Palette lerp(Palette color, Palette? other, double t) {
@@ -1335,6 +1348,16 @@ class Palette {
       userColors: other.userColors.isNotEmpty
           ? other.userColors
           : color.userColors,
+      currencyPrimary: Color.lerp(
+        color.currencyPrimary,
+        other.currencyPrimary,
+        t,
+      )!,
+      currencySecondary: Color.lerp(
+        color.currencySecondary,
+        other.currencySecondary,
+        t,
+      )!,
     );
   }
 }

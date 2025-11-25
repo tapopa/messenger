@@ -18,6 +18,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '/ui/widget/widget_button.dart';
+import '/ui/page/home/widget/operation.dart';
 import '/l10n/l10n.dart';
 import '/themes.dart';
 import '/ui/page/home/page/chat/message_field/view.dart';
@@ -34,11 +36,12 @@ class WalletTransactionsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: WalletTransactionsController(),
+      init: WalletTransactionsController(Get.find()),
       builder: (WalletTransactionsController c) {
         return Scaffold(
           appBar: CustomAppBar(
             leading: const [SizedBox(width: 4), StyledBackButton()],
+            title: Text('label_your_transactions'.l10n),
             actions: [
               AnimatedButton(
                 onPressed: () {
@@ -62,23 +65,55 @@ class WalletTransactionsView extends StatelessWidget {
           ),
           body: Builder(
             builder: (_) {
-              final List<Widget> children = [];
+              return Obx(() {
+                final List<Widget> children = [
+                  ...c.operations.values.map((e) {
+                    return Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: 400),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 3, 10, 3),
+                          child: WidgetButton(
+                            onPressed: () {
+                              if (c.ids.contains(e.id)) {
+                                c.ids.remove(e.id);
+                              } else {
+                                c.ids.add(e.id);
+                              }
+                            },
+                            child: Obx(() {
+                              final bool expanded = c.expanded.value;
 
-              return Column(
-                children: [
-                  Expanded(
-                    child: ListView(
-                      reverse: true,
-                      children: [
-                        const SizedBox(height: 8),
-                        ...children,
-                        const SizedBox(height: 8),
-                      ],
+                              return OperationWidget(
+                                e,
+                                expanded:
+                                    (expanded && !c.ids.contains(e.id)) ||
+                                    (!expanded && c.ids.contains(e.id)),
+                              );
+                            }),
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ];
+
+                return Column(
+                  children: [
+                    Expanded(
+                      child: ListView(
+                        reverse: true,
+                        children: [
+                          const SizedBox(height: 8),
+                          ...children,
+                          const SizedBox(height: 8),
+                        ],
+                      ),
                     ),
-                  ),
-                  _search(context, c),
-                ],
-              );
+                    _search(context, c),
+                  ],
+                );
+              });
             },
           ),
         );

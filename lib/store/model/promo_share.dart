@@ -1,5 +1,5 @@
-// Copyright © 2025 Ideas Networks Solutions S.A.,
-//                       <https://github.com/tapopa>
+// Copyright © 2022-2025 IT ENGINEERING MANAGEMENT INC,
+//                       <https://github.com/team113>
 //
 // This program is free software: you can redistribute it and/or modify it under
 // the terms of the GNU Affero General Public License v3.0 as published by the
@@ -15,13 +15,26 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-import 'package:get/get.dart';
+import '/domain/model/promo_share.dart';
+import 'version.dart';
 
-import '/domain/model/operation.dart';
-import 'paginated.dart';
+/// Persisted in storage [PromoShare]'s [value].
+class DtoPromoShare implements Comparable<DtoPromoShare> {
+  DtoPromoShare(this.value, this.version);
 
-/// [MyUser] wallet repository interface.
-abstract class AbstractWalletRepository {
-  RxDouble get balance;
-  Paginated<OperationId, Operation> get operations;
+  /// Persisted [PromoShare] model.
+  final PromoShare value;
+
+  /// Version of the [value].
+  final PromoShareVersion version;
+
+  @override
+  int compareTo(DtoPromoShare other) {
+    return value.addedAt.compareTo(other.value.addedAt);
+  }
+}
+
+/// Version of [PromoShare]'s state.
+class PromoShareVersion extends Version {
+  PromoShareVersion(super.val);
 }

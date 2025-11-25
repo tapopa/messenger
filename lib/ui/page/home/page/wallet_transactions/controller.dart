@@ -17,12 +17,38 @@
 
 import 'package:get/get.dart';
 
+import '/domain/model/operation.dart';
+import '/domain/repository/paginated.dart';
+import '/domain/service/wallet.dart';
 import '/ui/widget/text_field.dart';
 
 class WalletTransactionsController extends GetxController {
+  WalletTransactionsController(this._walletService);
+
   final RxBool expanded = RxBool(false);
-  final RxSet<String> ids = RxSet();
+  final RxSet<OperationId> ids = RxSet();
 
   final TextFieldState search = TextFieldState();
   final RxnString query = RxnString();
+
+  final WalletService _walletService;
+
+  Worker? _queryWorker;
+
+  Paginated<OperationId, Operation> get operations => _walletService.operations;
+
+  @override
+  void onInit() {
+    _queryWorker = debounce(query, (String? query) {
+      // TODO: Searching.
+    });
+
+    super.onInit();
+  }
+
+  @override
+  void onClose() {
+    _queryWorker?.dispose();
+    super.onClose();
+  }
 }

@@ -17,6 +17,8 @@
 
 import 'package:get/get.dart';
 
+import '/domain/model/operation.dart';
+import '/domain/repository/paginated.dart';
 import '/domain/repository/wallet.dart';
 import 'disposable_service.dart';
 
@@ -29,4 +31,7 @@ class WalletService extends DisposableService {
 
   /// Returns the balance [MyUser] has in its wallet.
   RxDouble get balance => _walletRepository.balance;
+
+  Paginated<OperationId, Operation> get operations =>
+      _walletRepository.operations;
 }

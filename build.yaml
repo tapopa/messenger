@@ -237,10 +237,10 @@ targets:
                 name: MyUserVersion
                 imports:
                   - "package:messenger/store/model/my_user.dart"
-            - graphql_type: OperationCursor
+            - graphql_type: OperationsCursor
               custom_parser_import: "package:messenger/api/backend/graphql/parsers/monetization.dart"
               dart_type:
-                name: OperationCursor
+                name: OperationsCursor
                 imports:
                   - "package:messenger/store/model/operation.dart"
             - graphql_type: OperationId
@@ -261,6 +261,18 @@ targets:
                 name: OperationVersion
                 imports:
                   - "package:messenger/store/model/operation.dart"
+            - graphql_type: Percentage
+              custom_parser_import: "package:messenger/api/backend/graphql/parsers/monetization.dart"
+              dart_type:
+                name: Percentage
+                imports:
+                  - "package:messenger/domain/model/operation.dart"
+            - graphql_type: PromoShareVersion
+              custom_parser_import: "package:messenger/api/backend/graphql/parsers/session.dart"
+              dart_type:
+                name: PromoShareVersion
+                imports:
+                  - "package:messenger/store/model/promo_share.dart"
             - graphql_type: RecentChatsCursor
               custom_parser_import: "package:messenger/api/backend/graphql/parsers/chat.dart"
               dart_type:

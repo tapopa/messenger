@@ -790,6 +790,7 @@ label_call_title =
     }
 label_call_window = Call window
 label_camera = Camera
+label_change_history = History of changes
 label_change_password = Change password
 label_chat_call_declined = Declined call
 label_chat_call_ended = Ended call
@@ -994,6 +995,12 @@ label_participants = Members: {$count}
 label_participants_of = Members: {$a} of {$b}
 label_partner_links = Partner links
 label_partner_number_tapopa_author = Partner number Tapopa-Author
+label_partner_number_tapopa_author_description =
+    Partner number Tapopa-Author is the number of the promoter through which the user is invited to you.
+
+    The partner number Tapopa-Author is assigned to the visitor at the moment of the first visit to you and cannot be changed.
+
+    In order for Tapopa to recognize the partner number Tapopa-Author, it is necessary for the user to visit you via promoter's partner link.
 label_partner_number_tapopa_partner = Partner number Tapopa-Partner
 label_partner_percentage = Partner percentage
 label_partner_program_links_description1 =
@@ -1069,7 +1076,9 @@ label_personal_data_deletion_description5 =
 label_photos_semicolon_amount = Photos: {$amount}
 label_presence_away = Away
 label_presence_present = Online
+label_present_time = Present time
 label_profile = Profile
+label_program_terms = Program terms
 label_public_section_hint = Avatar, name, about you, ...
 label_reason = Reason
 label_reason_described = Reason: {$reason}
@@ -1188,10 +1197,22 @@ label_welcome_message_hint = Add, edit, delete
 label_you = You
 label_you_can_use_randomly_generated_link = You can use a generated link or create your own.
 label_you_were_added_to_group = You have been added to the group
+label_your_author_partner_program_tapopa_author =
+    Your author partner program
+    Tapopa-Author
 label_your_direct_link = Direct link to chat with you
 label_your_name = Your name
 label_your_num = Your Gapopa ID
 label_your_password = Your password
+label_your_promotion = Your promotion
+label_your_promotion_program_description =
+    You set a partner percentage, which is credited to your promoter automatically from each sale to a customer invited by this promoter to you.
+
+    The partner percentage set by you is fixed for the visitor at the moment of the first visit to you. It cannot be changed.
+
+    If you decide to change the partner percentage, it will only affect sales to new visitors.
+
+    The history of changes of your partner percentage is publicly available information. It is displayed in your profile.
 label_your_statistics = Your statistics
 label_your_status = Your status
 label_your_transactions = Your transactions

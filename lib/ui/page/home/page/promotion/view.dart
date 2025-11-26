@@ -19,16 +19,16 @@ import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../domain/model/precise_date_time/precise_date_time.dart';
-import '../../../../../domain/model/promo_share.dart';
-import '../../../../../themes.dart';
-import '../../../../widget/line_divider.dart';
-import '../../../../widget/svg/svg.dart';
-import '../../../../widget/widget_button.dart';
-import '../../widget/block.dart';
+import '/domain/model/precise_date_time/precise_date_time.dart';
+import '/domain/model/promo_share.dart';
 import '/l10n/l10n.dart';
+import '/themes.dart';
 import '/ui/page/home/page/chat/widget/back_button.dart';
 import '/ui/page/home/widget/app_bar.dart';
+import '/ui/page/home/widget/block.dart';
+import '/ui/widget/line_divider.dart';
+import '/ui/widget/svg/svg.dart';
+import '/ui/widget/widget_button.dart';
 import 'controller.dart';
 
 class PromotionView extends StatelessWidget {
@@ -132,12 +132,17 @@ class PromotionView extends StatelessWidget {
               Block(
                 title: 'label_program_terms'.l10n,
                 children: [
-                  const SizedBox(height: 24),
                   LineDivider('label_partner_percentage'.l10n),
                   const SizedBox(height: 20),
-
                   Text(
                     'label_your_promotion_program_description'.l10n,
+                    style: style.fonts.small.regular.secondary,
+                  ),
+                  const SizedBox(height: 24),
+                  LineDivider('label_partner_number_tapopa_author'.l10n),
+                  const SizedBox(height: 20),
+                  Text(
+                    'label_partner_number_tapopa_author_description'.l10n,
                     style: style.fonts.small.regular.secondary,
                   ),
                 ],
@@ -192,7 +197,7 @@ class PromotionView extends StatelessWidget {
                   SizedBox(
                     child: Text(
                       e.removedAt == null
-                          ? 'label_present_time'.l10n
+                          ? 'label_present_time'.l10n.toLowerCase()
                           : e.removedAt!.val.yMd,
                       style: style.fonts.smaller.regular.secondary,
                       textAlign: TextAlign.right,

@@ -18,6 +18,8 @@ All user visible changes to this project will be documented in this file. This p
         - Wallet and monetization tabs. ([#2])
     - Wallet tab:
         - Top up and transactions pages. ([#4])
+    - Monetization tab:
+        - Partner programs and your promotion pages. ([#4])
 - Deployment:
     - [Helm] chart. ([#1])
 

@@ -298,7 +298,7 @@ class SearchField extends StatelessWidget {
   /// State of the search [ReactiveTextField].
   final TextFieldState state;
 
-  /// Callback, called when [_SearchField] changes.
+  /// Callback, called when [SearchField] changes.
   final void Function()? onChanged;
 
   @override

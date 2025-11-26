@@ -15,10 +15,10 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-import '../../../../domain/model/promo_share.dart';
 import '/domain/model/country.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/price.dart';
+import '/domain/model/promo_share.dart';
 import '/store/model/operation.dart';
 
 // ignore: todo

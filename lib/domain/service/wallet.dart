@@ -29,9 +29,10 @@ class WalletService extends DisposableService {
   /// [AbstractWalletRepository] managing the wallet data.
   final AbstractWalletRepository _walletRepository;
 
-  /// Returns the balance [MyUser] has in its wallet.
+  /// Returns the balance [MyUser] has in their wallet.
   RxDouble get balance => _walletRepository.balance;
 
+  /// Returns the [Operation]s happening in [MyUser]'s wallet.
   Paginated<OperationId, Operation> get operations =>
       _walletRepository.operations;
 }

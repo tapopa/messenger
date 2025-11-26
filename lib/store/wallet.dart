@@ -107,18 +107,13 @@ class WalletRepository extends DisposableInterface
     },
   );
 
+  /// [GraphQlProvider] for fetching the [Operation]s list.
   final GraphQlProvider _graphQlProvider;
 
   @override
   void onInit() {
     operations.around();
     super.onInit();
-  }
-
-  @override
-  void onClose() {
-    // TODO: implement onClose
-    super.onClose();
   }
 
   /// Fetches purse operations with pagination.

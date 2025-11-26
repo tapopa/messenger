@@ -19,13 +19,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../widget/line_divider.dart';
-import '../../../../widget/svg/svg.dart';
-import '../../widget/block.dart';
 import '/l10n/l10n.dart';
 import '/themes.dart';
 import '/ui/page/home/page/chat/widget/back_button.dart';
 import '/ui/page/home/widget/app_bar.dart';
+import '/ui/page/home/widget/block.dart';
+import '/ui/widget/line_divider.dart';
+import '/ui/widget/svg/svg.dart';
 import 'controller.dart';
 
 class AffiliateView extends StatelessWidget {

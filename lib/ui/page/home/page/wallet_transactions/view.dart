@@ -30,6 +30,7 @@ import '/ui/widget/svg/svg.dart';
 import '/ui/widget/text_field.dart';
 import 'controller.dart';
 
+/// View of the [Routes.walletTransactions] page.
 class WalletTransactionsView extends StatelessWidget {
   const WalletTransactionsView({super.key});
 
@@ -121,6 +122,7 @@ class WalletTransactionsView extends StatelessWidget {
     );
   }
 
+  /// Returns the search field for transactions filtering.
   Widget _search(BuildContext context, WalletTransactionsController c) {
     final style = Theme.of(context).style;
 
@@ -135,7 +137,6 @@ class WalletTransactionsView extends StatelessWidget {
         ],
       ),
       constraints: const BoxConstraints(minHeight: 57),
-
       child: Row(
         children: [
           const SizedBox(width: 16),

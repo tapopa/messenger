@@ -22,19 +22,29 @@ import '/domain/repository/paginated.dart';
 import '/domain/service/wallet.dart';
 import '/ui/widget/text_field.dart';
 
+/// Controller of the [Routes.walletTransactions] page.
 class WalletTransactionsController extends GetxController {
   WalletTransactionsController(this._walletService);
 
+  /// Indicator whether the [operations] should be all expanded or not.
   final RxBool expanded = RxBool(false);
+
+  /// [OperationId]s of the [Operation]s that are should be expanded only.
   final RxSet<OperationId> ids = RxSet();
 
+  /// [TextFieldState] of a search field for filtering the [operations].
   final TextFieldState search = TextFieldState();
+
+  /// Query of the [search].
   final RxnString query = RxnString();
 
+  /// [WalletService] maintaining the [Operation]s.
   final WalletService _walletService;
 
+  /// [Worker] executing the filtering of the [operations] on [query] changes.
   Worker? _queryWorker;
 
+  /// Returns the [Operation]s happening in [MyUser]'s wallet.
   Paginated<OperationId, Operation> get operations => _walletService.operations;
 
   @override

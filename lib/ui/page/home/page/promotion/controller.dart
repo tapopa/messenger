@@ -17,6 +17,8 @@
 
 import 'package:get/get.dart';
 
+/// Controller of the [Routes.promotion] page.
 class PromotionController extends GetxController {
+  /// Indicator whether the [PromoShare] percentage is being edited or not.
   final RxBool percentEditing = RxBool(false);
 }

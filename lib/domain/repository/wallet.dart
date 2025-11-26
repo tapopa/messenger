@@ -22,6 +22,9 @@ import 'paginated.dart';
 
 /// [MyUser] wallet repository interface.
 abstract class AbstractWalletRepository {
+  /// Returns the balance [MyUser] has in their wallet.
   RxDouble get balance;
+
+  /// Returns the [Operation]s happening in [MyUser]'s wallet.
   Paginated<OperationId, Operation> get operations;
 }

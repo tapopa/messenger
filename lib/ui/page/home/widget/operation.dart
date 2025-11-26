@@ -29,10 +29,14 @@ import '/ui/widget/widget_button.dart';
 import '/util/message_popup.dart';
 import '/util/platform_utils.dart';
 
+/// Widget displaying the provided [Operation] visually.
 class OperationWidget extends StatelessWidget {
   const OperationWidget(this.operation, {super.key, this.expanded = true});
 
+  /// [Operation] itself.
   final Operation operation;
+
+  /// Indicator whether the details of [operation] should be displayed.
   final bool expanded;
 
   @override
@@ -50,6 +54,7 @@ class OperationWidget extends StatelessWidget {
     );
   }
 
+  /// Contents of the provided [operation] in [expanded] or not state.
   Widget _content(
     BuildContext context,
     Operation operation, {

@@ -1,5 +1,5 @@
-// Copyright © 2022-2025 IT ENGINEERING MANAGEMENT INC,
-//                       <https://github.com/team113>
+// Copyright © 2025 Ideas Networks Solutions S.A.,
+//                       <https://github.com/tapopa>
 //
 // This program is free software: you can redistribute it and/or modify it under
 // the terms of the GNU Affero General Public License v3.0 as published by the
@@ -30,6 +30,35 @@ mixin WalletGraphQlMixin {
 
   AccessTokenSecret? get token;
 
+  /// Returns [Operation]s filtered by the provided criteria.
+  ///
+  /// ### Authentication
+  ///
+  /// Mandatory.
+  ///
+  /// ### Sorting
+  ///
+  /// The returned [Operation]s are sorted by their [OperationNum] in descending
+  /// order.
+  ///
+  /// ### Pagination
+  ///
+  /// It's allowed to specify both [first] and [last] counts at the same time,
+  /// provided that [after] and [before] cursors are equal. In such case the
+  /// returned page will include the [Operation] pointed by the cursor and the
+  /// requested count of [Operation]s preceding and following it.
+  ///
+  /// If it's desired to receive the [Operation], pointed by the cursor, without
+  /// querying in both directions, one can specify [first] or [last] count as 0.
+  ///
+  /// If no arguments are provided, then [first] parameter will be considered as
+  /// 50.
+  ///
+  /// [after] and [before] cursors are only meaningful once other non-pagination
+  /// arguments remain the same between queries. Trying to query a page of some
+  /// filtered entries with a cursor pointing to a page of totally different
+  /// filtered entries is nonsense and will produce an invalid result (usually
+  /// returning nothing).
   Future<Operations$Query$Operations> operations({
     int? first,
     OperationsCursor? after,

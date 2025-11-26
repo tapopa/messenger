@@ -31,6 +31,7 @@ import '/ui/widget/svg/svg.dart';
 import '/ui/widget/widget_button.dart';
 import 'controller.dart';
 
+/// View of the [Routes.promotion] page.
 class PromotionView extends StatelessWidget {
   const PromotionView({super.key});
 
@@ -154,6 +155,7 @@ class PromotionView extends StatelessWidget {
     );
   }
 
+  /// Builds the [TableRow] of [PromoShare] history.
   List<TableRow> _percents(BuildContext context) {
     final style = Theme.of(context).style;
 

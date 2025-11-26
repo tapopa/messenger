@@ -1328,7 +1328,7 @@ extension RouteLinks on RouterState {
   void affiliate({bool push = false}) =>
       (push ? this.push : go)(Routes.affiliate);
 
-  /// Changes router location to the [Routes.erase] page.
+  /// Changes router location to the [Routes.promotion] page.
   void promotion({bool push = false}) =>
       (push ? this.push : go)(Routes.promotion);
 

@@ -121,7 +121,8 @@ class SelectCountryView extends StatelessWidget {
                               ),
                             ),
                             subtitle: notAllowed
-                                ? 'label_not_available'.l10n
+                                ? 'label_paypal_is_not_available_in_this_country'
+                                      .l10n
                                 : null,
                             onPressed: notAllowed
                                 ? null

@@ -802,7 +802,7 @@ label_call_title =
     }
 label_call_window = Окно звонка
 label_camera = Камера
-label_change_history = History of changes
+label_change_history = История изменений
 label_change_password = Изменить пароль
 label_chat_call_declined = Отклонённый звонок
 label_chat_call_ended = Завершённый звонок
@@ -818,7 +818,7 @@ label_chat_monolog_description3 =
     – любой контент (текст, видео, изображения).
 label_chats = Чаты
 label_chats_and_groups = Чаты и группы: {$count}
-label_choose_country = Choose country
+label_choose_country = Выберите страну
 label_city_country_activated_at = {$city}, {$country} • {$at}
 label_clear_history = Очистить чат
 label_confidentiality = Конфиденциальность
@@ -847,7 +847,7 @@ label_delete_email = Удалить E-mail
 label_delete_message = Удалить сообщение?
 label_delete_messages = Удалить сообщения?
 label_deleted_account = Удалённый Aккаунт
-label_description = Description
+label_description = Описание
 label_desktop_apps = Приложения для компьютера
 label_details = Детали
 label_device_by_default = По умолчанию - {$device}
@@ -927,7 +927,7 @@ label_introduction_description =
 label_introduction_description_email = E-mail не добавлен. Если вы забудете пароль, доступ к аккаунту будет утерян.
 label_introduction_for_one_time = Чтобы не потерять доступ к аккаунту, задайте пароль, логин или e-mail в настройках Вашего профиля.
 label_ios_android_windows_macos_linux = iOS, Android, Windows, macOS, Linux
-label_it_works_for_years = It works for years
+label_it_works_for_years = Будет кормить годами
 label_b = {$amount} Б
 label_kb = {$amount} КБ
 label_mb = {$amount} МБ
@@ -991,7 +991,6 @@ label_noise_suppression_high = Высокое
 label_noise_suppression_low = Низкое
 label_noise_suppression_medium = Среднее
 label_noise_suppression_very_high = Оч. выс.
-label_not_available = Not available
 label_nothing_found = Не найдено
 label_notifications = Уведомления
 label_num = Gapopa ID
@@ -1008,63 +1007,70 @@ label_order_payment = Закажите свою выплату
 label_outgoing_call = Звоним
 label_participants = Участников: {$count}
 label_participants_of = Участников: {$a} из {$b}
-label_partner_links = Partner links
-label_partner_number_tapopa_author = Partner number Tapopa-Author
+label_partner_links = Партнёрские ссылки
+label_partner_number_tapopa_author = Партнёрский номер Tapopa-Author
 label_partner_number_tapopa_author_description =
-    Partner number Tapopa-Author is the number of the promoter through which the user is invited to you.
+    Партнёрский номер Tapopa-Author - это номер промоутера, пригласившего пользователя к автору.
 
-    The partner number Tapopa-Author is assigned to the visitor at the moment of the first visit to you and cannot be changed.
+    Ваш партнёрский номер Tapopa-Author присваивается приглашённому Вами посетителю в момент первого посещения автора. Он не может быть изменён.
 
-    In order for Tapopa to recognize the partner number Tapopa-Author, it is necessary for the user to visit you via promoter's partner link.
-label_partner_number_tapopa_partner = Partner number Tapopa-Partner
-label_partner_percentage = Partner percentage
+    Для того, чтобы Tapopa могла распознать ваш партнёрский номер Tapopa-Author, необходимо, чтобы приглашённый Вами пользователь посетил автора по Вашей партнёрской ссылке.
+label_partner_number_tapopa_partner = Партнёрский номер Tapopa-Partner
+label_partner_percentage = Партнёрский процент
 label_partner_program_links_description1 =
-    You can create a partner link for any Tapopa user in their profile.
+    Вы можете создать партнёрскую ссылку на любого пользователя Tapopa в его профиле.
 
-    The partner link you create belongs to you and is controlled by you. You have the right to change where your partner link leads to.
+    Созданная партнёрская ссылка принадлежит Вам и контролируется Вами. У Вас есть право изменить куда ведёт Ваша партнёрская ссылка.
 
-    A partner link makes it possible for Tapopa to recognize that a user who has created an account or visited an author has been invited by you. At the time of account creation and/or first author visit, the{" "}
-label_partner_program_links_description2 = partner number Tapopa-Partner
-label_partner_program_links_description3 = {" "}and/or{" "}
-label_partner_program_links_description4 = partner number Tapopa-Author
-label_partner_program_links_description5 = {" "}is assigned.
-label_partner_program_tapopa_author = Partner program Tapopa-Author
+    Партнёрская ссылка позволяет Tapopa распознать, что пользователь, создавший аккаунт или посетивший автора, был приглашен Вами. В момент создания аккаунта и/или первого посещения автора присваивается{" "}
+label_partner_program_links_description2 = партнёрский номер Tapopa-Partner
+label_partner_program_links_description3 = {" "}и/или{" "}
+label_partner_program_links_description4 = партнёрский номер Tapopa-Author
+label_partner_program_links_description5 = .
+label_partner_program_tapopa_author = Партнёрская программа Tapopa-Author
 label_partner_program_tapopa_author_number =
-    Partner number Tapopa-Author is the number of the promoter who invited the user to the author.
+    Партнёрский номер Tapopa-Author - это номер промоутера, пригласившего пользователя к автору.
 
-    Your partner number Tapopa-Author is assigned to the visitor invited by you at the moment of the first visit to the author. It cannot be changed.
+    Ваш партнёрский номер Tapopa-Author присваивается приглашённому Вами посетителю в момент первого посещения автора. Он не может быть изменён.
 
-    In order for Tapopa to recognize your partner number Tapopa-Author, it is necessary that the user invited by you visits the author using your partner link.
+    Для того, чтобы Tapopa могла распознать ваш партнёрский номер Tapopa-Author, необходимо, чтобы приглашённый Вами пользователь посетил автора по Вашей партнёрской ссылке.
 label_partner_program_tapopa_author_percentage =
-    You are credited with the partner percentage of the amount of every purchase made by users invited by you.
+    Вам зачисляется партнёрский процент от каждой покупки, совершенной приглашёнными Вами пользователями.
 
-    The partner percentage is fixed for the visitor at the moment of the first visit to the author. It cannot be changed.
+    Партнёрский процент фиксируется за посетителем в момент первого посещения автора. Он не может быть изменён.
 
-    If the author decides to change his partner percentage, it will only affect sales to new visitors.
-label_partner_program_tapopa_partner = Partner program Tapopa-Partner
-label_partner_program_tapopa_partner_description =
-    You receive 1% of each purchase made by the client invited by you.
+    Если автор решит изменить партнёрский процент, это затронет только продажи новым посетителям.
+label_partner_program_tapopa_partner = Партнёрская программа Tapopa-Partner
+label_partner_program_tapopa_partner_description1 = Вы получаете{" "}
+label_partner_program_tapopa_partner_description2 = {$percent}%
+label_partner_program_tapopa_partner_description3 =
+    {" "}от каждой покупки, совершённой приглашённым Вами клиентом.
 
-    You receive 1% of each sale of the author invited by you.
+    Вы получаете{" "}
+label_partner_program_tapopa_partner_description4 = {$percent}%
+label_partner_program_tapopa_partner_description5 =
+    {" "}от каждой продажи, совершённой приглашённым Вами автором.
 
-    You receive 10% of income received within the partner program Tapopa-Partner by the promoter invited by you.
+    Вы получаете{" "}
+label_partner_program_tapopa_partner_description6 = {$percent}%
+label_partner_program_tapopa_partner_description7 = {" "}от заработка приглашённого Вами промоутера, полученного в рамках партнёрской программы Tapopa-Partner.
 label_partner_program_tapopa_partner_number =
-    An invited user is a user who has been assigned a partner number Tapopa-Partner.
+    "Приглашённый пользователь - это пользователь, которому присвоен партнёрский номер Tapopa-Partner.
 
-    The partner number Tapopa-Partner is the number of the promoter who invited the visitor.
+    Партнёрский номер Tapopa-Partner - это номер промоутера, пригласившего посетителя.
 
-    When a visitor clicks the “Guest” or “Create an account” button, Tapopa will assign them your partner number Tapopa-Partner.
+    Когда посетитель нажимает на кнопку ""Гость"" или ""Создать аккаунт"", Tapopa присваивает ему Ваш партнёрский номер Tapopa-Partner.
 
-    In order for Tapopa to recognize your partner number Tapopa-Partner, it is necessary that the user invited by you visits the author using your partner link.
+    Для того чтобы Tapopa могла распознать ваш партнёрский номер Tapopa-Partner, необходимо, чтобы приглашённый Вами пользователь посетил автора по Вашей партнёрской ссылке."
 label_partner_programs = Партнёрские программы
 label_partner_programs_easy_description =
-    Share link & make money.
+    Поделились ссылкой - заработали деньги.
 
-    Percentage of purchases, percentage of sales, percentage of earnings. It does not matter whether your link invited a buyer, a seller or a promoter.
+    Процент от покупок, процент от продаж, процент от заработка. Не важно, по Вашей ссылке приглашён покупатель, продавец или промоутер.
 
-    The user, invited by you, is linked to you forever. Sooner or later they will buy, sell or earn money.
+    Пользователь, приглашённый Вами, закрепляется за Вами навсегда. Рано или поздно он купит, продаст или заработает деньги.
 
-    The time, you spend on the internet, should not only be interesting but also profitable.
+    Время, которое Вы проводите в интернете, должно быть не только интересным, но и прибыльным.
 label_password = Пароль
 label_password_changed = Пароль изменён
 label_password_not_set1 = Пароль не задан.{" "}
@@ -1091,9 +1097,9 @@ label_personal_data_deletion_description5 =
 label_photos_semicolon_amount = Фото: {$amount}
 label_presence_away = Отошёл
 label_presence_present = Онлайн
-label_present_time = Present time
+label_present_time = По наст. вр.
 label_profile = Профиль
-label_program_terms = Program terms
+label_program_terms = Условия программы
 label_public_section_hint = Аватар, имя, о Вас, ...
 label_reason = Причина
 label_reason_described = Причина: {$reason}
@@ -1158,7 +1164,7 @@ label_terms_and_privacy_policy = Условия и Политика конфид
 label_text_status = Текстовый статус
 label_text_status_description = Максимум 25 символов
 label_text_status_hint = Текстовый статус. Макс. 25 символов.
-label_thats_easy = That's easy
+label_thats_easy = Это просто
 label_this_device = Это устройство
 label_to_restore_chats_use_search = Чтобы восстановить чаты, воспользуйтесь поиском.
 label_top_up_bonus_with_id = Бонус пополнения. ID транзакции: {$id}.
@@ -1216,7 +1222,7 @@ label_you = Вы
 label_you_can_use_randomly_generated_link = Вы можете использовать сгенерированную ссылку или создать собственную.
 label_you_were_added_to_group = Вы добавлены в группу
 label_your_author_partner_program_tapopa_author =
-    Your author partner program
+    Ваша авторская партнёрская программа
     Tapopa-Author
 label_your_direct_link = Прямая ссылка на чат с Вами
 label_your_name = Ваше имя
@@ -1224,13 +1230,13 @@ label_your_num = Ваш Gapopa ID
 label_your_password = Ваш пароль
 label_your_promotion = Ваша раскрутка
 label_your_promotion_program_description =
-    You set a partner percentage, which is credited to your promoter automatically from each sale to a customer invited by this promoter to you.
+    "Вы устанавливаете партнёрский процент, который автоматически зачисляется Вашему промоутеру от каждой продажи клиенту, приглашённому этим промоутером к Вам.
 
-    The partner percentage set by you is fixed for the visitor at the moment of the first visit to you. It cannot be changed.
+    Партнёрский процент, установленный Вами, фиксируется за посетителем в момент первого посещения Вас. Он не может быть изменён.
 
-    If you decide to change the partner percentage, it will only affect sales to new visitors.
+    Если Вы решите изменить партнёрский процент, это затронет только продажи новым посетителям.
 
-    The history of changes of your partner percentage is publicly available information. It is displayed in your profile.
+    История изменений Вашего партнёрского процента является публично доступной информацией. Она отображается в Вашем профиле."
 label_your_statistics = Ваша статистика
 label_your_status = Ваш статус
 label_your_transactions = Ваши транзакции

@@ -141,8 +141,49 @@ class AffiliateView extends StatelessWidget {
                   const SizedBox(height: 24),
                   LineDivider('label_description'.l10n),
                   const SizedBox(height: 20),
-                  Text(
-                    'label_partner_program_tapopa_partner_description'.l10n,
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text:
+                              'label_partner_program_tapopa_partner_description1'
+                                  .l10n,
+                        ),
+                        TextSpan(
+                          text:
+                              'label_partner_program_tapopa_partner_description2'
+                                  .l10nfmt({'percent': 1}),
+                          style: style.fonts.small.regular.currencyPrimary,
+                        ),
+                        TextSpan(
+                          text:
+                              'label_partner_program_tapopa_partner_description3'
+                                  .l10n,
+                        ),
+                        TextSpan(
+                          text:
+                              'label_partner_program_tapopa_partner_description4'
+                                  .l10nfmt({'percent': 1}),
+                          style: style.fonts.small.regular.currencyPrimary,
+                        ),
+                        TextSpan(
+                          text:
+                              'label_partner_program_tapopa_partner_description5'
+                                  .l10n,
+                        ),
+                        TextSpan(
+                          text:
+                              'label_partner_program_tapopa_partner_description6'
+                                  .l10nfmt({'percent': 10}),
+                          style: style.fonts.small.regular.currencyPrimary,
+                        ),
+                        TextSpan(
+                          text:
+                              'label_partner_program_tapopa_partner_description7'
+                                  .l10n,
+                        ),
+                      ],
+                    ),
                     style: style.fonts.small.regular.secondary,
                   ),
                   const SizedBox(height: 24),

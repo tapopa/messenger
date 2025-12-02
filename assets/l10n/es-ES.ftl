@@ -790,7 +790,7 @@ label_call_title =
     }
 label_call_window = Ventana de llamada
 label_camera = Cámara
-label_change_history = History of changes
+label_change_history = Historial de cambios
 label_change_password = Cambiar la contrseña
 label_chat_call_declined = Llamada rechazada
 label_chat_call_ended = Llamada terminada
@@ -806,7 +806,7 @@ label_chat_monolog_description3 =
     – cualquier contenido (texto, video, imágenes).
 label_chats = Chats
 label_chats_and_groups = Chats y grupos: {$count}
-label_choose_country = Choose country
+label_choose_country = Seleccione país
 label_city_country_activated_at = {$city}, {$country} • {$at}
 label_clear_history = Borrar el chat
 label_confidentiality = Privacidad
@@ -835,7 +835,7 @@ label_delete_email = Eliminar el e-mail
 label_delete_message = ¿Eliminar el mensaje?
 label_delete_messages = ¿Eliminar los mensajes?
 label_deleted_account = Cuenta Eliminada
-label_description = Description
+label_description = Descripción
 label_desktop_apps = Aplicaciones para computadora
 label_details = Detalles
 label_device_by_default = Por defecto - {$device}
@@ -916,7 +916,7 @@ label_introduction_description =
 label_introduction_description_email = E-mail no agregado. El acceso a su cuenta se perderá en caso de olvidar la contraseña.
 label_introduction_for_one_time = Para guardar el acceso a su cuenta, establezca una contraseña, un nombre de usuario o un correo electrónico en la configuración de su perfil.
 label_ios_android_windows_macos_linux = iOS, Android, Windows, macOS, Linux
-label_it_works_for_years = It works for years
+label_it_works_for_years = Sus ganancias durante años
 label_b = {$amount} B
 label_kb = {$amount} KB
 label_mb = {$amount} MB
@@ -980,7 +980,6 @@ label_noise_suppression_high = Alto
 label_noise_suppression_low = Bajo
 label_noise_suppression_medium = Medio
 label_noise_suppression_very_high = Muy alto
-label_not_available = Not available
 label_nothing_found = No encontrado
 label_notifications = Notificaciones
 label_num = Gapopa ID
@@ -997,69 +996,70 @@ label_order_payment = Ordene su retiro
 label_outgoing_call = Llamando
 label_participants = Miembros: {$count}
 label_participants_of = Miembros: {$a} de {$b}
-label_partner_links = Partner links
-label_partner_number_tapopa_author = Partner number Tapopa-Author
+label_partner_links = Enlaces de partner
+label_partner_number_tapopa_author = Número de partner Tapopa-Author
 label_partner_number_tapopa_author_description =
-    Partner number Tapopa-Author is the number of the promoter through which the user is invited to you.
+    El número de partner Tapopa-Author es el número del promotor que invitó el usuario al autor.
 
-    The partner number Tapopa-Author is assigned to the visitor at the moment of the first visit to you and cannot be changed.
+    Su número de partner Tapopa-Author se asigna al visitante, que Usted invitó, en el momento de la primera visita al autor. No puede ser cambiado.
 
-    In order for Tapopa to recognize the partner number Tapopa-Author, it is necessary for the user to visit you via promoter's partner link.
-label_partner_number_tapopa_partner = Partner number Tapopa-Partner
-label_partner_percentage = Partner percentage
+    Para que Tapopa reconozca su número de partner Tapopa-Author, es necesario que el usuario invitado por Usted visite al autor a través de su enlace de partner.
+label_partner_number_tapopa_partner = Número de partner Tapopa-Partner
+label_partner_percentage = Porcentaje del partner
 label_partner_program_links_description1 =
-    You can create a partner link for any Tapopa user in their profile.
+    Puede crear un enlace de partner para cualquier usuario de Tapopa desde su perfil.
 
-    The partner link you create belongs to you and is controlled by you. You have the right to change where your partner link leads to.
+    El enlace de partner que crea pertenece a Usted y está bajo su control. Tiene derecho a cambiar el destino de su enlace de partner.
 
-    A partner link makes it possible for Tapopa to recognize that a user who has created an account or visited an author has been invited by you. At the time of account creation and/or first author visit, the{" "}
-label_partner_program_links_description2 = partner number Tapopa-Partner
-label_partner_program_links_description3 = {" "}and/or{" "}
-label_partner_program_links_description4 = partner number Tapopa-Author
-label_partner_program_links_description5 = {" "}is assigned.
-label_partner_program_tapopa_author = Partner program Tapopa-Author
+    Un enlace de partner permite que Tapopa reconozca que un usuario que ha creado una cuenta o ha visitado a un autor fue invitado por Usted. Al momento de crear la cuenta y/o en la primera visita al autor,{" "}
+label_partner_program_links_description2 = número de partner Tapopa-Partner
+label_partner_program_links_description3 = {" "}y/o{" "}
+label_partner_program_links_description4 = número de partner Tapopa-Author
+label_partner_program_links_description5 = {" "}se asigna.
+label_partner_program_tapopa_author = Programa de partners Tapopa-Author
 label_partner_program_tapopa_author_number =
-    Partner number Tapopa-Author is the number of the promoter who invited the user to the author.
+    El número de partner Tapopa-Author es el número del promotor que invitó el usuario al autor.
 
-    Your partner number Tapopa-Author is assigned to the visitor invited by you at the moment of the first visit to the author. It cannot be changed.
+    Su número de partner Tapopa-Author se asigna al visitante, que Usted invitó, en el momento de la primera visita al autor. No puede ser cambiado.
 
-    In order for Tapopa to recognize your partner number Tapopa-Author, it is necessary that the user invited by you visits the author using your partner link.
+    Para que Tapopa reconozca su número de partner Tapopa-Author, es necesario que el usuario invitado por Usted visite al autor a través de su enlace de partner.
 label_partner_program_tapopa_author_percentage =
-    You are credited with the partner percentage of the amount of every purchase made by users invited by you.
+    A Usted se le acredita un porcentaje de partner por cada compra realizada por los usuarios que ha invitado.
 
-    The partner percentage is fixed for the visitor at the moment of the first visit to the author. It cannot be changed.
+    El porcentaje de partner se fija para el visitante en el momento de la primera visita al autor. No puede ser cambiado.
 
-    If the author decides to change his partner percentage, it will only affect sales to new visitors.
-label_partner_program_tapopa_partner = Partner program Tapopa-Partner
-label_partner_program_tapopa_partner_description =
-    You receive 1% of each purchase made by the client invited by you.
+    Si el autor decide cambiar el porcentaje de partner, esto solo afectará las ventas a visitantes nuevos.
+label_partner_program_tapopa_partner = Programa de partners Tapopa-Partner
+label_partner_program_tapopa_partner_description1 = Usted recibe{" "}
+label_partner_program_tapopa_partner_description2 = {$percent}%
+label_partner_program_tapopa_partner_description3 =
+    {" "}de cada compra realizada por el cliente que Usted invitó.
 
-    You receive 1% of each sale of the author invited by you.
+    Usted recibe{" "}
+label_partner_program_tapopa_partner_description4 = {$percent}%
+label_partner_program_tapopa_partner_description5 =
+    {" "}de cada venta realizada por el autor que Usted invitó.
 
-    You receive 10% of income received within the partner program Tapopa-Partner by the promoter invited by you.
+    Usted recibe{" "}
+label_partner_program_tapopa_partner_description6 = {$percent}%
+label_partner_program_tapopa_partner_description7 = {" "}de las ganancias obtenidas por el promotor que Usted invitó, dentro del programa de partners Tapopa-Partner.
 label_partner_program_tapopa_partner_number =
-    An invited user is a user who has been assigned a partner number Tapopa-Partner.
+    "Un usuario invitado es un usuario al que se le ha asignado un número de partner Tapopa-Partner.
 
-    The partner number Tapopa-Partner is the number of the promoter who invited the visitor.
+    El número de partner Tapopa-Partner es el número del promotor que invitó al visitante.
 
-    When a visitor clicks the “Guest” or “Create an account” button, Tapopa will assign them your partner number Tapopa-Partner.
+    Cuando un visitante hace clic en el botón “Invitado” o “Crear una cuenta”, Tapopa le asignará su número de partner Tapopa-Partner.
 
-    In order for Tapopa to recognize your partner number Tapopa-Partner, it is necessary that the user invited by you visits the author using your partner link.
+    Para que Tapopa reconozca su número de partner Tapopa-Partner, es necesario que el usuario invitado por Usted visite al autor a través de su enlace de partner."
 label_partner_programs = Programas de partners
 label_partner_programs_easy_description =
-    Share link & make money.
+    Comparte enlace y gana dinero.
 
-    Percentage of purchases, percentage of sales, percentage of earnings. It does not matter whether your link invited a buyer, a seller or a promoter.
+    Porcentaje de compras, porcentaje de ventas, porcentaje de ganancias. No importa si su enlace invitó a un comprador, un vendedor o un promotor.
 
-    The user, invited by you, is linked to you forever. Sooner or later they will buy, sell or earn money.
+    El usuario que Usted invitó queda vinculado a Usted para siempre. Tarde o temprano comprará, venderá o ganará dinero.
 
-    The time, you spend on the internet, should not only be interesting but also profitable.
-label_partner_program_tapopa_partner_description =
-    You receive 1% of each purchase made by the client invited by you.
-
-    You receive 1% of each sale of the author invited by you.
-
-    You receive 10% of income received within the partner program Tapopa-Partner by the promoter invited by you.
+    El tiempo que Usted pasa en internet no solo debe ser interesante, sino también rentable.
 label_password = Сontraseña
 label_password_changed = Contraseña cambiada
 label_password_not_set1 = La contraseña no esta configurada.{" "}
@@ -1086,9 +1086,9 @@ label_personal_data_deletion_description5 =
 label_photos_semicolon_amount = Fotos: {$amount}
 label_presence_away = Away
 label_presence_present = En línea
-label_present_time = Present time
+label_present_time = Presente
 label_profile = Perfil
-label_program_terms = Program terms
+label_program_terms = Condiciones del programa
 label_public_section_hint = Avatar, nombre, a cerca de Usted, ...
 label_reason = Motivo
 label_reason_described = Motivo: {$reason}
@@ -1152,7 +1152,7 @@ label_terms_and_privacy_policy = Condiciones y Política de Privacidad
 label_text_status = Estatus del texto
 label_text_status_description = Hasta 26 caracteres
 label_text_status_hint = Estatus del texto. Máximo 25 símbolos.
-label_thats_easy = That's easy
+label_thats_easy = Es fácil
 label_this_device = Este dispositivo
 label_to_restore_chats_use_search = Para recuperar los chats, utiliza la búsqueda
 label_top_up_bonus_with_id = Bono de recarga. ID de transacción: {$id}.
@@ -1211,7 +1211,7 @@ label_you = Usted
 label_you_can_use_randomly_generated_link = Puede utilizar un enlace generado o crear su propio enlace.
 label_you_were_added_to_group = Usted ha sido agregado(a) al grupo
 label_your_author_partner_program_tapopa_author =
-    Your author partner program
+    Su programa de partner de autor
     Tapopa-Author
 label_your_direct_link = Enlace directo para chatear con Usted
 label_your_name = Su nombre
@@ -1219,13 +1219,13 @@ label_your_num = Su Gapopa ID
 label_your_password = Su contraseña
 label_your_promotion = Su promoción
 label_your_promotion_program_description =
-    You set a partner percentage, which is credited to your promoter automatically from each sale to a customer invited by this promoter to you.
+    "Usted establece un porcentaje de partner, que se acredita automáticamente a su promotor por cada venta realizada a un cliente invitado por este promotor.
 
-    The partner percentage set by you is fixed for the visitor at the moment of the first visit to you. It cannot be changed.
+    El porcentaje de partner que Usted estableció queda fijado para el visitante en el momento de su primera visita. No puede ser cambiado.
 
-    If you decide to change the partner percentage, it will only affect sales to new visitors.
+    Si Usted decide cambiar el porcentaje de partner, solo afectará las ventas a los visitantes nuevos.
 
-    The history of changes of your partner percentage is publicly available information. It is displayed in your profile.
+    El historial de cambios de su porcentaje de partner es información pública. Se muestra en su perfil."
 label_your_statistics = Su estadística
 label_your_status = Su estatus
 label_your_transactions = Sus transacciones

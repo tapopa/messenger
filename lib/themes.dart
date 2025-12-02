@@ -76,6 +76,7 @@ part 'themes.g.dart';
       'secondary',
       'secondaryHighlight',
       'secondaryHighlightDarkest',
+      'currencyPrimary',
     ],
   },
   'smaller': {

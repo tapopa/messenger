@@ -806,7 +806,7 @@ label_chat_monolog_description3 =
     – any content (text, video, pictures).
 label_chats = Chats
 label_chats_and_groups = Chats and groups: {$count}
-label_choose_country = Choose country
+label_choose_country = Select country
 label_city_country_activated_at = {$city}, {$country} • {$at}
 label_clear_history = Clear chat
 label_confidentiality = Confidentiality
@@ -978,7 +978,6 @@ label_noise_suppression_high = High
 label_noise_suppression_low = Low
 label_noise_suppression_medium = Medium
 label_noise_suppression_very_high = Very high
-label_not_available = Not available
 label_nothing_found = Not found
 label_notifications = Notifications
 label_num = Gapopa ID
@@ -1029,12 +1028,19 @@ label_partner_program_tapopa_author_percentage =
 
     If the author decides to change his partner percentage, it will only affect sales to new visitors.
 label_partner_program_tapopa_partner = Partner program Tapopa-Partner
-label_partner_program_tapopa_partner_description =
-    You receive 1% of each purchase made by the client invited by you.
+label_partner_program_tapopa_partner_description1 = You receive{" "}
+label_partner_program_tapopa_partner_description2 = {$percent}%
+label_partner_program_tapopa_partner_description3 =
+    {" "}of each purchase made by the client invited by you.
 
-    You receive 1% of each sale of the author invited by you.
+    You receive{" "}
+label_partner_program_tapopa_partner_description4 = {$percent}%
+label_partner_program_tapopa_partner_description5 =
+    {" "}of each sale of the author invited by you.
 
-    You receive 10% of income received within the partner program Tapopa-Partner by the promoter invited by you.
+    You receive{" "}
+label_partner_program_tapopa_partner_description6 = {$percent}%
+label_partner_program_tapopa_partner_description7 = {" "}of income received within the partner program Tapopa-Partner by the promoter invited by you.
 label_partner_program_tapopa_partner_number =
     An invited user is a user who has been assigned a partner number Tapopa-Partner.
 

@@ -1922,12 +1922,6 @@ class SvgIcons {
     height: 20,
   );
 
-  static const SvgData volumeMutedSmall = SvgData(
-    'assets/icons/volume_muted_small.svg',
-    width: 14,
-    height: 11,
-  );
-
   static const SvgData videoPrevious = SvgData(
     'assets/icons/video_previous.svg',
     width: 18,
@@ -2130,5 +2124,17 @@ class SvgIcons {
     'assets/icons/copy_small_thick.svg',
     width: 13,
     height: 16,
+  );
+
+  static const SvgData previewPlay = SvgData(
+    'assets/icons/preview_play.svg',
+    width: 7,
+    height: 8.4,
+  );
+
+  static const SvgData previewPause = SvgData(
+    'assets/icons/preview_pause.svg',
+    width: 6.76,
+    height: 7.88,
   );
 }

@@ -31,10 +31,10 @@ class Price {
   Price.usdt(double amount) : sum = Sum(amount), currency = Currency('USDT');
 
   /// Constructs a [Price] with `USD` currency of the provided [amount].
-  Price.usd(double amount) : sum = Sum(amount), currency = Currency('\$');
+  Price.usd(double amount) : sum = Sum(amount), currency = Currency('USD');
 
   /// Constructs a [Price] with `EUR` currency of the provided [amount].
-  Price.eur(double amount) : sum = Sum(amount), currency = Currency('€');
+  Price.eur(double amount) : sum = Sum(amount), currency = Currency('EUR');
 
   /// [Sum] of this [Price].
   final Sum sum;

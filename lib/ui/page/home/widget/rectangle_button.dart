@@ -47,8 +47,13 @@ class RectangleButton extends StatelessWidget {
   /// Callback, called when this [RectangleButton] is pressed.
   final void Function()? onPressed;
 
+  /// [Widget] to display as a leading of this [RectangleButton].
   final Widget? leading;
+
+  /// [Widget] to display as a trailing of this [RectangleButton].
   final Widget? trailing;
+
+  /// [Widget] to display in a subtitle under the [child] or [label].
   final String? subtitle;
 
   @override

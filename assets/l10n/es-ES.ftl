@@ -193,7 +193,7 @@ btn_mute_chats = Silenciar los chats
 btn_next = Próximo
 btn_ok = Ok
 btn_open = Abrir
-btn_order = Order
+btn_order = Ordenar
 btn_participants = Miembros
 btn_participants_desc =
     Miembros
@@ -223,7 +223,7 @@ btn_save_my_credentials_for_one_click = Guardar mis credenciales para ingresar c
 btn_search_chat = Buscar en chat
 btn_select = Seleccionar
 btn_select_messages = Seleccionar mensajes
-btn_select_network_type = Select network type
+btn_select_network_type = Seleccionar tipo de red
 btn_send_one_time_code = Enviar código desechable
 btn_set_password = Configurar contraseña
 btn_set_your_prices = Establezca sus precios
@@ -710,8 +710,8 @@ label_add_email = Agregar un e-mail
 label_add_email_confirmation_sent = Código desechable enviado a sus e-mails. Si no los ha recibido, revise los datos ingresados o carpeta de spam.
 label_add_email_confirmed = E-mail confirmado
 label_add_participants = Añadir miembros
-label_address = Address
-label_address_example = House, street, city, region/district/state
+label_address = Dirección
+label_address_example = Casa, calle, ciudad, región/distrito/estado
 label_ago =
     {$years ->
         [0] {$months ->
@@ -761,9 +761,9 @@ label_all_session_except_current_terminated = Todas las sesiones, excepto esta, 
 label_also_delete_for_everyone = También eliminar para todas
 label_always_muted = Siempre silenciados
 label_amount_k = {$amount}k
-label_amount_sent_depends_on_crypto_exchange_platform = The exact amount to be sent depends on the exchange rate and the commission of the crypto exchange platform on the payment processing day
-label_amount_to_be_sent_approximate_currency = Amount to be sent (approximate), {$currency}
-label_amount_to_withdraw_currency = Amount to withdraw, {$currency}
+label_amount_sent_depends_on_crypto_exchange_platform = La cantidad exacta a enviar depende del tipo de cambio y de la comisión de la plataforma de intercambio de criptomonedas el día de procesamiento del pago
+label_amount_to_be_sent_approximate_currency = Monto a enviar (aproximadо), {$currency}
+label_amount_to_withdraw_currency = Monto a retirar, {$currency}
 label_application = Aplicación
 label_arbitrum_one = Arbitrum One
 label_audio_call =
@@ -773,7 +773,7 @@ label_audio_call =
     }
 label_auto_gain_control = Auto gain control
 label_available_balance_amount = Saldo disponible: ¤{$amount}
-label_available_semicolon_amount = Available: {$amount}
+label_available_semicolon_amount = Disponible: {$amount}
 label_avatar_removed = {$author} eliminó el avatar
 label_avatar_removed1 = {$author}
 label_avatar_removed2 = {" "}eliminó el avatar
@@ -793,10 +793,10 @@ label_beneficiary_data_is_required_description =
     Para generar la documentación financiera correspondiente, se necesitan los datos del beneficiario.
 
     La factura se genera automáticamente al enviar fondos y se adjunta a la transacción correspondiente.
-label_billing_all_fields_are_latin1 = All the fields must be filled in with{" "}
-label_billing_all_fields_are_latin2 = Latin letters
-label_billing_all_fields_are_latin3 = {" "}the way they are written in the identification documents and/or financial institutions for receiving international payments (bank, payment system, payment card, etc.).
-label_billing_details = Billing details
+label_billing_all_fields_are_latin1 = Todos los campos deben ser rellenados con{" "}
+label_billing_all_fields_are_latin2 = letras latinas
+label_billing_all_fields_are_latin3 = {" "}tal y como aparecen escritas en sus documentos de identificación y/o de las instituciones financieras receptoras de pagos internacionales (banco, sistema de pago, tarjeta de pago, etc.).
+label_billing_details = Datos de facturación
 label_block = Bloquear
 label_block_date = Fecha de bloqueo
 label_block_reason = Motivo del bloqueo
@@ -840,9 +840,9 @@ label_choose_country = Seleccione país
 label_city_country_activated_at = {$city}, {$country} • {$at}
 label_clear_history = Borrar el chat
 label_commission = Comisión
-label_commission_from_value = Commission: from {$value}
-label_commission_up_to_amount_usdt = Commission: up to {$amount} USDT
-label_commission_value = Commission: {$value}
+label_commission_from_value = Comisión: desde {$value}
+label_commission_up_to_amount_usdt = Comisión: hasta {$amount} USDT
+label_commission_value = Comisión: {$value}
 label_confidentiality = Privacidad
 label_connection_lost = Conexión perdida
 label_connection_restored = Conexión restablecida
@@ -859,18 +859,19 @@ label_country = País
 label_country_selection = Seleccionar país
 label_create_group = Creación de grupo
 label_create_link = Crear enlace
+label_currency = Moneda
 label_current_account = Cuenta corriente
 label_current_password = Contrseña actual
-label_date_of_birth = Date of birth
+label_date_of_birth = Fecha de nacimiento
 label_date_of_birth_example = dd-mm-yyyy
-label_date_of_birth_in_format1 = Date of birth must be indicated in format{" "}
-label_date_of_birth_in_format2 = day-month-year
+label_date_of_birth_in_format1 = La fecha de nacimiento debe indicarse en formato{" "}
+label_date_of_birth_in_format2 = día-mes-año
 label_date_of_birth_in_format3 = .
-label_date_of_expiry = Date of expiry
+label_date_of_expiry = Fecha de vencimiento
 label_date_of_expiry_example = dd-mm-yyyy
-label_date_of_expiry_in_format1 = Date of expiry must be indicated in format{" "}
-label_date_of_expiry_in_format2 = day-month-year
-label_date_of_expiry_in_format3 = . If your identification document doesn’t have date of expiry please write{" "}
+label_date_of_expiry_in_format1 = La fecha de vencimiento debe indicarse en formato{" "}
+label_date_of_expiry_in_format2 = día-mes-año
+label_date_of_expiry_in_format3 = . Si su documento de identificación no tiene fecha de vencimiento, escriba{" "}
 label_date_of_expiry_in_format4 = N/A
 label_date_of_expiry_in_format5 = .
 label_days_short = {$days} d
@@ -928,7 +929,7 @@ label_forwarded_messages =
 label_from_earnings_lowercase = de ganancias
 label_from_purchases_lowercase = de compras
 label_from_sales_lowercase = de ventas
-label_full_name = Full name
+label_full_name = Nombre completo
 label_full_name_example = JOHN SMITH
 label_group_created = Grupo creado
 label_group_created_by = {$author} creó el grupo
@@ -943,8 +944,8 @@ label_hide_chats = Ocultar chat(s)
 label_hide_chats_modal_description = El chat será movido a la lista de "Chats ocultos"
 label_high_pass_filter = Filtro paso alto
 label_hotkey = Tecla de acceso rápido
-label_i_confirm_withdraw_details_are_correct_and_i_accept1 = I confirm that the details and data of the recipient of the funds are mine, correct, and I accept full responsibility in case of entering incorrect data, and I agree to the{" "}
-label_i_confirm_withdraw_details_are_correct_and_i_accept2 = Terms of Usage & Privacy Policy
+label_i_confirm_withdraw_details_are_correct_and_i_accept1 = Confirmo que los datos del beneficiario de los fondos son míos, correctos y acepto plena responsabilidad en caso de ingresar información errónea. Además, acepto los{" "}
+label_i_confirm_withdraw_details_are_correct_and_i_accept2 = Términos de Uso y Política de Privacidad
 label_i_confirm_withdraw_details_are_correct_and_i_accept3 = .
 label_id = ID
 label_identification = Identificación
@@ -962,9 +963,9 @@ label_in_case_crypto_platform_no_identifier1 = En caso de que su plataforma de c
 label_in_case_crypto_platform_no_identifier2 = NO
 label_in_case_crypto_platform_no_identifier3 = ".
 label_incoming_call = Llamada entrante
-label_individual_monetization = Individual monetization
-label_individual_monetization_description = Users with individual monetization settings.
-label_individual_users_count = Individual users: {$count}
+label_individual_monetization = Monetización individual
+label_individual_monetization_description = Usuarios con configuraciones individuales de monetización.
+label_individual_users_count = Usuarios individuales: {$count}
 label_information = Información
 label_installation_error = Error de instalación
 label_installation_error_description = La aplicación web ya está instalada o no está disponible en su navegador
@@ -1019,13 +1020,13 @@ label_minimum_amount = Monto mínimo
 label_mobile_apps = Aplicación móvil
 label_monetization_details = Detalles de monetización
 label_monetization_history = Historial de monetización
-label_monetization_settings = Monetization settings
+label_monetization_settings = Configuración de monetización
 label_monetization_settings_description1 =
-    Minimum amount of donations.
+    Monto mínimo de donaciones.
 
-    These settings do not apply to the users with{" "}
-label_monetization_settings_description2 = individual monetization
-label_monetization_settings_description3 = {" "}settings.
+    Estas configuraciones no aplican para usuarios con{" "}
+label_monetization_settings_description2 = configuración de monetización individual
+label_monetization_settings_description3 = .
 label_monobank = Monobank
 label_monolog_created = Chat creado
 label_mute_or_unmute_chats = Silenciar y desilenciar chats
@@ -1040,7 +1041,7 @@ label_name_hint = Su nombre público
 label_name_updated = {$author} cambió el nombre del grupo
 label_name_updated1 = {$author}
 label_name_updated2 = {" "} cambió el nombre del grupo
-label_network_type = Network type
+label_network_type = Tipo de red
 label_new_password = Nueva contraseña
 label_no_chat_found = Chat no encontrado
 label_no_chats = No hay chats
@@ -1161,7 +1162,7 @@ label_personal_data_deletion_description5 =
     - su biografía;
     - todos sus e-mails;
     - todos sus números de teléfono.
-label_phone_number = Phone number
+label_phone_number = Número de teléfono
 label_phone_number_example = +1 234 567 8901
 label_photos_semicolon_amount = Fotos: {$amount}
 label_plasma = Plasma
@@ -1200,22 +1201,22 @@ label_search_category_chats = Chats
 label_search_category_contacts = Contactos
 label_search_category_users = Usuarios
 label_search_dots = Buscar...
-label_select_billing_country = Select billing country
-label_select_withdrawal_option = Select withdrawal option
+label_select_billing_country = Seleccione el país de facturación
+label_select_withdrawal_option = Seleccione el método de retiro
 label_selected = Seleccionado: {$count}
 label_send_message_hint = Mensaje...
 label_sent = Enviada
-label_sepa_transfer = SEPA transfer
+label_sepa_transfer = Transferencia SEPA
 label_sessions_terminated = Sesión(es) terminada(s)
 label_set_cache_limits = Configurar límites del caché
 label_set_password = Configurar la contraseña
 label_set_prices_description1 =
-    Evaluate your attention and time. Set the cost of communication with you.
+    "Evalúe su atención y tiempo. Establezca el costo de la comunicación con Ud.
 
-    You, your life, your observations, experience and knowledge are interesting to many. Different people, different cultures, different countries.
+    Ud., su vida, sus observaciones, su experiencia y conocimientos son interesantes para muchas personas. Personas diferentes, culturas diferentes, países diferentes.
 
-    Consultations, training, education, humor, creativity or just a conversation. Even{" "}
-label_set_prices_description2 = the ability to listen is expensive
+    Opiniones, educación, humor, creatividad o simplemente una conversación. Incluso{" "}
+label_set_prices_description2 = la capacidad de escuchar es apreciada
 label_set_prices_description3 = .
 label_set_your_prices = Establezca sus precios
 label_show_call_window = Mostrar la ventana de llamada
@@ -1274,7 +1275,7 @@ label_usdt = USDT
 label_usdt_arbitrum_one = USDT - Arbitrum One
 label_usdt_crypto_exchange_platform = Plataforma de criptomonedas
 label_usdt_crypto_exchange_platform_example = Binance, Bybit, Kraken, Coinbase, etc.
-label_usdt_network_type = USDT - Network type
+label_usdt_network_type = USDT - Tipo de red
 label_usdt_optimism = USDT -  Optimism (OP Mainnet)
 label_usdt_plasma = USDT - Plasma
 label_usdt_polygon = USDT - Polygon
@@ -1323,9 +1324,9 @@ label_was_removed2 = {" "}abandonó el grupo
 label_welcome_message = Mensaje de bienvenida
 label_welcome_message_description = El mensaje de bienvenida se muestra automáticamente a los usuarios que le agregaron a su lista de chats, pero no se muestra a los usuarios que Usted agregó.
 label_welcome_message_hint = Agregar, editar, eliminar
-label_withdrawal_option = Withdrawal option
+label_withdrawal_option = Método de retiro
 label_you = Usted
-label_you_can_set_individual_monetization_in_profile = You can set individual monetization in the each user's profile.
+label_you_can_set_individual_monetization_in_profile = Usted puede configurar la monetización individual en el perfil de cada usuario.
 label_you_can_use_randomly_generated_link = Puede utilizar un enlace generado o crear su propio enlace.
 label_you_were_added_to_group = Usted ha sido agregado(a) al grupo
 label_your_author_partner_program_tapopa_author =
@@ -1347,7 +1348,7 @@ label_your_promotion_program_description =
 label_your_statistics = Su estadística
 label_your_status = Su estatus
 label_your_transactions = Sus transacciones
-label_zip = ZIP
+label_zip = Código postal
 label_zip_example = 00000
 n_percent = {$n}%
 plus =  +

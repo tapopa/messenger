@@ -282,7 +282,7 @@ class WithdrawView extends StatelessWidget {
                 ),
                 CenteredRow(
                   Text('label_currency'.l10n),
-                  Text(Currency('USD').l10n),
+                  Text(Price.usd(0).currency.toString()),
                 ),
                 CenteredRow(
                   Text('label_processing_time'.l10n),
@@ -324,7 +324,7 @@ class WithdrawView extends StatelessWidget {
                 ),
                 CenteredRow(
                   Text('label_currency'.l10n),
-                  Text(Currency('EUR').l10n),
+                  Text(Price.eur(0).currency.toString()),
                 ),
                 CenteredRow(
                   Text('label_processing_time'.l10n),
@@ -366,7 +366,7 @@ class WithdrawView extends StatelessWidget {
                 ),
                 CenteredRow(
                   Text('label_currency'.l10n),
-                  Text(Currency('EUR').l10n),
+                  Text(Price.eur(0).currency.toString()),
                 ),
                 CenteredRow(
                   Text('label_processing_time'.l10n),

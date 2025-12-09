@@ -405,14 +405,20 @@ extension SpacesNumExtension on num {
   }
 }
 
+/// Extension adding ability to retrieve a symbol of the provided [Currency].
 extension CurrencyL10nExtension on Currency {
+  /// Returns a symbol of this [Currency].
   String get l10n => switch (val) {
     'G' => '¤',
+    'USD' => '\$',
+    'EUR' => '€',
     (_) => val,
   };
 }
 
+/// Extension adding ability to retrieve a localized string of a [Price].
 extension PriceL10nExtention on Price {
+  /// Returns a localized string of this [Price].
   String get l10n {
     return switch (currency.val) {
       'USDT' => '${sum.val.toStringAsDigits(2)} ${currency.l10n}',
@@ -421,7 +427,17 @@ extension PriceL10nExtention on Price {
   }
 }
 
+/// Extension adding ability to get [double] formatted as [String] with only
+/// significant digits present.
 extension on double {
+  /// Returns this [double] formatted as [String] with only significant digits
+  /// present.
+  ///
+  /// Examples:
+  /// - `0.toStringAsDigits(2)` -> `"0.00"`
+  /// - `1.2.toStringAsDigits(2)` -> `"1.20"`
+  /// - `2.345.toStringAsDigits(2)` -> `"2.345"`
+  /// - `0.00005.toStringAsDigits(2)` -> `"0.00005"`
   String toStringAsDigits(int digits) {
     final String str = toString();
 

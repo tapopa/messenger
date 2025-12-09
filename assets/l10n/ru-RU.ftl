@@ -193,7 +193,7 @@ btn_mute_chats = Отключить звук
 btn_next = Следующее
 btn_ok = ОК
 btn_open = Открыть
-btn_order = Order
+btn_order = Заказать
 btn_participants = Участники
 btn_participants_desc =
     Участники
@@ -223,7 +223,7 @@ btn_save_my_credentials_for_one_click = Сохранить мои данные �
 btn_search_chat = Поиск в чате
 btn_select = Выбрать
 btn_select_messages = Выбрать сообщения
-btn_select_network_type = Select network type
+btn_select_network_type = Выберите тип сети
 btn_send_one_time_code = Отправить одноразовый код
 btn_set_password = Установить пароль
 btn_set_your_prices = Установите Ваши цены
@@ -713,8 +713,8 @@ label_add_email = Добавить e-mail
 label_add_email_confirmation_sent = Одноразовый код был отправлен на Ваши e-mail'ы. Если Вы не получили e-mail, проверьте введённые данные или папку "Спам".
 label_add_email_confirmed = E-mail подтверждён
 label_add_participants = Добавить участников
-label_address = Address
-label_address_example = House, street, city, region/district/state
+label_address = Адрес
+label_address_example = Дом, улица, город, регион/район/область
 label_ago = {$years ->
     [0] {$months ->
             [0] {$weeks ->
@@ -774,9 +774,9 @@ label_all_session_except_current_terminated = Все сессии, кроме т
 label_also_delete_for_everyone = Также удалить для всех
 label_always_muted = Всегда беззвучные
 label_amount_k = {$amount}k
-label_amount_sent_depends_on_crypto_exchange_platform = The exact amount to be sent depends on the exchange rate and the commission of the crypto exchange platform on the payment processing day
-label_amount_to_be_sent_approximate_currency = Amount to be sent (approximate), {$currency}
-label_amount_to_withdraw_currency = Amount to withdraw, {$currency}
+label_amount_sent_depends_on_crypto_exchange_platform = Точная сумма к отправке зависит от курса обмена и комиссии криптовалютной платформы в день обработки платежа
+label_amount_to_be_sent_approximate_currency = Сумма к отправке (приблизительная), {$currency}
+label_amount_to_withdraw_currency = Сумма к выводу, {$currency}
 label_application = Приложение
 label_arbitrum_one = Arbitrum One
 label_audio_call = Аудиозвонок{$by ->
@@ -785,7 +785,7 @@ label_audio_call = Аудиозвонок{$by ->
     }
 label_auto_gain_control = Авторегулировка громкости
 label_available_balance_amount = Доступный баланс: ¤{$amount}
-label_available_semicolon_amount = Available: {$amount}
+label_available_semicolon_amount = Доступно: {$amount}
 label_avatar_removed = {$author} удалил(а) аватар
 label_avatar_removed1 = {$author}
 label_avatar_removed2 = {" "}удалил(а) аватар
@@ -805,10 +805,10 @@ label_beneficiary_data_is_required_description =
     Данные получателя необходимы для формирования сопутствующей финансовой документации.
 
     Счет-фактура формируется автоматически во время отправки денежных средств и прилагается к соответствующей транзакции.
-label_billing_all_fields_are_latin1 = All the fields must be filled in with{" "}
-label_billing_all_fields_are_latin2 = Latin letters
-label_billing_all_fields_are_latin3 = {" "}the way they are written in the identification documents and/or financial institutions for receiving international payments (bank, payment system, payment card, etc.).
-label_billing_details = Billing details
+label_billing_all_fields_are_latin1 = Все поля должны быть заполнены{" "}
+label_billing_all_fields_are_latin2 = латинскими буквами
+label_billing_all_fields_are_latin3 = {" "}так, как они указываются в документах, удостоверяющих личность, и/или финансовых институтах для получения международных платежей (банк, платежная система, платежная карта и т.п.).
+label_billing_details = Информация для выставления счёта
 label_block = Заблокировать
 label_block_date = Дата блокировки
 label_block_reason = Причина блокировки
@@ -852,9 +852,9 @@ label_choose_country = Выберите страну
 label_city_country_activated_at = {$city}, {$country} • {$at}
 label_clear_history = Очистить чат
 label_commission = Комиссия
-label_commission_from_value = Commission: from {$value}
-label_commission_up_to_amount_usdt = Commission: up to {$amount} USDT
-label_commission_value = Commission: {$value}
+label_commission_from_value = Комиссия: от {$value}
+label_commission_up_to_amount_usdt = Комиссия: до {$amount} USDT
+label_commission_value = Комиссия: {$value}
 label_confidentiality = Конфиденциальность
 label_connection_lost = Связь потеряна
 label_connection_restored = Связь восстановлена
@@ -871,18 +871,19 @@ label_country = Страна
 label_country_selection = Выбрать страну
 label_create_group = Создание группы
 label_create_link = Создать ссылку
+label_currency = Валюта
 label_current_account = Текущий аккаунт
 label_current_password = Текущий пароль
-label_date_of_birth = Date of birth
+label_date_of_birth = Дата рождения
 label_date_of_birth_example = dd-mm-yyyy
-label_date_of_birth_in_format1 = Date of birth must be indicated in format{" "}
-label_date_of_birth_in_format2 = day-month-year
+label_date_of_birth_in_format1 = Дата рождения должна быть указана в формате{" "}
+label_date_of_birth_in_format2 = день-месяц-год
 label_date_of_birth_in_format3 = .
-label_date_of_expiry = Date of expiry
+label_date_of_expiry = Срок действия
 label_date_of_expiry_example = dd-mm-yyyy
-label_date_of_expiry_in_format1 = Date of expiry must be indicated in format{" "}
-label_date_of_expiry_in_format2 = day-month-year
-label_date_of_expiry_in_format3 = . If your identification document doesn’t have date of expiry please write{" "}
+label_date_of_expiry_in_format1 = Срок действия должен быть указан в формате{" "}
+label_date_of_expiry_in_format2 = день-месяц-год
+label_date_of_expiry_in_format3 = . Если в вашем удостоверении личности нет срока действия, пожалуйста, напишите{" "}
 label_date_of_expiry_in_format4 = N/A
 label_date_of_expiry_in_format5 = .
 label_days_short = {$days} д
@@ -939,7 +940,7 @@ label_forwarded_messages = {$count ->
 label_from_earnings_lowercase = от заработка
 label_from_purchases_lowercase = от покупок
 label_from_sales_lowercase = от продаж
-label_full_name = Full name
+label_full_name = Полное имя
 label_full_name_example = JOHN SMITH
 label_group_created = Группа создана
 label_group_created_by = {$author} создал(а) группу
@@ -954,8 +955,8 @@ label_hide_chats = Скрыть чат(ы)
 label_hide_chats_modal_description = Чат будет перенесён в список "скрытые чаты"
 label_high_pass_filter = Фильтр высоких частот
 label_hotkey = Горячие клавиши
-label_i_confirm_withdraw_details_are_correct_and_i_accept1 = I confirm that the details and data of the recipient of the funds are mine, correct, and I accept full responsibility in case of entering incorrect data, and I agree to the{" "}
-label_i_confirm_withdraw_details_are_correct_and_i_accept2 = Terms of Usage & Privacy Policy
+label_i_confirm_withdraw_details_are_correct_and_i_accept1 = Я подтверждаю, что реквизиты и данные получателя денежных средств принадлежат мне, указаны верно, принимаю на себя всю ответственность в случае ввода некорректных данных и соглашаюсь с{" "}
+label_i_confirm_withdraw_details_are_correct_and_i_accept2 = Условиями использования и Политикой конфиденциальности
 label_i_confirm_withdraw_details_are_correct_and_i_accept3 = .
 label_id = ID
 label_identification = Подтверждение личности
@@ -973,9 +974,9 @@ label_in_case_crypto_platform_no_identifier1 = Если Ваша криптов�
 label_in_case_crypto_platform_no_identifier2 = NO
 label_in_case_crypto_platform_no_identifier3 = ".
 label_incoming_call = Входящий звонок
-label_individual_monetization = Individual monetization
-label_individual_monetization_description = Users with individual monetization settings.
-label_individual_users_count = Individual users: {$count}
+label_individual_monetization = Индивидуальная монетизация
+label_individual_monetization_description = Пользователи с индивидуальными настройками монетизации.
+label_individual_users_count = Индивидуальные пользователи: {$count}
 label_information = Информация
 label_installation_error = Ошибка установки
 label_installation_error_description = Веб приложение уже установлено или недоступно в Вашем браузере
@@ -1030,13 +1031,13 @@ label_minimum_amount = Минимальная сумма
 label_mobile_apps = Мобильные приложения
 label_monetization_details = Подробности монетизации
 label_monetization_history = История монетизации
-label_monetization_settings = Monetization settings
+label_monetization_settings = Настройки монетизации
 label_monetization_settings_description1 =
-    Minimum amount of donations.
+    Минимальная сумма донатов.
 
-    These settings do not apply to the users with{" "}
-label_monetization_settings_description2 = individual monetization
-label_monetization_settings_description3 = {" "}settings.
+    Эти настройки не распространяются на пользователей, для которых установлены{" "}
+label_monetization_settings_description2 = индивидуальные настройки монетизации
+label_monetization_settings_description3 = .
 label_monobank = Monobank
 label_monolog_created = Чат создан
 label_mute_or_unmute_chats = Включить или выключить уведомления
@@ -1051,7 +1052,7 @@ label_name_hint = Ваше публичное имя
 label_name_updated = {$author} обновил(а) название группы
 label_name_updated1 = {$author}
 label_name_updated2 = {" "}обновил(а) название группы
-label_network_type = Network type
+label_network_type = Тип сети
 label_new_password = Новый пароль
 label_no_chat_found = Чат не найден
 label_no_chats = Нет чатов
@@ -1172,7 +1173,7 @@ label_personal_data_deletion_description5 =
     - Ваша биография;
     - все Ваши e-mail'ы;
     - все Ваши номера телефонов.
-label_phone_number = Phone number
+label_phone_number = Номер телефона
 label_phone_number_example = +1 234 567 8901
 label_photos_semicolon_amount = Фото: {$amount}
 label_plasma = Plasma
@@ -1212,22 +1213,22 @@ label_search_category_chats = Чаты
 label_search_category_contacts = Контакты
 label_search_category_users = Пользователи
 label_search_dots = Поиск...
-label_select_billing_country = Select billing country
-label_select_withdrawal_option = Select withdrawal option
+label_select_billing_country = Выберите страну выставления счёта
+label_select_withdrawal_option = Выберите способ вывода
 label_selected = Выбрано: {$count}
 label_send_message_hint = Сообщение...
 label_sent = Отправлено
-label_sepa_transfer = SEPA transfer
+label_sepa_transfer = SEPA перевод
 label_sessions_terminated = Сессия(и) завершена(ы)
 label_set_cache_limits = Установить лимиты кэша
 label_set_password = Установить пароль
 label_set_prices_description1 =
-    Evaluate your attention and time. Set the cost of communication with you.
+    "Оцените своё внимание и время. Установите стоимость общения с Вами.
 
-    You, your life, your observations, experience and knowledge are interesting to many. Different people, different cultures, different countries.
+    Вы, Ваша жизнь, Ваши наблюдения, опыт и знания интересны многим. Разные люди, разные культуры, разные страны.
 
-    Consultations, training, education, humor, creativity or just a conversation. Even{" "}
-label_set_prices_description2 = the ability to listen is expensive
+    Консультации, обучение, юмор, творчество или просто беседа. Даже{" "}
+label_set_prices_description2 = умение выслушать стоит дорого
 label_set_prices_description3 = .
 label_set_your_prices = Установите Ваши цены
 label_show_call_window = Показывать окно звонка
@@ -1286,7 +1287,7 @@ label_usdt = USDT
 label_usdt_arbitrum_one = USDT - Arbitrum One
 label_usdt_crypto_exchange_platform = Криптовалютная платформа
 label_usdt_crypto_exchange_platform_example = Binance, Bybit, Kraken, Coinbase, etc.
-label_usdt_network_type = USDT - Network type
+label_usdt_network_type = USDT - Тип сети
 label_usdt_optimism = USDT -  Optimism (OP Mainnet)
 label_usdt_plasma = USDT - Plasma
 label_usdt_polygon = USDT - Polygon
@@ -1334,9 +1335,9 @@ label_was_removed2 = {" "}покинул(а) группу
 label_welcome_message = Приветственное сообщение
 label_welcome_message_description = Приветственное сообщение отображается только пользователям, которые добавили Вас в свой список чатов. Не отображается пользователям, которых в свой список чатов добавили Вы.
 label_welcome_message_hint = Добавить, редактировать, удалить
-label_withdrawal_option = Withdrawal option
+label_withdrawal_option = Способ вывода
 label_you = Вы
-label_you_can_set_individual_monetization_in_profile = You can set individual monetization in the each user's profile.
+label_you_can_set_individual_monetization_in_profile = Вы можете настроить индивидуальную монетизацию в профиле каждого пользователя.
 label_you_can_use_randomly_generated_link = Вы можете использовать сгенерированную ссылку или создать собственную.
 label_you_were_added_to_group = Вы добавлены в группу
 label_your_author_partner_program_tapopa_author =
@@ -1358,7 +1359,7 @@ label_your_promotion_program_description =
 label_your_statistics = Ваша статистика
 label_your_status = Ваш статус
 label_your_transactions = Ваши транзакции
-label_zip = ZIP
+label_zip = Почтовый индекс
 label_zip_example = 00000
 n_percent = {$n}%
 plus =  +

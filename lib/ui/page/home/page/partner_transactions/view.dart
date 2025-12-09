@@ -18,16 +18,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../l10n/l10n.dart';
-import '../../../../../themes.dart';
-import '../../../../widget/animated_button.dart';
-import '../../../../widget/svg/svg.dart';
-import '../../../../widget/text_field.dart';
-import '../../../../widget/widget_button.dart';
-import '../../widget/operation.dart';
-import '../chat/message_field/view.dart';
+import '/l10n/l10n.dart';
+import '/themes.dart';
+import '/ui/page/home/page/chat/message_field/view.dart';
 import '/ui/page/home/page/chat/widget/back_button.dart';
 import '/ui/page/home/widget/app_bar.dart';
+import '/ui/page/home/widget/operation.dart';
+import '/ui/widget/animated_button.dart';
+import '/ui/widget/svg/svg.dart';
+import '/ui/widget/text_field.dart';
+import '/ui/widget/widget_button.dart';
 import 'controller.dart';
 
 /// View of the [Routes.partnerTransactions] page.

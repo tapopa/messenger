@@ -1,13 +1,32 @@
+// Copyright © 2025 Ideas Networks Solutions S.A.,
+//                       <https://github.com/tapopa>
+//
+// This program is free software: you can redistribute it and/or modify it under
+// the terms of the GNU Affero General Public License v3.0 as published by the
+// Free Software Foundation, either version 3 of the License, or (at your
+// option) any later version.
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+// FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License v3.0 for
+// more details.
+//
+// You should have received a copy of the GNU Affero General Public License v3.0
+// along with this program. If not, see
+// <https://www.gnu.org/licenses/agpl-3.0.html>.
+
 import 'package:flutter/material.dart';
 
-import '../../../../themes.dart';
-import '../../../widget/widget_button.dart';
+import '/themes.dart';
+import '/ui/widget/widget_button.dart';
 import '/domain/model/country.dart';
 import '/l10n/l10n.dart';
 import '/ui/page/home/tab/wallet/select_country/view.dart';
 import '/ui/widget/svg/svg.dart';
 import 'field_button.dart';
 
+/// [FieldButton] displaying the provided [IsoCode] as a country invoking
+/// [SelectCountryView] when pressed.
 class CountryButton extends StatelessWidget {
   const CountryButton({
     super.key,
@@ -18,10 +37,19 @@ class CountryButton extends StatelessWidget {
     this.error = false,
   });
 
+  /// [IsoCode] of the country to display.
   final IsoCode? country;
+
+  /// Callback, called with the result of [SelectCountryView].
   final void Function(IsoCode)? onCode;
+
+  /// [IsoCode]s available in the [SelectCountryView].
   final Set<IsoCode> available;
+
+  /// [IsoCode]s restricted in the [SelectCountryView].
   final Set<IsoCode> restricted;
+
+  /// Indicator whether this button should display an error.
   final bool error;
 
   @override
@@ -58,10 +86,14 @@ class CountryButton extends StatelessWidget {
             ),
             const SizedBox(width: 8),
           ],
-          Text(
-            country == null
-                ? 'label_choose_country'.l10n
-                : 'country_${country?.name.toLowerCase()}'.l10n,
+          Flexible(
+            child: Text(
+              country == null
+                  ? 'label_choose_country'.l10n
+                  : 'country_${country?.name.toLowerCase()}'.l10n,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
           ),
         ],
       ),
@@ -69,6 +101,8 @@ class CountryButton extends StatelessWidget {
   }
 }
 
+/// Clickable flag of the provided [country] invoking [SelectCountryView] when
+/// pressed.
 class CountryFlag extends StatelessWidget {
   const CountryFlag({
     super.key,
@@ -79,10 +113,19 @@ class CountryFlag extends StatelessWidget {
     this.error = false,
   });
 
+  /// [IsoCode] of the country to display.
   final IsoCode? country;
+
+  /// Callback, called with the result of [SelectCountryView].
   final void Function(IsoCode)? onCode;
+
+  /// [IsoCode]s available in the [SelectCountryView].
   final Set<IsoCode> available;
+
+  /// [IsoCode]s restricted in the [SelectCountryView].
   final Set<IsoCode> restricted;
+
+  /// Indicator whether this button should display an error.
   final bool error;
 
   @override
@@ -145,6 +188,7 @@ class CountryFlag extends StatelessWidget {
                 country == null
                     ? 'label_choose_country'.l10n
                     : 'country_${country?.name.toLowerCase()}'.l10n,
+                textAlign: TextAlign.center,
                 style: bigWithShadows,
               ),
             ),

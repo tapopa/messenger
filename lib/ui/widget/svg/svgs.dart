@@ -2251,4 +2251,22 @@ class SvgIcons {
     width: 23,
     height: 23,
   );
+
+  static const SvgData withdrawInfoPayPal = SvgData(
+    'assets/icons/withdraw_info_paypal.svg',
+    width: 165,
+    height: 40,
+  );
+
+  static const SvgData withdrawInfoMonobank = SvgData(
+    'assets/icons/withdraw_info_monobank.svg',
+    width: 297,
+    height: 40,
+  );
+
+  static const SvgData withdrawInfoSepa = SvgData(
+    'assets/icons/withdraw_info_sepa.svg',
+    width: 109,
+    height: 40,
+  );
 }

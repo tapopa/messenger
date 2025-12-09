@@ -17,14 +17,9 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../../../widget/primary_button.dart';
-import '../../../../widget/svg/svg.dart';
-import '../../../../widget/text_field.dart';
-import '../../widget/centered_table.dart';
-import '../../widget/field_button.dart';
-import '../../widget/rectangle_button.dart';
 import '/domain/model/country.dart';
 import '/domain/model/price.dart';
 import '/l10n/l10n.dart';
@@ -32,8 +27,14 @@ import '/themes.dart';
 import '/ui/page/home/page/chat/widget/back_button.dart';
 import '/ui/page/home/widget/app_bar.dart';
 import '/ui/page/home/widget/block.dart';
+import '/ui/page/home/widget/centered_table.dart';
 import '/ui/page/home/widget/country_button.dart';
+import '/ui/page/home/widget/field_button.dart';
+import '/ui/page/home/widget/rectangle_button.dart';
 import '/ui/widget/line_divider.dart';
+import '/ui/widget/primary_button.dart';
+import '/ui/widget/svg/svg.dart';
+import '/ui/widget/text_field.dart';
 import 'controller.dart';
 import 'usdt_network/view.dart';
 import 'widget/checkbox_button.dart';
@@ -83,16 +84,14 @@ class WithdrawView extends StatelessWidget {
                               selected: selected,
                               onPressed: selected
                                   ? null
-                                  : () {
-                                      c.option.value = e;
-                                    },
+                                  : () => c.option.value = e,
                               label: e.l10n.l10n,
                               subtitle: switch (e) {
                                 .usdt => 'label_commission_from_value'.l10nfmt({
                                   'value': Price.usdt(0.0001).l10n,
                                 }),
                                 .paypal => 'label_commission_value'.l10nfmt({
-                                  'value': '0%',
+                                  'value': 'n_percent'.l10nfmt({'n': 0}),
                                 }),
                                 .monobank => 'label_commission_value'.l10nfmt({
                                   'value': Price.eur(0.25).l10n,
@@ -158,6 +157,7 @@ class WithdrawView extends StatelessWidget {
     );
   }
 
+  /// Builds a [Block] displaying the information of the [option].
   Widget _information(
     BuildContext context,
     WithdrawController c,
@@ -167,6 +167,23 @@ class WithdrawView extends StatelessWidget {
 
     switch (option) {
       case .usdt:
+        final IsoCode? country = c.country.value;
+        final bool available = option.available(country);
+
+        if (!available) {
+          return Block(
+            title: option.l10n.l10n,
+            children: [
+              SvgIcon(SvgIcons.withdrawInfoTether),
+              const SizedBox(height: 16),
+              Text(
+                'label_this_withdrawal_option_is_not_available_in_country'.l10n,
+                style: style.fonts.small.regular.secondary,
+              ),
+            ],
+          );
+        }
+
         return Obx(() {
           final UsdtNetwork? network = c.usdtNetwork.value;
 
@@ -235,16 +252,134 @@ class WithdrawView extends StatelessWidget {
         });
 
       case .paypal:
-        return Block();
+        final IsoCode? country = c.country.value;
+        final bool available = option.available(country);
+
+        if (!available) {
+          return Block(
+            title: option.l10n.l10n,
+            children: [
+              SvgIcon(SvgIcons.withdrawInfoPayPal),
+              const SizedBox(height: 16),
+              Text(
+                'label_this_withdrawal_option_is_not_available_in_country'.l10n,
+                style: style.fonts.small.regular.secondary,
+              ),
+            ],
+          );
+        }
+
+        return Block(
+          title: option.l10n.l10n,
+          children: [
+            SvgIcon(SvgIcons.withdrawInfoPayPal),
+            const SizedBox(height: 16),
+            CenteredTable(
+              children: [
+                CenteredRow(
+                  Text('label_commission'.l10n),
+                  Text('n_percent'.l10nfmt({'n': 0})),
+                ),
+                CenteredRow(
+                  Text('label_currency'.l10n),
+                  Text(Currency('USD').l10n),
+                ),
+                CenteredRow(
+                  Text('label_processing_time'.l10n),
+                  Text('label_n_business_days'.l10nfmt({'n': 3})),
+                ),
+              ],
+            ),
+          ],
+        );
 
       case .monobank:
-        return Block();
+        final IsoCode? country = c.country.value;
+        final bool available = option.available(country);
+
+        if (!available) {
+          return Block(
+            title: option.l10n.l10n,
+            children: [
+              SvgIcon(SvgIcons.withdrawInfoMonobank),
+              const SizedBox(height: 16),
+              Text(
+                'label_this_withdrawal_option_is_not_available_in_country'.l10n,
+                style: style.fonts.small.regular.secondary,
+              ),
+            ],
+          );
+        }
+
+        return Block(
+          title: option.l10n.l10n,
+          children: [
+            SvgIcon(SvgIcons.withdrawInfoMonobank),
+            const SizedBox(height: 16),
+            CenteredTable(
+              children: [
+                CenteredRow(
+                  Text('label_commission'.l10n),
+                  Text(Price.eur(7).l10n),
+                ),
+                CenteredRow(
+                  Text('label_currency'.l10n),
+                  Text(Currency('EUR').l10n),
+                ),
+                CenteredRow(
+                  Text('label_processing_time'.l10n),
+                  Text('label_n_business_days'.l10nfmt({'n': 3})),
+                ),
+              ],
+            ),
+          ],
+        );
 
       case .sepa:
-        return Block();
+        final IsoCode? country = c.country.value;
+        final bool available = option.available(country);
+
+        if (!available) {
+          return Block(
+            title: option.l10n.l10n,
+            children: [
+              SvgIcon(SvgIcons.withdrawInfoSepa),
+              const SizedBox(height: 16),
+              Text(
+                'label_this_withdrawal_option_is_not_available_in_country'.l10n,
+                style: style.fonts.small.regular.secondary,
+              ),
+            ],
+          );
+        }
+
+        return Block(
+          title: option.l10n.l10n,
+          children: [
+            SvgIcon(SvgIcons.withdrawInfoSepa),
+            const SizedBox(height: 16),
+            CenteredTable(
+              children: [
+                CenteredRow(
+                  Text('label_commission'.l10n),
+                  Text(Price.eur(0.25).l10n),
+                ),
+                CenteredRow(
+                  Text('label_currency'.l10n),
+                  Text(Currency('EUR').l10n),
+                ),
+                CenteredRow(
+                  Text('label_processing_time'.l10n),
+                  Text('label_n_business_days'.l10nfmt({'n': 3})),
+                ),
+              ],
+            ),
+          ],
+        );
     }
   }
 
+  /// Builds a [Block] displaying the detailed fields of the [option].
   Widget _details(
     BuildContext context,
     WithdrawController c,
@@ -328,7 +463,32 @@ class WithdrawView extends StatelessWidget {
         return Block(
           title: 'label_details'.l10n,
           children: [
-            //
+            ReactiveTextField(
+              state: c.amountToWithdraw,
+              label: 'label_amount_to_withdraw_currency'.l10nfmt({
+                'currency': Currency('G').l10n,
+              }),
+              hint: 'label_available_semicolon_amount'.l10nfmt({
+                'amount': Price.zero.l10n,
+              }),
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.amountToSend,
+              label: 'label_amount_to_be_sent_approximate_currency'.l10nfmt({
+                'currency': '\$',
+              }),
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.payPalEmail,
+              label: 'label_paypal_account_email'.l10n,
+              hint: 'label_paypal_account_email_example'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 8),
           ],
         );
 
@@ -336,7 +496,53 @@ class WithdrawView extends StatelessWidget {
         return Block(
           title: 'label_details'.l10n,
           children: [
-            //
+            ReactiveTextField(
+              state: c.amountToWithdraw,
+              label: 'label_amount_to_withdraw_currency'.l10nfmt({
+                'currency': Currency('G').l10n,
+              }),
+              hint: 'label_available_semicolon_amount'.l10nfmt({
+                'amount': Price.zero.l10n,
+              }),
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.amountToSend,
+              label: 'label_amount_to_be_sent_approximate_currency'.l10nfmt({
+                'currency': '€',
+              }),
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.monobankAccount,
+              label: 'label_account_number_iban'.l10n,
+              hint: 'label_account_number_iban_monobank'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.monobankSwiftCode,
+              label: 'label_beneficiary_bank_swift_code'.l10n,
+              hint: 'label_beneficiary_bank_swift_code_example'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.monobankBankName,
+              label: 'label_beneficiary_bank_name'.l10n,
+              hint: 'label_beneficiary_bank_name_example'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.monobankBankAddress,
+              label: 'label_beneficiary_bank_address'.l10n,
+              hint: 'label_beneficiary_bank_address_example'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 8),
           ],
         );
 
@@ -344,12 +550,60 @@ class WithdrawView extends StatelessWidget {
         return Block(
           title: 'label_details'.l10n,
           children: [
-            //
+            ReactiveTextField(
+              state: c.amountToWithdraw,
+              label: 'label_amount_to_withdraw_currency'.l10nfmt({
+                'currency': Currency('G').l10n,
+              }),
+              hint: 'label_available_semicolon_amount'.l10nfmt({
+                'amount': Price.zero.l10n,
+              }),
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.amountToSend,
+              label: 'label_amount_to_be_sent_approximate_currency'.l10nfmt({
+                'currency': '€',
+              }),
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.sepaAccount,
+              label: 'label_account_number_iban'.l10n,
+              hint: 'label_account_number_iban_sepa'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.sepaSwiftCode,
+              label: 'label_beneficiary_bank_swift_code'.l10n,
+              hint: 'label_beneficiary_bank_swift_code_example'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.sepaBankName,
+              label: 'label_beneficiary_bank_name'.l10n,
+              hint: 'label_beneficiary_bank_name_example'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.sepaBankAddress,
+              label: 'label_beneficiary_bank_address'.l10n,
+              hint: 'label_beneficiary_bank_address_example'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 8),
           ],
         );
     }
   }
 
+  /// Builds a [Block] displaying the beneficiary related [UploadablePassport]
+  /// and fields.
   Widget _beneficiary(
     BuildContext context,
     WithdrawController c,
@@ -387,7 +641,7 @@ class WithdrawView extends StatelessWidget {
             file: c.passport.value,
             onPressed: c.pickPassport,
             blurred: !c.showPassport.value,
-            onUnblur: () => c.showPassport.value = false,
+            onUnblur: () => c.showPassport.value = true,
           );
         }),
         const SizedBox(height: 16),
@@ -397,6 +651,7 @@ class WithdrawView extends StatelessWidget {
           label: 'label_date_of_expiry'.l10n,
           hint: 'label_date_of_expiry_example'.l10n,
           floatingLabelBehavior: .always,
+          formatters: [LengthLimitingTextInputFormatter(10)],
         ),
         const SizedBox(height: 16),
         Text.rich(
@@ -443,6 +698,8 @@ class WithdrawView extends StatelessWidget {
           label: 'label_date_of_birth'.l10n,
           hint: 'label_date_of_birth_example'.l10n,
           floatingLabelBehavior: .always,
+          formatters: [DateTextFormatter()],
+          type: TextInputType.number,
         ),
         const SizedBox(height: 16),
         Text.rich(
@@ -473,6 +730,11 @@ class WithdrawView extends StatelessWidget {
           label: 'label_zip'.l10n,
           hint: 'label_zip_example'.l10n,
           floatingLabelBehavior: .always,
+          formatters: [
+            FilteringTextInputFormatter.allow(RegExp('[0-9]*')),
+            LengthLimitingTextInputFormatter(12),
+          ],
+          type: TextInputType.number,
         ),
         const SizedBox(height: 16),
         ReactiveTextField(
@@ -493,6 +755,8 @@ class WithdrawView extends StatelessWidget {
     );
   }
 
+  /// Builds a [Block] displaying the [PrimaryButton] for ordering along with a
+  /// [CheckboxButton].
   Widget _order(BuildContext context, WithdrawController c) {
     final style = Theme.of(context).style;
 
@@ -528,8 +792,163 @@ class WithdrawView extends StatelessWidget {
         }),
         const SizedBox(height: 12),
         const SizedBox(height: 12),
-        PrimaryButton(onPressed: null, title: 'btn_order'),
+        Obx(() {
+          bool enabled =
+              c.confirmed.value &&
+              !c.billingPhone.isEmpty.value &&
+              c.billingPhone.error.value == null &&
+              !c.billingEmail.isEmpty.value &&
+              c.billingEmail.error.value == null &&
+              !c.billingZip.isEmpty.value &&
+              c.billingZip.error.value == null &&
+              !c.billingAddress.isEmpty.value &&
+              c.billingAddress.error.value == null &&
+              c.country.value != null &&
+              !c.billingBirth.isEmpty.value &&
+              c.billingBirth.error.value == null &&
+              !c.billingName.isEmpty.value &&
+              c.billingName.error.value == null &&
+              !c.passportExpiry.isEmpty.value &&
+              c.passportExpiry.error.value == null &&
+              c.passport.value != null;
+
+          if (enabled) {
+            enabled = switch (c.option.value) {
+              .usdt =>
+                c.usdtNetwork.value != null &&
+                    !c.usdtMemo.isEmpty.value &&
+                    c.usdtMemo.error.value == null &&
+                    !c.usdtPlatform.isEmpty.value &&
+                    c.usdtPlatform.error.value == null &&
+                    !c.usdtWallet.isEmpty.value &&
+                    c.usdtWallet.error.value == null &&
+                    !c.amountToWithdraw.isEmpty.value &&
+                    c.amountToWithdraw.error.value == null,
+
+              .paypal =>
+                !c.payPalEmail.isEmpty.value &&
+                    c.payPalEmail.error.value == null &&
+                    !c.amountToWithdraw.isEmpty.value &&
+                    c.amountToWithdraw.error.value == null,
+
+              .monobank =>
+                !c.monobankAccount.isEmpty.value &&
+                    c.monobankAccount.error.value == null &&
+                    !c.monobankBankAddress.isEmpty.value &&
+                    c.monobankBankAddress.error.value == null &&
+                    !c.monobankBankName.isEmpty.value &&
+                    c.monobankBankName.error.value == null &&
+                    !c.monobankSwiftCode.isEmpty.value &&
+                    c.monobankSwiftCode.error.value == null &&
+                    !c.amountToWithdraw.isEmpty.value &&
+                    c.amountToWithdraw.error.value == null,
+
+              .sepa =>
+                !c.amountToWithdraw.isEmpty.value &&
+                    c.amountToWithdraw.error.value == null,
+
+              null => false,
+            };
+          }
+
+          return PrimaryButton(
+            onPressed: enabled
+                ? () {
+                    // TODO.
+                  }
+                : null,
+            title: 'btn_order'.l10n,
+          );
+        }),
       ],
+    );
+  }
+}
+
+/// [TextInputFormatter] formatting the field to be in `dd-mm-yyyy` format.
+class DateTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    String text = newValue.text;
+
+    // If anything was deleted.
+    if (text.length + 1 == oldValue.text.length) {
+      if (!text.endsWith('-') && oldValue.text.endsWith('-')) {
+        text = text.substring(0, text.length - 1);
+      }
+    }
+
+    // Remove anything that's not a digit
+    text = text.replaceAll(RegExp(r'[^0-9]'), '');
+
+    // Enforce max length of 8 digits (dd + mm + yyyy).
+    if (text.length > 8) {
+      text = text.substring(0, 8);
+    }
+
+    // Validate the proper date digits.
+    if (text.isNotEmpty) {
+      final String dayPart0 = text.substring(0, 1);
+      final int day0 = int.tryParse(dayPart0) ?? 0;
+
+      // First "day" digit is only `0-3`.
+      if (day0 > 3) {
+        return oldValue;
+      }
+
+      if (text.length >= 2) {
+        final String dayPart1 = text.substring(1, 2);
+        final int day1 = int.tryParse(dayPart1) ?? 0;
+
+        // Second "day" digit is only `0-1` when first one is `3`.
+        if (day0 == 3 && day1 > 1) {
+          return oldValue;
+        }
+
+        // Second "day" digit cannot be `0` when first one is `0`.
+        if (day0 == 0 && day1 == 0) {
+          return oldValue;
+        }
+
+        if (text.length >= 3) {
+          final String monthPart1 = text.substring(2, 3);
+          final int month1 = int.tryParse(monthPart1) ?? 0;
+
+          // First "month" digit can only be 0 or 1.
+          if (month1 > 1) {
+            return oldValue;
+          }
+
+          if (text.length >= 4) {
+            final String monthPart2 = text.substring(3, 4);
+            final int month2 = int.tryParse(monthPart2) ?? 0;
+
+            // Second "month" digit can only be `0-2` when first one is `1`.
+            if (month1 == 1 && month2 > 2) {
+              return oldValue;
+            }
+          }
+        }
+      }
+    }
+
+    // Auto-insert separators.
+    final StringBuffer buffer = StringBuffer();
+    for (int i = 0; i < text.length; i++) {
+      buffer.write(text[i]);
+      if (i == 1 || i == 3) {
+        buffer.write('-');
+      }
+    }
+
+    final String newText = buffer.toString();
+
+    return TextEditingValue(
+      text: newText,
+      selection: TextSelection.collapsed(offset: newText.length),
     );
   }
 }

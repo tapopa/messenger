@@ -2073,9 +2073,11 @@ packages:
   sound_fonts:
     dependency: "direct main"
     description:
-      path: "../sound_fonts"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "3c2a9f812ded3a0e7f40aa6b2626198f003730c9"
+      url: "https://github.com/lapuske/sound_fonts.git"
+    source: git
     version: "0.1.2"
   source_gen:
     dependency: "direct overridden"

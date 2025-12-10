@@ -374,7 +374,7 @@ class ChatRepository extends DisposableInterface
       archived.around();
     }
 
-    _monologLocal.read(me).then((v) => monolog = v ?? monolog);
+    _monologLocal.read(MonologKind.notes).then((v) => monolog = v ?? monolog);
   }
 
   @override
@@ -558,7 +558,7 @@ class ChatRepository extends DisposableInterface
     final RxChatImpl chat = await _putEntry(chatData);
 
     if (!isClosed) {
-      await _monologLocal.upsert(me, monolog = chat.id);
+      await _monologLocal.upsert(MonologKind.notes, monolog = chat.id);
     }
 
     return chat;
@@ -854,7 +854,7 @@ class ChatRepository extends DisposableInterface
         await remove(id);
 
         id = monologData.chat.value.id;
-        await _monologLocal.upsert(me, monolog = id);
+        await _monologLocal.upsert(MonologKind.notes, monolog = id);
       }
 
       if (chat == null || chat.chat.value.favoritePosition != null) {
@@ -912,7 +912,7 @@ class ChatRepository extends DisposableInterface
         await remove(id);
 
         id = monologData.chat.value.id;
-        await _monologLocal.upsert(me, monolog = id);
+        await _monologLocal.upsert(MonologKind.notes, monolog = id);
       }
 
       if (archive && chat?.chat.value.favoritePosition != null) {
@@ -1815,7 +1815,7 @@ class ChatRepository extends DisposableInterface
         id = monolog.chat.value.id;
 
         await Future.wait([
-          _monologLocal.upsert(me, this.monolog = id),
+          _monologLocal.upsert(MonologKind.notes, this.monolog = id),
           _putEntry(monolog, ignoreVersion: true),
         ]);
       } else if (id.isLocal) {
@@ -2345,7 +2345,7 @@ class ChatRepository extends DisposableInterface
           if (chat.isMonolog) {
             if (monolog.isLocal) {
               // Keep track of the [monolog]'s [isLocal] status.
-              await _monologLocal.upsert(me, monolog = chat.id);
+              await _monologLocal.upsert(MonologKind.notes, monolog = chat.id);
             }
           }
 
@@ -2402,7 +2402,7 @@ class ChatRepository extends DisposableInterface
           if (chat.isMonolog) {
             if (monolog.isLocal) {
               // Keep track of the [monolog]'s [isLocal] status.
-              await _monologLocal.upsert(me, monolog = chat.id);
+              await _monologLocal.upsert(MonologKind.notes, monolog = chat.id);
             }
           }
 
@@ -3184,7 +3184,8 @@ class ChatRepository extends DisposableInterface
       // [Pagination], then initialize local monolog or get a remote one.
       if (isLocal && !isPaginated && !canFetchMore) {
         // Whether [ChatId] of [MyUser]'s monolog is known for the given device.
-        final bool isStored = await _monologLocal.read(me) != null;
+        final bool isStored =
+            await _monologLocal.read(MonologKind.notes) != null;
 
         if (isStored) {
           // Initialize local monolog, if its ID was saved. If `isStored`, local
@@ -3204,12 +3205,15 @@ class ChatRepository extends DisposableInterface
           final ChatData monologChatData = _chat(maybeMonolog);
           final RxChatImpl monolog = await _putEntry(monologChatData);
 
-          await _monologLocal.upsert(me, this.monolog = monolog.id);
+          await _monologLocal.upsert(
+            MonologKind.notes,
+            this.monolog = monolog.id,
+          );
         } else if (!isStored) {
           // If remote monolog doesn't exist and local one is not stored, then
           // create it.
           await _createLocalDialog(me);
-          await _monologLocal.upsert(me, monolog);
+          await _monologLocal.upsert(MonologKind.notes, monolog);
         }
       }
     });

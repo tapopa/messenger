@@ -165,10 +165,10 @@ enum WithdrawalOption {
 
   /// Returns a [l10n] key label associated with this [WithdrawalOption].
   String get l10n => switch (this) {
-    .usdt => 'label_usdt',
-    .paypal => 'label_paypal',
-    .monobank => 'label_monobank',
-    .sepa => 'label_sepa_transfer',
+    .usdt => 'label_usdt'.l10n,
+    .paypal => 'label_paypal'.l10n,
+    .monobank => 'label_monobank'.l10n,
+    .sepa => 'label_sepa_transfer'.l10n,
   };
 
   /// Returns a [l10n] key label associated with this [WithdrawalOption].

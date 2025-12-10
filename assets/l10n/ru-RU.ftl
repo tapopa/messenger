@@ -1029,7 +1029,6 @@ label_messenger2 = от Tapopa
 label_microphone_changed = Микрофон был изменён на {$microphone}
 label_minimum_amount = Минимальная сумма
 label_mobile_apps = Мобильные приложения
-label_monetization_details = Подробности монетизации
 label_monetization_history = История монетизации
 label_monetization_settings = Настройки монетизации
 label_monetization_settings_description1 =

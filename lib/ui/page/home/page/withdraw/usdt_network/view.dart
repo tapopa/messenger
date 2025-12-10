@@ -70,7 +70,7 @@ class UsdtNetworkView extends StatelessWidget {
                         child: SvgIcon(e.icon),
                       ),
                       onPressed: () => Navigator.of(context).pop(e),
-                      child: Text(e.l10n.l10n),
+                      child: Text(e.l10n),
                     ),
                   );
                 }).toList(),

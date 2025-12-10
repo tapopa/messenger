@@ -85,7 +85,7 @@ class WithdrawView extends StatelessWidget {
                               onPressed: selected
                                   ? null
                                   : () => c.option.value = e,
-                              label: e.l10n.l10n,
+                              label: e.l10n,
                               subtitle: switch (e) {
                                 .usdt => 'label_commission_from_value'.l10nfmt({
                                   'value': Price.usdt(0.0001).l10n,
@@ -172,7 +172,7 @@ class WithdrawView extends StatelessWidget {
 
         if (!available) {
           return Block(
-            title: option.l10n.l10n,
+            title: option.l10n,
             children: [
               SvgIcon(SvgIcons.withdrawInfoTether),
               const SizedBox(height: 16),
@@ -199,7 +199,7 @@ class WithdrawView extends StatelessWidget {
           };
 
           return Block(
-            title: title ?? option.l10n.l10n,
+            title: title ?? option.l10n,
             children: [
               SvgIcon(switch (network) {
                 .arbitrumOne => SvgIcons.withdrawInfoTetherArbitrum,
@@ -257,7 +257,7 @@ class WithdrawView extends StatelessWidget {
 
         if (!available) {
           return Block(
-            title: option.l10n.l10n,
+            title: option.l10n,
             children: [
               SvgIcon(SvgIcons.withdrawInfoPayPal),
               const SizedBox(height: 16),
@@ -270,7 +270,7 @@ class WithdrawView extends StatelessWidget {
         }
 
         return Block(
-          title: option.l10n.l10n,
+          title: option.l10n,
           children: [
             SvgIcon(SvgIcons.withdrawInfoPayPal),
             const SizedBox(height: 16),
@@ -299,7 +299,7 @@ class WithdrawView extends StatelessWidget {
 
         if (!available) {
           return Block(
-            title: option.l10n.l10n,
+            title: option.l10n,
             children: [
               SvgIcon(SvgIcons.withdrawInfoMonobank),
               const SizedBox(height: 16),
@@ -312,7 +312,7 @@ class WithdrawView extends StatelessWidget {
         }
 
         return Block(
-          title: option.l10n.l10n,
+          title: option.l10n,
           children: [
             SvgIcon(SvgIcons.withdrawInfoMonobank),
             const SizedBox(height: 16),
@@ -341,7 +341,7 @@ class WithdrawView extends StatelessWidget {
 
         if (!available) {
           return Block(
-            title: option.l10n.l10n,
+            title: option.l10n,
             children: [
               SvgIcon(SvgIcons.withdrawInfoSepa),
               const SizedBox(height: 16),
@@ -354,7 +354,7 @@ class WithdrawView extends StatelessWidget {
         }
 
         return Block(
-          title: option.l10n.l10n,
+          title: option.l10n,
           children: [
             SvgIcon(SvgIcons.withdrawInfoSepa),
             const SizedBox(height: 16),

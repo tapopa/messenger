@@ -22,6 +22,7 @@ import '/domain/model/country.dart';
 import '/domain/model/native_file.dart';
 import '/domain/model/session.dart';
 import '/domain/service/session.dart';
+import '/l10n/l10n.dart';
 import '/ui/widget/svg/svg.dart';
 import '/ui/widget/text_field.dart';
 
@@ -446,13 +447,13 @@ enum UsdtNetwork {
 
   /// Returns a [l10n] key label associated with this [UsdtNetwork].
   String get l10n => switch (this) {
-    .arbitrumOne => 'label_arbitrum_one',
-    .optimism => 'label_optimism_op_mainnet',
-    .plasma => 'label_plasma',
-    .polygon => 'label_polygon',
-    .solana => 'label_solana',
-    .ton => 'label_ton',
-    .tron => 'label_tron_trc20',
+    .arbitrumOne => 'label_arbitrum_one'.l10n,
+    .optimism => 'label_optimism_op_mainnet'.l10n,
+    .plasma => 'label_plasma'.l10n,
+    .polygon => 'label_polygon'.l10n,
+    .solana => 'label_solana'.l10n,
+    .ton => 'label_ton'.l10n,
+    .tron => 'label_tron_trc20'.l10n,
   };
 
   /// Returns a [l10n] key label associated with this [UsdtNetwork].

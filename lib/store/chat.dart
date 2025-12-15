@@ -29,6 +29,7 @@ import '/api/backend/extension/chat.dart';
 import '/api/backend/extension/page_info.dart';
 import '/api/backend/extension/user.dart';
 import '/api/backend/schema.dart';
+import '/config.dart';
 import '/domain/model/attachment.dart';
 import '/domain/model/avatar.dart';
 import '/domain/model/chat.dart';
@@ -199,6 +200,9 @@ class ChatRepository extends DisposableInterface
   @override
   late ChatId monolog = ChatId.local(me);
 
+  @override
+  late ChatId support = ChatId.local(_supportId);
+
   /// GraphQL API provider.
   final GraphQlProvider _graphQlProvider;
 
@@ -282,6 +286,9 @@ class ChatRepository extends DisposableInterface
   /// Used to prevent [Chat]-monolog from being displayed as unfavorited after
   /// adding a local [Chat]-monolog to favorites.
   ChatFavoritePosition? _localMonologFavoritePosition;
+
+  /// [UserId] of the [support] chat.
+  static final UserId _supportId = UserId(Config.supportId);
 
   @override
   RxBool get hasNext =>
@@ -411,6 +418,7 @@ class ChatRepository extends DisposableInterface
     }
 
     _initMonolog();
+    _initSupport();
   }
 
   @override
@@ -2716,6 +2724,7 @@ class ChatRepository extends DisposableInterface
     );
 
     await _initMonolog();
+    await _initSupport();
 
     status.value = RxStatus.success();
   }
@@ -3214,6 +3223,37 @@ class ChatRepository extends DisposableInterface
           // create it.
           await _createLocalDialog(me);
           await _monologLocal.upsert(MonologKind.notes, monolog);
+        }
+      }
+    });
+  }
+
+  /// Initializes the local [support] chat, if none is known.
+  Future<void> _initSupport() async {
+    Log.debug('_initSupport()', '$runtimeType');
+
+    if (_supportId.val.isEmpty) {
+      return;
+    }
+
+    await _monologGuard.protect(() async {
+      final bool isLocal = support.isLocal;
+      final bool isPaginated = paginated[support] != null;
+      final bool canFetchMore = _pagination?.hasNext.value ?? true;
+
+      // If a non-local [support] isn't stored and it won't appear from the
+      // [Pagination], then initialize local monolog or get a remote one.
+      if (isLocal && !isPaginated && !canFetchMore) {
+        // Whether [ChatId] of [MyUser]'s support is known for the given device.
+        final bool isStored =
+            await _monologLocal.read(MonologKind.support) != null;
+
+        await _createLocalDialog(_supportId);
+
+        if (!isStored) {
+          // If remote chat doesn't exist and local one is not stored, then
+          // create it.
+          await _monologLocal.upsert(MonologKind.support, monolog);
         }
       }
     });

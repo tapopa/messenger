@@ -98,6 +98,9 @@ void main() async {
     graphQlProvider.getUser(const UserId('me')),
   ).thenAnswer((_) => Future.value(GetUser$Query.fromJson(userData)));
   when(
+    graphQlProvider.getUser(UserId(Config.supportId)),
+  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson({})));
+  when(
     graphQlProvider.onStart,
   ).thenReturn(InternalFinalCallback(callback: () {}));
   when(

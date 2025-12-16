@@ -3248,11 +3248,10 @@ class ChatRepository extends DisposableInterface
         final bool isStored =
             await _monologLocal.read(MonologKind.support) != null;
 
-        await _createLocalDialog(_supportId);
-
         if (!isStored) {
           // If remote chat doesn't exist and local one is not stored, then
           // create it.
+          await _createLocalDialog(_supportId);
           await _monologLocal.upsert(MonologKind.support, monolog);
         }
       }

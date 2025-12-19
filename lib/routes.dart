@@ -833,7 +833,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
           name: Routes.home,
           child: HomeView(
             () async {
-              final UserId? me = _state._auth.userId;
+              final UserId? me = _state._auth.userId ?? UserId.local();
               if (me == null) {
                 return null;
               }

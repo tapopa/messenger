@@ -159,6 +159,12 @@ class UserId extends NewType<String> implements Comparable<UserId> {
   /// Constructs a [UserId] from the provided [val].
   factory UserId.fromJson(String val) = UserId;
 
+  /// Constructs a [UserId] from the provided [val].
+  factory UserId.local() => UserId('0');
+
+  /// Indicates whether this [UserId] is local.
+  bool get isLocal => val == '0';
+
   /// Returns a [String] representing this [UserId].
   String toJson() => val;
 

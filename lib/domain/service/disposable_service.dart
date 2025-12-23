@@ -17,5 +17,13 @@
 
 import 'package:get/get.dart';
 
+import '/domain/model/user.dart';
+
 /// Base class for services with a scoped lifetime.
 abstract class DisposableService extends DisposableInterface {}
+
+mixin IdentityAware {
+  void onIdentityChanged(UserId _) {
+    // No-op.
+  }
+}

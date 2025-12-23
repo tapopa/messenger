@@ -82,9 +82,6 @@ import 'store/settings.dart';
 import 'store/user.dart';
 import 'store/wallet.dart';
 import 'themes.dart';
-import 'ui/page/auth/view.dart';
-import 'ui/page/chat_direct_link/view.dart';
-import 'ui/page/erase/view.dart';
 import 'ui/page/home/view.dart';
 import 'ui/page/popup_call/view.dart';
 import 'ui/page/popup_gallery/view.dart';
@@ -179,13 +176,13 @@ enum RouteAs {
 /// Any change requires [notifyListeners] to be invoked in order for the router
 /// to update its state.
 class RouterState extends ChangeNotifier {
-  RouterState(this._auth, {RouteInformation? initial}) {
+  RouterState(this._auth, {this.initial}) {
     delegate = AppRouterDelegate(this);
     parser = AppRouteInformationParser();
 
     if (initial != null) {
       provider = PlatformRouteInformationProvider(
-        initialRouteInformation: initial,
+        initialRouteInformation: initial!,
       );
     }
   }
@@ -200,6 +197,8 @@ class RouterState extends ChangeNotifier {
   ///
   /// [PlatformRouteInformationProvider] is used on null.
   RouteInformationProvider? provider;
+
+  RouteInformation? initial;
 
   /// This router's global [BuildContext] to use in contextless scenarios.
   ///
@@ -247,6 +246,9 @@ class RouterState extends ChangeNotifier {
 
   /// Current [Routes.home] tab.
   HomeTab get tab => _tab;
+
+  bool get byLink =>
+      initial?.uri.path.startsWith(Routes.chatDirectLink) == true;
 
   /// Changes selected [tab] to the provided one.
   set tab(HomeTab to) {
@@ -362,11 +364,7 @@ class RouterState extends ChangeNotifier {
       case Routes.style:
         return to;
       default:
-        if (_auth.status.value.isSuccess) {
-          return to;
-        } else {
-          return route;
-        }
+        return to;
     }
   }
 }
@@ -443,8 +441,8 @@ class AppRouteInformationParser
   RouteInformation restoreRouteInformation(RouteConfiguration configuration) {
     String route = configuration.route;
 
-    // If logged in and on [Routes.home] page, then modify the URL's route.
-    if (configuration.authorized && configuration.route == Routes.home) {
+    // If on [Routes.home] page, then modify the URL's route.
+    if (configuration.route == Routes.home) {
       switch (configuration.tab!) {
         case HomeTab.wallet:
           route = Routes.wallet;
@@ -575,7 +573,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
             chatId: id,
             depsFactory: () async {
               final ScopedDependencies deps = ScopedDependencies();
-              final UserId me = _state._auth.userId!;
+              final UserId me = _state._auth.userId;
 
               final ScopedDriftProvider scoped = deps.put(
                 ScopedDriftProvider.from(deps.put(ScopedDatabase(me))),
@@ -611,6 +609,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
               final UserRepository userRepository = UserRepository(
                 graphQlProvider,
                 Get.find(),
+                me: me,
               );
               deps.put<AbstractUserRepository>(userRepository);
               final AbstractCallRepository callRepository = deps
@@ -670,6 +669,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
                       blocklistRepository,
                       userRepository,
                       Get.find(),
+                      me: me,
                     ),
                   );
 
@@ -712,7 +712,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
             initialIndex: index is int ? index : 0,
             depsFactory: () async {
               final ScopedDependencies deps = ScopedDependencies();
-              final UserId me = _state._auth.userId!;
+              final UserId me = _state._auth.userId;
 
               final ScopedDriftProvider scoped = deps.put(
                 ScopedDriftProvider.from(deps.put(ScopedDatabase(me))),
@@ -748,6 +748,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
               final UserRepository userRepository = UserRepository(
                 graphQlProvider,
                 Get.find(),
+                me: me,
               );
               deps.put<AbstractUserRepository>(userRepository);
               final AbstractCallRepository callRepository = deps
@@ -807,13 +808,12 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
                       blocklistRepository,
                       userRepository,
                       Get.find(),
+                      me: me,
                     ),
                   );
 
               deps.put(MyUserService(Get.find(), myUserRepository));
               deps.put(UserService(userRepository));
-              // deps.put(ContactService(contactRepository));
-
               deps.put(ChatService(chatRepository, Get.find()));
 
               return deps;
@@ -823,314 +823,285 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
       ];
     }
 
-    /// [Routes.home] or [Routes.auth] page is always included.
+    /// [Routes.home] page is always included.
     List<Page<dynamic>> pages = [];
 
-    if (_state._auth.status.value.isSuccess) {
-      pages.add(
-        MaterialPage(
-          key: const ValueKey('HomePage'),
-          name: Routes.home,
-          child: HomeView(
-            () async {
-              final UserId? me = _state._auth.userId ?? UserId.local();
-              if (me == null) {
-                return null;
+    pages.add(
+      MaterialPage(
+        key: const ValueKey('HomePage'),
+        name: Routes.home,
+        child: HomeView(
+          () async {
+            final UserId me = _state._auth.userId;
+
+            final ScopedDependencies deps = ScopedDependencies();
+
+            final ScopedDriftProvider scoped = deps.put(
+              ScopedDriftProvider.from(deps.put(ScopedDatabase(me))),
+            );
+
+            final CommonDriftProvider common = Get.find();
+
+            final userProvider = deps.put(UserDriftProvider(common, scoped));
+            final chatProvider = deps.put(ChatDriftProvider(common, scoped));
+            final chatItemProvider = deps.put(
+              ChatItemDriftProvider(common, scoped),
+            );
+            final chatMemberProvider = deps.put(
+              ChatMemberDriftProvider(common, scoped),
+            );
+            final blocklistProvider = deps.put(
+              BlocklistDriftProvider(common, scoped),
+            );
+            final callCredsProvider = deps.put(
+              CallCredentialsDriftProvider(common, scoped),
+            );
+            final chatCredsProvider = deps.put(
+              ChatCredentialsDriftProvider(common, scoped),
+            );
+            final callRectProvider = deps.put(
+              CallRectDriftProvider(common, scoped),
+            );
+            final monologProvider = deps.put(
+              MonologDriftProvider(common, scoped),
+            );
+            final draftProvider = deps.put(DraftDriftProvider(common, scoped));
+            final sessionProvider = deps.put(
+              SessionDriftProvider(Get.find(), scoped),
+            );
+            final versionProvider = deps.put(VersionDriftProvider(common));
+            await versionProvider.init();
+
+            final GraphQlProvider graphQlProvider = Get.find();
+
+            final NotificationService notificationService = deps.put(
+              NotificationService(graphQlProvider),
+            );
+
+            _state._auth.onLogout = ({bool keepData = true}) async {
+              Log.debug(
+                '_state._auth.onLogout -> keepData: $keepData',
+                '$runtimeType',
+              );
+
+              try {
+                await notificationService.unregisterPushDevice();
+              } catch (_) {
+                // No-op.
               }
 
-              final ScopedDependencies deps = ScopedDependencies();
-
-              final ScopedDriftProvider scoped = deps.put(
-                ScopedDriftProvider.from(deps.put(ScopedDatabase(me))),
-              );
-
-              final CommonDriftProvider common = Get.find();
-
-              final userProvider = deps.put(UserDriftProvider(common, scoped));
-              final chatProvider = deps.put(ChatDriftProvider(common, scoped));
-              final chatItemProvider = deps.put(
-                ChatItemDriftProvider(common, scoped),
-              );
-              final chatMemberProvider = deps.put(
-                ChatMemberDriftProvider(common, scoped),
-              );
-              final blocklistProvider = deps.put(
-                BlocklistDriftProvider(common, scoped),
-              );
-              final callCredsProvider = deps.put(
-                CallCredentialsDriftProvider(common, scoped),
-              );
-              final chatCredsProvider = deps.put(
-                ChatCredentialsDriftProvider(common, scoped),
-              );
-              final callRectProvider = deps.put(
-                CallRectDriftProvider(common, scoped),
-              );
-              final monologProvider = deps.put(
-                MonologDriftProvider(common, scoped),
-              );
-              final draftProvider = deps.put(
-                DraftDriftProvider(common, scoped),
-              );
-              final sessionProvider = deps.put(
-                SessionDriftProvider(Get.find(), scoped),
-              );
-              final versionProvider = deps.put(VersionDriftProvider(common));
-              await versionProvider.init();
-
-              final GraphQlProvider graphQlProvider = Get.find();
-
-              final NotificationService notificationService = deps.put(
-                NotificationService(graphQlProvider),
-              );
-
-              _state._auth.onLogout = ({bool keepData = true}) async {
-                Log.debug(
-                  '_state._auth.onLogout -> keepData: $keepData',
-                  '$runtimeType',
-                );
-
+              if (!keepData) {
                 try {
-                  await notificationService.unregisterPushDevice();
+                  // Scope can already close the database due to `onClose`
+                  // races - in such cases the database should be constructed
+                  // so that it is being opened and then reset.
+                  if (scoped.isClosed) {
+                    final ScopedDatabase db = ScopedDatabase(me);
+                    await db.reset(false);
+                    await db.close();
+                  } else {
+                    await scoped.reset(false);
+                  }
+
+                  final backgroundProvider =
+                      Get.findOrNull<BackgroundDriftProvider>();
+                  final credentialsProvider =
+                      Get.findOrNull<CredentialsDriftProvider>();
+                  final myUserProvider = Get.findOrNull<MyUserDriftProvider>();
+                  final settingsProvider =
+                      Get.findOrNull<SettingsDriftProvider>();
+                  final versionProvider =
+                      Get.findOrNull<VersionDriftProvider>();
+
+                  await backgroundProvider?.delete(me);
+                  await credentialsProvider?.delete(me);
+                  await myUserProvider?.delete(me);
+                  await settingsProvider?.delete(me);
+                  await versionProvider?.delete(me);
                 } catch (_) {
                   // No-op.
                 }
+              }
+            };
 
-                if (!keepData) {
-                  try {
-                    // Scope can already close the database due to `onClose`
-                    // races - in such cases the database should be constructed
-                    // so that it is being opened and then reset.
-                    if (scoped.isClosed) {
-                      final ScopedDatabase db = ScopedDatabase(me);
-                      await db.reset(false);
-                      await db.close();
-                    } else {
-                      await scoped.reset(false);
-                    }
+            final AbstractSettingsRepository settingsRepository = deps
+                .put<AbstractSettingsRepository>(
+                  SettingsRepository(
+                    me,
+                    Get.find(),
+                    Get.find(),
+                    callRectProvider,
+                  ),
+                );
 
-                    final backgroundProvider =
-                        Get.findOrNull<BackgroundDriftProvider>();
-                    final credentialsProvider =
-                        Get.findOrNull<CredentialsDriftProvider>();
-                    final myUserProvider =
-                        Get.findOrNull<MyUserDriftProvider>();
-                    final settingsProvider =
-                        Get.findOrNull<SettingsDriftProvider>();
-                    final versionProvider =
-                        Get.findOrNull<VersionDriftProvider>();
+            // Should be awaited to ensure [Home] using the stored settings and
+            // not the default ones.
+            await settingsRepository.init();
 
-                    await backgroundProvider?.delete(me);
-                    await credentialsProvider?.delete(me);
-                    await myUserProvider?.delete(me);
-                    await settingsProvider?.delete(me);
-                    await versionProvider?.delete(me);
-                  } catch (_) {
-                    // No-op.
-                  }
-                }
-              };
+            SessionService? sessionService;
 
-              final AbstractSettingsRepository settingsRepository = deps
-                  .put<AbstractSettingsRepository>(
-                    SettingsRepository(
-                      me,
-                      Get.find(),
-                      Get.find(),
-                      callRectProvider,
-                    ),
-                  );
+            // Should be initialized before any [L10n]-dependant entities as
+            // it sets the stored [Language] from the [SettingsRepository].
+            await deps
+                .put(
+                  SettingsWorker(
+                    settingsRepository,
+                    onChanged: (language) {
+                      notificationService.setLanguage(language);
+                      sessionService?.setLanguage(language);
+                    },
+                  ),
+                )
+                .init();
 
-              // Should be awaited to ensure [Home] using the stored settings and
-              // not the default ones.
-              await settingsRepository.init();
-
-              SessionService? sessionService;
-
-              // Should be initialized before any [L10n]-dependant entities as
-              // it sets the stored [Language] from the [SettingsRepository].
-              await deps
-                  .put(
-                    SettingsWorker(
-                      settingsRepository,
-                      onChanged: (language) {
-                        notificationService.setLanguage(language);
-                        sessionService?.setLanguage(language);
-                      },
-                    ),
-                  )
-                  .init();
-
-              final AbstractSessionRepository sessionRepository = deps
-                  .put<AbstractSessionRepository>(
-                    SessionRepository(
-                      graphQlProvider,
-                      Get.find(),
-                      versionProvider,
-                      sessionProvider,
-                      Get.find(),
-                      Get.find(),
-                    ),
-                  );
-              sessionService = deps.put<SessionService>(
-                SessionService(sessionRepository),
-              );
-              sessionService.setLanguage(L10n.chosen.value?.locale.toString());
-
-              notificationService.init(
-                language: L10n.chosen.value?.locale.toString(),
-                firebaseOptions: PlatformUtils.pushNotifications
-                    ? DefaultFirebaseOptions.currentPlatform
-                    : null,
-                onResponse: (payload) {
-                  if (payload.startsWith(Routes.chats)) {
-                    router.push(payload);
-                  }
-                },
-                onBackground: handlePushNotification,
-              );
-
-              final UserRepository userRepository = UserRepository(
-                graphQlProvider,
-                userProvider,
-              );
-              deps.put<AbstractUserRepository>(userRepository);
-              final CallRepository callRepository = CallRepository(
-                graphQlProvider,
-                userRepository,
-                callCredsProvider,
-                chatCredsProvider,
-                settingsRepository,
-                me: me,
-              );
-              deps.put<AbstractCallRepository>(callRepository);
-              final ChatRepository chatRepository = ChatRepository(
-                graphQlProvider,
-                chatProvider,
-                chatItemProvider,
-                chatMemberProvider,
-                callRepository,
-                draftProvider,
-                userRepository,
-                versionProvider,
-                monologProvider,
-                me: me,
-              );
-              deps.put<AbstractChatRepository>(chatRepository);
-
-              userRepository.getChat = chatRepository.get;
-              callRepository.ensureRemoteDialog =
-                  chatRepository.ensureRemoteDialog;
-              _state._auth.hasCalls = () => callRepository.calls.values
-                  .where((e) => e.value.connected)
-                  .isNotEmpty;
-
-              final AbstractContactRepository contactRepository = deps
-                  .put<AbstractContactRepository>(
-                    ContactRepository(
-                      graphQlProvider,
-                      userRepository,
-                      versionProvider,
-                      me: me,
-                    ),
-                  );
-              userRepository.getContact = contactRepository.get;
-
-              final BlocklistRepository blocklistRepository =
-                  BlocklistRepository(
+            final AbstractSessionRepository sessionRepository = deps
+                .put<AbstractSessionRepository>(
+                  SessionRepository(
                     graphQlProvider,
-                    blocklistProvider,
+                    Get.find(),
+                    versionProvider,
+                    sessionProvider,
+                    Get.find(),
+                    Get.find(),
+                    me: me,
+                  ),
+                );
+            sessionService = deps.put<SessionService>(
+              SessionService(sessionRepository),
+            );
+            sessionService.setLanguage(L10n.chosen.value?.locale.toString());
+
+            notificationService.init(
+              language: L10n.chosen.value?.locale.toString(),
+              firebaseOptions: PlatformUtils.pushNotifications
+                  ? DefaultFirebaseOptions.currentPlatform
+                  : null,
+              onResponse: (payload) {
+                if (payload.startsWith(Routes.chats)) {
+                  router.push(payload);
+                }
+              },
+              onBackground: handlePushNotification,
+            );
+
+            final UserRepository userRepository = UserRepository(
+              graphQlProvider,
+              userProvider,
+              me: me,
+            );
+            deps.put<AbstractUserRepository>(userRepository);
+            final CallRepository callRepository = CallRepository(
+              graphQlProvider,
+              userRepository,
+              callCredsProvider,
+              chatCredsProvider,
+              settingsRepository,
+              me: me,
+            );
+            deps.put<AbstractCallRepository>(callRepository);
+            final ChatRepository chatRepository = ChatRepository(
+              graphQlProvider,
+              chatProvider,
+              chatItemProvider,
+              chatMemberProvider,
+              callRepository,
+              draftProvider,
+              userRepository,
+              versionProvider,
+              monologProvider,
+              me: me,
+            );
+            deps.put<AbstractChatRepository>(chatRepository);
+
+            userRepository.getChat = chatRepository.get;
+            callRepository.ensureRemoteDialog =
+                chatRepository.ensureRemoteDialog;
+            _state._auth.hasCalls = () => callRepository.calls.values
+                .where((e) => e.value.connected)
+                .isNotEmpty;
+
+            final AbstractContactRepository contactRepository = deps
+                .put<AbstractContactRepository>(
+                  ContactRepository(
+                    graphQlProvider,
                     userRepository,
                     versionProvider,
                     me: me,
-                  );
-              deps.put<AbstractBlocklistRepository>(blocklistRepository);
-              final AbstractMyUserRepository myUserRepository = deps
-                  .put<AbstractMyUserRepository>(
-                    MyUserRepository(
-                      graphQlProvider,
-                      Get.find(),
-                      blocklistRepository,
-                      userRepository,
-                      Get.find(),
-                    ),
-                  );
+                  ),
+                );
+            userRepository.getContact = contactRepository.get;
 
-              final MyUserService myUserService = deps.put(
-                MyUserService(Get.find(), myUserRepository),
-              );
-              deps.put(UserService(userRepository));
-              deps.put(ContactService(contactRepository));
+            final BlocklistRepository blocklistRepository = BlocklistRepository(
+              graphQlProvider,
+              blocklistProvider,
+              userRepository,
+              versionProvider,
+              me: me,
+            );
+            deps.put<AbstractBlocklistRepository>(blocklistRepository);
+            final AbstractMyUserRepository myUserRepository = deps
+                .put<AbstractMyUserRepository>(
+                  MyUserRepository(
+                    graphQlProvider,
+                    Get.find(),
+                    blocklistRepository,
+                    userRepository,
+                    Get.find(),
+                    me: me,
+                  ),
+                );
 
-              final ChatService chatService = deps.put(
-                ChatService(chatRepository, Get.find()),
-              );
+            final MyUserService myUserService = deps.put(
+              MyUserService(Get.find(), myUserRepository),
+            );
+            deps.put(UserService(userRepository));
+            deps.put(ContactService(contactRepository));
 
-              final CallService callService = deps.put(
-                CallService(Get.find(), chatService, callRepository),
-              );
-              callService.onChatRemoved = chatRepository.remove;
+            final ChatService chatService = deps.put(
+              ChatService(chatRepository, Get.find()),
+            );
 
-              deps.put(BlocklistService(blocklistRepository));
+            final CallService callService = deps.put(
+              CallService(Get.find(), chatService, callRepository),
+            );
+            callService.onChatRemoved = chatRepository.remove;
 
-              final AbstractWalletRepository walletRepository = deps
-                  .put<AbstractWalletRepository>(WalletRepository(Get.find()));
-              deps.put(WalletService(walletRepository));
+            deps.put(BlocklistService(blocklistRepository));
 
-              final AbstractPartnerRepository partnerRepository = deps
-                  .put<AbstractPartnerRepository>(PartnerRepository());
-              deps.put(PartnerService(partnerRepository));
+            final AbstractWalletRepository walletRepository = deps
+                .put<AbstractWalletRepository>(
+                  WalletRepository(Get.find(), me: me),
+                );
+            deps.put(WalletService(walletRepository));
 
-              deps.put(
-                CallWorker(
-                  callService,
-                  chatService,
-                  myUserService,
-                  Get.find(),
-                  Get.find(),
-                  settingsRepository,
-                  graphQlProvider,
-                  Get.find(),
-                ),
-              );
+            final AbstractPartnerRepository partnerRepository = deps
+                .put<AbstractPartnerRepository>(PartnerRepository());
+            deps.put(PartnerService(partnerRepository));
 
-              deps.put(ChatWorker(chatService, myUserService, Get.find()));
+            deps.put(
+              CallWorker(
+                callService,
+                chatService,
+                myUserService,
+                Get.find(),
+                Get.find(),
+                settingsRepository,
+                graphQlProvider,
+                Get.find(),
+              ),
+            );
 
-              deps.put(MyUserWorker(myUserService));
+            deps.put(ChatWorker(chatService, myUserService, Get.find()));
 
-              return deps;
-            },
-            signedUp: router.arguments?['signedUp'] as bool? ?? false,
-            link: router.arguments?['link'] as ChatDirectLinkSlug?,
-          ),
+            deps.put(MyUserWorker(myUserService));
+
+            return deps;
+          },
+          signedUp: router.arguments?['signedUp'] as bool? ?? false,
+          link: router.arguments?['link'] as ChatDirectLinkSlug?,
         ),
-      );
-    } else if (_state.route.startsWith(Routes.erase)) {
-      return const [
-        MaterialPage(
-          key: ValueKey('ErasePage'),
-          name: Routes.erase,
-          child: EraseView(),
-        ),
-      ];
-    } else if (_state.route.startsWith(Routes.chatDirectLink)) {
-      final String slug = _state.route.replaceFirst(Routes.chatDirectLink, '');
-      return [
-        MaterialPage(
-          key: ValueKey('ChatDirectLinkPage$slug'),
-          name: '${Routes.chatDirectLink}$slug',
-          child: ChatDirectLinkView(slug),
-        ),
-      ];
-    } else {
-      pages.add(
-        const MaterialPage(
-          key: ValueKey('AuthPage'),
-          name: Routes.auth,
-          child: AuthView(),
-        ),
-      );
-    }
+      ),
+    );
 
     if (_state.route.startsWith(Routes.chats) ||
         _state.route.startsWith(Routes.contacts) ||
@@ -1282,6 +1253,8 @@ extension RouteLinks on RouterState {
   }) {
     ChatId chatId = chat.id;
 
+    print('===== 0 -> $chatId, $me');
+
     if (chat.isDialog || chat.isMonolog) {
       ChatMember? member = chat.members.firstWhereOrNull(
         (e) => e.user.id != me,
@@ -1292,6 +1265,8 @@ extension RouteLinks on RouterState {
         chatId = ChatId.local(member.user.id);
       }
     }
+
+    print('===== 1 -> $chatId, $me');
 
     router.chat(chatId, itemId: itemId, link: link, mode: mode);
   }

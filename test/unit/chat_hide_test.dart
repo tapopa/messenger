@@ -263,12 +263,13 @@ void main() async {
         sessionProvider,
         geoProvider,
         MockedGeoLocationProvider(),
+        me: const UserId('me'),
       ),
     );
     Get.put(SessionService(sessionRepository));
 
     UserRepository userRepository = Get.put(
-      UserRepository(graphQlProvider, userProvider),
+      UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
     );
     final CallRepository callRepository = Get.put(
       CallRepository(
@@ -347,7 +348,7 @@ void main() async {
     );
 
     UserRepository userRepository = Get.put(
-      UserRepository(graphQlProvider, userProvider),
+      UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
     );
     final CallRepository callRepository = Get.put(
       CallRepository(

@@ -68,7 +68,7 @@ void main() async {
     );
 
     UserRepository userRepository = Get.put(
-      UserRepository(graphQlProvider, userProvider),
+      UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
     );
 
     BlocklistRepository blocklistRepository = Get.put(
@@ -90,6 +90,7 @@ void main() async {
           blocklistRepository,
           userRepository,
           accountProvider,
+          me: const UserId('me'),
         ),
       ),
     );

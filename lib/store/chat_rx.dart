@@ -1232,7 +1232,7 @@ class RxChatImpl extends RxChat {
       compare: (a, b) => a.value.key.compareTo(b.value.key),
     );
 
-    if (id.isLocal) {
+    if (id.isLocal || me?.isLocal == true) {
       _pagination?.hasNext.value = false;
       _pagination?.hasPrevious.value = false;
       status.value = RxStatus.success();
@@ -1309,7 +1309,7 @@ class RxChatImpl extends RxChat {
           graphQlProvider:
               GraphQlPageProvider<DtoChatMember, ChatMembersCursor, UserId>(
                 fetch: ({after, before, first, last}) async {
-                  if (id.isLocal) {
+                  if (id.isLocal || me?.isLocal == true) {
                     return Page([], PageInfo());
                   }
 

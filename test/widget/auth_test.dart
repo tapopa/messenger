@@ -331,8 +331,8 @@ class _FakeGraphQlProvider extends MockedGraphQlProvider {
   }
 
   @override
-  Future<GetUser$Query> getUser(UserId id) async {
-    return GetUser$Query.fromJson({'user': null});
+  Future<UserMixin?> getUser(UserId id) async {
+    return GetUser$Query.fromJson({'user': null}).user;
   }
 
   @override

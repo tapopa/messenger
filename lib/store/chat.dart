@@ -93,6 +93,7 @@ import 'event/chat.dart';
 import 'event/favorite_chat.dart';
 import 'model/chat.dart';
 import 'model/chat_member.dart';
+import 'model/page_info.dart';
 import 'paginated.dart';
 import 'pagination.dart';
 import 'pagination/drift.dart';
@@ -320,15 +321,19 @@ class ChatRepository extends DisposableInterface
 
     // Popup shouldn't listen to recent chats remote updates, as it's happening
     // inside single [Chat].
-    if (!WebUtils.isPopup && _remoteSubscription == null) {
+    if (!WebUtils.isPopup && _remoteSubscription == null && !me.isLocal) {
       _initRemoteSubscription();
       _initFavoriteSubscription();
       _initArchiveSubscription();
     }
 
-    if ((pagination ?? !WebUtils.isPopup) && _paginatedSubscription == null) {
+    if (me.isLocal) {
       _initRemotePagination();
+      _initSupport();
+      _initMonolog();
+    }
 
+    if ((pagination ?? !WebUtils.isPopup) && _paginatedSubscription == null) {
       _paginatedSubscription = paginated.changes.listen((e) {
         switch (e.op) {
           case OperationKind.added:
@@ -2210,7 +2215,7 @@ class ChatRepository extends DisposableInterface
     // [pagination] is `true`, if the [chat] is received from [Pagination],
     // thus otherwise we should try putting it to it.
     if (!pagination && !chat.value.isHidden && !chat.value.isArchived) {
-      await _pagination?.put(chat);
+      await (_pagination ?? _localPagination)?.put(chat);
     }
 
     return rxChat;
@@ -2291,7 +2296,7 @@ class ChatRepository extends DisposableInterface
 
   /// Initializes [_archiveChatsRemoteEvents] subscription.
   Future<void> _initArchiveSubscription() async {
-    if (isClosed) {
+    if (isClosed || me.isLocal) {
       return;
     }
 
@@ -2523,7 +2528,8 @@ class ChatRepository extends DisposableInterface
 
   /// Initializes the [_pagination].
   Future<void> _initRemotePagination() async {
-    if (isClosed) {
+    if (isClosed || me.isLocal) {
+      status.value = RxStatus.success();
       return;
     }
 
@@ -2832,6 +2838,10 @@ class ChatRepository extends DisposableInterface
       '$runtimeType',
     );
 
+    if (me.isLocal) {
+      return Page([], PageInfo());
+    }
+
     final query = (await _graphQlProvider.recentChats(
       first: first,
       after: after,
@@ -3024,7 +3034,7 @@ class ChatRepository extends DisposableInterface
 
   /// Initializes [_favoriteChatsEvents] subscription.
   Future<void> _initFavoriteSubscription() async {
-    if (isClosed) {
+    if (isClosed || me.isLocal) {
       return;
     }
 
@@ -3217,7 +3227,8 @@ class ChatRepository extends DisposableInterface
     await _monologGuard.protect(() async {
       final bool isLocal = monolog.isLocal;
       final bool isPaginated = paginated[monolog] != null;
-      final bool canFetchMore = _pagination?.hasNext.value ?? true;
+      final bool canFetchMore =
+          !me.isLocal && (_pagination?.hasNext.value ?? true);
 
       // If a non-local [monolog] isn't stored and it won't appear from the
       // [Pagination], then initialize local monolog or get a remote one.
@@ -3237,7 +3248,9 @@ class ChatRepository extends DisposableInterface
 
         // Check if there's a remote update (monolog could've been hidden)
         // before creating a local chat.
-        final ChatMixin? maybeMonolog = await _graphQlProvider.getMonolog();
+        final ChatMixin? maybeMonolog = me.isLocal
+            ? null
+            : await _graphQlProvider.getMonolog();
 
         if (maybeMonolog != null) {
           // If the [monolog] was fetched, then update [_monologLocal].
@@ -3248,7 +3261,7 @@ class ChatRepository extends DisposableInterface
             MonologKind.notes,
             this.monolog = monolog.id,
           );
-        } else if (!isStored) {
+        } else if (!isStored || me.isLocal) {
           // If remote monolog doesn't exist and local one is not stored, then
           // create it.
           await _createLocalDialog(me);
@@ -3269,7 +3282,8 @@ class ChatRepository extends DisposableInterface
     await _monologGuard.protect(() async {
       final bool isLocal = support.isLocal;
       final bool isPaginated = paginated[support] != null;
-      final bool canFetchMore = _pagination?.hasNext.value ?? true;
+      final bool canFetchMore =
+          !me.isLocal && (_pagination?.hasNext.value ?? true);
 
       // If a non-local [support] isn't stored and it won't appear from the
       // [Pagination], then initialize local monolog or get a remote one.
@@ -3278,7 +3292,7 @@ class ChatRepository extends DisposableInterface
         final bool isStored =
             await _monologLocal.read(MonologKind.support) != null;
 
-        if (!isStored) {
+        if (!isStored || me.isLocal) {
           // If remote chat doesn't exist and local one is not stored, then
           // create it.
           await _createLocalDialog(_supportId);

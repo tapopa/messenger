@@ -1,60 +1,298 @@
-// Copyright © 2022-2025 IT ENGINEERING MANAGEMENT INC,
-//                       <https://github.com/team113>
-//
-// This program is free software: you can redistribute it and/or modify it under
-// the terms of the GNU Affero General Public License v3.0 as published by the
-// Free Software Foundation, either version 3 of the License, or (at your
-// option) any later version.
-//
-// This program is distributed in the hope that it will be useful, but WITHOUT
-// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-// FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License v3.0 for
-// more details.
-//
-// You should have received a copy of the GNU Affero General Public License v3.0
-// along with this program. If not, see
-// <https://www.gnu.org/licenses/agpl-3.0.html>.
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 
-import '/config.dart';
-import '/domain/model/my_user.dart';
+import '../../../../api/backend/schema.dart';
+import '../../../../config.dart';
+import '../../../../domain/model/application_settings.dart';
+import '../../../../domain/model/chat.dart';
+import '../../../../domain/model/my_user.dart';
+import '../../../../domain/model/session.dart';
+import '../../../../domain/repository/chat.dart';
+import '../../../../domain/repository/settings.dart';
+import '../../../../domain/service/chat.dart';
+import '../../../../domain/service/my_user.dart';
+import '../../../../l10n/l10n.dart';
+import '../../../../provider/gql/exceptions.dart';
+import '../../../../util/log.dart';
+import '../../../../util/message_popup.dart';
+import '../../../widget/text_field.dart';
 import '/domain/model/user.dart';
-import '/domain/service/my_user.dart';
-import '/l10n/l10n.dart';
-import '/provider/gql/exceptions.dart' show CreateChatDirectLinkException;
-import '/ui/widget/text_field.dart';
-import '/util/message_popup.dart';
+import '/domain/service/auth.dart';
+import '/routes.dart';
+import '/util/web/web_utils.dart';
 
-/// Possible [IntroductionViewStage] flow stage.
-enum IntroductionViewStage { oneTime, signUp, link }
+enum IntroductionStage {
+  signInOrSignUp,
+  signIn,
+  signInAs,
+  signInWithPassword,
+  signInWithEmail,
+  signInWithEmailCode,
+  signUp,
+  signUpWithPassword,
+  signUpWithEmail,
+  signUpWithEmailCode,
+  recovery,
+  recoveryCode,
+  recoveryPassword,
+  accountCreating,
+  accountCreated,
+  language,
+  guestCreated,
+}
 
-/// Controller of an [IntroductionView].
 class IntroductionController extends GetxController {
   IntroductionController(
-    this._myUserService, {
-    IntroductionViewStage initial = IntroductionViewStage.oneTime,
-  }) : stage = Rx(initial);
-
-  /// [IntroductionViewStage] currently being displayed.
-  final Rx<IntroductionViewStage> stage;
-
-  /// [ScrollController] to pass to a [Scrollbar].
-  final ScrollController scrollController = ScrollController();
-
-  /// [TextFieldState] of the link to use in [createLink] method.
-  late final TextFieldState link = TextFieldState(
-    text:
-        '$_origin${myUser.value?.chatDirectLink?.slug.val ?? myUser.value?.num.val ?? ChatDirectLinkSlug.generate(10).val}',
-    editable: false,
+    this._authService,
+    this._myUserService,
+    this._chatService,
+    this._settingsRepository,
   );
 
-  /// [MyUser.name] field state.
-  late final TextFieldState name = TextFieldState(
-    text: myUser.value?.name?.val,
+  final RxDouble opacity = RxDouble(1);
+
+  final GlobalKey positionedKey = GlobalKey();
+  final GlobalKey stackKey = GlobalKey();
+
+  final RxBool centered = RxBool(false);
+  final RxBool highlighted = RxBool(false);
+
+  final Rx<IntroductionStage?> page = Rx(null);
+
+  /// Timeout of a [signIn] next invoke attempt.
+  final RxInt signInTimeout = RxInt(0);
+
+  /// Timeout of a [emailCode] next submit attempt.
+  final RxInt codeTimeout = RxInt(0);
+
+  /// Timeout of a [resendEmail] next invoke attempt.
+  final RxInt resendEmailTimeout = RxInt(0);
+
+  /// Amount of [signIn] unsuccessful submitting attempts.
+  int signInAttempts = 0;
+
+  /// Amount of [emailCode] unsuccessful submitting attempts.
+  int codeAttempts = 0;
+
+  IntroductionStage? previousPage;
+  IntroductionStage? returnTo;
+
+  final RxBool fetching = RxBool(false);
+  final Rx<RxChat?> chat = Rx(null);
+
+  MyUser? signInAs;
+
+  /// Indicator whether the [password] should be obscured.
+  final RxBool obscurePassword = RxBool(true);
+
+  /// Indicator whether the [newPassword] should be obscured.
+  final RxBool obscureNewPassword = RxBool(true);
+
+  /// Indicator whether the [repeatPassword] should be obscured.
+  final RxBool obscureRepeatPassword = RxBool(true);
+
+  /// Indicator whether the [emailCode] should be obscured.
+  final RxBool obscureOneTimeCode = RxBool(true);
+
+  /// [TextFieldState] of a login text input.
+  late final TextFieldState login = TextFieldState(
+    onChanged: (_) {
+      login.error.value = null;
+      password.error.value = null;
+      password.unsubmit();
+      repeatPassword.unsubmit();
+    },
+    onSubmitted: (s) {
+      password.focus.requestFocus();
+      s.unsubmit();
+    },
+  );
+
+  /// [TextFieldState] of a password text input.
+  late final TextFieldState password = TextFieldState(
+    onFocus: (s) => s.unsubmit(),
+    onChanged: (_) {
+      login.error.value = null;
+      password.error.value = null;
+      password.unsubmit();
+      repeatPassword.error.value = null;
+      repeatPassword.unsubmit();
+    },
+    onSubmitted: (s) => signIn(),
+  );
+
+  /// [TextFieldState] of a new password text input.
+  late final TextFieldState newPassword = TextFieldState(
+    onChanged: (_) {
+      repeatPassword.error.value = null;
+      repeatPassword.unsubmit();
+    },
+    onSubmitted: (s) {
+      repeatPassword.focus.requestFocus();
+      s.unsubmit();
+    },
+  );
+
+  /// [TextFieldState] of a repeat password text input.
+  late final TextFieldState repeatPassword = TextFieldState(
+    onFocus: (s) {
+      switch (page.value) {
+        case IntroductionStage.signUpWithPassword:
+          if (s.text != password.text && password.isValidated) {
+            s.error.value = 'err_passwords_mismatch'.l10n;
+          }
+          break;
+
+        default:
+          if (s.text != newPassword.text && newPassword.isValidated) {
+            s.error.value = 'err_passwords_mismatch'.l10n;
+          }
+          break;
+      }
+    },
+    onSubmitted: (s) async {
+      switch (page.value) {
+        case IntroductionStage.signUpWithPassword:
+          final userLogin = UserLogin.tryParse(login.text);
+          final userPassword = UserPassword.tryParse(password.text);
+
+          if (userLogin == null) {
+            login.error.value = 'err_incorrect_login_input'.l10n;
+            return;
+          }
+
+          if (userPassword == null) {
+            password.error.value = 'err_password_incorrect'.l10n;
+            return;
+          }
+
+          try {
+            await register(login: userLogin, password: userPassword);
+          } on SignUpException catch (e) {
+            login.error.value = e.toMessage();
+          } catch (e) {
+            password.error.value = 'err_data_transfer'.l10n;
+            rethrow;
+          }
+          break;
+
+        default:
+          // await resetUserPassword();
+          break;
+      }
+    },
+  );
+
+  /// [TextFieldState] for an [UserEmail] text input.
+  late final TextFieldState email = TextFieldState(
+    onFocus: (s) {},
+    onSubmitted: (s) async {
+      final UserEmail? email = UserEmail.tryParse(s.text.toLowerCase());
+      final UserLogin? login = UserLogin.tryParse(s.text.toLowerCase());
+      final UserNum? userNum = UserNum.tryParse(s.text.toLowerCase());
+
+      emailCode.clear();
+
+      final IntroductionStage? previous = page.value;
+
+      page.value = switch (page.value) {
+        IntroductionStage.signInWithEmail =>
+          IntroductionStage.signInWithEmailCode,
+        (_) => IntroductionStage.signUpWithEmailCode,
+      };
+
+      try {
+        _setResendEmailTimer();
+
+        // Simulate like everything's alright despite not sending anything.
+        if (login != null || userNum != null || email != null) {
+          await _authService.createConfirmationCode(
+            email: email,
+            login: login,
+            num: userNum,
+          );
+        }
+
+        s.unsubmit();
+      } on AddUserEmailException catch (e) {
+        s.error.value = e.toMessage();
+        _setResendEmailTimer(false);
+
+        page.value = previous;
+      } catch (_) {
+        s.resubmitOnError.value = true;
+        s.error.value = 'err_data_transfer'.l10n;
+        _setResendEmailTimer(false);
+        s.unsubmit();
+
+        page.value = previous;
+        rethrow;
+      }
+    },
+  );
+
+  late final TextFieldState emailCode = TextFieldState(
+    onSubmitted: (s) async {
+      s.status.value = RxStatus.loading();
+      try {
+        final bool authorized = _authService.isAuthorized();
+
+        await _authService.signIn(
+          email: UserEmail(email.text),
+          code: ConfirmationCode(emailCode.text),
+          force: true,
+          // removeAfterwards: userId,
+        );
+
+        // TODO: This is a hack that should be removed, as whenever the account
+        //       is changed, the [HomeView] and its dependencies must be
+        //       rebuilt, which may take some unidentifiable amount of time as
+        //       of now.
+        if (authorized) {
+          router.nowhere();
+          await Future.delayed(const Duration(milliseconds: 500));
+        }
+
+        router.home(signedUp: true);
+      } on CreateSessionException catch (e) {
+        switch (e.code) {
+          case CreateSessionErrorCode.wrongCode:
+            s.error.value = e.toMessage();
+
+            ++codeAttempts;
+            if (codeAttempts >= 3) {
+              codeAttempts = 0;
+              _setCodeTimer();
+            }
+            s.status.value = RxStatus.empty();
+            break;
+
+          default:
+            s.error.value = 'err_wrong_code'.l10n;
+            break;
+        }
+      } on FormatException catch (_) {
+        s.error.value = 'err_wrong_code'.l10n;
+        s.status.value = RxStatus.empty();
+        ++codeAttempts;
+        if (codeAttempts >= 3) {
+          codeAttempts = 0;
+          _setCodeTimer();
+        }
+      } catch (_) {
+        s.resubmitOnError.value = true;
+        s.error.value = 'err_data_transfer'.l10n;
+        s.status.value = RxStatus.empty();
+        s.unsubmit();
+        rethrow;
+      }
+    },
+  );
+
+  late final TextFieldState signUpName = TextFieldState(
     onFocus: (s) async {
       s.error.value = null;
 
@@ -77,42 +315,399 @@ class IntroductionController extends GetxController {
     },
   );
 
-  /// Origin to display withing the [link] field.
-  late final String _origin = Config.link.substring(
-    Config.link.indexOf(':') + 3,
+  late final TextFieldState signUpLogin = TextFieldState(
+    onFocus: (s) async {
+      s.error.value = null;
+
+      if (s.text.trim().isNotEmpty) {
+        try {
+          UserLogin(s.text);
+        } on FormatException catch (_) {
+          s.error.value = 'err_incorrect_input'.l10n;
+          return;
+        }
+      }
+
+      final UserLogin? login = UserLogin.tryParse(s.text.toLowerCase());
+
+      try {
+        await _myUserService.updateUserLogin(login);
+      } on UpdateUserLoginException catch (e) {
+        s.error.value = e.toMessage();
+      } catch (_) {
+        s.error.value = 'err_data_transfer'.l10n;
+      }
+    },
   );
 
-  /// [MyUserService] maintaining the [myUser].
-  final MyUserService _myUserService;
+  late final TextFieldState signUpEmail = TextFieldState(
+    onFocus: (s) {
+      if (s.text.trim().isNotEmpty) {
+        try {
+          final email = UserEmail(s.text);
 
-  /// Returns the currently authenticated [MyUser].
+          if (myUser.value?.emails.confirmed.contains(email) == true ||
+              myUser.value?.emails.unconfirmed == email) {
+            s.error.value = 'err_you_already_add_this_email'.l10n;
+          }
+        } catch (e) {
+          s.error.value = 'err_incorrect_email'.l10n;
+        }
+      }
+    },
+    onSubmitted: (s) async {},
+  );
+
+  final AuthService _authService;
+  final MyUserService _myUserService;
+  final ChatService _chatService;
+  final AbstractSettingsRepository _settingsRepository;
+
+  /// [Timer] disabling [signIn] invoking for [signInTimeout].
+  Timer? _signInTimer;
+
+  /// [Timer] used to disable resend code button [resendEmailTimeout].
+  Timer? _resendEmailTimer;
+
+  /// [Timer] disabling [emailCode] submitting for [codeTimeout].
+  Timer? _codeTimer;
+
+  bool _byLink = false;
+  ChatDirectLinkSlug? _slug;
+
+  UserId? get userId => _authService.userId;
+
+  /// Returns the reactive list of known [MyUser]s.
+  RxList<MyUser> get profiles => _authService.profiles;
+
+  /// Returns the [Credentials] of the available accounts.
+  RxMap<UserId, Rx<Credentials>> get accounts => _authService.accounts;
+
   Rx<MyUser?> get myUser => _myUserService.myUser;
 
+  /// Current authentication status.
+  Rx<RxStatus> get authStatus => _authService.status;
+
+  Rx<ApplicationSettings?> get settings =>
+      _settingsRepository.applicationSettings;
+
   @override
-  void onClose() {
-    scrollController.dispose();
-    super.onClose();
-  }
+  void onInit() {
+    _scheduleDeleteLoader();
 
-  /// Creates a [ChatDirectLink] from the [link].
-  Future<void> createLink() async {
-    final String text = link.text.replaceFirst(_origin, '');
+    SchedulerBinding.instance.addPostFrameCallback(
+      (_) => WebUtils.deleteLoader(/*false*/),
+    );
 
-    if (myUser.value?.chatDirectLink?.slug.val == text) {
-      return;
+    _byLink = router.byLink;
+
+    if (_byLink) {
+      final String? slug = router.initial?.uri.path.replaceFirst(
+        Routes.chatDirectLink,
+        '',
+      );
+
+      if (slug != null) {
+        _slug = ChatDirectLinkSlug(slug);
+        _scheduleChat();
+      }
+    } else {
+      _scheduleSupport();
     }
 
-    if (!link.status.value.isEmpty) {
+    final bool byDev =
+        router.initial?.uri.path.startsWith(Routes.style) == true;
+    final bool isLocal = _authService.userId.isLocal;
+
+    final bool showIntroduction =
+        settings.value?.showIntroduction !=
+        false /*&&
+        router.switchedFrom == null*/;
+
+    opacity.value = showIntroduction ? 1 : 0;
+    // if (router.switchedFrom != null) {
+    //   dismiss();
+    // }
+
+    if (showIntroduction && !byDev && isLocal) {
+      // router.displayNoPassword.value = false;
+
+      // if (!_byLink) {
+      //   final slug = ChatDirectLinkSlug('tapopa_');
+      //   _authService
+      //       .useChatDirectLink(slug)
+      //       .then((chat) => router.chat(chat.id, link: slug));
+      // }
+    } else {
+      // router.displayNoPassword.value = true;
+    }
+
+    super.onInit();
+  }
+
+  /// Signs in and redirects to the [Routes.home] page.
+  ///
+  /// Username is [login]'s text and the password is [password]'s text.
+  Future<void> signIn() async {
+    final String input = login.text.toLowerCase();
+
+    final UserLogin? userLogin = UserLogin.tryParse(input);
+    final UserNum? userNum = UserNum.tryParse(input);
+    final UserEmail? userEmail = UserEmail.tryParse(input);
+    final UserPhone? userPhone = UserPhone.tryParse(input);
+    final UserPassword? userPassword = UserPassword.tryParse(password.text);
+
+    login.error.value = null;
+    password.error.value = null;
+
+    final bool noCredentials =
+        userLogin == null &&
+        userNum == null &&
+        userEmail == null &&
+        userPhone == null;
+
+    if (noCredentials || userPassword == null) {
+      login.error.value = '';
+      password.error.value = 'err_incorrect_login_or_password'.l10n;
+      password.unsubmit();
       return;
     }
 
     try {
-      await _myUserService.createChatDirectLink(ChatDirectLinkSlug(text));
-    } on CreateChatDirectLinkException catch (e) {
-      link.error.value = e.toMessage();
+      login.status.value = RxStatus.loading();
+      password.status.value = RxStatus.loading();
+
+      final bool authorized = _authService.isAuthorized();
+
+      // router.switchedFrom = userId;
+
+      await _authService.signIn(
+        password: userPassword,
+        login: userLogin,
+        num: userNum,
+        email: userEmail,
+        phone: userPhone,
+        force: authorized,
+        // removeAfterwards: userId,
+      );
+
+      // TODO: This is a hack that should be removed, as whenever the account
+      //       is changed, the [HomeView] and its dependencies must be
+      //       rebuilt, which may take some unidentifiable amount of time as
+      //       of now.
+      if (authorized) {
+        router.nowhere();
+        await Future.delayed(const Duration(milliseconds: 500));
+      }
+
+      router.home();
+    } on CreateSessionException catch (e) {
+      ++signInAttempts;
+
+      if (signInAttempts >= 3) {
+        // Wrong password was entered three times. Login is possible in N
+        // seconds.
+        signInAttempts = 0;
+        _setSignInTimer();
+      }
+
+      login.error.value = '';
+      password.error.value = e.toMessage();
+    } on ConnectionException {
+      password.unsubmit();
+      password.resubmitOnError.value = true;
+      password.error.value = 'err_data_transfer'.l10n;
+    } catch (e) {
+      password.unsubmit();
+      password.resubmitOnError.value = true;
+      password.error.value = 'err_data_transfer'.l10n;
+      rethrow;
+    } finally {
+      login.status.value = RxStatus.empty();
+      password.status.value = RxStatus.empty();
+    }
+  }
+
+  /// Creates a new one-time account right away.
+  Future<void> register({UserLogin? login, UserPassword? password}) async {
+    try {
+      await _authService.register(
+        password: password,
+        login: login,
+        force: true,
+        // removeAfterwards: userId,
+      );
+    } on SignUpException catch (e) {
+      this.login.error.value = e.toMessage();
+    } on ConnectionException {
+      MessagePopup.error('err_data_transfer'.l10n);
     } catch (e) {
       MessagePopup.error(e);
       rethrow;
+    }
+  }
+
+  /// Deletes the account with the provided [UserId] from the list.
+  ///
+  /// Also performs logout, when deleting the current account.
+  Future<void> deleteAccount(UserId id) async {
+    profiles.removeWhere((e) => e.id == id);
+
+    if (id == _authService.userId) {
+      _authService.logout();
+      router.auth();
+      router.tab = HomeTab.chats;
+    } else {
+      await _authService.removeAccount(id);
+    }
+  }
+
+  /// Switches to the account with the given [id].
+  Future<void> switchTo(UserId id) async {
+    // router.switchedFrom = userId;
+
+    try {
+      // TODO: This is a hack that should be removed, as whenever the account is
+      //       changed, the [HomeView] and its dependencies must be rebuilt,
+      //       which may take some unidentifiable amount of time as of now.
+      router.nowhere();
+
+      final bool succeeded = await _authService.switchAccount(id);
+      if (succeeded) {
+        await Future.delayed(500.milliseconds);
+        router.tab = HomeTab.chats;
+        router.home();
+      } else {
+        await Future.delayed(500.milliseconds);
+        router.home();
+        await Future.delayed(500.milliseconds);
+        MessagePopup.error('err_account_unavailable'.l10n);
+      }
+    } catch (e) {
+      await Future.delayed(500.milliseconds);
+      router.home();
+      await Future.delayed(500.milliseconds);
+      MessagePopup.error(e);
+    }
+  }
+
+  /// Resends a [ConfirmationCode] to the specified [email].
+  Future<void> resendEmail() async {
+    _setResendEmailTimer();
+
+    try {
+      await _authService.createConfirmationCode(email: UserEmail(email.text));
+    } on AddUserEmailException catch (e) {
+      emailCode.error.value = e.toMessage();
+    } catch (e) {
+      emailCode.resubmitOnError.value = true;
+      emailCode.error.value = 'err_data_transfer'.l10n;
+      _setResendEmailTimer(false);
+      rethrow;
+    }
+  }
+
+  Future<void> dismiss() async {
+    opacity.value = 0;
+    await _settingsRepository.setShowIntroduction(false);
+  }
+
+  void _scheduleDeleteLoader() {
+    if (router.route.startsWith(Routes.chatDirectLink)) {
+      SchedulerBinding.instance.addPostFrameCallback(
+        (_) => _scheduleDeleteLoader(),
+      );
+    } else {
+      Future.delayed(const Duration(seconds: 2), () => WebUtils.deleteLoader());
+    }
+  }
+
+  /// Starts or stops the [_resendEmailTimer] based on [enabled] value.
+  void _setResendEmailTimer([bool enabled = true]) {
+    if (enabled) {
+      resendEmailTimeout.value = 30;
+      _resendEmailTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+        resendEmailTimeout.value--;
+        if (resendEmailTimeout.value <= 0) {
+          resendEmailTimeout.value = 0;
+          _resendEmailTimer?.cancel();
+          _resendEmailTimer = null;
+        }
+      });
+    } else {
+      resendEmailTimeout.value = 0;
+      _resendEmailTimer?.cancel();
+      _resendEmailTimer = null;
+    }
+  }
+
+  /// Starts or stops the [_signInTimer] based on [enabled] value.
+  void _setSignInTimer([bool enabled = true]) {
+    if (enabled) {
+      password.submittable.value = false;
+      signInTimeout.value = 30;
+      _signInTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+        signInTimeout.value--;
+        if (signInTimeout.value <= 0) {
+          password.submittable.value = true;
+          signInTimeout.value = 0;
+          _signInTimer?.cancel();
+          _signInTimer = null;
+        }
+      });
+    } else {
+      password.submittable.value = true;
+      signInTimeout.value = 0;
+      _signInTimer?.cancel();
+      _signInTimer = null;
+    }
+  }
+
+  /// Starts or stops the [_codeTimer] based on [enabled] value.
+  void _setCodeTimer([bool enabled = true]) {
+    if (enabled) {
+      emailCode.submittable.value = false;
+      codeTimeout.value = 30;
+      _codeTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+        codeTimeout.value--;
+        if (codeTimeout.value <= 0) {
+          emailCode.submittable.value = true;
+          codeTimeout.value = 0;
+          _codeTimer?.cancel();
+          _codeTimer = null;
+        }
+      });
+    } else {
+      emailCode.submittable.value = true;
+      codeTimeout.value = 0;
+      _codeTimer?.cancel();
+      _codeTimer = null;
+    }
+  }
+
+  Future<void> _scheduleSupport() async {
+    final ChatId chatId = ChatId.local(UserId(Config.supportId));
+
+    chat.value = await _chatService.get(chatId);
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      router.chat(chatId);
+    });
+  }
+
+  Future<void> _scheduleChat() async {
+    if (_slug != null) {
+      try {
+        fetching.value = true;
+
+        final Chat value = await _authService.useChatDirectLink(_slug!);
+
+        chat.value = await _chatService.get(value.id);
+      } catch (e) {
+        Log.error('Unable to `_scheduleChat()` -> $e', '$runtimeType');
+      } finally {
+        fetching.value = false;
+      }
     }
   }
 }

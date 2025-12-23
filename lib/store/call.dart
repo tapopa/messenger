@@ -119,6 +119,10 @@ class CallRepository extends DisposableInterface
   void onInit() {
     Log.debug('onInit()', '$runtimeType');
 
+    if (me.isLocal) {
+      return super.onInit();
+    }
+
     _subscribe(3);
     super.onInit();
   }

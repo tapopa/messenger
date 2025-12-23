@@ -65,8 +65,31 @@ mixin UserGraphQlMixin {
   /// ### Authentication
   ///
   /// Optional.
-  Future<GetUser$Query> getUser(UserId id) async {
+  Future<UserMixin?> getUser(UserId id) async {
     Log.debug('getUser($id)', '$runtimeType');
+
+    if (client.token == null) {
+      final variables = GetAnonUserArguments(id: id);
+      QueryResult res = await client.query(
+        QueryOptions(
+          operationName: 'GetAnonUser',
+          document: GetAnonUserQuery(variables: variables).document,
+          variables: variables.toJson(),
+        ),
+      );
+
+      final anon = GetAnonUser$Query.fromJson(res.data!).user;
+      if (anon == null) {
+        return null;
+      }
+
+      return GetUser$Query.fromJson({
+        'user': {
+          ...anon.toJson(),
+          'isBlocked': {'record': null, 'ver': '0'},
+        },
+      }).user;
+    }
 
     final variables = GetUserArguments(id: id);
     QueryResult res = await client.query(
@@ -76,7 +99,8 @@ mixin UserGraphQlMixin {
         variables: variables.toJson(),
       ),
     );
-    return GetUser$Query.fromJson(res.data!);
+
+    return GetUser$Query.fromJson(res.data!).user;
   }
 
   /// Searches [User]s by the given criteria.

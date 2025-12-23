@@ -139,6 +139,12 @@ class BlocklistRepository extends DisposableInterface
 
   @override
   void onInit() {
+    Log.debug('onInit()', '$runtimeType');
+
+    if (me.isLocal) {
+      return super.onInit();
+    }
+
     _initRemoteSubscription();
 
     count.value = _sessionLocal.data[me]?.blocklistCount ?? 0;

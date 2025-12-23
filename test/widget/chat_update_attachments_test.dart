@@ -447,7 +447,7 @@ void main() async {
     authService.init();
 
     UserRepository userRepository = Get.put(
-      UserRepository(graphQlProvider, userProvider),
+      UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
     );
     BlocklistRepository blocklistRepository = Get.put(
       BlocklistRepository(
@@ -510,6 +510,7 @@ void main() async {
             blocklistRepository,
             userRepository,
             accountProvider,
+            me: const UserId('me'),
           ),
         ),
       ),

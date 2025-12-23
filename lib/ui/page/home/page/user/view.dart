@@ -232,7 +232,7 @@ class UserView extends StatelessWidget {
         if (c.isSupport) ...[
           const SizedBox(height: 12),
           Text(
-            'label_support_service',
+            'label_support_service'.l10n,
             style: style.fonts.small.regular.secondary,
           ),
         ],

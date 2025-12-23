@@ -128,7 +128,7 @@ class AuthService extends DisposableService {
   final Map<UserId, Stopwatch> _refreshedAt = {};
 
   /// Returns the currently authorized [Credentials.userId].
-  UserId? get userId => credentials.value?.userId;
+  UserId get userId => credentials.value?.userId ?? UserId.local();
 
   /// Returns the reactive list of known [MyUser]s.
   RxList<MyUser> get profiles => _authRepository.profiles;
@@ -519,9 +519,7 @@ class AuthService extends DisposableService {
     }
 
     if (force) {
-      if (userId != null) {
-        _authRepository.removeAccount(userId!);
-      }
+      _authRepository.removeAccount(userId);
 
       _unauthorized();
 
@@ -554,14 +552,12 @@ class AuthService extends DisposableService {
   Future<String> logout([bool keepProfile = false]) async {
     Log.debug('logout()', '$runtimeType');
 
-    if (userId != null) {
-      accounts.remove(userId);
-      if (!keepProfile) {
-        profiles.removeWhere((e) => e.id == userId);
-      }
-
-      _authRepository.removeAccount(userId!, keepProfile: keepProfile);
+    accounts.remove(userId);
+    if (!keepProfile) {
+      profiles.removeWhere((e) => e.id == userId);
     }
+
+    _authRepository.removeAccount(userId, keepProfile: keepProfile);
 
     return await deleteSession(keepData: keepProfile) ?? Routes.auth;
   }
@@ -1041,6 +1037,8 @@ class AuthService extends DisposableService {
   Future<void> _authorized(Credentials creds) async {
     Log.debug('_authorized($creds)', '$runtimeType');
 
+    final UserId previous = UserId(userId.val.toString());
+
     _authRepository.token = creds.access.secret;
     credentials.value = creds;
     _putCredentials(creds);
@@ -1054,19 +1052,26 @@ class AuthService extends DisposableService {
     _initRefreshTimers();
 
     status.value = RxStatus.loadingMore();
+
+    if (previous != userId) {
+      // for (var e in Get.find()) {
+      //   if (e is IdentityAware) {
+      //     e.onIdentityChanged(userId);
+      //   }
+      // }
+    }
   }
 
   /// Sets authorized [status] to `isEmpty` (aka "unauthorized").
   String _unauthorized() {
     Log.debug('_unauthorized()', '$runtimeType');
 
-    final UserId? id = userId;
-    if (id != null) {
-      _credentialsProvider.delete(id);
-      _refreshTimers.remove(id)?.cancel();
-      accounts.remove(id);
-      WebUtils.removeCredentials(id);
-    }
+    final UserId id = userId;
+
+    _credentialsProvider.delete(id);
+    _refreshTimers.remove(id)?.cancel();
+    accounts.remove(id);
+    WebUtils.removeCredentials(id);
 
     if (id == _accountProvider.userId) {
       // This workarounds the situation when another tab on Web has already

@@ -179,6 +179,7 @@ void main() async {
     final UserRepository userRepository = UserRepository(
       graphQlProvider,
       userProvider,
+      me: const UserId('me'),
     );
     final CallRepository callRepository = Get.put(
       CallRepository(
@@ -270,6 +271,7 @@ void main() async {
     final UserRepository userRepository = UserRepository(
       graphQlProvider,
       userProvider,
+      me: const UserId('me'),
     );
     final CallRepository callRepository = Get.put(
       CallRepository(

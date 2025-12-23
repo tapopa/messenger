@@ -24,10 +24,12 @@ import '/domain/model/country.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/price.dart';
+import '/domain/model/user.dart';
 import '/domain/repository/wallet.dart';
 import '/provider/gql/graphql.dart';
 import '/util/log.dart';
 import 'model/operation.dart';
+import 'model/page_info.dart';
 import 'paginated.dart';
 import 'pagination.dart';
 import 'pagination/graphql.dart';
@@ -38,10 +40,13 @@ typedef OperationsPaginated =
 /// [MyUser] wallet repository interface.
 class WalletRepository extends DisposableInterface
     implements AbstractWalletRepository {
-  WalletRepository(this._graphQlProvider);
+  WalletRepository(this._graphQlProvider, {required this.me});
 
   @override
   final RxDouble balance = RxDouble(0);
+
+  /// [UserId] of the currently authenticated [MyUser].
+  final UserId me;
 
   @override
   late final OperationsPaginated operations = OperationsPaginated(
@@ -124,6 +129,10 @@ class WalletRepository extends DisposableInterface
     OperationsCursor? before,
   }) async {
     Log.debug('_operations($first, $after, $last, $before)', '$runtimeType');
+
+    if (me.isLocal) {
+      return Page([], PageInfo());
+    }
 
     final query = await _graphQlProvider.operations(
       first: first,

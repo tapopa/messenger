@@ -54,14 +54,18 @@ class SessionRepository extends DisposableInterface
     this._versionLocal,
     this._sessionLocal,
     this._geoLocal,
-    this._geoProvider,
-  );
+    this._geoProvider, {
+    required this.me,
+  });
 
   @override
   final RxList<RxSessionImpl> sessions = RxList();
 
   @override
   final RxBool connected = RxBool(true);
+
+  /// [UserId] of the currently authenticated [MyUser].
+  final UserId me;
 
   /// GraphQL API provider.
   final GraphQlProvider _graphQlProvider;
@@ -229,7 +233,7 @@ class SessionRepository extends DisposableInterface
 
   /// Initializes [_sessionRemoteEvents] subscription.
   Future<void> _initRemoteSubscription() async {
-    if (isClosed) {
+    if (isClosed || me.isLocal) {
       return;
     }
 

@@ -37,7 +37,7 @@ final StepDefinitionGeneric seesAs =
           var response = await provider.getUser(
             context.world.sessions[user2.name]!.userId,
           );
-          var user = response.user?.toModel();
+          var user = response?.toModel();
 
           return (status == OnlineStatus.online && user?.online == true) ||
               (status == OnlineStatus.offline && user?.online == false);

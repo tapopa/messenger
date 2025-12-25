@@ -23,7 +23,7 @@ class ScopedDependencies {
   final List<void Function()> _cleanup = [];
 
   /// Puts the given [dependency] in this scope.
-  T put<T>(T dependency) {
+  T put<T extends Object>(T dependency) {
     _cleanup.add(() => Get.delete<T>());
     return Get.put<T>(dependency);
   }

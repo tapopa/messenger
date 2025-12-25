@@ -575,8 +575,11 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
               final ScopedDependencies deps = ScopedDependencies();
               final UserId me = _state._auth.userId;
 
+              final GraphQlProvider graphQlProvider = Get.find();
+              final AuthService authService = Get.find();
+
               final ScopedDriftProvider scoped = deps.put(
-                ScopedDriftProvider.from(deps.put(ScopedDatabase(me))),
+                ScopedDriftProvider.from(deps.put(ScopedDatabase(me)), me: me),
               );
 
               deps.put(UserDriftProvider(Get.find(), scoped));
@@ -594,7 +597,12 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
 
               final AbstractSettingsRepository settingsRepository = deps
                   .put<AbstractSettingsRepository>(
-                    SettingsRepository(me, Get.find(), Get.find(), Get.find()),
+                    SettingsRepository(
+                      Get.find(),
+                      Get.find(),
+                      Get.find(),
+                      me: me,
+                    ),
                   );
 
               // Should be awaited to ensure [PopupCallView] using the stored
@@ -605,7 +613,6 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
               // it sets the stored [Language] from the [SettingsRepository].
               await deps.put(SettingsWorker(settingsRepository)).init();
 
-              final GraphQlProvider graphQlProvider = Get.find();
               final UserRepository userRepository = UserRepository(
                 graphQlProvider,
                 Get.find(),
@@ -714,8 +721,11 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
               final ScopedDependencies deps = ScopedDependencies();
               final UserId me = _state._auth.userId;
 
+              final GraphQlProvider graphQlProvider = Get.find();
+              final AuthService authService = Get.find();
+
               final ScopedDriftProvider scoped = deps.put(
-                ScopedDriftProvider.from(deps.put(ScopedDatabase(me))),
+                ScopedDriftProvider.from(deps.put(ScopedDatabase(me)), me: me),
               );
 
               deps.put(UserDriftProvider(Get.find(), scoped));
@@ -733,7 +743,12 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
 
               final AbstractSettingsRepository settingsRepository = deps
                   .put<AbstractSettingsRepository>(
-                    SettingsRepository(me, Get.find(), Get.find(), Get.find()),
+                    SettingsRepository(
+                      Get.find(),
+                      Get.find(),
+                      Get.find(),
+                      me: me,
+                    ),
                   );
 
               // Should be awaited to ensure [PopupGalleryView] using the stored
@@ -744,7 +759,6 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
               // it sets the stored [Language] from the [SettingsRepository].
               await deps.put(SettingsWorker(settingsRepository)).init();
 
-              final GraphQlProvider graphQlProvider = Get.find();
               final UserRepository userRepository = UserRepository(
                 graphQlProvider,
                 Get.find(),
@@ -837,7 +851,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
             final ScopedDependencies deps = ScopedDependencies();
 
             final ScopedDriftProvider scoped = deps.put(
-              ScopedDriftProvider.from(deps.put(ScopedDatabase(me))),
+              ScopedDriftProvider.from(deps.put(ScopedDatabase(me)), me: me),
             );
 
             final CommonDriftProvider common = Get.find();
@@ -873,6 +887,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
             await versionProvider.init();
 
             final GraphQlProvider graphQlProvider = Get.find();
+            final AuthService authService = Get.find();
 
             final NotificationService notificationService = deps.put(
               NotificationService(graphQlProvider),
@@ -927,10 +942,10 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
             final AbstractSettingsRepository settingsRepository = deps
                 .put<AbstractSettingsRepository>(
                   SettingsRepository(
-                    me,
                     Get.find(),
                     Get.find(),
                     callRectProvider,
+                    me: me,
                   ),
                 );
 
@@ -1075,7 +1090,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
             deps.put(WalletService(walletRepository));
 
             final AbstractPartnerRepository partnerRepository = deps
-                .put<AbstractPartnerRepository>(PartnerRepository());
+                .put<AbstractPartnerRepository>(PartnerRepository(me: me));
             deps.put(PartnerService(partnerRepository));
 
             deps.put(
@@ -1083,7 +1098,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
                 callService,
                 chatService,
                 myUserService,
-                Get.find(),
+                notificationService,
                 Get.find(),
                 settingsRepository,
                 graphQlProvider,
@@ -1091,7 +1106,9 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
               ),
             );
 
-            deps.put(ChatWorker(chatService, myUserService, Get.find()));
+            deps.put(
+              ChatWorker(chatService, myUserService, notificationService),
+            );
 
             deps.put(MyUserWorker(myUserService));
 

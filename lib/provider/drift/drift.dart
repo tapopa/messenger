@@ -22,6 +22,7 @@ import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:get/get.dart' show DisposableInterface;
 import 'package:log_me/log_me.dart';
 
+import '../../domain/service/disposable_service.dart';
 import '/config.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/sending_status.dart';
@@ -546,18 +547,22 @@ final class CommonDriftProvider extends DisposableInterface {
 }
 
 /// [ScopedDatabase] provider.
-final class ScopedDriftProvider extends DisposableInterface {
+final class ScopedDriftProvider extends IdentityDependency {
   /// Constructs a [ScopedDriftProvider] with the in-memory database.
   ScopedDriftProvider.memory()
-    : db = ScopedDatabase(const UserId('me'), inMemory());
+    : db = ScopedDatabase(const UserId('me'), inMemory()),
+      _memory = true,
+      super(me: const UserId('me'));
 
   /// Constructs a [ScopedDriftProvider] with the provided [db].
-  ScopedDriftProvider.from(this.db);
+  ScopedDriftProvider.from(this.db, {required super.me}) : _memory = false;
 
   /// [ScopedDatabase] itself.
   ///
   /// `null` here means the database is closed.
   ScopedDatabase? db;
+
+  final bool _memory;
 
   /// [Completer]s of [wrapped] operations to await in [onClose].
   final List<Completer> _completers = [];
@@ -583,6 +588,23 @@ final class ScopedDriftProvider extends DisposableInterface {
     close();
 
     super.onClose();
+  }
+
+  @override
+  void onIdentityChanged(UserId me) async {
+    super.onIdentityChanged(me);
+
+    Log.debug('onIdentityChanged($me)', '$runtimeType');
+
+    await close();
+
+    if (_memory) {
+      db = ScopedDatabase(me, inMemory());
+    } else {
+      db = ScopedDatabase(me);
+    }
+
+    await _caught(db?.create());
   }
 
   /// Closes this [ScopedDriftProvider].

@@ -26,6 +26,7 @@ import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/price.dart';
 import '/domain/model/user.dart';
 import '/domain/repository/wallet.dart';
+import '/domain/service/disposable_service.dart';
 import '/provider/gql/graphql.dart';
 import '/util/log.dart';
 import 'model/operation.dart';
@@ -38,15 +39,12 @@ typedef OperationsPaginated =
     RxPaginatedImpl<OperationId, Operation, DtoOperation, OperationsCursor>;
 
 /// [MyUser] wallet repository interface.
-class WalletRepository extends DisposableInterface
+class WalletRepository extends IdentityDependency
     implements AbstractWalletRepository {
-  WalletRepository(this._graphQlProvider, {required this.me});
+  WalletRepository(this._graphQlProvider, {required super.me});
 
   @override
   final RxDouble balance = RxDouble(0);
-
-  /// [UserId] of the currently authenticated [MyUser].
-  final UserId me;
 
   @override
   late final OperationsPaginated operations = OperationsPaginated(
@@ -117,8 +115,21 @@ class WalletRepository extends DisposableInterface
 
   @override
   void onInit() {
-    operations.around();
+    Log.debug('onInit()', '$runtimeType');
     super.onInit();
+  }
+
+  @override
+  void onIdentityChanged(UserId me) {
+    super.onIdentityChanged(me);
+
+    Log.debug('onIdentityChanged($me)', '$runtimeType');
+
+    operations.clear();
+
+    if (!me.isLocal) {
+      operations.around();
+    }
   }
 
   /// Fetches purse operations with pagination.

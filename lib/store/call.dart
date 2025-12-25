@@ -35,6 +35,7 @@ import '/domain/model/user.dart';
 import '/domain/repository/call.dart';
 import '/domain/repository/chat.dart';
 import '/domain/repository/settings.dart';
+import '/domain/service/disposable_service.dart';
 import '/provider/drift/call_credentials.dart';
 import '/provider/drift/chat_credentials.dart';
 import '/provider/gql/exceptions.dart'
@@ -57,7 +58,7 @@ import 'event/chat_call.dart';
 import 'event/incoming_chat_call.dart';
 
 /// Implementation of an [AbstractCallRepository].
-class CallRepository extends DisposableInterface
+class CallRepository extends IdentityDependency
     implements AbstractCallRepository {
   CallRepository(
     this._graphQlProvider,
@@ -65,7 +66,7 @@ class CallRepository extends DisposableInterface
     this._callCredentialsProvider,
     this._chatCredentialsProvider,
     this._settingsRepo, {
-    required this.me,
+    required super.me,
   });
 
   /// Callback, called when the provided [Chat] should be remotely accessible.
@@ -74,9 +75,6 @@ class CallRepository extends DisposableInterface
   @override
   final RxObsMap<ChatId, Rx<OngoingCall>> calls =
       RxObsMap<ChatId, Rx<OngoingCall>>();
-
-  /// [UserId] of the currently authenticated [MyUser].
-  final UserId me;
 
   /// GraphQL API provider.
   final GraphQlProvider _graphQlProvider;
@@ -118,12 +116,6 @@ class CallRepository extends DisposableInterface
   @override
   void onInit() {
     Log.debug('onInit()', '$runtimeType');
-
-    if (me.isLocal) {
-      return super.onInit();
-    }
-
-    _subscribe(3);
     super.onInit();
   }
 
@@ -131,13 +123,28 @@ class CallRepository extends DisposableInterface
   void onClose() {
     Log.debug('onClose()', '$runtimeType');
 
-    _remoteSubscription?.cancel(immediate: true);
-
+    _remoteSubscription?.close(immediate: true);
     for (Rx<OngoingCall> call in List.from(calls.values, growable: false)) {
       remove(call.value.chatId.value);
     }
 
     super.onClose();
+  }
+
+  @override
+  void onIdentityChanged(UserId me) {
+    super.onIdentityChanged(me);
+
+    Log.debug('onIdentityChanged($me)', '$runtimeType');
+
+    _remoteSubscription?.close(immediate: true);
+    for (Rx<OngoingCall> call in List.from(calls.values, growable: false)) {
+      remove(call.value.chatId.value);
+    }
+
+    if (!me.isLocal) {
+      _subscribe(3);
+    }
   }
 
   @override
@@ -978,7 +985,7 @@ class CallRepository extends DisposableInterface
 
     Log.debug('_subscribe($count)', '$runtimeType');
 
-    _remoteSubscription?.cancel(immediate: true);
+    _remoteSubscription?.close(immediate: true);
 
     await WebUtils.protect(() async {
       _remoteSubscription = StreamQueue(_incomingEvents(count));

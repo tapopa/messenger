@@ -4,44 +4,44 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 
-import '../../../../api/backend/schema.dart';
-import '../../../../config.dart';
-import '../../../../domain/model/application_settings.dart';
-import '../../../../domain/model/chat.dart';
-import '../../../../domain/model/my_user.dart';
-import '../../../../domain/model/session.dart';
-import '../../../../domain/repository/chat.dart';
-import '../../../../domain/repository/settings.dart';
-import '../../../../domain/service/chat.dart';
-import '../../../../domain/service/my_user.dart';
-import '../../../../l10n/l10n.dart';
-import '../../../../provider/gql/exceptions.dart';
-import '../../../../util/log.dart';
-import '../../../../util/message_popup.dart';
-import '../../../widget/text_field.dart';
+import '/api/backend/schema.dart';
+import '/config.dart';
+import '/domain/model/application_settings.dart';
+import '/domain/model/chat.dart';
+import '/domain/model/my_user.dart';
+import '/domain/model/session.dart';
 import '/domain/model/user.dart';
+import '/domain/repository/chat.dart';
+import '/domain/repository/settings.dart';
 import '/domain/service/auth.dart';
+import '/domain/service/chat.dart';
+import '/domain/service/my_user.dart';
+import '/l10n/l10n.dart';
+import '/provider/gql/exceptions.dart';
 import '/routes.dart';
+import '/ui/widget/text_field.dart';
+import '/util/log.dart';
+import '/util/message_popup.dart';
 import '/util/web/web_utils.dart';
 
 enum IntroductionStage {
-  signInOrSignUp,
-  signIn,
-  signInAs,
-  signInWithPassword,
-  signInWithEmail,
-  signInWithEmailCode,
-  signUp,
-  signUpWithPassword,
-  signUpWithEmail,
-  signUpWithEmailCode,
+  accountCreated,
+  accountCreating,
+  guestCreated,
+  language,
   recovery,
   recoveryCode,
   recoveryPassword,
-  accountCreating,
-  accountCreated,
-  language,
-  guestCreated,
+  signIn,
+  signInAs,
+  signInOrSignUp,
+  signInWithEmail,
+  signInWithEmailCode,
+  signInWithPassword,
+  signUp,
+  signUpWithEmail,
+  signUpWithEmailCode,
+  signUpWithPassword,
 }
 
 class IntroductionController extends GetxController {
@@ -52,7 +52,7 @@ class IntroductionController extends GetxController {
     this._settingsRepository,
   );
 
-  final RxDouble opacity = RxDouble(1);
+  final RxDouble opacity = RxDouble(0.5);
 
   final GlobalKey positionedKey = GlobalKey();
   final GlobalKey stackKey = GlobalKey();
@@ -96,6 +96,31 @@ class IntroductionController extends GetxController {
 
   /// Indicator whether the [emailCode] should be obscured.
   final RxBool obscureOneTimeCode = RxBool(true);
+
+  /// [MyUser.name] field state.
+  late final TextFieldState name = TextFieldState(
+    text: myUser.value?.name?.val,
+    onFocus: (s) async {
+      s.error.value = null;
+
+      if (s.text.trim().isNotEmpty) {
+        try {
+          UserName(s.text);
+        } on FormatException catch (_) {
+          s.error.value = 'err_incorrect_input'.l10n;
+          return;
+        }
+      }
+
+      final UserName? name = UserName.tryParse(s.text);
+
+      try {
+        await _myUserService.updateUserName(name);
+      } catch (_) {
+        s.error.value = 'err_data_transfer'.l10n;
+      }
+    },
+  );
 
   /// [TextFieldState] of a login text input.
   late final TextFieldState login = TextFieldState(
@@ -375,6 +400,9 @@ class IntroductionController extends GetxController {
   bool _byLink = false;
   ChatDirectLinkSlug? _slug;
 
+  Worker? _identityWorker;
+  Worker? _opacityWorker;
+
   UserId? get userId => _authService.userId;
 
   /// Returns the reactive list of known [MyUser]s.
@@ -415,34 +443,55 @@ class IntroductionController extends GetxController {
       _scheduleSupport();
     }
 
-    final bool byDev =
-        router.initial?.uri.path.startsWith(Routes.style) == true;
-    final bool isLocal = _authService.userId.isLocal;
+    final ModalRoute dummyRoute = RawDialogRoute(
+      pageBuilder: (_, _, _) => const SizedBox(),
+    );
 
-    final bool showIntroduction =
-        settings.value?.showIntroduction !=
-        false /*&&
-        router.switchedFrom == null*/;
+    bool hasRoute = false;
+    _opacityWorker = ever(opacity, (d) {
+      final bool shouldRoute = d > 0;
 
-    opacity.value = showIntroduction ? 1 : 0;
-    // if (router.switchedFrom != null) {
-    //   dismiss();
-    // }
+      if (hasRoute != shouldRoute) {
+        hasRoute = shouldRoute;
+        if (hasRoute) {
+          router.obscuring.add(dummyRoute);
+        } else {
+          router.obscuring.remove(dummyRoute);
+        }
+      }
+    });
 
-    if (showIntroduction && !byDev && isLocal) {
-      // router.displayNoPassword.value = false;
+    opacity.value = _authService.userId.isLocal ? 1 : 0;
 
-      // if (!_byLink) {
-      //   final slug = ChatDirectLinkSlug('tapopa_');
-      //   _authService
-      //       .useChatDirectLink(slug)
-      //       .then((chat) => router.chat(chat.id, link: slug));
-      // }
-    } else {
-      // router.displayNoPassword.value = true;
-    }
+    _identityWorker = ever(_authService.credentials, (_) {
+      if (_authService.userId.isLocal) {
+        _scheduleSupport();
+        opacity.value = 1;
+        page.value = null;
+      } else {
+        switch (page.value) {
+          case IntroductionStage.accountCreated ||
+              IntroductionStage.accountCreating ||
+              IntroductionStage.guestCreated:
+            // No-op.
+            break;
+
+          default:
+            dismiss();
+            break;
+        }
+      }
+    });
 
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+
+    _opacityWorker?.dispose();
+    _identityWorker?.dispose();
   }
 
   /// Signs in and redirects to the [Routes.home] page.
@@ -609,7 +658,16 @@ class IntroductionController extends GetxController {
 
   Future<void> dismiss() async {
     opacity.value = 0;
-    await _settingsRepository.setShowIntroduction(false);
+    name.clear();
+    email.clear();
+    password.clear();
+    login.clear();
+    newPassword.clear();
+    repeatPassword.clear();
+    emailCode.clear();
+    signUpName.clear();
+    signUpLogin.clear();
+    signUpEmail.clear();
   }
 
   void _scheduleDeleteLoader() {
@@ -691,6 +749,7 @@ class IntroductionController extends GetxController {
     chat.value = await _chatService.get(chatId);
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
+      router.tab = HomeTab.chats;
       router.chat(chatId);
     });
   }

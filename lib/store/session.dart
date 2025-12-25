@@ -239,7 +239,7 @@ class SessionRepository extends DisposableInterface
 
     Log.debug('_initSessionSubscription()', '$runtimeType');
 
-    _remoteSubscription?.cancel(immediate: true);
+    _remoteSubscription?.close(immediate: true);
 
     await WebUtils.protect(() async {
       _remoteSubscription = StreamQueue(

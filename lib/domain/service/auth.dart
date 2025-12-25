@@ -44,7 +44,7 @@ import 'disposable_service.dart';
 ///
 /// It contains all the required methods to do the authentication process and
 /// exposes [credentials] (a session and an user) of the authorized session.
-class AuthService extends DisposableService {
+class AuthService extends Dependency {
   AuthService(
     this._authRepository,
     this._credentialsProvider,
@@ -127,6 +127,8 @@ class AuthService extends DisposableService {
   /// [Stopwatch] counting since the last successful [refreshSession] occurred.
   final Map<UserId, Stopwatch> _refreshedAt = {};
 
+  Worker? _credentialsWorker;
+
   /// Returns the currently authorized [Credentials.userId].
   UserId get userId => credentials.value?.userId ?? UserId.local();
 
@@ -144,6 +146,7 @@ class AuthService extends DisposableService {
     _deltaWorker?.dispose();
     _refreshTimers.forEach((_, t) => t.cancel());
     _refreshTimers.clear();
+    _credentialsWorker?.dispose();
 
     _authRepository.authExceptionHandler = null;
   }
@@ -160,6 +163,15 @@ class AuthService extends DisposableService {
       // Always try to refresh session, as we cannot rely on the expiry dates.
       await refreshSession(proceedIfRefreshBefore: DateTime.now());
     };
+
+    _credentialsWorker = ever(credentials, (_) {
+      final deps = Get.findAll<IdentityAware>();
+      Log.info('ever(credentials) -> deps -> $deps');
+
+      for (var e in deps) {
+        e.onIdentityChanged(userId);
+      }
+    });
 
     // Listen to the [Credentials] changes to stay synchronized with another
     // tabs.
@@ -1037,29 +1049,19 @@ class AuthService extends DisposableService {
   Future<void> _authorized(Credentials creds) async {
     Log.debug('_authorized($creds)', '$runtimeType');
 
-    final UserId previous = UserId(userId.val.toString());
-
-    _authRepository.token = creds.access.secret;
-    credentials.value = creds;
-    _putCredentials(creds);
-
-    WebUtils.putCredentials(creds);
     await Future.wait([
       _credentialsProvider.upsert(creds),
       _accountProvider.upsert(creds.userId),
     ]);
 
+    _authRepository.token = creds.access.secret;
+    credentials.value = creds;
+    _putCredentials(creds);
+    WebUtils.putCredentials(creds);
+
     _initRefreshTimers();
 
     status.value = RxStatus.loadingMore();
-
-    if (previous != userId) {
-      // for (var e in Get.find()) {
-      //   if (e is IdentityAware) {
-      //     e.onIdentityChanged(userId);
-      //   }
-      // }
-    }
   }
 
   /// Sets authorized [status] to `isEmpty` (aka "unauthorized").

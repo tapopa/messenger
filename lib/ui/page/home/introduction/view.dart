@@ -1,6 +1,7 @@
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '/l10n/l10n.dart';
@@ -1056,7 +1057,7 @@ class IntroductionView extends StatelessWidget {
                       );
                       children = [
                         const SizedBox(height: 12),
-                        _num(context, c),
+                        _num(c, context),
                         SizedBox(height: 16),
                         ContactTile(
                           myUser: c.myUser.value,
@@ -1161,46 +1162,25 @@ class IntroductionView extends StatelessWidget {
                         text: 'label_guest_account_created'.l10n,
                         close: false,
                       );
+
                       children = [
-                        SizedBox(height: 16),
-                        _num(context, c),
-                        SizedBox(height: 16),
-                        ContactTile(
-                          myUser: c.myUser.value,
-                          subtitle: [
-                            SizedBox(height: 6),
-                            Text(
-                              'Welcome to Tapopa',
-                              style: style.fonts.normal.regular.secondary,
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 16),
-                        Text.rich(
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'label_guest_account_description1'.l10n,
-                              ),
-                              TextSpan(
-                                text: 'label_guest_account_description2'.l10n,
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {},
-                                style: style.fonts.small.regular.primary,
-                              ),
-                              TextSpan(
-                                text: 'label_guest_account_description3'.l10n,
-                              ),
-                            ],
-                          ),
+                        _name(c, context),
+                        const SizedBox(height: 20),
+                        _num(c, context),
+                        const SizedBox(height: 16),
+                        Text(
+                          'label_introduction_for_one_time'.l10n,
                           style: style.fonts.small.regular.secondary,
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         PrimaryButton(
+                          key: const Key('ProceedButton'),
                           onPressed: c.dismiss,
-                          title: 'btn_ok'.l10n,
+                          title: 'btn_proceed'.l10n,
                         ),
-                        SizedBox(height: 25),
+                        const SizedBox(height: 16),
+                        Center(child: _terms(context)),
+                        const SizedBox(height: 8),
                       ];
                       break;
                   }
@@ -1233,8 +1213,20 @@ class IntroductionView extends StatelessWidget {
     );
   }
 
+  /// Builds the [ReactiveTextField] for [UserName].
+  Widget _name(IntroductionController c, BuildContext context) {
+    return ReactiveTextField(
+      key: Key('NameField'),
+      state: c.name,
+      label: 'label_your_name'.l10n,
+      hint: 'label_name_hint'.l10n,
+      floatingLabelBehavior: FloatingLabelBehavior.always,
+      formatters: [LengthLimitingTextInputFormatter(100)],
+    );
+  }
+
   /// Builds the [UserNumCopyable].
-  Widget _num(BuildContext context, IntroductionController c) {
+  Widget _num(IntroductionController c, BuildContext context) {
     return Obx(() {
       return UserNumCopyable(
         c.myUser.value?.num,
@@ -1254,27 +1246,17 @@ class IntroductionView extends StatelessWidget {
         children: [
           TextSpan(
             text: 'alert_by_proceeding_you_accept_terms1'.l10n,
-            style: style.fonts.small.regular.secondary,
+            style: style.fonts.smallest.regular.secondary,
           ),
           TextSpan(
             text: 'alert_by_proceeding_you_accept_terms2'.l10n,
-            style: style.fonts.small.regular.primary,
+            style: style.fonts.smallest.regular.primary,
             recognizer: TapGestureRecognizer()
               ..onTap = () => TermsOfUseView.show(context),
           ),
           TextSpan(
             text: 'alert_by_proceeding_you_accept_terms3'.l10n,
-            style: style.fonts.small.regular.secondary,
-          ),
-          TextSpan(
-            text: 'alert_by_proceeding_you_accept_terms4'.l10n,
-            style: style.fonts.small.regular.primary,
-            recognizer: TapGestureRecognizer()
-              ..onTap = () => TermsOfUseView.show(context),
-          ),
-          TextSpan(
-            text: 'alert_by_proceeding_you_accept_terms5'.l10n,
-            style: style.fonts.small.regular.secondary,
+            style: style.fonts.smallest.regular.secondary,
           ),
         ],
       ),

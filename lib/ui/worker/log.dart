@@ -24,7 +24,7 @@ import '/ui/page/support/log/view.dart';
 import '/ui/widget/text_field.dart';
 
 /// Worker opening [LogView] modal.
-class LogWorker extends DisposableService {
+class LogWorker extends Dependency {
   LogWorker();
 
   @override

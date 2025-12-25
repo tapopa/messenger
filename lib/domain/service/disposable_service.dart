@@ -15,15 +15,36 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 import '/domain/model/user.dart';
 
-/// Base class for services with a scoped lifetime.
-abstract class DisposableService extends DisposableInterface {}
-
 mixin IdentityAware {
-  void onIdentityChanged(UserId _) {
+  void onIdentityChanged(UserId me) {
     // No-op.
+  }
+}
+
+/// Base class for services with a scoped lifetime.
+abstract class Dependency extends DisposableInterface with IdentityAware {}
+
+class IdentityDependency extends Dependency with IdentityAware {
+  IdentityDependency({required UserId me}) : _me = me;
+
+  UserId? _me;
+
+  UserId get me => _me!;
+
+  @override
+  void onInit() {
+    super.onInit();
+    onIdentityChanged(me);
+  }
+
+  @override
+  @mustCallSuper
+  void onIdentityChanged(UserId me) {
+    _me = me;
   }
 }

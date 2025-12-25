@@ -588,7 +588,7 @@ class ChatController extends GetxController {
     AudioUtils.ensureInitialized();
     _fetchChat();
 
-    if (!PlatformUtils.isMobile) {
+    if (!PlatformUtils.isMobile && router.obscuring.isEmpty) {
       send.field.focus.requestFocus();
     }
 

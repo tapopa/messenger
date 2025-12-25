@@ -47,6 +47,7 @@ import '/domain/model/user.dart';
 import '/domain/repository/call.dart';
 import '/domain/repository/chat.dart';
 import '/domain/repository/user.dart';
+import '/domain/service/disposable_service.dart';
 import '/provider/drift/chat.dart';
 import '/provider/drift/chat_item.dart';
 import '/provider/drift/chat_member.dart';
@@ -103,7 +104,7 @@ typedef ArchivedPaginated =
     RxPaginatedImpl<ChatId, RxChatImpl, DtoChat, RecentChatsCursor>;
 
 /// Implementation of an [AbstractChatRepository].
-class ChatRepository extends DisposableInterface
+class ChatRepository extends IdentityDependency
     implements AbstractChatRepository {
   ChatRepository(
     this._graphQlProvider,
@@ -115,15 +116,12 @@ class ChatRepository extends DisposableInterface
     this._userRepo,
     this._sessionLocal,
     this._monologLocal, {
-    required this.me,
+    required super.me,
   });
 
   /// Callback, called when an [User] identified by the provided [UserId] is
   /// removed from the specified [Chat].
   Future<void> Function(ChatId id, UserId userId)? onMemberRemoved;
-
-  /// [UserId] of the currently authenticated [MyUser].
-  final UserId me;
 
   @override
   final Rx<RxStatus> status = Rx(RxStatus.loading());
@@ -288,6 +286,8 @@ class ChatRepository extends DisposableInterface
   /// adding a local [Chat]-monolog to favorites.
   ChatFavoritePosition? _localMonologFavoritePosition;
 
+  bool _hasPagination = false;
+
   /// [UserId] of the [support] chat.
   static final UserId _supportId = UserId(Config.supportId);
 
@@ -311,82 +311,19 @@ class ChatRepository extends DisposableInterface
   RxObsMap<ChatId, Rx<OngoingCall>> get calls => _callRepo.calls;
 
   @override
-  Future<void> init({
+  void init({
     Future<void> Function(ChatId, UserId)? onMemberRemoved,
     bool? pagination,
-  }) async {
+  }) {
     Log.debug('init(onMemberRemoved) for $me', '$runtimeType');
 
     this.onMemberRemoved = onMemberRemoved ?? this.onMemberRemoved;
 
-    // Popup shouldn't listen to recent chats remote updates, as it's happening
-    // inside single [Chat].
-    if (!WebUtils.isPopup && _remoteSubscription == null && !me.isLocal) {
-      _initRemoteSubscription();
-      _initFavoriteSubscription();
-      _initArchiveSubscription();
+    final bool hasPagination = pagination ?? !WebUtils.isPopup;
+    if (hasPagination != _hasPagination) {
+      _hasPagination = hasPagination;
+      _ensurePagination();
     }
-
-    if (me.isLocal) {
-      _initRemotePagination();
-      _initSupport();
-      _initMonolog();
-    }
-
-    if ((pagination ?? !WebUtils.isPopup) && _paginatedSubscription == null) {
-      _paginatedSubscription = paginated.changes.listen((e) {
-        switch (e.op) {
-          case OperationKind.added:
-            _subscriptions[e.key!] ??= e.value!.updates.listen((_) {});
-            break;
-
-          case OperationKind.updated:
-            if (e.oldKey != e.key) {
-              final StreamSubscription? subscription = _subscriptions[e.oldKey];
-              if (subscription != null) {
-                _subscriptions[e.key!] = subscription;
-                _subscriptions.remove(e.oldKey);
-              }
-            }
-            break;
-
-          case OperationKind.removed:
-            _subscriptions.remove(e.key!)?.cancel();
-            break;
-        }
-      });
-
-      _initLocalPagination();
-    }
-
-    if ((pagination ?? !WebUtils.isPopup) && _archivedSubscription == null) {
-      _archivedSubscription = archived.items.changes.listen((e) {
-        switch (e.op) {
-          case OperationKind.added:
-            _archiveSubscriptions[e.key!] ??= e.value!.updates.listen((_) {});
-            break;
-
-          case OperationKind.updated:
-            if (e.oldKey != e.key) {
-              final StreamSubscription? subscription =
-                  _archiveSubscriptions[e.oldKey];
-              if (subscription != null) {
-                _archiveSubscriptions[e.key!] = subscription;
-                _archiveSubscriptions.remove(e.oldKey);
-              }
-            }
-            break;
-
-          case OperationKind.removed:
-            _archiveSubscriptions.remove(e.key!)?.cancel();
-            break;
-        }
-      });
-
-      archived.around();
-    }
-
-    _monologLocal.read(MonologKind.notes).then((v) => monolog = v ?? monolog);
   }
 
   @override
@@ -408,8 +345,48 @@ class ChatRepository extends DisposableInterface
     _favoriteChatsSubscription?.close(immediate: true);
     _paginationSubscription?.cancel();
     _paginatedSubscription?.cancel();
+    _archivedSubscription?.cancel();
 
     super.onClose();
+  }
+
+  @override
+  void onIdentityChanged(UserId me) {
+    super.onIdentityChanged(me);
+
+    Log.debug('onIdentityChanged($me) -> ${me.isLocal}', '$runtimeType');
+
+    paginated.clear();
+    archived.clear();
+
+    chats.forEach((_, v) => v.dispose());
+    chats.clear();
+    _subscriptions.forEach((_, v) => v.cancel());
+    _subscriptions.clear();
+    _pagination?.dispose();
+    _pagination = null;
+    _localPagination?.dispose();
+    _localPagination = null;
+    _remoteSubscription?.close(immediate: true);
+    _remoteSubscription = null;
+    _remoteArchiveSubscription?.close(immediate: true);
+    _remoteArchiveSubscription = null;
+    _favoriteChatsSubscription?.close(immediate: true);
+    _favoriteChatsSubscription = null;
+    _paginationSubscription?.cancel();
+    _paginationSubscription = null;
+
+    // Popup shouldn't listen to recent chats remote updates, as it's happening
+    // inside single [Chat].
+    if (!WebUtils.isPopup && _remoteSubscription == null && !me.isLocal) {
+      _initRemoteSubscription();
+      _initFavoriteSubscription();
+      _initArchiveSubscription();
+    }
+
+    _ensurePagination();
+
+    _monologLocal.read(MonologKind.notes).then((v) => monolog = v ?? monolog);
   }
 
   @override
@@ -2858,7 +2835,7 @@ class ChatRepository extends DisposableInterface
             .map((e) => _chat(e.node, recentCursor: e.cursor).chat)
             .toList(),
       ),
-      query.pageInfo.toModel((c) => RecentChatsCursor(c)),
+      query.pageInfo.toModel(RecentChatsCursor.new),
     );
   }
 
@@ -3218,6 +3195,73 @@ class ChatRepository extends DisposableInterface
     );
 
     return _putEntry(chatData);
+  }
+
+  void _ensurePagination() {
+    Log.debug('_ensurePagination() -> $_hasPagination', '$runtimeType');
+
+    _paginatedSubscription?.cancel();
+    _paginatedSubscription = null;
+    _archivedSubscription?.cancel();
+    _archivedSubscription = null;
+
+    if (_hasPagination) {
+      _initRemotePagination();
+
+      if (me.isLocal) {
+        _initSupport();
+        _initMonolog();
+      }
+
+      _paginatedSubscription = paginated.changes.listen((e) {
+        switch (e.op) {
+          case OperationKind.added:
+            _subscriptions[e.key!] ??= e.value!.updates.listen((_) {});
+            break;
+
+          case OperationKind.updated:
+            if (e.oldKey != e.key) {
+              final StreamSubscription? subscription = _subscriptions[e.oldKey];
+              if (subscription != null) {
+                _subscriptions[e.key!] = subscription;
+                _subscriptions.remove(e.oldKey);
+              }
+            }
+            break;
+
+          case OperationKind.removed:
+            _subscriptions.remove(e.key!)?.cancel();
+            break;
+        }
+      });
+
+      _initLocalPagination();
+
+      _archivedSubscription = archived.items.changes.listen((e) {
+        switch (e.op) {
+          case OperationKind.added:
+            _archiveSubscriptions[e.key!] ??= e.value!.updates.listen((_) {});
+            break;
+
+          case OperationKind.updated:
+            if (e.oldKey != e.key) {
+              final StreamSubscription? subscription =
+                  _archiveSubscriptions[e.oldKey];
+              if (subscription != null) {
+                _archiveSubscriptions[e.key!] = subscription;
+                _archiveSubscriptions.remove(e.oldKey);
+              }
+            }
+            break;
+
+          case OperationKind.removed:
+            _archiveSubscriptions.remove(e.key!)?.cancel();
+            break;
+        }
+      });
+
+      archived.around();
+    }
   }
 
   /// Initializes the local [monolog] if none is known.

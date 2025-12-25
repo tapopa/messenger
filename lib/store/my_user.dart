@@ -58,8 +58,7 @@ import 'model/my_user.dart';
 import 'user.dart';
 
 /// [MyUser] repository.
-class MyUserRepository extends DisposableService
-    with IdentityAware
+class MyUserRepository extends IdentityDependency
     implements AbstractMyUserRepository {
   MyUserRepository(
     this._graphQlProvider,
@@ -67,11 +66,8 @@ class MyUserRepository extends DisposableService
     this._blocklistRepository,
     this._userRepository,
     this._accountLocal, {
-    required this.me,
+    required super.me,
   });
-
-  /// [UserId] of the currently authenticated [MyUser].
-  final UserId me;
 
   @override
   final Rx<MyUser?> myUser = Rx(null);
@@ -128,7 +124,7 @@ class MyUserRepository extends DisposableService
 
   /// Returns the currently active [DtoMyUser] from the storage.
   Future<DtoMyUser?> get _active async {
-    final UserId? userId = _accountLocal.userId;
+    final UserId? userId = await _accountLocal.read();
     final DtoMyUser? saved = userId != null
         ? await _driftMyUser.read(userId)
         : null;
@@ -146,19 +142,6 @@ class MyUserRepository extends DisposableService
     this.onPasswordUpdated = onPasswordUpdated;
     this.onUserDeleted = onUserDeleted;
 
-    // _active.then((v) => myUser.value = v?.value ?? myUser.value);
-
-    // _initProfiles();
-    // _initLocalSubscription();
-
-    // if (!me.isLocal) {
-    //   _initRemoteSubscription();
-    // }
-
-    // if (PlatformUtils.isDesktop || await PlatformUtils.isFocused) {
-    //   _initKeepOnlineSubscription();
-    // }
-
     if (!PlatformUtils.isDesktop) {
       _onFocusChanged = PlatformUtils.onFocusChanged.listen((focused) {
         if (focused) {
@@ -166,7 +149,7 @@ class MyUserRepository extends DisposableService
             _initKeepOnlineSubscription();
           }
         } else {
-          _keepOnlineSubscription?.cancel(immediate: true);
+          _keepOnlineSubscription?.close(immediate: true);
           _keepOnlineSubscription = null;
         }
       });
@@ -180,7 +163,8 @@ class MyUserRepository extends DisposableService
     _disposed = true;
     _localSubscription?.cancel();
     _remoteSubscription?.close(immediate: true);
-    _keepOnlineSubscription?.cancel(immediate: true);
+    _keepOnlineSubscription?.close(immediate: true);
+
     _onFocusChanged?.cancel();
     _pool.dispose();
     _localSubscriptionRetry?.cancel();
@@ -189,10 +173,24 @@ class MyUserRepository extends DisposableService
   }
 
   @override
-  void onIdentityChanged(UserId _) async {
-    Log.debug('onIdentityChanged', '$runtimeType');
+  void onIdentityChanged(UserId me) async {
+    super.onIdentityChanged(me);
 
-    _active.then((v) => myUser.value = v?.value ?? myUser.value);
+    Log.debug('onIdentityChanged($me)', '$runtimeType');
+
+    _disposed = true;
+    _localSubscription?.cancel();
+    _remoteSubscription?.close(immediate: true);
+    _keepOnlineSubscription?.close(immediate: true);
+    _onFocusChanged?.cancel();
+    _pool.dispose();
+    _localSubscriptionRetry?.cancel();
+
+    _active.then((v) {
+      Log.debug('_active -> $v', '$runtimeType');
+      myUser.value = v?.value ?? myUser.value;
+    });
+
     _initProfiles();
     _initLocalSubscription();
 
@@ -851,7 +849,7 @@ class MyUserRepository extends DisposableService
       return;
     }
 
-    Log.debug('_initLocalSubscription()', '$runtimeType');
+    Log.debug('_initLocalSubscription() -> ${me.isLocal}', '$runtimeType');
 
     if (me.isLocal) {
       _applyMyUser(
@@ -922,7 +920,7 @@ class MyUserRepository extends DisposableService
   Future<void> _initKeepOnlineSubscription() async {
     Log.debug('_initKeepOnlineSubscription()', '$runtimeType');
 
-    _keepOnlineSubscription?.cancel(immediate: true);
+    _keepOnlineSubscription?.close(immediate: true);
 
     if (me.isLocal) {
       return;

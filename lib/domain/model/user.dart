@@ -170,6 +170,9 @@ class UserId extends NewType<String> implements Comparable<UserId> {
 
   @override
   int compareTo(UserId other) => val.compareTo(other.val);
+
+  /// Returns a copy of this [UserId].
+  UserId copy() => UserId(val.toString());
 }
 
 /// Unique number of an [User].

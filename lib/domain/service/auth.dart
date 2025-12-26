@@ -1076,7 +1076,7 @@ class AuthService extends Dependency {
   String _unauthorized() {
     Log.debug('_unauthorized()', '$runtimeType');
 
-    final UserId? id = userId;
+    final UserId id = userId;
     _credentialsProvider.delete(id);
     _secretProvider.delete(id);
     _refreshTimers.remove(id)?.cancel();

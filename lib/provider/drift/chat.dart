@@ -29,6 +29,7 @@ import '/domain/model/chat.dart';
 import '/domain/model/mute_duration.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/user.dart';
+import '/domain/service/disposable_service.dart';
 import '/store/model/chat_item.dart';
 import '/store/model/chat.dart';
 import 'common.dart';
@@ -78,7 +79,7 @@ class Chats extends Table {
 }
 
 /// [DriftProviderBase] for manipulating the persisted [Chat]s.
-class ChatDriftProvider extends DriftProviderBaseWithScope {
+class ChatDriftProvider extends DriftProviderBaseWithScope with IdentityAware {
   ChatDriftProvider(super.common, super.scoped);
 
   /// [StreamController] emitting [DtoChat]s in [watch].
@@ -86,6 +87,11 @@ class ChatDriftProvider extends DriftProviderBaseWithScope {
 
   /// [DtoChatItem]s that have started the [upsert]ing, but not yet finished it.
   final Map<ChatId, DtoChat> _cache = {};
+
+  @override
+  void onIdentityChanged(UserId me) {
+    _cache.clear();
+  }
 
   /// Creates or updates the provided [chat] in the database.
   Future<DtoChat> upsert(DtoChat chat, {bool force = false}) async {

@@ -3339,6 +3339,10 @@ class ChatRepository extends IdentityDependency
         final bool isStored =
             await _monologLocal.read(MonologKind.support) != null;
 
+        print(
+          '====== _initSupport() -> $isLocal -> $isPaginated -> $canFetchMore',
+        );
+
         if (!isStored || me.isLocal) {
           // If remote chat doesn't exist and local one is not stored, then
           // create it.

@@ -576,7 +576,6 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
               final UserId me = _state._auth.userId;
 
               final GraphQlProvider graphQlProvider = Get.find();
-              final AuthService authService = Get.find();
 
               final ScopedDriftProvider scoped = deps.put(
                 ScopedDriftProvider.from(deps.put(ScopedDatabase(me)), me: me),
@@ -689,6 +688,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
                       Get.find(),
                       Get.find(),
                       Get.find(),
+                      me: me,
                     ),
                   );
               deps.put<SessionService>(SessionService(sessionRepository));
@@ -735,7 +735,6 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
               final UserId me = _state._auth.userId;
 
               final GraphQlProvider graphQlProvider = Get.find();
-              final AuthService authService = Get.find();
 
               final ScopedDriftProvider scoped = deps.put(
                 ScopedDriftProvider.from(deps.put(ScopedDatabase(me)), me: me),
@@ -900,7 +899,6 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
             await versionProvider.init();
 
             final GraphQlProvider graphQlProvider = Get.find();
-            final AuthService authService = Get.find();
 
             final NotificationService notificationService = deps.put(
               NotificationService(graphQlProvider),
@@ -1286,8 +1284,6 @@ extension RouteLinks on RouterState {
   }) {
     ChatId chatId = chat.id;
 
-    print('===== 0 -> $chatId, $me');
-
     if (chat.isDialog || chat.isMonolog) {
       ChatMember? member = chat.members.firstWhereOrNull(
         (e) => e.user.id != me,
@@ -1298,8 +1294,6 @@ extension RouteLinks on RouterState {
         chatId = ChatId.local(member.user.id);
       }
     }
-
-    print('===== 1 -> $chatId, $me');
 
     router.chat(chatId, itemId: itemId, link: link, mode: mode);
   }

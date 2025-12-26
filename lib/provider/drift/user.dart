@@ -26,6 +26,7 @@ import '/domain/model/chat.dart';
 import '/domain/model/user_call_cover.dart';
 import '/domain/model/user.dart';
 import '/domain/model/welcome_message.dart';
+import '/domain/service/disposable_service.dart';
 import '/store/model/blocklist.dart';
 import '/store/model/user.dart';
 import 'common.dart';
@@ -60,7 +61,7 @@ class Users extends Table {
 }
 
 /// [DriftProviderBase] for manipulating the persisted [User]s.
-class UserDriftProvider extends DriftProviderBaseWithScope {
+class UserDriftProvider extends DriftProviderBaseWithScope with IdentityAware {
   UserDriftProvider(super.common, super.scoped);
 
   /// [StreamController] emitting [DtoUser]s in [watch].
@@ -68,6 +69,11 @@ class UserDriftProvider extends DriftProviderBaseWithScope {
 
   /// [DtoUser]s that have started the [upsert]ing, but not yet finished it.
   final Map<UserId, DtoUser> _cache = {};
+
+  @override
+  void onIdentityChanged(UserId me) {
+    _cache.clear();
+  }
 
   /// Creates or updates the provided [user] in the database.
   Future<DtoUser> upsert(DtoUser user) async {

@@ -200,7 +200,7 @@ void main() async {
     authService.init();
 
     final UserRepository userRepository = Get.put(
-      UserRepository(graphQlProvider, userProvider),
+      UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
     );
 
     final BlocklistRepository blocklistRepository = Get.put(
@@ -219,6 +219,7 @@ void main() async {
       blocklistRepository,
       userRepository,
       Get.find(),
+      me: const UserId('me'),
     );
 
     Get.put(MyUserService(authService, myUserRepository));

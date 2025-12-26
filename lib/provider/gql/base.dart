@@ -317,7 +317,8 @@ class GraphQlClient {
         final dio.Options authorized = options ?? dio.Options();
         authorized.headers = (authorized.headers ?? {});
 
-        if (raw == null || raw.token != null) {
+        final AccessTokenSecret? bearer = raw?.token ?? token;
+        if (bearer != null && (raw == null || raw.token != null)) {
           authorized.headers!['Authorization'] =
               'Bearer ${raw?.token ?? token}';
         }

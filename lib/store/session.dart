@@ -29,6 +29,7 @@ import '/domain/model/my_user.dart';
 import '/domain/model/session.dart';
 import '/domain/model/user.dart';
 import '/domain/repository/session.dart';
+import '/domain/service/disposable_service.dart';
 import '/provider/drift/account.dart';
 import '/provider/drift/geolocation.dart';
 import '/provider/drift/session.dart';
@@ -46,7 +47,7 @@ import 'model/session_data.dart';
 import 'model/session.dart';
 
 /// [Session]s repository.
-class SessionRepository extends DisposableInterface
+class SessionRepository extends IdentityDependency
     implements AbstractSessionRepository {
   SessionRepository(
     this._graphQlProvider,
@@ -54,8 +55,9 @@ class SessionRepository extends DisposableInterface
     this._versionLocal,
     this._sessionLocal,
     this._geoLocal,
-    this._geoProvider,
-  );
+    this._geoProvider, {
+    required super.me,
+  });
 
   @override
   final RxList<RxSessionImpl> sessions = RxList();
@@ -139,6 +141,22 @@ class SessionRepository extends DisposableInterface
     _graphQlSubscription?.cancel();
 
     super.onClose();
+  }
+
+  @override
+  void onIdentityChanged(UserId me) {
+    super.onIdentityChanged(me);
+
+    Log.debug('onIdentityChanged($me)', '$runtimeType');
+
+    _localSubscription?.cancel();
+    _remoteSubscription?.close(immediate: true);
+
+    // For popups this store should be used for connectivity check only.
+    if (!WebUtils.isPopup) {
+      _initLocalSubscription();
+      _initRemoteSubscription();
+    }
   }
 
   @override
@@ -233,13 +251,13 @@ class SessionRepository extends DisposableInterface
 
   /// Initializes [_sessionRemoteEvents] subscription.
   Future<void> _initRemoteSubscription() async {
-    if (isClosed) {
+    if (isClosed || me.isLocal) {
       return;
     }
 
     Log.debug('_initSessionSubscription()', '$runtimeType');
 
-    _remoteSubscription?.cancel(immediate: true);
+    _remoteSubscription?.close(immediate: true);
 
     await WebUtils.protect(() async {
       _remoteSubscription = StreamQueue(

@@ -276,7 +276,7 @@ void main() async {
       authService.init();
 
       final userRepository = Get.put(
-        UserRepository(graphQlProvider, userProvider),
+        UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
       );
       final BlocklistRepository blocklistRepository = Get.put(
         BlocklistRepository(
@@ -296,6 +296,7 @@ void main() async {
           blocklistRepository,
           userRepository,
           accountProvider,
+          me: const UserId('me'),
         ),
       );
       Get.put(MyUserService(authService, myUserRepository));
@@ -308,6 +309,7 @@ void main() async {
           sessionProvider,
           geoProvider,
           MockedGeoLocationProvider(),
+          me: const UserId('me'),
         ),
       );
       Get.put(SessionService(sessionRepository));

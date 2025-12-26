@@ -21,6 +21,7 @@ import 'package:async/async.dart';
 import 'package:drift/drift.dart';
 
 import '/domain/model/user.dart';
+import '/domain/service/disposable_service.dart';
 import '/store/model/background.dart';
 import 'drift.dart';
 
@@ -35,7 +36,7 @@ class Background extends Table {
 }
 
 /// [DriftProviderBase] for manipulating the persisted [DtoBackground].
-class BackgroundDriftProvider extends DriftProviderBase {
+class BackgroundDriftProvider extends DriftProviderBase with IdentityAware {
   BackgroundDriftProvider(super.database);
 
   /// [StreamController] emitting [DtoBackground]s in [watch].
@@ -44,6 +45,11 @@ class BackgroundDriftProvider extends DriftProviderBase {
   /// [DtoBackground]s that have started the [upsert]ing, but not yet finished
   /// it.
   final Map<UserId, DtoBackground> _cache = {};
+
+  @override
+  void onIdentityChanged(UserId me) {
+    _cache.clear();
+  }
 
   /// Creates or updates the provided [background] in the database.
   Future<DtoBackground> upsert(UserId userId, DtoBackground background) async {

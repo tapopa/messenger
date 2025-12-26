@@ -21,6 +21,8 @@ import 'package:drift/drift.dart';
 
 import '/domain/model/chat_call.dart';
 import '/domain/model/chat_item.dart';
+import '/domain/model/user.dart';
+import '/domain/service/disposable_service.dart';
 import 'drift.dart';
 
 /// [ChatCallCredentials] to be stored in a [Table].
@@ -34,12 +36,18 @@ class CallCredentials extends Table {
 }
 
 /// [DriftProviderBase] for manipulating the persisted [ChatCallCredentials].
-class CallCredentialsDriftProvider extends DriftProviderBaseWithScope {
+class CallCredentialsDriftProvider extends DriftProviderBaseWithScope
+    with IdentityAware {
   CallCredentialsDriftProvider(super.common, super.scoped);
 
   /// [ChatCallCredentials] that have started the [upsert]ing, but not yet
   /// finished it.
   final Map<ChatItemId, ChatCallCredentials> _cache = {};
+
+  @override
+  void onIdentityChanged(UserId me) {
+    _cache.clear();
+  }
 
   /// Creates or updates the provided [credentials] in the database.
   Future<void> upsert(ChatItemId id, ChatCallCredentials credentials) async {

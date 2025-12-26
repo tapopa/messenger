@@ -46,13 +46,14 @@ import '/util/log.dart';
 import '/util/new_type.dart';
 import 'event/blocklist.dart';
 import 'event/changed.dart';
+import 'model/blocklist.dart';
 import 'model/page_info.dart';
 import 'paginated.dart';
 
 /// Implementation of an [AbstractUserRepository].
 class UserRepository extends DisposableInterface
     implements AbstractUserRepository {
-  UserRepository(this._graphQlProvider, this._userLocal);
+  UserRepository(this._graphQlProvider, this._userLocal, {required this.me});
 
   @override
   final RxMap<UserId, RxUserImpl> users = RxMap();
@@ -68,6 +69,9 @@ class UserRepository extends DisposableInterface
   ///
   /// Used to populate the [RxUser.contact] value.
   FutureOr<RxChatContact?> Function(ChatContactId id)? getContact;
+
+  /// [UserId] of the currently authenticated [MyUser].
+  final UserId me;
 
   /// GraphQL API provider.
   final GraphQlProvider _graphQlProvider;
@@ -145,6 +149,18 @@ class UserRepository extends DisposableInterface
       return user;
     }
 
+    if (id.isLocal) {
+      return RxUserImpl(
+        this,
+        _userLocal,
+        DtoUser(
+          User(id, UserNum('0000000000000000')),
+          UserVersion('0'),
+          BlocklistVersion('0'),
+        ),
+      );
+    }
+
     // If [user] doesn't exist, we should lock the [mutex] to avoid remote
     // double invoking.
     Mutex? mutex = _locks[id];
@@ -162,7 +178,7 @@ class UserRepository extends DisposableInterface
           final RxUserImpl rxUser = RxUserImpl(this, _userLocal, stored);
           return users[id] = rxUser;
         } else {
-          final response = (await _graphQlProvider.getUser(id)).user;
+          final response = await _graphQlProvider.getUser(id);
           if (response != null) {
             final DtoUser dto = response.toDto();
             put(dto);

@@ -21,8 +21,10 @@ import 'dart:convert';
 import 'package:async/async.dart';
 import 'package:drift/drift.dart';
 
-import '/domain/model/chat.dart';
 import '/domain/model/chat_item.dart';
+import '/domain/model/chat.dart';
+import '/domain/model/user.dart';
+import '/domain/service/disposable_service.dart';
 import 'drift.dart';
 
 /// [ChatMessage]s being [Chat] drafts to be stored in a [Table].
@@ -36,7 +38,7 @@ class Drafts extends Table {
 }
 
 /// [DriftProviderBase] for manipulating the persisted [ChatMessage] drafts.
-class DraftDriftProvider extends DriftProviderBaseWithScope {
+class DraftDriftProvider extends DriftProviderBaseWithScope with IdentityAware {
   DraftDriftProvider(super.common, super.scoped);
 
   /// [StreamController] emitting [ChatMessage]s in [watch].
@@ -44,6 +46,11 @@ class DraftDriftProvider extends DriftProviderBaseWithScope {
 
   /// [ChatMessage] that have started the [upsert]ing, but not yet finished it.
   final Map<ChatId, ChatMessage> _cache = {};
+
+  @override
+  void onIdentityChanged(UserId me) {
+    _cache.clear();
+  }
 
   /// Creates or updates the provided [message] in the database.
   Future<void> upsert(ChatId id, ChatMessage message) async {

@@ -160,7 +160,7 @@ void main() async {
     authService.init();
 
     UserRepository userRepository = Get.put(
-      UserRepository(graphQlProvider, userProvider),
+      UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
     );
     AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
@@ -338,7 +338,7 @@ void main() async {
     authService.init();
 
     final UserRepository userRepository = Get.put(
-      UserRepository(graphQlProvider, userProvider),
+      UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
     );
     final AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
@@ -461,7 +461,7 @@ void main() async {
       ),
     );
     UserRepository userRepository = Get.put(
-      UserRepository(graphQlProvider, userProvider),
+      UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
     );
 
     final CallRepository callRepository = Get.put(
@@ -930,8 +930,8 @@ class _FakeGraphQlProvider extends MockedGraphQlProvider {
   }
 
   @override
-  Future<GetUser$Query> getUser(UserId id) async {
-    return GetUser$Query.fromJson({'user': null});
+  Future<UserMixin?> getUser(UserId id) async {
+    return GetUser$Query.fromJson({'user': null}).user;
   }
 
   @override

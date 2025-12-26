@@ -22,6 +22,8 @@ import 'package:drift/drift.dart';
 import 'package:flutter/rendering.dart' show Rect;
 
 import '/domain/model/chat.dart';
+import '/domain/model/user.dart';
+import '/domain/service/disposable_service.dart';
 import 'drift.dart';
 
 /// [Rect]s associated with a [ChatId] to be stored in a [Table].
@@ -35,11 +37,17 @@ class CallRectangles extends Table {
 }
 
 /// [DriftProviderBase] for manipulating the persisted [Rect]s.
-class CallRectDriftProvider extends DriftProviderBaseWithScope {
+class CallRectDriftProvider extends DriftProviderBaseWithScope
+    with IdentityAware {
   CallRectDriftProvider(super.common, super.scoped);
 
   /// [Rect]s that have started the [upsert]ing, but not yet finished it.
   final Map<ChatId, Rect> _cache = {};
+
+  @override
+  void onIdentityChanged(UserId me) {
+    _cache.clear();
+  }
 
   @override
   void onInit() {

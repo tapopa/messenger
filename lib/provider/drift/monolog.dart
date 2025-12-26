@@ -21,6 +21,8 @@ import 'package:drift/drift.dart';
 import 'package:drift/remote.dart' show DriftRemoteException;
 
 import '/domain/model/chat.dart';
+import '/domain/model/user.dart';
+import '/domain/service/disposable_service.dart';
 import 'drift.dart';
 
 /// [ChatId] being monologs to be stored in a [Table].
@@ -37,11 +39,17 @@ class Monologs extends Table {
 enum MonologKind { support, notes }
 
 /// [DriftProviderBase] for manipulating the persisted [ChatId]s.
-class MonologDriftProvider extends DriftProviderBaseWithScope {
+class MonologDriftProvider extends DriftProviderBaseWithScope
+    with IdentityAware {
   MonologDriftProvider(super.common, super.scoped);
 
   /// [ChatId]s that have started the [upsert]ing, but not yet finished it.
   final Map<String, ChatId> _cache = {};
+
+  @override
+  void onIdentityChanged(UserId me) {
+    _cache.clear();
+  }
 
   /// Creates or updates the provided [chatId] in the database.
   Future<void> upsert(MonologKind kind, ChatId chatId) async {

@@ -39,6 +39,7 @@ import '/util/platform_utils.dart';
 import '/util/scoped_dependencies.dart';
 import 'accounts_switcher/view.dart';
 import 'controller.dart';
+import 'introduction/view.dart';
 import 'overlay/controller.dart';
 import 'router.dart';
 import 'tab/chats/controller.dart';
@@ -288,23 +289,18 @@ class _HomeViewState extends State<HomeView> {
         // [SizedBox]es are required for the [sideBar] to keep its state.
         // Otherwise, [Stack] widget will be updated, which will lead its
         // children to be updated as well.
-        return CallOverlayView(
-          child: Obx(() {
-            return Stack(
+        return IntroductionView(
+          child: CallOverlayView(
+            child: Stack(
               key: const Key('HomeView'),
               children: [
                 _background(c),
-                if (c.authStatus.value.isSuccess) ...[
-                  SizedBox(child: context.isNarrow ? null : navigation),
-                  sideBar,
-                  SizedBox(child: context.isNarrow ? navigation : null),
-                ] else
-                  const Scaffold(
-                    body: Center(child: CustomProgressIndicator.primary()),
-                  ),
+                SizedBox(child: context.isNarrow ? null : navigation),
+                sideBar,
+                SizedBox(child: context.isNarrow ? navigation : null),
               ],
-            );
-          }),
+            ),
+          ),
         );
       },
     );

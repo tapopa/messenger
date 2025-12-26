@@ -29,6 +29,7 @@ import '/domain/model/my_user.dart';
 import '/domain/model/session.dart';
 import '/domain/model/user.dart';
 import '/domain/repository/session.dart';
+import '/domain/service/disposable_service.dart';
 import '/provider/drift/account.dart';
 import '/provider/drift/geolocation.dart';
 import '/provider/drift/session.dart';
@@ -46,7 +47,7 @@ import 'model/session_data.dart';
 import 'model/session.dart';
 
 /// [Session]s repository.
-class SessionRepository extends DisposableInterface
+class SessionRepository extends IdentityDependency
     implements AbstractSessionRepository {
   SessionRepository(
     this._graphQlProvider,
@@ -55,7 +56,7 @@ class SessionRepository extends DisposableInterface
     this._sessionLocal,
     this._geoLocal,
     this._geoProvider, {
-    required this.me,
+    required super.me,
   });
 
   @override
@@ -63,9 +64,6 @@ class SessionRepository extends DisposableInterface
 
   @override
   final RxBool connected = RxBool(true);
-
-  /// [UserId] of the currently authenticated [MyUser].
-  final UserId me;
 
   /// GraphQL API provider.
   final GraphQlProvider _graphQlProvider;
@@ -143,6 +141,22 @@ class SessionRepository extends DisposableInterface
     _graphQlSubscription?.cancel();
 
     super.onClose();
+  }
+
+  @override
+  void onIdentityChanged(UserId me) {
+    super.onIdentityChanged(me);
+
+    Log.debug('onIdentityChanged($me)', '$runtimeType');
+
+    _localSubscription?.cancel();
+    _remoteSubscription?.close(immediate: true);
+
+    // For popups this store should be used for connectivity check only.
+    if (!WebUtils.isPopup) {
+      _initLocalSubscription();
+      _initRemoteSubscription();
+    }
   }
 
   @override

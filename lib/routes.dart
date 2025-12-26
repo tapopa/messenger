@@ -1284,14 +1284,26 @@ extension RouteLinks on RouterState {
   }) {
     ChatId chatId = chat.id;
 
-    if (chat.isDialog || chat.isMonolog) {
+    if (chat.isDialog) {
       ChatMember? member = chat.members.firstWhereOrNull(
         (e) => e.user.id != me,
       );
-      member ??= chat.members.firstOrNull;
 
       if (member != null) {
         chatId = ChatId.local(member.user.id);
+      }
+    } else if (chat.isMonolog) {
+      if (me != null) {
+        chatId = ChatId.local(me);
+      } else {
+        ChatMember? member = chat.members.firstWhereOrNull(
+          (e) => !e.user.id.isLocal,
+        );
+        member ??= chat.members.firstOrNull;
+
+        if (member != null) {
+          chatId = ChatId.local(member.user.id);
+        }
       }
     }
 

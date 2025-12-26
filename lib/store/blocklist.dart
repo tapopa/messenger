@@ -28,6 +28,7 @@ import '/domain/model/my_user.dart';
 import '/domain/model/user.dart';
 import '/domain/repository/blocklist.dart';
 import '/domain/repository/user.dart';
+import '/domain/service/disposable_service.dart';
 import '/provider/drift/blocklist.dart';
 import '/provider/drift/version.dart';
 import '/provider/gql/exceptions.dart';
@@ -50,19 +51,15 @@ typedef BlocklistPaginated =
     RxPaginatedImpl<UserId, RxUser, DtoBlocklistRecord, BlocklistCursor>;
 
 /// [MyUser]'s blocklist repository.
-class BlocklistRepository extends DisposableInterface
+class BlocklistRepository extends IdentityDependency
     implements AbstractBlocklistRepository {
   BlocklistRepository(
     this._graphQlProvider,
     this._blocklistLocal,
     this._userRepository,
     this._sessionLocal, {
-    required this.me,
+    required super.me,
   });
-
-  /// [UserId] of the currently authenticated [MyUser] this repository is bound
-  /// to.
-  final UserId me;
 
   @override
   final RxInt count = RxInt(0);
@@ -140,15 +137,6 @@ class BlocklistRepository extends DisposableInterface
   @override
   void onInit() {
     Log.debug('onInit()', '$runtimeType');
-
-    if (me.isLocal) {
-      return super.onInit();
-    }
-
-    _initRemoteSubscription();
-
-    count.value = _sessionLocal.data[me]?.blocklistCount ?? 0;
-
     super.onInit();
   }
 
@@ -156,6 +144,20 @@ class BlocklistRepository extends DisposableInterface
   void onClose() {
     _remoteSubscription?.close(immediate: true);
     super.onClose();
+  }
+
+  @override
+  void onIdentityChanged(UserId me) {
+    super.onIdentityChanged(me);
+
+    Log.debug('onIdentityChanged($me)', '$runtimeType');
+
+    _remoteSubscription?.close(immediate: true);
+
+    if (!me.isLocal) {
+      _initRemoteSubscription();
+      count.value = _sessionLocal.data[me]?.blocklistCount ?? 0;
+    }
   }
 
   /// Puts the provided [record] to [Pagination] and local storage.

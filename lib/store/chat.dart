@@ -1110,7 +1110,7 @@ class ChatRepository extends IdentityDependency
           break;
 
         case EditChatMessageErrorCode.notAuthor:
-        case EditChatMessageErrorCode.noTextAndNoAttachment:
+        case EditChatMessageErrorCode.noContent:
           // No-op.
           break;
       }
@@ -1158,7 +1158,7 @@ class ChatRepository extends IdentityDependency
           switch (e.code) {
             case DeleteChatMessageErrorCode.notAuthor:
             case DeleteChatMessageErrorCode.quoted:
-            case DeleteChatMessageErrorCode.read:
+            case DeleteChatMessageErrorCode.uneditable:
               rethrow;
 
             case DeleteChatMessageErrorCode.unknownChatItem:
@@ -1219,7 +1219,7 @@ class ChatRepository extends IdentityDependency
             case DeleteChatForwardErrorCode.artemisUnknown:
             case DeleteChatForwardErrorCode.notAuthor:
             case DeleteChatForwardErrorCode.quoted:
-            case DeleteChatForwardErrorCode.read:
+            case DeleteChatForwardErrorCode.uneditable:
               rethrow;
 
             case DeleteChatForwardErrorCode.unknownChatItem:
@@ -1467,7 +1467,10 @@ class ChatRepository extends IdentityDependency
     } on ForwardChatItemsException catch (e) {
       switch (e.code) {
         case ForwardChatItemsErrorCode.blocked:
-        case ForwardChatItemsErrorCode.noTextAndNoAttachment:
+        case ForwardChatItemsErrorCode.noQuotedContent:
+        case ForwardChatItemsErrorCode.unknownForwardedDonation:
+        case ForwardChatItemsErrorCode.notEnoughFunds:
+        case ForwardChatItemsErrorCode.unallowedDonation:
         case ForwardChatItemsErrorCode.unknownUser:
         case ForwardChatItemsErrorCode.unknownForwardedAttachment:
         case ForwardChatItemsErrorCode.wrongItemsCount:

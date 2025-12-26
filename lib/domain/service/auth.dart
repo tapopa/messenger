@@ -33,6 +33,7 @@ import '/domain/repository/auth.dart';
 import '/provider/drift/account.dart';
 import '/provider/drift/credentials.dart';
 import '/provider/drift/locks.dart';
+import '/provider/drift/secret.dart';
 import '/provider/gql/exceptions.dart';
 import '/routes.dart';
 import '/util/log.dart';
@@ -50,6 +51,7 @@ class AuthService extends Dependency {
     this._credentialsProvider,
     this._accountProvider,
     this._lockProvider,
+    this._secretProvider,
   );
 
   /// Currently authorized session's [Credentials].
@@ -87,6 +89,9 @@ class AuthService extends Dependency {
   /// [LockDriftProvider] storing the database locks.
   final LockDriftProvider _lockProvider;
 
+  /// [RefreshSecretDriftProvider] storing the [RefreshSessionSecrets].
+  final RefreshSecretDriftProvider _secretProvider;
+
   /// Authorization repository containing required authentication methods.
   final AbstractAuthRepository _authRepository;
 
@@ -120,9 +125,6 @@ class AuthService extends Dependency {
   /// Delay between [refreshSession] invokes used to backoff it when failing
   /// over and over again.
   Duration _refreshRetryDelay = _initialRetryDelay;
-
-  /// [RefreshSessionSecrets] to use during [refreshSession].
-  RefreshSessionSecrets? _failed;
 
   /// [Stopwatch] counting since the last successful [refreshSession] occurred.
   final Map<UserId, Stopwatch> _refreshedAt = {};
@@ -688,12 +690,11 @@ class AuthService extends Dependency {
     final bool areCurrent = userId == this.userId;
 
     Log.debug(
-      'refreshSession($userId |-> $attempt) with `isLocked` ($isLocked) and `failed` ($_failed)',
+      'refreshSession($userId |-> $attempt) with `isLocked` ($isLocked)',
       '$runtimeType',
     );
 
     LockIdentifier? dbLock;
-    RefreshSessionSecrets? secrets;
 
     try {
       // Acquire a database lock to prevent multiple refreshes of the same
@@ -730,6 +731,16 @@ class AuthService extends Dependency {
           );
 
           await Future.delayed(Duration(seconds: 1));
+
+          // If there's any ongoing call, then ignore the device being in
+          // background.
+          if (WebUtils.containsCalls() || hasCalls?.call() == true) {
+            Log.debug(
+              'refreshSession($userId |-> $attempt) navigator.onLine returned `false`, however there\'s a call, thus proceeding: ${WebUtils.containsCalls()} || ${hasCalls?.call()}',
+              '$runtimeType',
+            );
+            break;
+          }
         }
 
         Credentials? oldCreds;
@@ -907,10 +918,9 @@ class AuthService extends Dependency {
         }
 
         try {
-          secrets = _failed ?? RefreshSessionSecrets.generate();
           final Credentials data = await _authRepository.refreshSession(
             oldCreds.refresh.secret,
-            input: secrets,
+            input: await _secretProvider.getOrCreate(oldCreds.userId),
             reconnect: areCurrent,
           );
 
@@ -919,7 +929,7 @@ class AuthService extends Dependency {
             '$runtimeType',
           );
 
-          _failed = null;
+          await _secretProvider.delete(oldCreds.userId);
           _refreshedAt[userId]?.stop();
           _refreshedAt[userId] = Stopwatch()..start();
 
@@ -954,6 +964,7 @@ class AuthService extends Dependency {
             // Remove stale [Credentials].
             accounts.remove(oldCreds.userId);
             await _credentialsProvider.delete(oldCreds.userId);
+            await _secretProvider.delete(oldCreds.userId);
           }
 
           _refreshRetryDelay = _initialRetryDelay;
@@ -964,7 +975,6 @@ class AuthService extends Dependency {
       await _lockProvider.release(dbLock);
     } on RefreshSessionException catch (_) {
       _refreshRetryDelay = _initialRetryDelay;
-      _failed = null;
 
       if (dbLock != null) {
         await _lockProvider.release(dbLock);
@@ -976,8 +986,6 @@ class AuthService extends Dependency {
         'refreshSession($userId |-> $attempt): ⛔️ exception occurred: $e',
         '$runtimeType',
       );
-
-      _failed = secrets;
 
       if (dbLock != null) {
         await _lockProvider.release(dbLock);
@@ -1068,9 +1076,9 @@ class AuthService extends Dependency {
   String _unauthorized() {
     Log.debug('_unauthorized()', '$runtimeType');
 
-    final UserId id = userId;
-
+    final UserId? id = userId;
     _credentialsProvider.delete(id);
+    _secretProvider.delete(id);
     _refreshTimers.remove(id)?.cancel();
     accounts.remove(id);
     WebUtils.removeCredentials(id);

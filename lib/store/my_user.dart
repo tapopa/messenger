@@ -285,7 +285,7 @@ class MyUserRepository extends IdentityDependency
   }
 
   @override
-  Future<void> updateUserPresence(Presence presence) async {
+  Future<void> updateUserPresence(UserPresence presence) async {
     Log.debug('updateUserPresence($presence)', '$runtimeType');
 
     await _debounce(

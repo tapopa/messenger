@@ -814,7 +814,7 @@ packages:
       path: "."
       ref: HEAD
       resolved-ref: "603dc3f7b16cc41ca17d2912b8319a6740dc0756"
-      url: "https://github.com/sleepysquash/getx"
+      url: "https://github.com/sleepysquash/getx.git"
     source: git
     version: "4.7.2"
   gherkin:

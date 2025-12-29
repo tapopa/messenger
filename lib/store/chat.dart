@@ -286,6 +286,7 @@ class ChatRepository extends IdentityDependency
   /// adding a local [Chat]-monolog to favorites.
   ChatFavoritePosition? _localMonologFavoritePosition;
 
+  /// Indicator whether this [ChatRepository] should keep pagination up to date.
   bool _hasPagination = false;
 
   /// [UserId] of the [support] chat.
@@ -3253,6 +3254,7 @@ class ChatRepository extends IdentityDependency
     return _putEntry(chatData);
   }
 
+  /// Bootstraps [_paginatedSubscription] and [_archivedSubscription].
   void _ensurePagination() {
     Log.debug('_ensurePagination() -> $_hasPagination', '$runtimeType');
 

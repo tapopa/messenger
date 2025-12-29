@@ -25,11 +25,7 @@ Feature: Delete dialog with user
 
   Scenario: User deletes dialog
     When I go to Bob's page
-
-    # \/ [1x] HERE \/
     And I scroll `UserScrollable` to bottom
-    # /\ [1x] HERE /\
-
     And I pause for 1 seconds
     And I tap `DeleteChatButton` button
     And I tap `Proceed` button

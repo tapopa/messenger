@@ -129,6 +129,8 @@ class AuthService extends Dependency {
   /// [Stopwatch] counting since the last successful [refreshSession] occurred.
   final Map<UserId, Stopwatch> _refreshedAt = {};
 
+  /// [Worker] reacting on [credentials] changes to notify [IdentityAware]
+  /// dependencies.
   Worker? _credentialsWorker;
 
   /// Returns the currently authorized [Credentials.userId].

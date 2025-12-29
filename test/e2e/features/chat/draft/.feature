@@ -23,10 +23,7 @@ Feature: Drafts
     And Bob has dialog with me
     And I am in chat with Bob
 
-    # \/ [2x] HERE \/
     When I attach "test.txt" file
-    # /\ [2x] HERE /\
-
     And I fill `MessageField` field with "He-he, draft!"
     And I pause for 2 seconds
     And I return to previous page

@@ -164,7 +164,6 @@ class MyUserRepository extends IdentityDependency
     _localSubscription?.cancel();
     _remoteSubscription?.close(immediate: true);
     _keepOnlineSubscription?.close(immediate: true);
-
     _onFocusChanged?.cancel();
     _pool.dispose();
     _localSubscriptionRetry?.cancel();
@@ -186,10 +185,7 @@ class MyUserRepository extends IdentityDependency
     _pool.dispose();
     _localSubscriptionRetry?.cancel();
 
-    _active.then((v) {
-      Log.debug('_active -> $v', '$runtimeType');
-      myUser.value = v?.value ?? myUser.value;
-    });
+    _active.then((v) => myUser.value = v?.value ?? myUser.value);
 
     _initProfiles();
     _initLocalSubscription();

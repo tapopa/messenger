@@ -26,11 +26,7 @@ Feature: Account switching
     When I tap `MenuButton` button
     And I tap `AccountsButton` button
     And I tap `AddAccountButton` button
-
-    # \/ [1x] HERE \/
     And I tap `StartButton` button
-    # /\ [1x] HERE /\
-
     Then I wait for app to settle
     And I wait until `IntroductionView` is present
     And my name is not Alice

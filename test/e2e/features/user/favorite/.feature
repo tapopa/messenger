@@ -25,11 +25,7 @@ Feature: Favorite dialog
 
   Scenario: User adds dialog to favorites
     When I go to Bob's page
-
-    # \/ [1x] HERE \/
     And I scroll `UserScrollable` to bottom
-    # /\ [1x] HERE /\
-
     And I pause for 1 seconds
     And I tap `FavoriteButton` button
     And I pause for 1 seconds

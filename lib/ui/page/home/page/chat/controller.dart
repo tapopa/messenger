@@ -653,7 +653,7 @@ class ChatController extends GetxController with IdentityAware {
 
     super.onIdentityChanged(me);
 
-    _fetchChat('$id, got onIdentityChanged to $me');
+    _fetchChat();
   }
 
   /// Starts a [ChatCall] in this [Chat] [withVideo] or without.
@@ -911,8 +911,8 @@ class ChatController extends GetxController with IdentityAware {
   }
 
   /// Fetches the local [chat] value from [_chatService] by the provided [id].
-  Future<void> _fetchChat([String? logs]) async {
-    Log.debug('_fetchChat($id) -> $logs', '$runtimeType');
+  Future<void> _fetchChat() async {
+    Log.debug('_fetchChat($id)', '$runtimeType');
 
     ISentrySpan span = _ready.startChild('fetch');
 

@@ -198,6 +198,7 @@ class RouterState extends ChangeNotifier {
   /// [PlatformRouteInformationProvider] is used on null.
   RouteInformationProvider? provider;
 
+  /// Initial [RouteInformation] of this state.
   RouteInformation? initial;
 
   /// This router's global [BuildContext] to use in contextless scenarios.
@@ -247,6 +248,7 @@ class RouterState extends ChangeNotifier {
   /// Current [Routes.home] tab.
   HomeTab get tab => _tab;
 
+  /// Indicator whether [initial] starts with [Routes.chatDirectLink].
   bool get byLink =>
       initial?.uri.path.startsWith(Routes.chatDirectLink) == true;
 

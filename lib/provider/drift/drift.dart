@@ -22,11 +22,11 @@ import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:get/get.dart' show DisposableInterface;
 import 'package:log_me/log_me.dart';
 
-import '../../domain/service/disposable_service.dart';
 import '/config.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/sending_status.dart';
 import '/domain/model/user.dart';
+import '/domain/service/disposable_service.dart';
 import '/util/platform_utils.dart';
 import '/util/web/web_utils.dart';
 import 'account.dart';
@@ -564,6 +564,7 @@ final class ScopedDriftProvider extends IdentityDependency {
   /// `null` here means the database is closed.
   ScopedDatabase? db;
 
+  /// Indicator whether [db] is a memory-only database.
   final bool _memory;
 
   /// [Completer]s of [wrapped] operations to await in [onClose].

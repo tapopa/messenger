@@ -25,15 +25,14 @@ import 'package:get/get.dart';
 
 import '/api/backend/schema.dart';
 import '/config.dart';
-import '/domain/model/application_settings.dart';
 import '/domain/model/chat.dart';
 import '/domain/model/my_user.dart';
 import '/domain/model/session.dart';
 import '/domain/model/user.dart';
 import '/domain/repository/chat.dart';
-import '/domain/repository/settings.dart';
 import '/domain/service/auth.dart';
 import '/domain/service/chat.dart';
+import '/domain/service/disposable_service.dart';
 import '/domain/service/my_user.dart';
 import '/l10n/l10n.dart';
 import '/provider/gql/exceptions.dart';
@@ -43,6 +42,7 @@ import '/util/log.dart';
 import '/util/message_popup.dart';
 import '/util/web/web_utils.dart';
 
+/// Page to display in an [IntroductionView].
 enum IntroductionStage {
   accountCreated,
   accountCreating,
@@ -63,22 +63,24 @@ enum IntroductionStage {
   signUpWithPassword,
 }
 
-class IntroductionController extends GetxController {
+/// Controller of an [IntroductionView].
+class IntroductionController extends GetxController with IdentityAware {
   IntroductionController(
     this._authService,
     this._myUserService,
     this._chatService,
-    this._settingsRepository,
   );
 
+  /// Opacity of the displayed [IntroductionView].
   final RxDouble opacity = RxDouble(0.5);
 
+  /// [GlobalKey] of a panel to prevent it from rebuilding.
   final GlobalKey positionedKey = GlobalKey();
+
+  /// [GlobalKey] of the whole overlay to prevent it from rebuilding.
   final GlobalKey stackKey = GlobalKey();
 
-  final RxBool centered = RxBool(false);
-  final RxBool highlighted = RxBool(false);
-
+  /// [IntroductionStage] currently displayed.
   final Rx<IntroductionStage?> page = Rx(null);
 
   /// Timeout of a [signIn] next invoke attempt.
@@ -96,12 +98,17 @@ class IntroductionController extends GetxController {
   /// Amount of [emailCode] unsuccessful submitting attempts.
   int codeAttempts = 0;
 
+  /// Previous [IntroductionStage].
   IntroductionStage? previousPage;
-  IntroductionStage? returnTo;
 
+  /// Indicator whether [chat] is being fetched, in case [Routes.chatDirectLink]
+  /// is the initial route.
   final RxBool fetching = RxBool(false);
+
+  /// [RxChat] of a [Routes.chatDirectLink] initial route.
   final Rx<RxChat?> chat = Rx(null);
 
+  /// [MyUser] to complete sign in information as.
   MyUser? signInAs;
 
   /// Indicator whether the [password] should be obscured.
@@ -278,6 +285,7 @@ class IntroductionController extends GetxController {
     },
   );
 
+  /// [TextFieldState] of a [ConfirmationCode] for [email].
   late final TextFieldState emailCode = TextFieldState(
     onSubmitted: (s) async {
       s.status.value = RxStatus.loading();
@@ -336,6 +344,7 @@ class IntroductionController extends GetxController {
     },
   );
 
+  /// [TextFieldState] of a [UserName] for registered account.
   late final TextFieldState signUpName = TextFieldState(
     onFocus: (s) async {
       s.error.value = null;
@@ -359,6 +368,7 @@ class IntroductionController extends GetxController {
     },
   );
 
+  /// [TextFieldState] of a [UserLogin] for registered account.
   late final TextFieldState signUpLogin = TextFieldState(
     onFocus: (s) async {
       s.error.value = null;
@@ -384,6 +394,7 @@ class IntroductionController extends GetxController {
     },
   );
 
+  /// [TextFieldState] of a [UserEmail] for registered account.
   late final TextFieldState signUpEmail = TextFieldState(
     onFocus: (s) {
       if (s.text.trim().isNotEmpty) {
@@ -402,10 +413,14 @@ class IntroductionController extends GetxController {
     onSubmitted: (s) async {},
   );
 
+  /// [AuthService] used for authorization manipulations.
   final AuthService _authService;
+
+  /// [MyUserService] retrieving the current [MyUser].
   final MyUserService _myUserService;
+
+  /// [ChatService] for fetching the [chat], if any.
   final ChatService _chatService;
-  final AbstractSettingsRepository _settingsRepository;
 
   /// [Timer] disabling [signIn] invoking for [signInTimeout].
   Timer? _signInTimer;
@@ -416,13 +431,13 @@ class IntroductionController extends GetxController {
   /// [Timer] disabling [emailCode] submitting for [codeTimeout].
   Timer? _codeTimer;
 
-  bool _byLink = false;
   ChatDirectLinkSlug? _slug;
 
-  Worker? _identityWorker;
+  /// [Worker] adding and removing this modal to/from [RouterState.obscuring].
   Worker? _opacityWorker;
 
-  UserId? get userId => _authService.userId;
+  /// Returns the [UserId] of the currently authenticated account.
+  UserId get userId => _authService.userId;
 
   /// Returns the reactive list of known [MyUser]s.
   RxList<MyUser> get profiles => _authService.profiles;
@@ -430,25 +445,19 @@ class IntroductionController extends GetxController {
   /// Returns the [Credentials] of the available accounts.
   RxMap<UserId, Rx<Credentials>> get accounts => _authService.accounts;
 
+  /// Returns the current [myUser] logged in, if any.
   Rx<MyUser?> get myUser => _myUserService.myUser;
 
-  /// Current authentication status.
+  /// Returns the current authentication status.
   Rx<RxStatus> get authStatus => _authService.status;
-
-  Rx<ApplicationSettings?> get settings =>
-      _settingsRepository.applicationSettings;
 
   @override
   void onInit() {
-    _scheduleDeleteLoader();
-
     SchedulerBinding.instance.addPostFrameCallback(
-      (_) => WebUtils.deleteLoader(/*false*/),
+      (_) => WebUtils.deleteLoader(),
     );
 
-    _byLink = router.byLink;
-
-    if (_byLink) {
+    if (router.byLink) {
       final String? slug = router.initial?.uri.path.replaceFirst(
         Routes.chatDirectLink,
         '',
@@ -482,35 +491,36 @@ class IntroductionController extends GetxController {
 
     opacity.value = _authService.userId.isLocal ? 1 : 0;
 
-    _identityWorker = ever(_authService.credentials, (_) {
-      if (_authService.userId.isLocal) {
-        _scheduleSupport();
-        opacity.value = 1;
-        page.value = null;
-      } else {
-        switch (page.value) {
-          case IntroductionStage.accountCreated ||
-              IntroductionStage.accountCreating ||
-              IntroductionStage.guestCreated:
-            // No-op.
-            break;
-
-          default:
-            dismiss();
-            break;
-        }
-      }
-    });
-
     super.onInit();
   }
 
   @override
   void onClose() {
     super.onClose();
-
     _opacityWorker?.dispose();
-    _identityWorker?.dispose();
+  }
+
+  @override
+  void onIdentityChanged(UserId me) {
+    super.onIdentityChanged(me);
+
+    if (_authService.userId.isLocal) {
+      _scheduleSupport();
+      opacity.value = 1;
+      page.value = null;
+    } else {
+      switch (page.value) {
+        case IntroductionStage.accountCreated ||
+            IntroductionStage.accountCreating ||
+            IntroductionStage.guestCreated:
+          // No-op.
+          break;
+
+        default:
+          dismiss();
+          break;
+      }
+    }
   }
 
   /// Signs in and redirects to the [Routes.home] page.
@@ -675,6 +685,7 @@ class IntroductionController extends GetxController {
     }
   }
 
+  /// Dismisses the [IntroductionView] and resets this controller.
   Future<void> dismiss() async {
     opacity.value = 0;
     name.clear();
@@ -687,16 +698,6 @@ class IntroductionController extends GetxController {
     signUpName.clear();
     signUpLogin.clear();
     signUpEmail.clear();
-  }
-
-  void _scheduleDeleteLoader() {
-    if (router.route.startsWith(Routes.chatDirectLink)) {
-      SchedulerBinding.instance.addPostFrameCallback(
-        (_) => _scheduleDeleteLoader(),
-      );
-    } else {
-      Future.delayed(const Duration(seconds: 2), () => WebUtils.deleteLoader());
-    }
   }
 
   /// Starts or stops the [_resendEmailTimer] based on [enabled] value.

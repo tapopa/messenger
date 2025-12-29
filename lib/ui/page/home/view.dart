@@ -53,18 +53,7 @@ import 'widget/navigation_bar.dart';
 
 /// View of the [Routes.home] page.
 class HomeView extends StatefulWidget {
-  const HomeView(
-    this._depsFactory, {
-    super.key,
-    this.signedUp = false,
-    this.link,
-  });
-
-  /// Indicator whether the [IntroductionView] should be displayed with
-  /// [IntroductionViewStage.signUp] initial stage.
-  ///
-  /// Should also mean that sign up operation just has been occurred.
-  final bool signedUp;
+  const HomeView(this._depsFactory, {super.key, this.link});
 
   /// [ChatDirectLinkSlug] to display [IntroductionView] with.
   final ChatDirectLinkSlug? link;
@@ -154,7 +143,6 @@ class _HomeViewState extends State<HomeView> {
         Get.find(),
         Get.find(),
         Get.find(),
-        signedUp: widget.signedUp,
         link: widget.link,
         context: context,
       ),

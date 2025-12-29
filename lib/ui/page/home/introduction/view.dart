@@ -45,20 +45,17 @@ import '/util/platform_utils.dart';
 import 'controller.dart';
 import 'widget/animated_pulsing.dart';
 
+/// View of a introduction overlay with sign in and sign up options.
 class IntroductionView extends StatelessWidget {
   const IntroductionView({super.key, required this.child});
 
+  /// [Widget] to display under this overlay.
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: IntroductionController(
-        Get.find(),
-        Get.find(),
-        Get.find(),
-        Get.find(),
-      ),
+      init: IntroductionController(Get.find(), Get.find(), Get.find()),
       builder: (IntroductionController c) {
         return Stack(
           children: [
@@ -81,6 +78,7 @@ class IntroductionView extends StatelessWidget {
     );
   }
 
+  /// Builds the overlay with the [_panel] positioned properly.
   Widget _overlay(BuildContext context, IntroductionController c) {
     final style = Theme.of(context).style;
 
@@ -97,22 +95,10 @@ class IntroductionView extends StatelessWidget {
 
         if (context.isNarrow)
           Positioned(
-            top: context.isNarrow
-                ? null
-                : c.centered.value
-                ? 0
-                : null,
-            bottom: context.isNarrow
-                ? 64
-                : c.centered.value
-                ? 0
-                : 4,
+            top: context.isNarrow ? null : null,
+            bottom: context.isNarrow ? 64 : 4,
             left: 0,
-            right: context.isNarrow
-                ? 0
-                : c.centered.value
-                ? 0
-                : null,
+            right: context.isNarrow ? 0 : null,
             child: KeyedSubtree(
               key: c.positionedKey,
               child: _panel(context, c),
@@ -130,6 +116,7 @@ class IntroductionView extends StatelessWidget {
     );
   }
 
+  /// Builds the panel itself.
   Widget _panel(BuildContext context, IntroductionController c) {
     final style = Theme.of(context).style;
 
@@ -201,9 +188,7 @@ class IntroductionView extends StatelessWidget {
                 color: style.colors.background.darken(0.05),
                 width: 1,
               ),
-              color: c.highlighted.value
-                  ? style.colors.primaryHighlightLightest
-                  : style.colors.background,
+              color: style.colors.background,
             ),
             width: double.infinity,
             child: Stack(
@@ -355,7 +340,6 @@ class IntroductionView extends StatelessWidget {
                           icon: const SvgIcon(SvgIcons.enter),
                           padding: const EdgeInsets.only(left: 4),
                           onPressed: () {
-                            c.returnTo = c.page.value;
                             c.page.value = IntroductionStage.signIn;
                           },
                           title: 'btn_sign_in'.l10n,

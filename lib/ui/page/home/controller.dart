@@ -46,14 +46,9 @@ class HomeController extends GetxController {
     this._myUserService,
     this._settings,
     this._upgradeWorker, {
-    this.signedUp = false,
     this.link,
     this.context,
   });
-
-  /// Indicator whether the [IntroductionView] should be displayed with
-  /// [IntroductionViewStage.signUp] initial stage.
-  final bool signedUp;
 
   /// Maximal percentage of the screen's width which side bar can occupy.
   static const double sideBarMaxWidthPercentage = 0.5;

@@ -1673,6 +1673,10 @@ mixin ChatGraphQlMixin {
   Future<ChatMixin?> getMonolog() async {
     Log.debug('getMonolog()', '$runtimeType');
 
+    if (client.token == null) {
+      return null;
+    }
+
     final QueryResult result = await client.query(
       QueryOptions(
         operationName: 'GetMonolog',
@@ -1686,6 +1690,10 @@ mixin ChatGraphQlMixin {
   /// identified by the provided [userId].
   Future<ChatMixin?> getDialog(UserId userId) async {
     Log.debug('getDialog($userId)', '$runtimeType');
+
+    if (client.token == null) {
+      return null;
+    }
 
     final variables = GetDialogArguments(id: userId);
     final QueryResult result = await client.query(

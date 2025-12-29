@@ -64,6 +64,9 @@ class Users extends Table {
 class UserDriftProvider extends DriftProviderBaseWithScope with IdentityAware {
   UserDriftProvider(super.common, super.scoped);
 
+  @override
+  int get order => IdentityAware.providerOrder;
+
   /// [StreamController] emitting [DtoUser]s in [watch].
   final Map<UserId, StreamController<DtoUser?>> _controllers = {};
 

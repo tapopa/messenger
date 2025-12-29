@@ -167,7 +167,9 @@ class AuthService extends Dependency {
     };
 
     _credentialsWorker = ever(credentials, (_) {
-      final deps = Get.findAll<IdentityAware>();
+      final List<IdentityAware> deps = Get.findAll<IdentityAware>();
+      deps.sort((a, b) => a.order.compareTo(b.order));
+
       Log.info('ever(credentials) -> deps -> $deps');
 
       for (var e in deps) {

@@ -892,13 +892,13 @@ class MyUserRepository extends IdentityDependency
 
   /// Initializes [_myUserRemoteEvents] subscription.
   Future<void> _initRemoteSubscription() async {
-    if (_disposed) {
-      return;
-    }
-
     Log.debug('_initRemoteSubscription()', '$runtimeType');
 
     _remoteSubscription?.close(immediate: true);
+
+    if (_disposed || isClosed || me.isLocal) {
+      return;
+    }
 
     await WebUtils.protect(() async {
       _remoteSubscription = StreamQueue(

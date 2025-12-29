@@ -47,6 +47,9 @@ class MonologDriftProvider extends DriftProviderBaseWithScope
   final Map<String, ChatId> _cache = {};
 
   @override
+  int get order => IdentityAware.providerOrder;
+
+  @override
   void onIdentityChanged(UserId me) {
     _cache.clear();
   }

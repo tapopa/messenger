@@ -45,6 +45,9 @@ class CallRectDriftProvider extends DriftProviderBaseWithScope
   final Map<ChatId, Rect> _cache = {};
 
   @override
+  int get order => IdentityAware.providerOrder;
+
+  @override
   void onIdentityChanged(UserId me) {
     _cache.clear();
   }

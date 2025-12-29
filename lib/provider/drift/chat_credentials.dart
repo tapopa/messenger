@@ -45,6 +45,9 @@ class ChatCredentialsDriftProvider extends DriftProviderBaseWithScope
   final Map<ChatId, ChatCallCredentials> _cache = {};
 
   @override
+  int get order => IdentityAware.providerOrder;
+
+  @override
   void onIdentityChanged(UserId me) {
     _cache.clear();
   }

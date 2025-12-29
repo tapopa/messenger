@@ -153,7 +153,7 @@ class SessionRepository extends IdentityDependency
     _remoteSubscription?.close(immediate: true);
 
     // For popups this store should be used for connectivity check only.
-    if (!WebUtils.isPopup) {
+    if (!me.isLocal && !WebUtils.isPopup) {
       _initLocalSubscription();
       _initRemoteSubscription();
     }
@@ -222,7 +222,7 @@ class SessionRepository extends IdentityDependency
       return;
     }
 
-    Log.debug('_initSessionLocalSubscription()', '$runtimeType');
+    Log.debug('_initLocalSubscription()', '$runtimeType');
 
     _localSubscription = _sessionLocal.watch().listen((events) {
       for (var e in events) {
@@ -251,15 +251,19 @@ class SessionRepository extends IdentityDependency
 
   /// Initializes [_sessionRemoteEvents] subscription.
   Future<void> _initRemoteSubscription() async {
+    Log.debug('_initRemoteSubscription()', '$runtimeType');
+
+    _remoteSubscription?.close(immediate: true);
+
     if (isClosed || me.isLocal) {
       return;
     }
 
-    Log.debug('_initSessionSubscription()', '$runtimeType');
-
-    _remoteSubscription?.close(immediate: true);
-
     await WebUtils.protect(() async {
+      if (isClosed || me.isLocal) {
+        return;
+      }
+
       _remoteSubscription = StreamQueue(
         await _sessionRemoteEvents(
           () => _versionLocal.data[_accountLocal.userId]?.sessionsListVersion,

@@ -47,6 +47,9 @@ class BackgroundDriftProvider extends DriftProviderBase with IdentityAware {
   final Map<UserId, DtoBackground> _cache = {};
 
   @override
+  int get order => IdentityAware.providerOrder;
+
+  @override
   void onIdentityChanged(UserId me) {
     _cache.clear();
   }

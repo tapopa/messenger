@@ -33,6 +33,7 @@ import '/domain/repository/chat.dart';
 import '/domain/repository/contact.dart';
 import '/domain/repository/paginated.dart';
 import '/domain/repository/user.dart';
+import '/domain/service/disposable_service.dart';
 import '/provider/drift/user.dart';
 import '/provider/gql/exceptions.dart';
 import '/provider/gql/graphql.dart';
@@ -51,9 +52,9 @@ import 'model/page_info.dart';
 import 'paginated.dart';
 
 /// Implementation of an [AbstractUserRepository].
-class UserRepository extends DisposableInterface
+class UserRepository extends IdentityDependency
     implements AbstractUserRepository {
-  UserRepository(this._graphQlProvider, this._userLocal, {required this.me});
+  UserRepository(this._graphQlProvider, this._userLocal, {required super.me});
 
   @override
   final RxMap<UserId, RxUserImpl> users = RxMap();
@@ -70,9 +71,6 @@ class UserRepository extends DisposableInterface
   /// Used to populate the [RxUser.contact] value.
   FutureOr<RxChatContact?> Function(ChatContactId id)? getContact;
 
-  /// [UserId] of the currently authenticated [MyUser].
-  final UserId me;
-
   /// GraphQL API provider.
   final GraphQlProvider _graphQlProvider;
 
@@ -88,6 +86,18 @@ class UserRepository extends DisposableInterface
 
     users.forEach((_, v) => v.dispose());
     super.onClose();
+  }
+
+  @override
+  void onIdentityChanged(UserId me) {
+    super.onIdentityChanged(me);
+
+    Log.debug('onIdentityChanged($me)', '$runtimeType');
+
+    for (var e in users.values) {
+      e.dispose();
+    }
+    users.clear();
   }
 
   @override

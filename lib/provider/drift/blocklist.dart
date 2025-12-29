@@ -48,6 +48,9 @@ class BlocklistDriftProvider extends DriftProviderBaseWithScope
   final Map<UserId, DtoBlocklistRecord> _cache = {};
 
   @override
+  int get order => IdentityAware.providerOrder;
+
+  @override
   void onIdentityChanged(UserId me) {
     _cache.clear();
   }

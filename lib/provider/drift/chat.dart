@@ -89,8 +89,12 @@ class ChatDriftProvider extends DriftProviderBaseWithScope with IdentityAware {
   final Map<ChatId, DtoChat> _cache = {};
 
   @override
+  int get order => IdentityAware.providerOrder;
+
+  @override
   void onIdentityChanged(UserId me) {
     _cache.clear();
+    _controllers.clear();
   }
 
   /// Creates or updates the provided [chat] in the database.

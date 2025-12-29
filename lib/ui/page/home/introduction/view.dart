@@ -428,7 +428,6 @@ class IntroductionView extends StatelessWidget {
                                                 await c.switchTo(e.id);
                                               }
                                             },
-                                            // title: [UnreadCounter(1)],
                                             subtitle: [
                                               const SizedBox(height: 5),
                                               Row(

@@ -39,10 +39,10 @@ void main() {
 
   final AbstractSettingsRepository repo = Get.put(
     SettingsRepository(
-      const UserId('me'),
       settingsProvider,
       backgroundProvider,
       callRectProvider,
+      me: const UserId('me'),
     ),
   );
 

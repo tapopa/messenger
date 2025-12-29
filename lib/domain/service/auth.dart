@@ -170,7 +170,10 @@ class AuthService extends Dependency {
       final List<IdentityAware> deps = Get.findAll<IdentityAware>();
       deps.sort((a, b) => a.order.compareTo(b.order));
 
-      Log.info('ever(credentials) -> deps -> $deps');
+      Log.debug(
+        '_credentialsWorker -> onIdentityChanged($userId) for $deps',
+        '$runtimeType',
+      );
 
       for (var e in deps) {
         e.onIdentityChanged(userId);

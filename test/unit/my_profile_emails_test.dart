@@ -149,6 +149,38 @@ void main() async {
         graphQlProvider.blocklistEvents(any),
       ).thenAnswer((_) => const Stream.empty());
 
+      when(graphQlProvider.signUp()).thenAnswer(
+        (_) => Future.value(
+          SignUp$Mutation$CreateUser$CreateSessionOk.fromJson({
+            'session': {
+              '__typename': 'Session',
+              'id': '1ba588ce-d084-486d-9087-3999c8f56596',
+              'ip': '127.0.0.1',
+              'userAgent':
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+              'isCurrent': true,
+              'lastActivatedAt': DateTime.now().toString(),
+              'ver': '031592915314290362597742826064324903711',
+            },
+            'accessToken': {
+              '__typename': 'AccessToken',
+              'secret': 'token',
+              'expiresAt': DateTime.now()
+                  .add(const Duration(days: 1))
+                  .toString(),
+            },
+            'refreshToken': {
+              '__typename': 'RefreshToken',
+              'secret': 'token',
+              'expiresAt': DateTime.now()
+                  .add(const Duration(days: 1))
+                  .toString(),
+            },
+            'user': myUserData,
+          }),
+        ),
+      );
+
       when(
         graphQlProvider.removeUserEmail(UserEmail('test@dummy.com')),
       ).thenAnswer(
@@ -193,6 +225,8 @@ void main() async {
           secretsProvider,
         ),
       );
+      await authService.init();
+
       UserRepository userRepository = Get.put(
         UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
       );
@@ -215,13 +249,20 @@ void main() async {
         accountProvider,
         me: const UserId('me'),
       );
-      myUserRepository.init(onUserDeleted: () {}, onPasswordUpdated: () {});
+
+      await myUserRepository.init(
+        onUserDeleted: () {},
+        onPasswordUpdated: () {},
+      );
+
       await Future.delayed(Duration.zero);
 
       MyUserService myUserService = MyUserService(
         authService,
         myUserRepository,
       );
+
+      await authService.register();
 
       await myUserService.addUserEmail(UserEmail('test@dummy.com'));
       await myUserService.addUserEmail(

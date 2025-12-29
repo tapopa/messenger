@@ -137,9 +137,9 @@ void main() async {
   ).thenAnswer((_) => const Stream.empty());
   Get.put<GraphQlProvider>(graphQlProvider);
 
-  when(
-    graphQlProvider.getUser(any),
-  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson({'user': null})));
+  when(graphQlProvider.getUser(any)).thenAnswer(
+    (_) => Future.value(GetUser$Query.fromJson({'user': null}).user),
+  );
   when(graphQlProvider.getMonolog()).thenAnswer(
     (_) => Future.value(GetMonolog$Query.fromJson({'monolog': null}).monolog),
   );
@@ -362,10 +362,10 @@ void main() async {
     );
     AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
-        const UserId('me'),
         settingsProvider,
         backgroundProvider,
         callRectProvider,
+        me: const UserId('me'),
       ),
     );
     final callRepository = CallRepository(

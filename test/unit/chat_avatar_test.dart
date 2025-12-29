@@ -158,10 +158,10 @@ void main() async {
 
     AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
-        const UserId('me'),
         settingsProvider,
         backgroundProvider,
         callRectProvider,
+        me: const UserId('me'),
       ),
     );
 
@@ -252,10 +252,10 @@ void main() async {
 
     AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
-        const UserId('me'),
         settingsProvider,
         backgroundProvider,
         callRectProvider,
+        me: const UserId('me'),
       ),
     );
 

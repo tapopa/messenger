@@ -157,17 +157,17 @@ void main() async {
       ),
     );
     router = RouterState(authService);
-    authService.init();
+    await authService.init();
 
     UserRepository userRepository = Get.put(
       UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
     );
     AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
-        const UserId('me'),
         settingsProvider,
         backgroundProvider,
         callRectProvider,
+        me: const UserId('me'),
       ),
     );
 
@@ -335,17 +335,17 @@ void main() async {
       ),
     );
     router = RouterState(authService);
-    authService.init();
+    await authService.init();
 
     final UserRepository userRepository = Get.put(
       UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
     );
     final AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
-        const UserId('me'),
         settingsProvider,
         backgroundProvider,
         callRectProvider,
+        me: const UserId('me'),
       ),
     );
 
@@ -450,14 +450,14 @@ void main() async {
       ),
     );
     router = RouterState(authService);
-    authService.init();
+    await authService.init();
 
     AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
-        const UserId('me'),
         settingsProvider,
         backgroundProvider,
         callRectProvider,
+        me: const UserId('me'),
       ),
     );
     UserRepository userRepository = Get.put(
@@ -938,6 +938,9 @@ class _FakeGraphQlProvider extends MockedGraphQlProvider {
   Future<GetMessage$Query> chatItem(ChatItemId id) async {
     return GetMessage$Query.fromJson({'chatItem': null});
   }
+
+  @override
+  Future<ChatMixin?> getDialog(UserId userId) => Future.value(null);
 }
 
 Map<String, dynamic> _caller([String? id]) => {

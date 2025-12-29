@@ -103,9 +103,9 @@ void main() async {
     graphQlProvider.favoriteChatsEvents(any),
   ).thenAnswer((_) => const Stream.empty());
 
-  when(
-    graphQlProvider.getUser(any),
-  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson({'user': null})));
+  when(graphQlProvider.getUser(any)).thenAnswer(
+    (_) => Future.value(GetUser$Query.fromJson({'user': null}).user),
+  );
   when(graphQlProvider.getMonolog()).thenAnswer(
     (_) => Future.value(GetMonolog$Query.fromJson({'monolog': null}).monolog),
   );
@@ -121,7 +121,7 @@ void main() async {
   router = RouterState(authService);
   router.provider = MockPlatformRouteInformationProvider();
 
-  authService.init();
+  await authService.init();
 
   final settingsProvider = Get.put(SettingsDriftProvider(common));
   final userProvider = Get.put(UserDriftProvider(common, scoped));
@@ -259,7 +259,7 @@ void main() async {
           const UserId('9188c6b1-c2d7-4af2-a662-f68c0a00a1be'),
         ),
       ).thenAnswer(
-        (_) => Future.value(GetUser$Query.fromJson({'user': newUserData})),
+        (_) => Future.value(GetUser$Query.fromJson({'user': newUserData}).user),
       );
 
       final authService = Get.put(
@@ -273,7 +273,7 @@ void main() async {
           secretsProvider,
         ),
       );
-      authService.init();
+      await authService.init();
 
       final userRepository = Get.put(
         UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
@@ -316,10 +316,10 @@ void main() async {
 
       final settingsRepository = Get.put(
         SettingsRepository(
-          const UserId('me'),
           settingsProvider,
           backgroundProvider,
           callRectProvider,
+          me: const UserId('me'),
         ),
       );
       final contactRepository = Get.put(

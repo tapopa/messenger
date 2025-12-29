@@ -118,7 +118,7 @@ void main() async {
     permanent: true,
   );
   router = RouterState(authService);
-  authService.init();
+  await authService.init();
 
   var chatData = {
     'id': '0d72d245-8425-467a-9ebd-082d4f47850b',
@@ -221,9 +221,9 @@ void main() async {
     graphQlProvider.favoriteChatsEvents(any),
   ).thenAnswer((_) => const Stream.empty());
 
-  when(
-    graphQlProvider.getUser(any),
-  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson({'user': null})));
+  when(graphQlProvider.getUser(any)).thenAnswer(
+    (_) => Future.value(GetUser$Query.fromJson({'user': null}).user),
+  );
   when(graphQlProvider.getMonolog()).thenAnswer(
     (_) => Future.value(GetMonolog$Query.fromJson({'monolog': null}).monolog),
   );
@@ -242,10 +242,10 @@ void main() async {
 
     AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
-        const UserId('me'),
         settingsProvider,
         backgroundProvider,
         callRectProvider,
+        me: const UserId('me'),
       ),
     );
     UserRepository userRepository = Get.put(
@@ -328,10 +328,10 @@ void main() async {
 
     AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
-        const UserId('me'),
         settingsProvider,
         backgroundProvider,
         callRectProvider,
+        me: const UserId('me'),
       ),
     );
     UserRepository userRepository = Get.put(
@@ -425,10 +425,10 @@ void main() async {
 
       AbstractSettingsRepository settingsRepository = Get.put(
         SettingsRepository(
-          const UserId('me'),
           settingsProvider,
           backgroundProvider,
           callRectProvider,
+          me: const UserId('me'),
         ),
       );
       UserRepository userRepository = Get.put(
@@ -517,10 +517,10 @@ void main() async {
 
       AbstractSettingsRepository settingsRepository = Get.put(
         SettingsRepository(
-          const UserId('me'),
           settingsProvider,
           backgroundProvider,
           callRectProvider,
+          me: const UserId('me'),
         ),
       );
       UserRepository userRepository = Get.put(
@@ -598,10 +598,10 @@ void main() async {
 
     AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
-        const UserId('me'),
         settingsProvider,
         backgroundProvider,
         callRectProvider,
+        me: const UserId('me'),
       ),
     );
     UserRepository userRepository = Get.put(
@@ -693,10 +693,10 @@ void main() async {
 
       AbstractSettingsRepository settingsRepository = Get.put(
         SettingsRepository(
-          const UserId('me'),
           settingsProvider,
           backgroundProvider,
           callRectProvider,
+          me: const UserId('me'),
         ),
       );
       UserRepository userRepository = Get.put(

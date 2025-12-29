@@ -97,10 +97,10 @@ void main() async {
   when(graphQlProvider.disconnect()).thenAnswer((_) => () {});
   when(
     graphQlProvider.getUser(const UserId('me')),
-  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson(userData)));
+  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson(userData).user));
   when(
     graphQlProvider.getUser(UserId(Config.supportId)),
-  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson({})));
+  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson({}).user));
   when(
     graphQlProvider.onStart,
   ).thenReturn(InternalFinalCallback(callback: () {}));
@@ -470,10 +470,10 @@ void main() async {
     );
     final AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
-        const UserId('me'),
         settingsProvider,
         backgroundProvider,
         callRectProvider,
+        me: const UserId('me'),
       ),
     );
     final callRepository = CallRepository(

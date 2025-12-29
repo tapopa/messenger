@@ -179,9 +179,9 @@ void main() async {
     graphQlProvider.favoriteChatsEvents(any),
   ).thenAnswer((_) => const Stream.empty());
 
-  when(
-    graphQlProvider.getUser(any),
-  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson({'user': null})));
+  when(graphQlProvider.getUser(any)).thenAnswer(
+    (_) => Future.value(GetUser$Query.fromJson({'user': null}).user),
+  );
   when(graphQlProvider.getMonolog()).thenAnswer(
     (_) => Future.value(GetMonolog$Query.fromJson({'monolog': null}).monolog),
   );
@@ -189,10 +189,10 @@ void main() async {
   Future<ChatService> init(GraphQlProvider graphQlProvider) async {
     AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
-        const UserId('me'),
         settingsProvider,
         backgroundProvider,
         callRectProvider,
+        me: const UserId('me'),
       ),
     );
 
@@ -207,7 +207,7 @@ void main() async {
         secretsProvider,
       ),
     );
-    authService.init();
+    await authService.init();
 
     UserRepository userRepository = Get.put(
       UserRepository(graphQlProvider, userProvider, me: const UserId('me')),

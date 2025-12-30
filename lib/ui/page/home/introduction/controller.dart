@@ -109,7 +109,7 @@ class IntroductionController extends GetxController with IdentityAware {
   /// Indicator whether the [password] should be obscured.
   final RxBool obscurePassword = RxBool(true);
 
-  /// Indicator whether the [newPassword] should be obscured.
+  /// Indicator whether the [recoveryPassword] should be obscured.
   final RxBool obscureNewPassword = RxBool(true);
 
   /// Indicator whether the [repeatPassword] should be obscured.

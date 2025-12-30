@@ -116,7 +116,7 @@ void main() async {
     Get.put<GraphQlProvider>(graphQlProvider);
     Get.put(credentialsProvider);
     Get.put(draftProvider);
-    Get.put(NotificationService(graphQlProvider));
+    Get.put(NotificationService(graphQlProvider, me: const UserId('me')));
     Get.put(monologProvider);
     Get.put(backgroundProvider);
     Get.put(blocklistProvider);

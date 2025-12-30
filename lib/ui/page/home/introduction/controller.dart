@@ -53,14 +53,9 @@ enum IntroductionStage {
   recoveryPassword,
   signIn,
   signInAs,
-  signInOrSignUp,
   signInWithEmail,
   signInWithEmailCode,
   signInWithPassword,
-  signUp,
-  signUpWithEmail,
-  signUpWithEmailCode,
-  signUpWithPassword,
 }
 
 /// Controller of an [IntroductionView].
@@ -172,66 +167,40 @@ class IntroductionController extends GetxController with IdentityAware {
       repeatPassword.error.value = null;
       repeatPassword.unsubmit();
     },
-    onSubmitted: (s) => signIn(),
-  );
+    onSubmitted: (s) async {
+      switch (page.value) {
+        case IntroductionStage.signInWithPassword:
+          await signIn();
+          break;
 
-  /// [TextFieldState] of a new password text input.
-  late final TextFieldState newPassword = TextFieldState(
-    onChanged: (_) {
-      repeatPassword.error.value = null;
-      repeatPassword.unsubmit();
-    },
-    onSubmitted: (s) {
-      repeatPassword.focus.requestFocus();
-      s.unsubmit();
+        case IntroductionStage.accountCreating:
+          repeatPassword.focus.requestFocus();
+          break;
+
+        default:
+          // No-op.
+          break;
+      }
     },
   );
 
   /// [TextFieldState] of a repeat password text input.
   late final TextFieldState repeatPassword = TextFieldState(
     onFocus: (s) {
-      switch (page.value) {
-        case IntroductionStage.signUpWithPassword:
-          if (s.text != password.text && password.isValidated) {
-            s.error.value = 'err_passwords_mismatch'.l10n;
-          }
-          break;
+      password.error.value = null;
 
-        default:
-          if (s.text != newPassword.text && newPassword.isValidated) {
-            s.error.value = 'err_passwords_mismatch'.l10n;
-          }
-          break;
+      if (s.text != password.text && password.isValidated) {
+        s.error.value = 'err_passwords_mismatch'.l10n;
       }
     },
     onSubmitted: (s) async {
       switch (page.value) {
-        case IntroductionStage.signUpWithPassword:
-          final userLogin = UserLogin.tryParse(login.text);
-          final userPassword = UserPassword.tryParse(password.text);
-
-          if (userLogin == null) {
-            login.error.value = 'err_incorrect_login_input'.l10n;
-            return;
-          }
-
-          if (userPassword == null) {
-            password.error.value = 'err_password_incorrect'.l10n;
-            return;
-          }
-
-          try {
-            await register(login: userLogin, password: userPassword);
-          } on SignUpException catch (e) {
-            login.error.value = e.toMessage();
-          } catch (e) {
-            password.error.value = 'err_data_transfer'.l10n;
-            rethrow;
-          }
+        case IntroductionStage.accountCreating:
+          await createAccount();
           break;
 
         default:
-          // await resetUserPassword();
+          // No-op.
           break;
       }
     },
@@ -252,7 +221,7 @@ class IntroductionController extends GetxController with IdentityAware {
       page.value = switch (page.value) {
         IntroductionStage.signInWithEmail =>
           IntroductionStage.signInWithEmailCode,
-        (_) => IntroductionStage.signUpWithEmailCode,
+        (_) => IntroductionStage.signIn,
       };
 
       try {
@@ -357,14 +326,6 @@ class IntroductionController extends GetxController with IdentityAware {
           return;
         }
       }
-
-      final UserName? name = UserName.tryParse(s.text);
-
-      try {
-        await _myUserService.updateUserName(name);
-      } catch (_) {
-        s.error.value = 'err_data_transfer'.l10n;
-      }
     },
   );
 
@@ -375,21 +336,11 @@ class IntroductionController extends GetxController with IdentityAware {
 
       if (s.text.trim().isNotEmpty) {
         try {
-          UserLogin(s.text);
+          UserLogin(s.text.toLowerCase());
         } on FormatException catch (_) {
           s.error.value = 'err_incorrect_input'.l10n;
           return;
         }
-      }
-
-      final UserLogin? login = UserLogin.tryParse(s.text.toLowerCase());
-
-      try {
-        await _myUserService.updateUserLogin(login);
-      } on UpdateUserLoginException catch (e) {
-        s.error.value = e.toMessage();
-      } catch (_) {
-        s.error.value = 'err_data_transfer'.l10n;
       }
     },
   );
@@ -399,18 +350,12 @@ class IntroductionController extends GetxController with IdentityAware {
     onFocus: (s) {
       if (s.text.trim().isNotEmpty) {
         try {
-          final email = UserEmail(s.text);
-
-          if (myUser.value?.emails.confirmed.contains(email) == true ||
-              myUser.value?.emails.unconfirmed == email) {
-            s.error.value = 'err_you_already_add_this_email'.l10n;
-          }
+          UserEmail(s.text);
         } catch (e) {
           s.error.value = 'err_incorrect_email'.l10n;
         }
       }
     },
-    onSubmitted: (s) async {},
   );
 
   /// [AuthService] used for authorization manipulations.
@@ -607,20 +552,93 @@ class IntroductionController extends GetxController with IdentityAware {
   }
 
   /// Creates a new one-time account right away.
-  Future<void> register({UserLogin? login, UserPassword? password}) async {
+  Future<void> register({
+    UserLogin? login,
+    UserPassword? password,
+    UserName? name,
+    UserEmail? email,
+  }) async {
     try {
       await _authService.register(
         password: password,
         login: login,
         force: true,
-        // removeAfterwards: userId,
       );
+
+      if (name != null) {
+        await _myUserService.updateUserName(name);
+      }
+
+      if (email != null) {
+        await _myUserService.addUserEmail(email);
+      }
     } on SignUpException catch (e) {
       this.login.error.value = e.toMessage();
     } on ConnectionException {
       MessagePopup.error('err_data_transfer'.l10n);
     } catch (e) {
       MessagePopup.error(e);
+      rethrow;
+    }
+  }
+
+  Future<void> createAccount() async {
+    final userName = UserName.tryParse(signUpName.text);
+    final userLogin = UserLogin.tryParse(signUpLogin.text);
+    final userEmail = UserEmail.tryParse(signUpEmail.text);
+    final userPassword = UserPassword.tryParse(password.text);
+    final passwordRepeat = UserPassword.tryParse(repeatPassword.text);
+
+    if (!signUpName.isEmpty.value && userName == null) {
+      signUpName.error.value = 'err_incorrect_input'.l10n;
+      page.value = IntroductionStage.accountCreating;
+      return;
+    }
+
+    if (!signUpLogin.isEmpty.value && userLogin == null) {
+      signUpLogin.error.value = 'err_incorrect_login_input'.l10n;
+      page.value = IntroductionStage.accountCreating;
+      return;
+    }
+
+    if (!signUpEmail.isEmpty.value && userEmail == null) {
+      signUpEmail.error.value = 'err_incorrect_input'.l10n;
+      page.value = IntroductionStage.accountCreating;
+      return;
+    }
+
+    if (!password.isEmpty.value && userPassword == null) {
+      password.error.value = 'err_password_incorrect'.l10n;
+      page.value = IntroductionStage.accountCreating;
+      return;
+    }
+
+    if (!repeatPassword.isEmpty.value && passwordRepeat == null) {
+      repeatPassword.error.value = 'err_password_incorrect'.l10n;
+      page.value = IntroductionStage.accountCreating;
+      return;
+    }
+
+    if (userPassword != passwordRepeat) {
+      password.error.value = 'err_passwords_mismatch'.l10n;
+      repeatPassword.error.value = 'err_passwords_mismatch'.l10n;
+      page.value = IntroductionStage.accountCreating;
+      return;
+    }
+
+    try {
+      await register(
+        login: userLogin,
+        password: userPassword,
+        name: userName,
+        email: userEmail,
+      );
+    } on SignUpException catch (e) {
+      login.error.value = e.toMessage();
+      page.value = IntroductionStage.accountCreating;
+    } catch (e) {
+      password.error.value = 'err_data_transfer'.l10n;
+      page.value = IntroductionStage.accountCreating;
       rethrow;
     }
   }
@@ -692,7 +710,6 @@ class IntroductionController extends GetxController with IdentityAware {
     email.clear();
     password.clear();
     login.clear();
-    newPassword.clear();
     repeatPassword.clear();
     emailCode.clear();
     signUpName.clear();

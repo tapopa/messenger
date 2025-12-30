@@ -902,7 +902,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
           final GraphQlProvider graphQlProvider = Get.find();
 
           final NotificationService notificationService = deps.put(
-            NotificationService(graphQlProvider),
+            NotificationService(graphQlProvider, me: me),
           );
 
           _state._auth.onLogout = ({bool keepData = true}) async {

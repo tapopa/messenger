@@ -145,9 +145,7 @@ class IntroductionView extends StatelessWidget {
             const SizedBox(width: 9),
             Flexible(
               child: OutlinedRoundedButton(
-                onPressed: () {
-                  c.page.value = IntroductionStage.signIn;
-                },
+                onPressed: () => c.page.value = IntroductionStage.signIn,
                 maxWidth: 210,
                 height: 46,
                 leading: Transform.translate(
@@ -298,42 +296,6 @@ class IntroductionView extends StatelessWidget {
                     ];
                     break;
 
-                  case IntroductionStage.signInOrSignUp:
-                    header = ModalPopupHeader(
-                      text: 'label_sign_in'.l10n,
-                      onBack: () => c.page.value = null,
-                      close: false,
-                    );
-                    children = [
-                      const SizedBox(height: 16),
-                      SignButton(
-                        key: const Key('RegisterButton'),
-                        icon: const SvgIcon(SvgIcons.register),
-                        padding: const EdgeInsets.only(left: 3),
-                        onPressed: () async {
-                          c.dismiss();
-
-                          router.tab = HomeTab.menu;
-                          router.me();
-
-                          await c.register();
-                        },
-                        title: 'btn_create_account'.l10n,
-                      ),
-                      const SizedBox(height: 16),
-                      SignButton(
-                        key: const Key('SignInButton'),
-                        icon: const SvgIcon(SvgIcons.enter),
-                        padding: const EdgeInsets.only(left: 4),
-                        onPressed: () {
-                          c.page.value = IntroductionStage.signIn;
-                        },
-                        title: 'btn_sign_in'.l10n,
-                      ),
-                      const SizedBox(height: 26),
-                    ];
-                    break;
-
                   case IntroductionStage.signIn:
                   case IntroductionStage.signInAs:
                     header = ModalPopupHeader(
@@ -358,182 +320,9 @@ class IntroductionView extends StatelessWidget {
                         .toList();
 
                     children = [
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 8),
                       if (profiles.isNotEmpty && c.signInAs == null) ...[
-                        Container(
-                          color: Color(0xFFe5ecf2),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Transform.translate(
-                                offset: Offset(0, -8),
-                                child: LineDivider('label_saved_accounts'.l10n),
-                              ),
-                              Flexible(
-                                child: ListView(
-                                  shrinkWrap: true,
-                                  children: [
-                                    const SizedBox(height: 16),
-                                    ...profiles.map((e) {
-                                      final bool expired = !c.accounts
-                                          .containsKey(e.id);
-
-                                      return Padding(
-                                        padding: ModalPopup.padding(context),
-                                        child: ContactTile(
-                                          key: Key('Account_${e.id}'),
-                                          myUser: e,
-                                          // TODO: Prompt to sign in to the non-[authorized].
-                                          onTap: () async {
-                                            if (expired) {
-                                              final hasPasswordOrEmail =
-                                                  e.hasPassword ||
-                                                  e.emails.confirmed.isNotEmpty;
-
-                                              if (hasPasswordOrEmail) {
-                                                c.page.value =
-                                                    IntroductionStage.signInAs;
-                                                c.signInAs = e;
-                                                c.login.unchecked =
-                                                    e.num.toString();
-                                                c.email.unchecked =
-                                                    e.num.toString();
-                                              } else {
-                                                await AccountIsNotAccessibleView.show(
-                                                  context,
-                                                  e,
-                                                );
-                                              }
-                                            } else {
-                                              await c.switchTo(e.id);
-                                            }
-                                          },
-                                          subtitle: [
-                                            const SizedBox(height: 5),
-                                            Row(
-                                              children: [
-                                                if (expired)
-                                                  Expanded(
-                                                    child: Text(
-                                                      'label_sign_in_required'
-                                                          .l10n,
-                                                      style: style
-                                                          .fonts
-                                                          .normal
-                                                          .regular
-                                                          .danger,
-                                                    ),
-                                                  )
-                                                else
-                                                  Expanded(
-                                                    child: Text(
-                                                      'label_signed_in'.l10n,
-                                                      style: style
-                                                          .fonts
-                                                          .normal
-                                                          .regular
-                                                          .secondary,
-                                                    ),
-                                                  ),
-                                                WidgetButton(
-                                                  key: const Key(
-                                                    'RemoveAccount',
-                                                  ),
-                                                  onPressed: () async {
-                                                    bool? result;
-
-                                                    result = await MessagePopup.alert(
-                                                      'btn_remove_account'.l10n,
-                                                      description: [
-                                                        TextSpan(
-                                                          style: style
-                                                              .fonts
-                                                              .small
-                                                              .regular
-                                                              .secondary,
-                                                          children: [
-                                                            TextSpan(
-                                                              text:
-                                                                  'label_account_will_be_removed_from_list1'
-                                                                      .l10n,
-                                                            ),
-                                                            TextSpan(
-                                                              style: style
-                                                                  .fonts
-                                                                  .small
-                                                                  .regular
-                                                                  .onBackground,
-                                                              text:
-                                                                  '${e.name ?? e.num}',
-                                                            ),
-                                                            TextSpan(
-                                                              text:
-                                                                  'label_account_will_be_removed_from_list2'
-                                                                      .l10n,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                      button: (context) =>
-                                                          MessagePopup.deleteButton(
-                                                            context,
-                                                            label:
-                                                                'btn_remove_account'
-                                                                    .l10n,
-                                                            icon: SvgIcons
-                                                                .removeFromCallWhite,
-                                                          ),
-                                                    );
-
-                                                    if (result == true) {
-                                                      await c.deleteAccount(
-                                                        e.id,
-                                                      );
-                                                    }
-                                                  },
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.fromLTRB(
-                                                          8,
-                                                          0,
-                                                          6,
-                                                          0,
-                                                        ),
-                                                    child: Text(
-                                                      'btn_remove'.l10n,
-                                                      style: style
-                                                          .fonts
-                                                          .normal
-                                                          .regular
-                                                          .primary,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-
-                                            // TODO: Uncomment, when [MyUser]s will receive their
-                                            //       updates in real-time.
-                                            // else
-                                            //   Text(
-                                            //     myUser.getStatus() ?? '',
-                                            //     style: style.fonts.small.regular.secondary,
-                                            //   )
-                                          ],
-                                        ),
-                                      );
-                                    }),
-                                    const SizedBox(height: 8),
-                                  ],
-                                ),
-                              ),
-                              Transform.translate(
-                                offset: Offset(0, 8),
-                                child: LineDivider('label_add_account'.l10n),
-                              ),
-                            ],
-                          ),
-                        ),
+                        _profiles(context, c),
                         const SizedBox(height: 24),
                       ] else if (c.signInAs != null) ...[
                         Center(
@@ -774,124 +563,6 @@ class IntroductionView extends StatelessWidget {
                     ];
                     break;
 
-                  case IntroductionStage.signUp:
-                    header = ModalPopupHeader(
-                      text: 'label_sign_up'.l10n,
-                      onBack: () =>
-                          c.page.value = IntroductionStage.signInOrSignUp,
-                      close: false,
-                    );
-                    children = [
-                      const SizedBox(height: 16),
-                      SignButton(
-                        key: const Key('LoginAndPassword'),
-                        title: 'btn_login_and_password'.l10n,
-                        icon: const SvgIcon(SvgIcons.password),
-                        onPressed: () =>
-                            c.page.value = IntroductionStage.signUpWithPassword,
-                      ),
-                      const SizedBox(height: 16),
-                      SignButton(
-                        key: const Key('Email'),
-                        title: 'btn_email'.l10n,
-                        icon: const SvgIcon(SvgIcons.email),
-                        onPressed: () =>
-                            c.page.value = IntroductionStage.signUpWithEmail,
-                      ),
-                      const SizedBox(height: 16),
-                      _terms(context),
-                      const SizedBox(height: 16),
-                    ];
-                    break;
-
-                  case IntroductionStage.signUpWithPassword:
-                    header = ModalPopupHeader(
-                      text: 'label_sign_up_with_password'.l10n,
-                      onBack: () => c.page.value = IntroductionStage.signUp,
-                      close: false,
-                    );
-                    children = [];
-                    break;
-
-                  case IntroductionStage.signUpWithEmail:
-                    header = ModalPopupHeader(
-                      onBack: () => c.page.value = IntroductionStage.signUp,
-                      close: false,
-                    );
-                    children = [];
-                    break;
-
-                  case IntroductionStage.signUpWithEmailCode:
-                    header = ModalPopupHeader(
-                      onBack: () =>
-                          c.page.value = IntroductionStage.signUpWithEmail,
-                      text: 'label_sign_up'.l10n,
-                      close: false,
-                    );
-
-                    children = [
-                      Center(child: Text(c.email.text)),
-                      const SizedBox(height: 20),
-                      Text(
-                        'label_add_email_confirmation_sent'.l10n,
-                        style: style.fonts.normal.regular.secondary,
-                      ),
-                      const SizedBox(height: 25),
-                      ReactiveTextField(
-                        key: const Key('EmailCodeField'),
-                        state: c.emailCode,
-                        label: 'label_one_time_password'.l10n,
-                        type: TextInputType.number,
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        hint: 'label_enter_code'.l10n,
-                        obscure: c.obscureCode.value,
-                        onSuffixPressed: c.obscureCode.toggle,
-                        trailing: Center(
-                          child: SvgIcon(
-                            c.obscureCode.value
-                                ? SvgIcons.visibleOff
-                                : SvgIcons.visibleOn,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 25),
-                      Obx(() {
-                        final bool canResend =
-                            c.codeTimeout.value == 0 &&
-                            c.authStatus.value.isEmpty;
-
-                        final bool enabled =
-                            !c.emailCode.isEmpty.value &&
-                            c.authStatus.value.isEmpty;
-
-                        return Row(
-                          children: [
-                            Expanded(
-                              child: PrimaryButton(
-                                key: const Key('Resend'),
-                                onPressed: canResend ? c.resendEmail : null,
-                                title: c.resendEmailTimeout.value == 0
-                                    ? 'label_resend'.l10n
-                                    : 'label_resend_timeout'.l10nfmt({
-                                        'timeout': c.resendEmailTimeout.value,
-                                      }),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: PrimaryButton(
-                                key: const Key('Proceed'),
-                                onPressed: enabled ? c.emailCode.submit : null,
-                                title: 'btn_sign_up'.l10n,
-                              ),
-                            ),
-                          ],
-                        );
-                      }),
-                      const SizedBox(height: 16),
-                    ];
-                    break;
-
                   case IntroductionStage.recovery:
                     header = ModalPopupHeader(
                       onBack: () =>
@@ -903,7 +574,8 @@ class IntroductionView extends StatelessWidget {
 
                   case IntroductionStage.recoveryCode:
                     header = ModalPopupHeader(
-                      onBack: () => c.page.value = IntroductionStage.signIn,
+                      onBack: () =>
+                          c.page.value = IntroductionStage.signInWithPassword,
                       close: false,
                     );
                     children = [];
@@ -912,7 +584,7 @@ class IntroductionView extends StatelessWidget {
                   case IntroductionStage.recoveryPassword:
                     header = ModalPopupHeader(
                       onBack: () =>
-                          c.page.value = IntroductionStage.signInOrSignUp,
+                          c.page.value = IntroductionStage.signInWithPassword,
                       close: false,
                     );
                     children = [];
@@ -926,8 +598,6 @@ class IntroductionView extends StatelessWidget {
                     );
                     children = [
                       const SizedBox(height: 25),
-                      // _num(c, context),
-                      // const SizedBox(height: 20),
                       ReactiveTextField(
                         key: const ValueKey('NameField'),
                         state: c.signUpName,
@@ -988,15 +658,27 @@ class IntroductionView extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 25),
-                      PrimaryButton(
-                        key: const Key('ProceedButton'),
-                        onPressed: () {
-                          // TODO: Create password, etc.
-                          c.page.value = IntroductionStage.accountCreated;
-                        },
-                        title: 'btn_create_account'.l10n,
-                        leading: SvgIcon(SvgIcons.addUserWhite),
-                      ),
+                      Obx(() {
+                        final bool enabled =
+                            c.signUpName.error.value == null &&
+                            c.signUpLogin.error.value == null &&
+                            c.signUpEmail.error.value == null &&
+                            c.password.error.value == null &&
+                            c.repeatPassword.error.value == null;
+
+                        return PrimaryButton(
+                          key: const Key('ProceedButton'),
+                          onPressed: enabled
+                              ? () {
+                                  c.createAccount();
+                                  c.page.value =
+                                      IntroductionStage.accountCreated;
+                                }
+                              : null,
+                          title: 'btn_create_account'.l10n,
+                          leading: SvgIcon(SvgIcons.addUserWhite),
+                        );
+                      }),
                       const SizedBox(height: 16),
                       Text.rich(
                         TextSpan(
@@ -1093,7 +775,7 @@ class IntroductionView extends StatelessWidget {
                       close: false,
                     );
                     children = [
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 8),
                       ...L10n.languages.map((e) {
                         return Padding(
                           padding: ModalPopup.padding(
@@ -1236,5 +918,156 @@ class IntroductionView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _profiles(BuildContext context, IntroductionController c) {
+    final style = Theme.of(context).style;
+
+    return Obx(() {
+      final profiles = c.profiles.where((e) => e.id != c.userId).toList();
+
+      return Container(
+        color: Color(0xFFe5ecf2),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Transform.translate(
+              offset: Offset(0, -8),
+              child: LineDivider('label_saved_accounts'.l10n),
+            ),
+            Flexible(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  const SizedBox(height: 16),
+                  ...profiles.map((e) {
+                    final bool expired = !c.accounts.containsKey(e.id);
+
+                    return Padding(
+                      padding: ModalPopup.padding(context),
+                      child: ContactTile(
+                        key: Key('Account_${e.id}'),
+                        myUser: e,
+
+                        // TODO: Prompt to sign in to the non-[authorized].
+                        onTap: () async {
+                          if (expired) {
+                            final hasPasswordOrEmail =
+                                e.hasPassword || e.emails.confirmed.isNotEmpty;
+
+                            if (hasPasswordOrEmail) {
+                              c.page.value = IntroductionStage.signInAs;
+                              c.signInAs = e;
+                              c.login.unchecked = e.num.toString();
+                              c.email.unchecked = e.num.toString();
+                            } else {
+                              await AccountIsNotAccessibleView.show(context, e);
+                            }
+                          } else {
+                            await c.switchTo(e.id);
+                          }
+                        },
+                        subtitle: [
+                          const SizedBox(height: 5),
+                          Row(
+                            children: [
+                              if (expired)
+                                Expanded(
+                                  child: Text(
+                                    'label_sign_in_required'.l10n,
+                                    style: style.fonts.normal.regular.danger,
+                                  ),
+                                )
+                              else
+                                Expanded(
+                                  child: Text(
+                                    'label_signed_in'.l10n,
+                                    style: style.fonts.normal.regular.secondary,
+                                  ),
+                                ),
+                              WidgetButton(
+                                key: const Key('RemoveAccount'),
+                                onPressed: () async {
+                                  bool? result;
+
+                                  result = await MessagePopup.alert(
+                                    'btn_remove_account'.l10n,
+                                    description: [
+                                      TextSpan(
+                                        style:
+                                            style.fonts.small.regular.secondary,
+                                        children: [
+                                          TextSpan(
+                                            text:
+                                                'label_account_will_be_removed_from_list1'
+                                                    .l10n,
+                                          ),
+                                          TextSpan(
+                                            style: style
+                                                .fonts
+                                                .small
+                                                .regular
+                                                .onBackground,
+                                            text: '${e.name ?? e.num}',
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                'label_account_will_be_removed_from_list2'
+                                                    .l10n,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                    button: (context) =>
+                                        MessagePopup.deleteButton(
+                                          context,
+                                          label: 'btn_remove_account'.l10n,
+                                          icon: SvgIcons.removeFromCallWhite,
+                                        ),
+                                  );
+
+                                  if (result == true) {
+                                    await c.deleteAccount(e.id);
+                                  }
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    8,
+                                    0,
+                                    6,
+                                    0,
+                                  ),
+                                  child: Text(
+                                    'btn_remove'.l10n,
+                                    style: style.fonts.normal.regular.primary,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          // TODO: Uncomment, when [MyUser]s will receive their
+                          //       updates in real-time.
+                          // else
+                          //   Text(
+                          //     myUser.getStatus() ?? '',
+                          //     style: style.fonts.small.regular.secondary,
+                          //   )
+                        ],
+                      ),
+                    );
+                  }),
+                  const SizedBox(height: 8),
+                ],
+              ),
+            ),
+            Transform.translate(
+              offset: Offset(0, 8),
+              child: LineDivider('label_add_account'.l10n),
+            ),
+          ],
+        ),
+      );
+    });
   }
 }

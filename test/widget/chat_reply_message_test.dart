@@ -509,7 +509,7 @@ void main() async {
       ),
     );
     Get.put(ContactService(contactRepository));
-    Get.put(NotificationService(graphQlProvider));
+    Get.put(NotificationService(graphQlProvider, me: const UserId('me')));
 
     final MyUserRepository myUserRepository = MyUserRepository(
       graphQlProvider,

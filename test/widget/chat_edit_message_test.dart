@@ -464,7 +464,7 @@ void main() async {
     Get.put(UserService(userRepository));
     ChatService chatService = Get.put(ChatService(chatRepository, authService));
     Get.put(CallService(authService, chatService, callRepository));
-    Get.put(NotificationService(graphQlProvider));
+    Get.put(NotificationService(graphQlProvider, me: const UserId('me')));
 
     await tester.pumpWidget(
       createWidgetForTesting(

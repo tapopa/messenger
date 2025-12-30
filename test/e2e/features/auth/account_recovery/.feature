@@ -18,19 +18,20 @@
 Feature: Account recovery
 
   Scenario: User can restore access to their account
-    When I tap `SignInButton` button
-    Then I wait until `LoginView` is present
+    When I wait until `IntroductionView` is present
+    And I tap `SignInButton` button
+    Then I wait until `SignInScreen` is present
 
     When I tap `PasswordButton` button
-    Then I wait until `SignInWithPassword` is present
+    Then I wait until `SignInWithPasswordScreen` is present
 
     When I fill `UsernameField` field with "alice"
     And I tap `ForgotPassword` button
-    Then I wait until `Recovery` is present
+    Then I wait until `RecoveryScreen` is present
     And I wait until `RecoveryField` is present
 
     When I tap `Proceed` button
-    Then I wait until `RecoveryCode` is present
+    Then I wait until `RecoveryCodeScreen` is present
     And I wait until `RecoveryCodeField` is present
 
     When I fill `RecoveryCodeField` field with "4321"
@@ -40,10 +41,10 @@ Feature: Account recovery
     When I fill `RecoveryCodeField` field with "1234"
     And I see `RecoveryCodeField` having no error
     And I tap `Proceed` button
-    Then I wait until `RecoveryPassword` is present
+    Then I wait until `RecoveryPasswordScreen` is present
 
     When I fill `PasswordField` field with "123"
     And I fill `RepeatPasswordField` field with "123"
     And I tap `Proceed` button
-    Then I wait until `SignIn` is present
+    Then I wait until `SignInWithPasswordScreen` is present
     And I pause for 2 seconds

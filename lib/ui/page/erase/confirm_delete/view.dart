@@ -23,6 +23,7 @@ import '/themes.dart';
 import '/ui/widget/modal_popup.dart';
 import '/ui/widget/primary_button.dart';
 import '/ui/widget/text_field.dart';
+import '/util/platform_utils.dart';
 import 'controller.dart';
 
 /// View of the [MyUser] deletion confirmation.
@@ -140,7 +141,15 @@ class ConfirmDeleteView extends StatelessWidget {
                 return PrimaryButton(
                   danger: true,
                   key: const Key('Proceed'),
-                  onPressed: enabled ? c.deleteAccount : null,
+                  onPressed: enabled
+                      ? () async {
+                          await c.deleteAccount();
+
+                          if (context.mounted) {
+                            context.popModal();
+                          }
+                        }
+                      : null,
                   title: 'btn_confirm'.l10n,
                 );
               }),

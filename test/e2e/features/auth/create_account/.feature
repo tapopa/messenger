@@ -18,9 +18,9 @@
 Feature: Account creation
 
   Scenario: User creates a new account
-    When I tap `StartButton` button
-    And I wait until `IntroductionView` is present
-    And I scroll `IntroductionScrollable` until `ProceedButton` is present
+    When I wait until `IntroductionView` is present
+    And I tap `GuestButton` button
+    Then my account is indeed remote
     And I tap `ProceedButton` button
 
     When I tap `MenuButton` button
@@ -49,20 +49,26 @@ Feature: Account creation
     When I fill `PasswordField` field with "123"
     And I tap `Proceed` button
 
-    Then I wait until `AuthView` is present
+    Then I wait until `IntroductionView` is present
     And I pause for 1 second
 
   Scenario: User creates a new account with login and password
-    When I tap `RegisterButton` button
-    Then I wait until `LoginView` is present
+    When I wait until `IntroductionView` is present
+    And I tap `SignInButton` button
+    Then I wait until `SignInScreen` is present
 
-    When I tap `LoginAndPassword` button
-    And I fill `UsernameField` field with random login
+    When I tap `CreateAccountButton` button
+    Then I wait until `AccountCreatingScreen` is present
+
+    When I fill `LoginField` field with random login
     And I fill `PasswordField` field with "123"
     And I fill `RepeatPasswordField` field with "123"
-
-    When I tap `RegisterButton` button
+    And I tap `ProceedButton` button
     Then I wait until `HomeView` is present
+    And my account is indeed remote
+
+    When I tap `ProceedButton` button
+    Then I wait until `IntroductionView` is absent
 
     When I tap `MenuButton` button
     And I tap `PublicInformation` button

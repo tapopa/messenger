@@ -22,10 +22,8 @@ Feature: Chats pagination
     And Alice has 16 groups
     And I sign in as Alice
 
-    When I scroll `IntroductionScrollable` until `ProceedButton` is present
-    And I tap `ProceedButton` button
-    Then I wait until `Chats` is present
-    And I see 15 chats
+    When I wait until `Chats` is present
+    Then I see 15 chats
 
     Given I have Internet with delay of 5 seconds
     When I scroll `Chats` until `ChatsLoading` is present
@@ -62,8 +60,7 @@ Feature: Chats pagination
     And Alice has 16 favorite groups
     And I sign in as Alice
 
-    When I scroll `IntroductionScrollable` until `ProceedButton` is present
-    And I tap `ProceedButton` button
+    When my account is indeed remote
     Then I see 15 favorite chats
 
     When I scroll `Chats` to bottom
@@ -75,8 +72,7 @@ Feature: Chats pagination
     And Alice has 15 groups
     And I sign in as Alice
 
-    When I scroll `IntroductionScrollable` until `ProceedButton` is present
-    And I tap `ProceedButton` button
+    When my account is indeed remote
     Then I see 15 favorite chats
 
     When I scroll `Chats` to bottom

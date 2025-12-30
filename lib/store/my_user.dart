@@ -177,7 +177,6 @@ class MyUserRepository extends IdentityDependency
 
     Log.debug('onIdentityChanged($me)', '$runtimeType');
 
-    _disposed = true;
     _localSubscription?.cancel();
     _remoteSubscription?.close(immediate: true);
     _keepOnlineSubscription?.close(immediate: true);

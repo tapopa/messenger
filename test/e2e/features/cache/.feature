@@ -18,10 +18,10 @@
 Feature: Cache clearing
 
   Scenario: Cache is cleaned when application version updates
-    Given I am Alice
-    Then I wait until `HomeView` is present
+    Given I am guest
+    Then my account is indeed remote
 
     When application version is updated
     And I restart app
-    Then I wait until `AuthView` is present
+    Then I wait until `IntroductionView` is present
     And I pause for 2 seconds

@@ -18,7 +18,7 @@
 Feature: Connection status
 
   Scenario: Connection status is properly displayed
-    Given I am Alice
+    Given I am guest
     And I wait for app to settle
 
     When I do not have Internet

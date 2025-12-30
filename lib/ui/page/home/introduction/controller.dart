@@ -358,6 +358,38 @@ class IntroductionController extends GetxController with IdentityAware {
     },
   );
 
+  /// [TextFieldState] of a recovery text input.
+  late final TextFieldState recoveryIdentifier = TextFieldState(
+    onSubmitted: (s) => recoverAccess(),
+  );
+
+  /// [TextFieldState] of a recovery code text input.
+  late final TextFieldState recoveryCode = TextFieldState(
+    onSubmitted: (s) => validateCode(),
+  );
+
+  /// [TextFieldState] of a new password text input for [resetUserPassword].
+  late final TextFieldState recoveryPassword = TextFieldState(
+    onChanged: (_) {
+      recoveryRepeatPassword.error.value = null;
+      recoveryRepeatPassword.unsubmit();
+    },
+    onSubmitted: (s) {
+      recoveryRepeatPassword.focus.requestFocus();
+      s.unsubmit();
+    },
+  );
+
+  /// [TextFieldState] of a repeat password text input for [resetUserPassword].
+  late final TextFieldState recoveryRepeatPassword = TextFieldState(
+    onChanged: (s) {
+      if (s.text != recoveryPassword.text && recoveryPassword.isValidated) {
+        s.error.value = 'err_passwords_mismatch'.l10n;
+      }
+    },
+    onSubmitted: (s) => resetUserPassword(),
+  );
+
   /// [AuthService] used for authorization manipulations.
   final AuthService _authService;
 
@@ -380,6 +412,22 @@ class IntroductionController extends GetxController with IdentityAware {
 
   /// [Worker] adding and removing this modal to/from [RouterState.obscuring].
   Worker? _opacityWorker;
+
+  /// [UserNum] that was provided in [recoverAccess] used to [validateCode] and
+  /// [resetUserPassword].
+  UserNum? _recoveryNum;
+
+  /// [UserEmail] that was provided in [recoverAccess] used to [validateCode]
+  /// and [resetUserPassword].
+  UserEmail? _recoveryEmail;
+
+  /// [UserPhone] that was provided in [recoverAccess] used to [validateCode]
+  /// and [resetUserPassword].
+  UserPhone? _recoveryPhone;
+
+  /// [UserLogin] that was provided in [recoverAccess] used to [validateCode]
+  /// and [resetUserPassword].
+  UserLogin? _recoveryLogin;
 
   /// Returns the [UserId] of the currently authenticated account.
   UserId get userId => _authService.userId;
@@ -700,6 +748,186 @@ class IntroductionController extends GetxController with IdentityAware {
       emailCode.error.value = 'err_data_transfer'.l10n;
       _setResendEmailTimer(false);
       rethrow;
+    }
+  }
+
+  /// Initiates password recovery for the [MyUser] identified by the provided
+  /// [recoveryIdentifier] input and stores the parsed value.
+  Future<void> recoverAccess() async {
+    recoveryIdentifier.editable.value = false;
+    recoveryIdentifier.status.value = RxStatus.loading();
+    recoveryIdentifier.error.value = null;
+
+    _recoveryLogin = _recoveryNum = _recoveryPhone = _recoveryEmail = null;
+
+    // Parse the [recovery] input.
+    try {
+      _recoveryNum = UserNum(recoveryIdentifier.text);
+    } catch (_) {
+      try {
+        _recoveryPhone = UserPhone(recoveryIdentifier.text);
+      } catch (_) {
+        try {
+          _recoveryLogin = UserLogin(recoveryIdentifier.text.toLowerCase());
+        } catch (_) {
+          try {
+            _recoveryEmail = UserEmail(recoveryIdentifier.text.toLowerCase());
+          } catch (_) {
+            // No-op.
+          }
+        }
+      }
+    }
+
+    try {
+      if (_recoveryLogin != null ||
+          _recoveryNum != null ||
+          _recoveryEmail != null ||
+          _recoveryPhone != null) {
+        await _authService.createConfirmationCode(
+          login: _recoveryLogin,
+          num: _recoveryNum,
+          email: _recoveryEmail,
+          phone: _recoveryPhone,
+          locale: L10n.chosen.value?.toString(),
+        );
+      }
+
+      page.value = IntroductionStage.recoveryCode;
+      recoveryIdentifier.status.value = RxStatus.success();
+      recoveryIdentifier.editable.value = false;
+    } catch (e) {
+      recoveryIdentifier.unsubmit();
+      recoveryIdentifier.resubmitOnError.value = true;
+      recoveryIdentifier.error.value = 'err_data_transfer'.l10n;
+      rethrow;
+    } finally {
+      recoveryIdentifier.status.value = RxStatus.empty();
+      recoveryIdentifier.editable.value = true;
+    }
+  }
+
+  /// Validates the provided password recovery [ConfirmationCode] for the
+  /// [MyUser] identified by the provided in [recoverAccess] identity.
+  Future<void> validateCode() async {
+    recoveryCode.editable.value = false;
+    recoveryCode.status.value = RxStatus.loading();
+    recoveryCode.error.value = null;
+
+    if (recoveryCode.text.isEmpty) {
+      recoveryCode.editable.value = true;
+      recoveryCode.status.value = RxStatus.empty();
+      recoveryCode.error.value = 'err_input_empty'.l10n;
+      return;
+    }
+
+    try {
+      await _authService.validateConfirmationCode(
+        login: _recoveryLogin,
+        num: _recoveryNum,
+        email: _recoveryEmail,
+        phone: _recoveryPhone,
+        code: ConfirmationCode(recoveryCode.text.toLowerCase()),
+      );
+
+      recoveryCode.editable.value = false;
+      recoveryCode.status.value = RxStatus.success();
+      page.value = IntroductionStage.recoveryPassword;
+    } on FormatException {
+      recoveryCode.error.value = 'err_wrong_code'.l10n;
+    } on ArgumentError {
+      recoveryCode.error.value = 'err_wrong_code'.l10n;
+    } on ValidateConfirmationCodeException catch (e) {
+      recoveryCode.error.value = e.toMessage();
+    } catch (e) {
+      recoveryCode.unsubmit();
+      recoveryCode.resubmitOnError.value = true;
+      recoveryCode.error.value = 'err_data_transfer'.l10n;
+      rethrow;
+    } finally {
+      recoveryCode.editable.value = true;
+      recoveryCode.status.value = RxStatus.empty();
+    }
+  }
+
+  /// Resets password for the [MyUser] identified by the provided in
+  /// [recoverAccess] identity and [ConfirmationCode].
+  Future<void> resetUserPassword() async {
+    if (recoveryPassword.error.value != null ||
+        recoveryRepeatPassword.error.value != null ||
+        recoveryCode.error.value != null) {
+      return;
+    }
+
+    recoveryRepeatPassword.status.value = RxStatus.empty();
+
+    if (recoveryPassword.text.isEmpty) {
+      recoveryPassword.error.value = 'err_input_empty'.l10n;
+      recoveryPassword.editable.value = true;
+      recoveryRepeatPassword.editable.value = true;
+      return;
+    }
+
+    if (recoveryRepeatPassword.text.isEmpty) {
+      recoveryRepeatPassword.error.value = 'err_input_empty'.l10n;
+      return;
+    }
+
+    if (UserPassword.tryParse(recoveryPassword.text) == null) {
+      recoveryPassword.error.value = 'err_incorrect_input'.l10n;
+      return;
+    }
+
+    if (UserPassword.tryParse(recoveryRepeatPassword.text) == null) {
+      recoveryRepeatPassword.error.value = 'err_incorrect_input'.l10n;
+      return;
+    }
+
+    if (recoveryPassword.text != recoveryRepeatPassword.text) {
+      recoveryRepeatPassword.error.value = 'err_passwords_mismatch'.l10n;
+      return;
+    }
+
+    recoveryPassword.editable.value = false;
+    recoveryRepeatPassword.editable.value = false;
+    recoveryPassword.status.value = RxStatus.loading();
+    recoveryRepeatPassword.status.value = RxStatus.loading();
+
+    try {
+      await _authService.updateUserPassword(
+        login: _recoveryLogin,
+        num: _recoveryNum,
+        email: _recoveryEmail,
+        phone: _recoveryPhone,
+        code: ConfirmationCode(recoveryCode.text.toLowerCase()),
+        newPassword: UserPassword(recoveryPassword.text),
+      );
+
+      page.value = IntroductionStage.signInWithPassword;
+    } on FormatException {
+      recoveryRepeatPassword.error.value = 'err_incorrect_input'.l10n;
+    } on ArgumentError {
+      recoveryRepeatPassword.error.value = 'err_incorrect_input'.l10n;
+    } on UpdateUserPasswordException catch (e) {
+      switch (e.code) {
+        case UpdateUserPasswordErrorCode.wrongOldPassword:
+          recoveryRepeatPassword.error.value = 'err_wrong_password'.l10n;
+        case UpdateUserPasswordErrorCode.wrongCode:
+          recoveryCode.error.value = 'err_wrong_code'.l10n;
+        case UpdateUserPasswordErrorCode.confirmationRequired:
+          recoveryRepeatPassword.error.value = 'err_data_transfer'.l10n;
+        case UpdateUserPasswordErrorCode.artemisUnknown:
+          recoveryRepeatPassword.error.value = 'err_unknown'.l10n;
+      }
+    } catch (e) {
+      recoveryRepeatPassword.resubmitOnError.value = true;
+      recoveryRepeatPassword.error.value = 'err_data_transfer'.l10n;
+      rethrow;
+    } finally {
+      recoveryPassword.status.value = RxStatus.empty();
+      recoveryRepeatPassword.status.value = RxStatus.empty();
+      recoveryPassword.editable.value = true;
+      recoveryRepeatPassword.editable.value = true;
     }
   }
 

@@ -29,7 +29,7 @@ Feature: MyUser's online status is correctly updated
     And I tap `LogoutButton` button
     And I tap `KeepCredentialsSwitch` button
     And I tap `ConfirmLogoutButton` button
-    Then I wait until `AuthView` is present
+    Then I wait until `IntroductionView` is present
     And Bob sees Alice as offline
 
     When I sign in as Alice

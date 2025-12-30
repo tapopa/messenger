@@ -61,16 +61,11 @@ class IntroductionView extends StatelessWidget {
           children: [
             child,
             Obx(() {
-              return IgnorePointer(
-                ignoring: c.opacity.value != 1,
-                child: Opacity(
-                  opacity: c.opacity.value,
-                  child: Material(
-                    type: MaterialType.transparency,
-                    child: _overlay(context, c),
-                  ),
-                ),
-              );
+              if (c.opacity.value != 1) {
+                return const SizedBox();
+              }
+
+              return _overlay(context, c);
             }),
           ],
         );
@@ -129,6 +124,7 @@ class IntroductionView extends StatelessWidget {
           children: [
             Flexible(
               child: OutlinedRoundedButton(
+                key: const Key('GuestButton'),
                 maxWidth: 210,
                 height: 46,
                 onPressed: () async {
@@ -145,6 +141,7 @@ class IntroductionView extends StatelessWidget {
             const SizedBox(width: 9),
             Flexible(
               child: OutlinedRoundedButton(
+                key: const Key('SignInButton'),
                 onPressed: () => c.page.value = IntroductionStage.signIn,
                 maxWidth: 210,
                 height: 46,
@@ -161,6 +158,7 @@ class IntroductionView extends StatelessWidget {
     );
 
     return ConstrainedBox(
+      key: c.opacity.value == 1 ? const Key('IntroductionView') : null,
       constraints: BoxConstraints(
         maxWidth: context.isNarrow ? double.infinity : 450,
         minHeight: 0,
@@ -434,8 +432,15 @@ class IntroductionView extends StatelessWidget {
                       const SizedBox(height: 16),
                       Center(
                         child: WidgetButton(
-                          onPressed: () =>
-                              c.page.value = IntroductionStage.recovery,
+                          key: const Key('ForgotPassword'),
+                          onPressed: () {
+                            c.recoveryIdentifier.clear();
+                            c.recoveryCode.clear();
+                            c.recoveryPassword.clear();
+                            c.recoveryRepeatPassword.clear();
+                            c.recoveryIdentifier.text = c.login.text;
+                            c.page.value = IntroductionStage.recovery;
+                          },
                           child: Text(
                             'btn_forgot_password'.l10n,
                             style: style.fonts.small.regular.primary,
@@ -568,8 +573,27 @@ class IntroductionView extends StatelessWidget {
                       onBack: () =>
                           c.page.value = IntroductionStage.signInWithPassword,
                       close: false,
+                      text: 'label_recover_account'.l10n,
                     );
-                    children = [];
+
+                    children = [
+                      ReactiveTextField(
+                        key: const Key('RecoveryField'),
+                        state: c.recoveryIdentifier,
+                        label: 'label_identifier'.l10n,
+                        hint: 'label_sign_in_input'.l10n,
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                      ),
+                      const SizedBox(height: 25),
+                      PrimaryButton(
+                        key: const Key('Proceed'),
+                        title: 'btn_proceed'.l10n,
+                        onPressed: c.recoveryIdentifier.isEmpty.value
+                            ? null
+                            : c.recoveryIdentifier.submit,
+                      ),
+                      const SizedBox(height: 16),
+                    ];
                     break;
 
                   case IntroductionStage.recoveryCode:
@@ -577,8 +601,31 @@ class IntroductionView extends StatelessWidget {
                       onBack: () =>
                           c.page.value = IntroductionStage.signInWithPassword,
                       close: false,
+                      text: 'label_recover_account'.l10n,
                     );
-                    children = [];
+
+                    children = [
+                      Text(
+                        'label_recovery_code_sent'.l10n,
+                        style: style.fonts.normal.regular.secondary,
+                      ),
+                      const SizedBox(height: 25),
+                      ReactiveTextField(
+                        key: const Key('RecoveryCodeField'),
+                        state: c.recoveryCode,
+                        label: 'label_recovery_code'.l10n,
+                        type: TextInputType.number,
+                      ),
+                      const SizedBox(height: 25),
+                      PrimaryButton(
+                        key: const Key('Proceed'),
+                        title: 'btn_proceed'.l10n,
+                        onPressed: c.recoveryCode.isEmpty.value
+                            ? null
+                            : c.recoveryCode.submit,
+                      ),
+                      const SizedBox(height: 16),
+                    ];
                     break;
 
                   case IntroductionStage.recoveryPassword:
@@ -586,13 +633,51 @@ class IntroductionView extends StatelessWidget {
                       onBack: () =>
                           c.page.value = IntroductionStage.signInWithPassword,
                       close: false,
+                      text: 'label_recover_account'.l10n,
                     );
-                    children = [];
+
+                    children = [
+                      Text(
+                        'label_recovery_enter_new_password'.l10n,
+                        style: style.fonts.normal.regular.secondary,
+                      ),
+                      const SizedBox(height: 25),
+                      ReactiveTextField.password(
+                        key: const Key('PasswordField'),
+                        state: c.recoveryPassword,
+                        label: 'label_new_password'.l10n,
+                        hint: 'label_enter_password'.l10n,
+                        obscured: c.obscureNewPassword,
+                        treatErrorAsStatus: false,
+                      ),
+                      const SizedBox(height: 16),
+                      ReactiveTextField.password(
+                        key: const Key('RepeatPasswordField'),
+                        state: c.recoveryRepeatPassword,
+                        label: 'label_confirm_password'.l10n,
+                        hint: 'label_repeat_password'.l10n,
+                        obscured: c.obscureRepeatPassword,
+                        treatErrorAsStatus: false,
+                      ),
+                      const SizedBox(height: 25),
+                      Obx(() {
+                        final bool enabled =
+                            !c.recoveryPassword.isEmpty.value &&
+                            !c.recoveryRepeatPassword.isEmpty.value;
+
+                        return PrimaryButton(
+                          key: const Key('Proceed'),
+                          title: 'btn_proceed'.l10n,
+                          onPressed: enabled ? c.resetUserPassword : null,
+                        );
+                      }),
+                      const SizedBox(height: 16),
+                    ];
                     break;
 
                   case IntroductionStage.accountCreating:
                     header = ModalPopupHeader(
-                      text: 'Create account',
+                      text: 'label_sign_up'.l10n,
                       onBack: () => c.page.value = IntroductionStage.signIn,
                       close: false,
                     );
@@ -615,7 +700,7 @@ class IntroductionView extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
                       ReactiveTextField(
-                        key: const ValueKey('NameField'),
+                        key: const ValueKey('EmailField'),
                         state: c.signUpEmail,
                         label: 'label_email_optional'.l10n,
                         hint: 'label_email_example'.l10n,
@@ -847,7 +932,7 @@ class IntroductionView extends StatelessWidget {
                   sizeDuration: const Duration(milliseconds: 250),
                   fadeDuration: const Duration(milliseconds: 250),
                   child: Column(
-                    key: Key('${c.page.value?.name}'),
+                    key: Key('${c.page.value?.name.capitalized}Screen'),
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [

@@ -18,7 +18,9 @@
 Feature: Introduction
 
   Scenario: Introduction is displayed
-    When I tap `StartButton` button
-    Then I wait until `IntroductionView` is present
+    When I wait until `IntroductionView` is present
+    And I tap `GuestButton` button
     And I pause for 2 seconds
+    Then I wait until `GuestCreatedScreen` is present
+    And my account is indeed remote
 

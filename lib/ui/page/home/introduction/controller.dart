@@ -121,7 +121,7 @@ class IntroductionController extends GetxController with IdentityAware {
   final RxBool obscureRepeatPassword = RxBool(true);
 
   /// Indicator whether the [emailCode] should be obscured.
-  final RxBool obscureOneTimeCode = RxBool(true);
+  final RxBool obscureCode = RxBool(true);
 
   /// [MyUser.name] field state.
   late final TextFieldState name = TextFieldState(

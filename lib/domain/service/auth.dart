@@ -168,7 +168,17 @@ class AuthService extends Dependency {
       await refreshSession(proceedIfRefreshBefore: DateTime.now());
     };
 
+    UserId? previousId;
+
     _credentialsWorker = ever(credentials, (_) {
+      if (previousId == userId) {
+        Log.debug(
+          '_credentialsWorker -> onIdentityChanged($userId) ignored, since `$previousId` is the same',
+          '$runtimeType',
+        );
+        return;
+      }
+
       final List<IdentityAware> deps = Get.findAll<IdentityAware>();
       deps.sort((a, b) => a.order.compareTo(b.order));
 

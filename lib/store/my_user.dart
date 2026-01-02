@@ -137,7 +137,10 @@ class MyUserRepository extends IdentityDependency
     required Function() onUserDeleted,
     required Function() onPasswordUpdated,
   }) async {
-    Log.debug('init(onUserDeleted, onPasswordUpdated)', '$runtimeType');
+    Log.debug(
+      'init(onUserDeleted, onPasswordUpdated)',
+      '$runtimeType($hashCode)',
+    );
 
     this.onPasswordUpdated = onPasswordUpdated;
     this.onUserDeleted = onUserDeleted;
@@ -158,7 +161,7 @@ class MyUserRepository extends IdentityDependency
 
   @override
   void onClose() {
-    Log.debug('onClose()', '$runtimeType');
+    Log.debug('onClose()', '$runtimeType($hashCode)');
 
     _disposed = true;
     _localSubscription?.cancel();
@@ -846,7 +849,7 @@ class MyUserRepository extends IdentityDependency
 
     Log.debug(
       '_initLocalSubscription() -> isLocal(${me.isLocal})',
-      '$runtimeType',
+      '$runtimeType($hashCode)',
     );
 
     if (me.isLocal) {
@@ -871,13 +874,13 @@ class MyUserRepository extends IdentityDependency
     final UserId? id = await _accountLocal.read();
     Log.debug(
       '_initLocalSubscription() -> `_accountLocal.read()` is `$id`',
-      '$runtimeType',
+      '$runtimeType($hashCode)',
     );
 
     if (id == null) {
       Log.debug(
         'Unexpected `null` when getting `_accountLocal.userId` for `_initLocalSubscription`',
-        '$runtimeType',
+        '$runtimeType($hashCode)',
       );
 
       _localSubscriptionRetry = Timer(
@@ -888,9 +891,13 @@ class MyUserRepository extends IdentityDependency
       return;
     }
 
-    _localSubscription = _driftMyUser
-        .watchSingle(id)
-        .listen((e) => _applyMyUser(id, e));
+    _localSubscription = _driftMyUser.watchSingle(id).listen((e) {
+      Log.debug(
+        '_initLocalSubscription() -> _applyMyUser(${e?.value.toJson()})',
+        '$runtimeType($hashCode)',
+      );
+      _applyMyUser(id, e);
+    });
   }
 
   /// Initializes [_myUserRemoteEvents] subscription.
@@ -958,6 +965,11 @@ class MyUserRepository extends IdentityDependency
         (e?.id ?? id) == (myUser.value?.id ?? _accountLocal.userId);
 
     if (e == null) {
+      Log.debug(
+        '_applyMyUser() -> `e` is `null`, and `isCurrent` -> $isCurrent',
+        '$runtimeType($hashCode)',
+      );
+
       if (isCurrent) {
         myUser.value = null;
       }
@@ -1003,10 +1015,20 @@ class MyUserRepository extends IdentityDependency
 
         myUser.value = value;
         profiles[e.id]?.value = value;
+
+        Log.debug(
+          '_applyMyUser() -> `e` is `isCurrent` -> $isCurrent, thus applying -> ${myUser.value}',
+          '$runtimeType($hashCode)',
+        );
       }
       // This event is not of the currently active [MyUser], so just update the
       // [profiles].
       else {
+        Log.debug(
+          '_applyMyUser() -> `e` is NOT `isCurrent` -> $isCurrent, thus applying to existing',
+          '$runtimeType($hashCode)',
+        );
+
         final Rx<MyUser>? existing = profiles[e.id];
         if (existing == null) {
           profiles[e.id] = Rx(user);

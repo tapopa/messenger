@@ -16,6 +16,8 @@
 # <https://www.gnu.org/licenses/agpl-3.0.html>.
 
 Feature: Upgrade popup
+  Background: I am guest
+    Given I am guest
 
   Scenario: New versions are prompted in upgrade alerts
     Given appcast with newer version is available

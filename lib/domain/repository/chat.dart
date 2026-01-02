@@ -69,7 +69,7 @@ abstract class AbstractChatRepository {
   ///
   /// Callback [onMemberRemoved] should be called once an [User] is removed from
   /// a [Chat].
-  Future<void> init({
+  void init({
     Future<void> Function(ChatId, UserId)? onMemberRemoved,
     bool? pagination,
   });

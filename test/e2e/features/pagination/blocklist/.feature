@@ -21,11 +21,8 @@ Feature: Blocklist pagination
     Given user Alice
     And Alice has 16 blocked users
     And I sign in as Alice
-    And I wait until `HomeView` is present
 
-    When I scroll `IntroductionScrollable` until `ProceedButton` is present
-    And I tap `ProceedButton` button
-    And I tap `MenuButton` button
+    When I tap `MenuButton` button
     And I scroll `MenuListView` until `Blocklist` is present
     And I tap `Blocklist` button
     And I tap `ShowBlocklist` button

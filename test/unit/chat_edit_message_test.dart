@@ -200,9 +200,9 @@ void main() async {
     graphQlProvider.favoriteChatsEvents(any),
   ).thenAnswer((_) => const Stream.empty());
 
-  when(
-    graphQlProvider.getUser(any),
-  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson({'user': null})));
+  when(graphQlProvider.getUser(any)).thenAnswer(
+    (_) => Future.value(GetUser$Query.fromJson({'user': null}).user),
+  );
   when(graphQlProvider.getMonolog()).thenAnswer(
     (_) => Future.value(GetMonolog$Query.fromJson({'monolog': null}).monolog),
   );
@@ -210,10 +210,10 @@ void main() async {
   test('ChatService successfully edits a ChatMessage', () async {
     AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
-        const UserId('me'),
         settingsProvider,
         backgroundProvider,
         callRectProvider,
+        me: const UserId('me'),
       ),
     );
 
@@ -229,11 +229,12 @@ void main() async {
       ),
     );
     router = RouterState(authService);
-    authService.init();
+    await authService.init();
 
     UserRepository userRepository = UserRepository(
       graphQlProvider,
       userProvider,
+      me: const UserId('me'),
     );
 
     final CallRepository callRepository = Get.put(
@@ -302,10 +303,10 @@ void main() async {
     () async {
       final AbstractSettingsRepository settingsRepository = Get.put(
         SettingsRepository(
-          const UserId('me'),
           settingsProvider,
           backgroundProvider,
           callRectProvider,
+          me: const UserId('me'),
         ),
       );
 
@@ -325,11 +326,12 @@ void main() async {
         ),
       );
       router = RouterState(authService);
-      authService.init();
+      await authService.init();
 
       final UserRepository userRepository = UserRepository(
         graphQlProvider,
         userProvider,
+        me: const UserId('me'),
       );
 
       final CallRepository callRepository = Get.put(

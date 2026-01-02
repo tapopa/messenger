@@ -156,6 +156,8 @@ dependency_overrides:
   analyzer: ^8.4.0
   # TODO: Unpin when `flutter_gherkin` updates.
   source_gen: ^4.1.1
+  get:
+    git: https://github.com/sleepysquash/getx.git
   # TODO: Remove when `graphql` updates.
   graphql:
     git:

@@ -154,9 +154,9 @@ void main() async {
     graphQlProvider.blocklistEvents(any),
   ).thenAnswer((_) => const Stream.empty());
 
-  when(
-    graphQlProvider.getUser(any),
-  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson({'user': null})));
+  when(graphQlProvider.getUser(any)).thenAnswer(
+    (_) => Future.value(GetUser$Query.fromJson({'user': null}).user),
+  );
   when(graphQlProvider.getMonolog()).thenAnswer(
     (_) => Future.value(GetMonolog$Query.fromJson({'monolog': null}).monolog),
   );
@@ -331,6 +331,7 @@ void main() async {
         sessionProvider,
         geoProvider,
         MockedGeoLocationProvider(),
+        me: const UserId('me'),
       ),
     );
     Get.put(SessionService(sessionRepository));
@@ -338,6 +339,7 @@ void main() async {
     UserRepository userRepository = UserRepository(
       graphQlProvider,
       userProvider,
+      me: const UserId('me'),
     );
     BlocklistRepository blocklistRepository = Get.put(
       BlocklistRepository(
@@ -370,16 +372,17 @@ void main() async {
         blocklistRepository,
         userRepository,
         accountProvider,
+        me: const UserId('me'),
       ),
     );
     Get.put(MyUserService(authService, myUserRepository));
 
     final settingsRepository = Get.put<AbstractSettingsRepository>(
       SettingsRepository(
-        const UserId('me'),
         settingsProvider,
         backgroundProvider,
         callRectProvider,
+        me: const UserId('me'),
       ),
     );
 

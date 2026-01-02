@@ -952,6 +952,8 @@ class WebUtils {
   /// Deletes the loader element.
   static void deleteLoader() {
     web.document.getElementById('loader')?.remove();
+    web.document.getElementById('page-loader')?.remove();
+    web.document.getElementById('call-loader')?.remove();
   }
 
   /// Registers the custom [Config.scheme].

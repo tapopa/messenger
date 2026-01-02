@@ -289,9 +289,9 @@ void main() async {
     (_) => Future.value(GetBlocklist$Query$Blocklist.fromJson(blocklist)),
   );
 
-  when(
-    graphQlProvider.getUser(any),
-  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson({'user': null})));
+  when(graphQlProvider.getUser(any)).thenAnswer(
+    (_) => Future.value(GetUser$Query.fromJson({'user': null}).user),
+  );
   when(graphQlProvider.getMonolog()).thenAnswer(
     (_) => Future.value(GetMonolog$Query.fromJson({'monolog': null}).monolog),
   );
@@ -398,15 +398,16 @@ void main() async {
 
     AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
-        const UserId('me'),
         settingsProvider,
         backgroundProvider,
         callRectProvider,
+        me: const UserId('me'),
       ),
     );
     UserRepository userRepository = UserRepository(
       graphQlProvider,
       userProvider,
+      me: const UserId('me'),
     );
     BlocklistRepository blocklistRepository = Get.put(
       BlocklistRepository(
@@ -456,13 +457,14 @@ void main() async {
       blocklistRepository,
       userRepository,
       accountProvider,
+      me: const UserId('me'),
     );
     Get.put(MyUserService(authService, myUserRepository));
 
     Get.put(UserService(userRepository));
     ChatService chatService = Get.put(ChatService(chatRepository, authService));
     Get.put(CallService(authService, chatService, callRepository));
-    Get.put(NotificationService(graphQlProvider));
+    Get.put(NotificationService(graphQlProvider, me: const UserId('me')));
 
     await tester.pumpWidget(
       createWidgetForTesting(

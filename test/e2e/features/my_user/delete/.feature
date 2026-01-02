@@ -18,10 +18,13 @@
 Feature: Account deletion
 
   Scenario: User creates and deletes account without confirmation
-    When I tap `StartButton` button
-    And I wait until `IntroductionView` is present
-    And I scroll `IntroductionScrollable` until `ProceedButton` is present
-    And I tap `ProceedButton` button
+    When I wait until `IntroductionView` is present
+    And I tap `GuestButton` button
+    Then I wait until `GuestCreatedScreen` is present
+
+    When I tap `ProceedButton` button
+    Then I wait until `IntroductionView` is absent
+    And my account is indeed remote
 
     When I tap `MenuButton` button
     And I scroll `MenuListView` until `DangerZone` is present
@@ -32,5 +35,5 @@ Feature: Account deletion
     And I tap `ConfirmDelete` button
     And I tap `Proceed` button
 
-    Then I wait until `AuthView` is present
+    Then I wait until `IntroductionView` is present
     And I pause for 1 second

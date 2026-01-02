@@ -182,7 +182,10 @@ class ConfirmLogoutView extends StatelessWidget {
                 ],
                 PrimaryButton(
                   key: const Key('ConfirmLogoutButton'),
-                  onPressed: c.logout,
+                  onPressed: () {
+                    c.logout();
+                    Navigator.of(context).pop();
+                  },
                   danger: true,
                   title: 'btn_logout'.l10n,
                   leading: SvgIcon(SvgIcons.logoutWhite),

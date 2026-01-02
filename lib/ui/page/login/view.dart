@@ -335,17 +335,18 @@ class LoginView extends StatelessWidget {
                 ),
                 const SizedBox(height: 25),
                 Obx(() {
+                  final bool canResend =
+                      c.codeTimeout.value == 0 && c.authStatus.value.isEmpty;
+
                   final bool enabled =
-                      !c.emailCode.isEmpty.value &&
-                      c.codeTimeout.value == 0 &&
-                      c.authStatus.value.isEmpty;
+                      !c.emailCode.isEmpty.value && c.authStatus.value.isEmpty;
 
                   return Row(
                     children: [
                       Expanded(
                         child: PrimaryButton(
                           key: const Key('Resend'),
-                          onPressed: enabled ? c.resendEmail : null,
+                          onPressed: canResend ? c.resendEmail : null,
                           title: c.resendEmailTimeout.value == 0
                               ? 'label_resend'.l10n
                               : 'label_resend_timeout'.l10nfmt({
@@ -357,7 +358,7 @@ class LoginView extends StatelessWidget {
                       Expanded(
                         child: PrimaryButton(
                           key: const Key('Proceed'),
-                          onPressed: c.emailCode.submit,
+                          onPressed: enabled ? c.emailCode.submit : null,
                           title: 'btn_sign_up'.l10n,
                         ),
                       ),

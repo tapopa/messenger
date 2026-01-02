@@ -26,8 +26,6 @@ Feature: Chat item searching
     And Alice reads all messages in "Thoughts" group
 
     When I sign in as Alice
-    And I scroll `IntroductionScrollable` until `ProceedButton` is present
-    And I tap `ProceedButton` button
     And I pause for 5 seconds
     And I am in "Thoughts" group
     And I pause for 5 seconds

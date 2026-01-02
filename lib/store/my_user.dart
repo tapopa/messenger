@@ -844,7 +844,10 @@ class MyUserRepository extends IdentityDependency
       return;
     }
 
-    Log.debug('_initLocalSubscription() -> ${me.isLocal}', '$runtimeType');
+    Log.debug(
+      '_initLocalSubscription() -> isLocal(${me.isLocal})',
+      '$runtimeType',
+    );
 
     if (me.isLocal) {
       _applyMyUser(
@@ -866,6 +869,11 @@ class MyUserRepository extends IdentityDependency
     }
 
     final UserId? id = await _accountLocal.read();
+    Log.debug(
+      '_initLocalSubscription() -> `_accountLocal.read()` is `$id`',
+      '$runtimeType',
+    );
+
     if (id == null) {
       Log.debug(
         'Unexpected `null` when getting `_accountLocal.userId` for `_initLocalSubscription`',
@@ -892,6 +900,11 @@ class MyUserRepository extends IdentityDependency
     _remoteSubscription?.close(immediate: true);
 
     if (_disposed || isClosed || me.isLocal) {
+      Log.debug(
+        '_initRemoteSubscription() -> exiting cuz $_disposed || $isClosed || ${me.isLocal}',
+        '$runtimeType',
+      );
+
       return;
     }
 

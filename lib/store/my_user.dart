@@ -915,19 +915,36 @@ class MyUserRepository extends IdentityDependency
       return;
     }
 
-    await WebUtils.protect(() async {
-      _remoteSubscription = StreamQueue(
-        await _myUserRemoteEvents(() async => (await _active)?.ver),
-      );
+    Log.debug(
+      '_initRemoteSubscription() -> await WebUtils.protect(`myUserEvents`)...',
+      '$runtimeType',
+    );
 
-      await _remoteSubscription!.execute(
-        _myUserRemoteEvent,
-        onError: (e) async {
-          if (e is StaleVersionException) {
-            await _blocklistRepository.reset();
-          }
-        },
-      );
+    await WebUtils.protect(() async {
+      try {
+        Log.debug(
+          '_initRemoteSubscription() -> await WebUtils.protect(`myUserEvents`)... acquired!',
+          '$runtimeType',
+        );
+
+        _remoteSubscription = StreamQueue(
+          await _myUserRemoteEvents(() async => (await _active)?.ver),
+        );
+
+        await _remoteSubscription!.execute(
+          _myUserRemoteEvent,
+          onError: (e) async {
+            if (e is StaleVersionException) {
+              await _blocklistRepository.reset();
+            }
+          },
+        );
+      } finally {
+        Log.debug(
+          '_initRemoteSubscription() -> released WebUtils.protect(`myUserEvents`)!',
+          '$runtimeType',
+        );
+      }
     }, tag: 'myUserEvents');
   }
 

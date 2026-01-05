@@ -988,6 +988,10 @@ class CallRepository extends IdentityDependency
     _remoteSubscription?.close(immediate: true);
 
     await WebUtils.protect(() async {
+      if (isClosed) {
+        return;
+      }
+
       _remoteSubscription = StreamQueue(_incomingEvents(count));
       await _remoteSubscription!.execute(_incomingChatCallsTopEvent);
     }, tag: 'incomingCalls');

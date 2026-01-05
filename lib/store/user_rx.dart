@@ -134,6 +134,9 @@ class RxUserImpl extends RxUser {
   /// [Worker] reacting on [User] changes.
   Worker? _worker;
 
+  /// Indicator whether this [RxUserImpl] has been disposed or not.
+  bool _disposed = false;
+
   @override
   Rx<RxChat?> get dialog {
     final ChatId dialogId = user.value.dialog;
@@ -163,6 +166,7 @@ class RxUserImpl extends RxUser {
   void dispose() {
     Log.debug('dispose()', '$runtimeType($id)');
 
+    _disposed = true;
     _lastSeenTimer?.cancel();
     _worker?.dispose();
     _localSubscription?.cancel();
@@ -179,6 +183,10 @@ class RxUserImpl extends RxUser {
     }
 
     await WebUtils.protect(() async {
+      if (_disposed) {
+        return;
+      }
+
       _remoteSubscription = StreamQueue(
         await _userRepository.userEvents(
           id,

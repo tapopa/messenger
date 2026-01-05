@@ -921,6 +921,10 @@ class MyUserRepository extends IdentityDependency
     );
 
     await WebUtils.protect(() async {
+      if (isClosed) {
+        return;
+      }
+
       try {
         Log.debug(
           '_initRemoteSubscription() -> await WebUtils.protect(`myUserEvents`)... acquired!',
@@ -959,6 +963,10 @@ class MyUserRepository extends IdentityDependency
     }
 
     await WebUtils.protect(() async {
+      if (isClosed) {
+        return;
+      }
+
       _keepOnlineSubscription = StreamQueue(_graphQlProvider.keepOnline());
       await _keepOnlineSubscription!.execute((_) {
         // No-op.

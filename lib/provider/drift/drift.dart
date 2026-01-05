@@ -815,6 +815,10 @@ abstract class DriftProviderBaseWithScope extends DisposableInterface {
         tag: '${_scoped.db?.userId}',
         exclusive: exclusive,
         () async {
+          if (isClosed) {
+            return null;
+          }
+
           Log.debug(
             'safe(tag: $tag) -> await WebUtils.protect(tag: ${_scoped.db?.userId}, exclusive: $exclusive)... done! ',
             '$runtimeType',

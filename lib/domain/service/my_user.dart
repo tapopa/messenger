@@ -128,6 +128,10 @@ class MyUserService extends Dependency {
       }
 
       await WebUtils.protect(() async {
+        if (isClosed) {
+          return;
+        }
+
         await _myUserRepository.updateUserPassword(oldPassword, newPassword);
 
         // TODO: Replace `unsafe` with something more granular and correct.

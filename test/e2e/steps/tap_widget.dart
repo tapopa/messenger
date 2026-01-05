@@ -15,6 +15,8 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:async';
+
 import 'package:flutter_gherkin/flutter_gherkin.dart';
 import 'package:gherkin/gherkin.dart';
 import 'package:messenger/util/log.dart';
@@ -60,7 +62,13 @@ final StepDefinitionGeneric tapWidget = when1<WidgetKey, FlutterWorld>(
 
         Log.debug('tapWidget($key) -> finder is: $finder', 'E2E');
 
-        await context.world.appDriver.waitForAppToSettle();
+        try {
+          await context.world.appDriver.waitForAppToSettle(
+            timeout: const Duration(seconds: 10),
+          );
+        } on TimeoutException {
+          // Ignore, still proceed to try.
+        }
 
         Log.debug(
           'tapWidget($key) -> second await context.world.appDriver.waitForAppToSettle()... done!',

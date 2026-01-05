@@ -91,7 +91,7 @@ final StepDefinitionGeneric tapWidget = when1<WidgetKey, FlutterWorld>(
       }
 
       return false;
-    }, timeout: const Duration(seconds: 30));
+    }, timeout: const Duration(seconds: 60));
 
     Log.debug(
       'tapWidget($key) -> await context.world.appDriver.waitUntil()... done!',

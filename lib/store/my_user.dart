@@ -921,7 +921,7 @@ class MyUserRepository extends IdentityDependency
     );
 
     await WebUtils.protect(() async {
-      if (isClosed) {
+      if (_disposed || isClosed || me.isLocal) {
         return;
       }
 
@@ -935,6 +935,20 @@ class MyUserRepository extends IdentityDependency
           await _myUserRemoteEvents(() async => (await _active)?.ver),
         );
 
+        Log.debug(
+          '_initRemoteSubscription() -> await WebUtils.protect(`myUserEvents`)... acquired! and `_myUserRemoteEvents()`... awaited!',
+          '$runtimeType',
+        );
+
+        if (_disposed || isClosed || me.isLocal) {
+          return _remoteSubscription?.close(immediate: true);
+        }
+
+        Log.debug(
+          '_initRemoteSubscription() -> await WebUtils.protect(`myUserEvents`)... acquired! await _remoteSubscription!.execute()...',
+          '$runtimeType',
+        );
+
         await _remoteSubscription!.execute(
           _myUserRemoteEvent,
           onError: (e) async {
@@ -945,7 +959,7 @@ class MyUserRepository extends IdentityDependency
         );
       } finally {
         Log.debug(
-          '_initRemoteSubscription() -> released WebUtils.protect(`myUserEvents`)!',
+          '_initRemoteSubscription() -> WebUtils.protect(`myUserEvents`)... acquired! and released!',
           '$runtimeType',
         );
       }

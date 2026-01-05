@@ -21,6 +21,8 @@ import 'package:messenger/domain/model/chat.dart';
 import 'package:messenger/domain/repository/chat.dart';
 import 'package:messenger/domain/service/chat.dart';
 import 'package:messenger/routes.dart';
+import 'package:messenger/ui/page/home/page/user/controller.dart';
+import 'package:messenger/util/log.dart';
 
 import '../world/custom_world.dart';
 
@@ -32,10 +34,30 @@ final StepDefinitionGeneric seeChatMembers = then1<int, CustomWorld>(
   RegExp(r'I see {int} chat members'),
   (int count, context) async {
     await context.world.appDriver.waitUntil(() async {
+      Log.debug(
+        'seeChatMembers -> await context.world.appDriver.waitForAppToSettle()...',
+        'E2E',
+      );
+
       await context.world.appDriver.waitForAppToSettle();
+
+      Log.debug(
+        'seeChatMembers -> await context.world.appDriver.waitForAppToSettle()... done!',
+        'E2E',
+      );
 
       final RxChat? chat =
           Get.find<ChatService>().chats[ChatId(router.route.split('/')[2])];
+
+      Log.debug(
+        'seeChatMembers -> chat($chat), members: ${chat?.members.length} vs $count',
+        'E2E',
+      );
+
+      Log.debug(
+        'seeChatMembers -> the whole members list: ${chat?.members.values.map((e) => e.user.title())}',
+        'E2E',
+      );
 
       return chat?.members.length == count;
     });

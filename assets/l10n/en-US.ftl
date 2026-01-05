@@ -1,6 +1,6 @@
-# Copyright © 2022-2025 IT ENGINEERING MANAGEMENT INC,
+# Copyright © 2022-2026 IT ENGINEERING MANAGEMENT INC,
 #                       <https://github.com/team113>
-# Copyright © 2025 Ideas Networks Solutions S.A.,
+# Copyright © 2025-2026 Ideas Networks Solutions S.A.,
 #                       <https://github.com/tapopa>
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -231,6 +231,7 @@ btn_set_password = Set password
 btn_set_your_prices = Set your prices
 btn_set_your_prices_subtitle = Paid communication with you
 btn_share = Share
+btn_share_audio = Share audio
 btn_show_chat = Unhide chat
 btn_sign_in = Sign in
 btn_sign_up = Create an account
@@ -540,6 +541,7 @@ err_no_filename = File must have a name
 err_password_incorrect = Password is too long and/or starts/ends with a space
 err_passwords_mismatch = Passwords do not match
 err_popup_call_cant_be_closed = Window cannot be closed automatically. Close the window manually.
+err_screen_permission_denied = Access to screen is denied. Make sure application has permission to use screen.
 err_size_too_big = File size exceeds 15 MB
 err_too_many_emails = Reached maximum allowed number of e-mails
 err_unauthorized = Authentication required

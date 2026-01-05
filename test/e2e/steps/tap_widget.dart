@@ -17,6 +17,7 @@
 
 import 'package:flutter_gherkin/flutter_gherkin.dart';
 import 'package:gherkin/gherkin.dart';
+import 'package:messenger/util/log.dart';
 
 import '../configuration.dart';
 import '../parameters/keys.dart';
@@ -34,27 +35,59 @@ import '../parameters/keys.dart';
 final StepDefinitionGeneric tapWidget = when1<WidgetKey, FlutterWorld>(
   RegExp(r'I tap {key} (?:button|element|label|icon|field|text|widget)$'),
   (key, context) async {
+    Log.debug(
+      'tapWidget($key) -> await context.world.appDriver.waitUntil()...',
+      'E2E',
+    );
+
     await context.world.appDriver.waitUntil(() async {
+      Log.debug(
+        'tapWidget($key) -> first await context.world.appDriver.waitForAppToSettle()...',
+        'E2E',
+      );
+
       await context.world.appDriver.waitForAppToSettle();
+
+      Log.debug(
+        'tapWidget($key) -> first await context.world.appDriver.waitForAppToSettle()... done!',
+        'E2E',
+      );
 
       try {
         final finder = context.world.appDriver
             .findByKeySkipOffstage(key.name)
             .first;
 
+        Log.debug('tapWidget($key) -> finder is: $finder', 'E2E');
+
         await context.world.appDriver.waitForAppToSettle();
+
+        Log.debug(
+          'tapWidget($key) -> second await context.world.appDriver.waitForAppToSettle()... done!',
+          'E2E',
+        );
 
         await context.world.appDriver.tap(
           finder,
           timeout: context.configuration.timeout,
         );
 
+        Log.debug(
+          'tapWidget($key) -> await context.world.appDriver.tap()... done!',
+          'E2E',
+        );
+
         return true;
       } catch (e) {
-        // No-op.
+        Log.debug('tapWidget($key) -> caught exception: $e', 'E2E');
       }
 
       return false;
     }, timeout: const Duration(seconds: 30));
+
+    Log.debug(
+      'tapWidget($key) -> await context.world.appDriver.waitUntil()... done!',
+      'E2E',
+    );
   },
 );

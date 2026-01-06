@@ -20,6 +20,7 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../../config.dart';
 import '/themes.dart';
 
 /// Circular progress indicator, which spins to indicate that the application is
@@ -315,6 +316,10 @@ class _CircularProgressIndicatorState
 
   @override
   Widget build(BuildContext context) {
+    if (Config.disableInfiniteAnimations) {
+      return const SizedBox();
+    }
+
     if (widget.value != null) {
       return _buildMaterialIndicator(context, 0.0, 0.0, 0, 0.0);
     }

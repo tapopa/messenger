@@ -43,17 +43,17 @@ final StepDefinitionGeneric tapWidget = when1<WidgetKey, FlutterWorld>(
     );
 
     await context.world.appDriver.waitUntil(() async {
-      Log.debug(
-        'tapWidget($key) -> first await context.world.appDriver.waitForAppToSettle()...',
-        'E2E',
-      );
+      // Log.debug(
+      //   'tapWidget($key) -> first await context.world.appDriver.waitForAppToSettle()...',
+      //   'E2E',
+      // );
 
-      await context.world.appDriver.waitForAppToSettle();
+      // await context.world.appDriver.waitForAppToSettle();
 
-      Log.debug(
-        'tapWidget($key) -> first await context.world.appDriver.waitForAppToSettle()... done!',
-        'E2E',
-      );
+      // Log.debug(
+      //   'tapWidget($key) -> first await context.world.appDriver.waitForAppToSettle()... done!',
+      //   'E2E',
+      // );
 
       try {
         final finder = context.world.appDriver

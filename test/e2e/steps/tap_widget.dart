@@ -62,19 +62,6 @@ final StepDefinitionGeneric tapWidget = when1<WidgetKey, FlutterWorld>(
 
         Log.debug('tapWidget($key) -> finder is: $finder', 'E2E');
 
-        try {
-          await context.world.appDriver.waitForAppToSettle(
-            timeout: const Duration(seconds: 10),
-          );
-        } on TimeoutException {
-          // Ignore, still proceed to try.
-        }
-
-        Log.debug(
-          'tapWidget($key) -> second await context.world.appDriver.waitForAppToSettle()... done!',
-          'E2E',
-        );
-
         await context.world.appDriver.tap(
           finder,
           timeout: context.configuration.timeout,

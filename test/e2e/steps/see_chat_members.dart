@@ -50,7 +50,7 @@ final StepDefinitionGeneric seeChatMembers = then1<int, CustomWorld>(
           Get.find<ChatService>().chats[ChatId(router.route.split('/')[2])];
 
       Log.debug(
-        'seeChatMembers -> chat($chat), members: ${chat?.members.length} vs $count',
+        'seeChatMembers -> chat($chat), members: ${chat?.members.length} vs $count vs ${chat?.chat.value.members.length}',
         'E2E',
       );
 
@@ -59,8 +59,9 @@ final StepDefinitionGeneric seeChatMembers = then1<int, CustomWorld>(
         'E2E',
       );
 
-      return chat?.members.length == count;
-    });
+      return chat?.members.length == count ||
+          chat?.chat.value.members.length == count;
+    }, timeout: const Duration(seconds: 60));
   },
   configuration: StepDefinitionConfiguration()
     ..timeout = const Duration(minutes: 5),

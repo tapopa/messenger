@@ -256,6 +256,8 @@ Future<void> _fillField(
         final ReactiveFieldState state = input.state;
         if (state is TextFieldState) {
           state.text = text;
+          input.onChanged?.call();
+
           await context.world.appDriver.waitForAppToSettle();
 
           return true;

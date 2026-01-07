@@ -32,6 +32,7 @@ Feature: Chat item searching
     And I tap `MoreButton` button
     And I tap `SearchItemsButton` button
     And I fill `SearchItemsField` field with "vacation"
+    And I submit `SearchItemsField` field
     Then I wait until `NoMessages` is present
 
     When I fill `SearchItemsField` field with "thought"

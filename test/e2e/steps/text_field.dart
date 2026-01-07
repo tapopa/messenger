@@ -243,6 +243,11 @@ Future<void> _fillField(
     );
 
     if (isPresent && finder.tryEvaluate()) {
+      final WidgetTester tester =
+          (context.world.appDriver.nativeDriver as WidgetTester);
+
+      tester.testTextInput.register();
+
       await context.world.appDriver.tap(
         finder,
         timeout: const Duration(seconds: 60),
@@ -252,15 +257,10 @@ Future<void> _fillField(
 
       await context.world.appDriver.waitForAppToSettle();
 
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(Duration(seconds: 1));
 
       Log.debug('_fillField($key) -> waitForAppToSettle()... done!', 'E2E');
       Log.debug('_fillField($key) -> enterText(`$text`)...', 'E2E');
-
-      final WidgetTester tester =
-          (context.world.appDriver.nativeDriver as WidgetTester);
-
-      tester.testTextInput.register();
 
       await tester.enterText(
         finder, // TODO: Implement more strict way to localize some phrases.
@@ -274,6 +274,7 @@ Future<void> _fillField(
 
       await context.world.appDriver.waitForAppToSettle();
 
+      tester.testTextInput.unregister();
       FocusManager.instance.primaryFocus?.unfocus();
 
       return true;

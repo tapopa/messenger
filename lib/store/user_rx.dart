@@ -134,7 +134,7 @@ class RxUserImpl extends RxUser {
   /// [Worker] reacting on [User] changes.
   Worker? _worker;
 
-  /// Indicator whether this [RxUserImpl] has been disposed or not.
+  /// Indicator whether this [RxUserImpl] has invoked [dispose] or not.
   bool _disposed = false;
 
   @override

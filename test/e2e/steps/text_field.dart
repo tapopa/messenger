@@ -246,6 +246,19 @@ Future<void> _fillField(
       final WidgetTester tester =
           (context.world.appDriver.nativeDriver as WidgetTester);
 
+      final input = await context.world.appDriver.widget(finder);
+      if (input is ReactiveTextField) {
+        Log.debug(
+          '_fillField($key) -> input is `ReactiveTextField`, so just set the `.text`',
+          'E2E',
+        );
+
+        input.state.controller.text = text;
+        await context.world.appDriver.waitForAppToSettle();
+
+        return true;
+      }
+
       tester.testTextInput.register();
 
       await context.world.appDriver.tap(
@@ -257,7 +270,7 @@ Future<void> _fillField(
 
       await context.world.appDriver.waitForAppToSettle();
 
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(Duration(milliseconds: 400));
 
       Log.debug('_fillField($key) -> waitForAppToSettle()... done!', 'E2E');
       Log.debug('_fillField($key) -> enterText(`$text`)...', 'E2E');
@@ -270,12 +283,22 @@ Future<void> _fillField(
         },
       );
 
+      await tester.pump(Duration(milliseconds: 400));
+
       Log.debug('_fillField($key) -> enterText(`$text`)... done!', 'E2E');
 
       await context.world.appDriver.waitForAppToSettle();
 
       tester.testTextInput.unregister();
       FocusManager.instance.primaryFocus?.unfocus();
+
+      final result = await context.world.appDriver.widget(finder);
+      if (result is ReactiveTextField) {
+        if (result.state.controller.text != text) {
+          Log.debug('_fillField($key) -> input is `$input` vs `$text`', 'E2E');
+          return false;
+        }
+      }
 
       return true;
     }

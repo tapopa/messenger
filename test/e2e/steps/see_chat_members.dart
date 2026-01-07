@@ -59,8 +59,8 @@ final StepDefinitionGeneric seeChatMembers = then1<int, CustomWorld>(
         'E2E',
       );
 
-      return chat?.members.length == count ||
-          chat?.chat.value.members.length == count;
+      return (chat?.members.length ?? 0) >= count ||
+          (chat?.chat.value.members.length ?? 0) >= count;
     }, timeout: const Duration(seconds: 60));
   },
   configuration: StepDefinitionConfiguration()

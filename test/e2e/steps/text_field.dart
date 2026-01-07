@@ -253,10 +253,13 @@ Future<void> _fillField(
           'E2E',
         );
 
-        input.state.controller.text = text;
-        await context.world.appDriver.waitForAppToSettle();
+        final ReactiveFieldState state = input.state;
+        if (state is TextFieldState) {
+          state.text = text;
+          await context.world.appDriver.waitForAppToSettle();
 
-        return true;
+          return true;
+        }
       }
 
       tester.testTextInput.register();

@@ -18,12 +18,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show ClipboardData;
 import 'package:flutter_gherkin/flutter_gherkin.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:gherkin/gherkin.dart';
 import 'package:messenger/domain/model/user.dart';
 import 'package:messenger/l10n/l10n.dart';
 import 'package:messenger/ui/page/home/page/my_profile/widget/copyable.dart';
 import 'package:messenger/ui/page/home/widget/num.dart';
 import 'package:messenger/ui/widget/text_field.dart';
+import 'package:messenger/util/log.dart';
 
 import '../configuration.dart';
 import '../parameters/credentials.dart';
@@ -231,24 +233,44 @@ Future<void> _fillField(
   await context.world.appDriver.waitUntil(() async {
     final finder = context.world.appDriver.findByKeySkipOffstage(key.name);
 
-    if (await context.world.appDriver.isPresent(finder) &&
-        finder.tryEvaluate()) {
+    Log.debug('_fillField($key) -> finder is $finder', 'E2E');
+
+    final bool isPresent = await context.world.appDriver.isPresent(finder);
+
+    Log.debug(
+      '_fillField($key) -> isPresent($isPresent), tryEvaluate(${finder.tryEvaluate()})',
+      'E2E',
+    );
+
+    if (isPresent && finder.tryEvaluate()) {
       await context.world.appDriver.tap(
         finder,
         timeout: const Duration(seconds: 60),
       );
 
+      Log.debug('_fillField($key) -> tap()... done!', 'E2E');
+
       await context.world.appDriver.waitForAppToSettle();
 
-      await context.world.appDriver.enterText(
-        finder,
+      await Future.delayed(Duration(seconds: 2));
 
-        // TODO: Implement more strict way to localize some phrases.
+      Log.debug('_fillField($key) -> waitForAppToSettle()... done!', 'E2E');
+      Log.debug('_fillField($key) -> enterText(`$text`)...', 'E2E');
+
+      final WidgetTester tester =
+          (context.world.appDriver.nativeDriver as WidgetTester);
+
+      tester.testTextInput.register();
+
+      await tester.enterText(
+        finder, // TODO: Implement more strict way to localize some phrases.
         switch (text) {
           'Notes' => 'label_chat_monolog'.l10n,
           (_) => text,
         },
       );
+
+      Log.debug('_fillField($key) -> enterText(`$text`)... done!', 'E2E');
 
       await context.world.appDriver.waitForAppToSettle();
 

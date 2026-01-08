@@ -353,7 +353,6 @@ final FlutterTestConfiguration gherkinTestConfiguration =
         // [IntegrationTestWidgetsFlutterBinding.traceAction] being used is only
         // supported on Dart VM platforms.
         if (!PlatformUtils.isWeb) PerformanceHook(),
-        if (!PlatformUtils.isWeb) AttachScreenshotOnFailedStepHook(),
       ]
       ..reporters = [
         StdoutReporter(MessageLevel.verbose)

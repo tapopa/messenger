@@ -246,7 +246,7 @@ Future<void> _fillField(
       final WidgetTester tester =
           (context.world.appDriver.nativeDriver as WidgetTester);
 
-      final input = await context.world.appDriver.widget(finder);
+      final Widget input = await context.world.appDriver.widget(finder);
       if (input is ReactiveTextField) {
         Log.debug(
           '_fillField($key) -> input is `ReactiveTextField`, so just set the `.text`',

@@ -161,12 +161,20 @@ StepDefinitionGeneric fillFieldWithRandomLogin = when1<WidgetKey, CustomWorld>(
 StepDefinitionGeneric copyFromField = when1<WidgetKey, CustomWorld>(
   'I copy from {key} field',
   (key, context) async {
-    await context.world.appDriver.waitForAppToSettle();
+    await context.world.appDriver.nativeDriver.pump(
+      const Duration(seconds: 2),
+      EnginePhase.composite,
+    );
+
     final finder = context.world.appDriver.findBy(key.name, FindType.key);
     final Widget widget = finder.evaluate().single.widget;
 
     await context.world.appDriver.scrollIntoView(finder);
-    await context.world.appDriver.waitForAppToSettle();
+    await context.world.appDriver.nativeDriver.pump(
+      const Duration(seconds: 2),
+      EnginePhase.composite,
+    );
+    ;
 
     final String? text;
 

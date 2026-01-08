@@ -17,13 +17,13 @@
 
 import 'dart:ui';
 
-import 'package:flutter_gherkin/flutter_gherkin.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gherkin/gherkin.dart';
 import 'package:messenger/util/log.dart';
 
 import '../configuration.dart';
 import '../parameters/keys.dart';
+import '../world/custom_world.dart';
 
 /// Taps the widget found with the given [WidgetKey].
 ///
@@ -35,7 +35,7 @@ import '../parameters/keys.dart';
 /// - When I tap `WidgetKey` field
 /// - When I tap `WidgetKey` text
 /// - When I tap `WidgetKey` widget
-final StepDefinitionGeneric tapWidget = when1<WidgetKey, FlutterWorld>(
+final StepDefinitionGeneric tapWidget = when1<WidgetKey, CustomWorld>(
   RegExp(r'I tap {key} (?:button|element|label|icon|field|text|widget)$'),
   (key, context) async {
     Log.debug(
@@ -46,8 +46,10 @@ final StepDefinitionGeneric tapWidget = when1<WidgetKey, FlutterWorld>(
     await context.world.appDriver.waitUntil(() async {
       Log.debug('tapWidget($key) -> await waitForAppToSettle()...', 'E2E');
 
-      final tester = context.world.appDriver.nativeDriver as WidgetTester;
-      await tester.pump(const Duration(seconds: 2), EnginePhase.composite);
+      await context.world.appDriver.nativeDriver.pump(
+        const Duration(seconds: 2),
+        EnginePhase.composite,
+      );
 
       Log.debug(
         'tapWidget($key) -> await waitForAppToSettle()... done!',
@@ -61,7 +63,10 @@ final StepDefinitionGeneric tapWidget = when1<WidgetKey, FlutterWorld>(
 
         Log.debug('tapWidget($key) -> finder is: $finder', 'E2E');
 
-        await tester.tap(finder, kind: PointerDeviceKind.mouse);
+        await context.world.appDriver.nativeDriver.tap(
+          finder,
+          kind: PointerDeviceKind.mouse,
+        );
 
         Log.debug(
           'tapWidget($key) -> await context.world.appDriver.tap()... done!',

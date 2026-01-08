@@ -45,12 +45,7 @@ final StepDefinitionGeneric tapWidget = when1<WidgetKey, FlutterWorld>(
       Log.debug('tapWidget($key) -> await waitForAppToSettle()...', 'E2E');
 
       final tester = context.world.appDriver.nativeDriver as WidgetTester;
-      await tester.pumpAndSettle(
-        const Duration(milliseconds: 100),
-        EnginePhase.composite,
-        const Duration(seconds: 30),
-      );
-      // await context.world.appDriver.waitForAppToSettle();
+      await tester.pump(const Duration(seconds: 2), EnginePhase.composite);
 
       Log.debug(
         'tapWidget($key) -> await waitForAppToSettle()... done!',

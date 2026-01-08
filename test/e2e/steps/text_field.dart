@@ -174,7 +174,6 @@ StepDefinitionGeneric copyFromField = when1<WidgetKey, CustomWorld>(
       const Duration(seconds: 2),
       EnginePhase.composite,
     );
-    ;
 
     final String? text;
 

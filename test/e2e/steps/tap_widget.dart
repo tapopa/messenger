@@ -15,6 +15,8 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:ui';
+
 import 'package:flutter_gherkin/flutter_gherkin.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gherkin/gherkin.dart';
@@ -59,10 +61,7 @@ final StepDefinitionGeneric tapWidget = when1<WidgetKey, FlutterWorld>(
 
         Log.debug('tapWidget($key) -> finder is: $finder', 'E2E');
 
-        await context.world.appDriver.tap(
-          finder,
-          timeout: context.configuration.timeout,
-        );
+        await tester.tap(finder, kind: PointerDeviceKind.mouse);
 
         Log.debug(
           'tapWidget($key) -> await context.world.appDriver.tap()... done!',

@@ -17,6 +17,7 @@
 
 import 'package:gherkin/gherkin.dart';
 import 'package:messenger/domain/model/chat.dart';
+import 'package:messenger/util/log.dart';
 
 import '../configuration.dart';
 import '../parameters/archived_status.dart';
@@ -28,36 +29,50 @@ import '../world/custom_world.dart';
 /// Examples:
 /// - Then I see "Example" chat as archived
 /// - Then I see "Example" group as unarchived
-final StepDefinitionGeneric seeChatAsArchived =
-    then2<String, ArchivedStatus, CustomWorld>(
-      'I see {string} (?:chat|group) as {archived}',
-      (name, status, context) async {
-        await context.world.appDriver.waitUntil(() async {
-          final ChatId chatId = context.world.groups[name]!;
+final StepDefinitionGeneric
+seeChatAsArchived = then2<String, ArchivedStatus, CustomWorld>(
+  'I see {string} (?:chat|group) as {archived}',
+  (name, status, context) async {
+    await context.world.appDriver.waitUntil(() async {
+      final ChatId chatId = context.world.groups[name]!;
 
-          final bool inArchive = await context.world.appDriver.isPresent(
-            context.world.appDriver.findByKeySkipOffstage('ArchivedChats'),
+      final bool inArchive = await context.world.appDriver.isPresent(
+        context.world.appDriver.findByKeySkipOffstage('ArchivedChats'),
+      );
+
+      Log.debug('seeChatAsArchived -> $chatId, inArchive? $inArchive', 'E2E');
+
+      switch (status) {
+        case ArchivedStatus.archived:
+          final finder = context.world.appDriver.findByKeySkipOffstage(
+            '$chatId',
           );
 
-          switch (status) {
-            case ArchivedStatus.archived:
-              final isPresent =
-                  inArchive &&
-                  await context.world.appDriver.isPresent(
-                    context.world.appDriver.findByKeySkipOffstage('$chatId'),
-                  );
+          Log.debug(
+            'seeChatAsArchived -> inArchive -> looking for `$chatId` -> $finder',
+            'E2E',
+          );
 
-              return isPresent;
+          final isPresent =
+              inArchive && await context.world.appDriver.isPresent(finder);
 
-            case ArchivedStatus.unarchived:
-              final isPresent =
-                  !inArchive &&
-                  await context.world.appDriver.isPresent(
-                    context.world.appDriver.findByKeySkipOffstage('$chatId'),
-                  );
+          return isPresent;
 
-              return isPresent;
-          }
-        }, timeout: const Duration(seconds: 30));
-      },
-    );
+        case ArchivedStatus.unarchived:
+          final finder = context.world.appDriver.findByKeySkipOffstage(
+            '$chatId',
+          );
+
+          Log.debug(
+            'seeChatAsArchived -> !inArchive -> looking for `$chatId` -> $finder',
+            'E2E',
+          );
+
+          final isPresent =
+              !inArchive && await context.world.appDriver.isPresent(finder);
+
+          return isPresent;
+      }
+    }, timeout: const Duration(seconds: 30));
+  },
+);

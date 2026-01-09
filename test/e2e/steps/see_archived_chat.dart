@@ -38,9 +38,10 @@ seeChatAsArchived = then2<String, ArchivedStatus, CustomWorld>(
     await context.world.appDriver.waitUntil(() async {
       final ChatId chatId = context.world.groups[name]!;
 
-      final bool inArchive = await context.world.appDriver.isPresent(
-        context.world.appDriver.findByKeySkipOffstage('ArchivedChats'),
-      );
+      final bool inArchive = context.world.appDriver
+          .findByKeySkipOffstage('ArchivedChats')
+          .evaluate()
+          .isNotEmpty;
 
       Log.debug(
         'seeChatAsArchived -> $chatId, inArchive? $inArchive -> ${context.world.appDriver.findByKeySkipOffstage('ArchivedChats')}',
@@ -58,8 +59,7 @@ seeChatAsArchived = then2<String, ArchivedStatus, CustomWorld>(
             'E2E',
           );
 
-          final isPresent =
-              inArchive && await context.world.appDriver.isPresent(finder);
+          final isPresent = inArchive && finder.evaluate().isNotEmpty;
 
           if (!isPresent) {
             final ChatService chatService = Get.find<ChatService>();
@@ -86,8 +86,7 @@ seeChatAsArchived = then2<String, ArchivedStatus, CustomWorld>(
             'E2E',
           );
 
-          final isPresent =
-              !inArchive && await context.world.appDriver.isPresent(finder);
+          final isPresent = !inArchive && finder.evaluate().isNotEmpty;
 
           if (!isPresent) {
             final ChatService chatService = Get.find<ChatService>();

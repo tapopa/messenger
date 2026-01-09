@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 
-import '../../../../../util/log.dart';
+import '/util/log.dart';
 import '/config.dart';
 import '/domain/repository/chat.dart';
 import '/l10n/l10n.dart';
@@ -852,6 +852,12 @@ class ChatsTabView extends StatelessWidget {
           chats.add(e.rx);
         }
       }
+
+      Log.debug('_build() -> _archive() -> chats are: $chats', '$runtimeType');
+      Log.debug(
+        '_build() -> _archive() -> archived are: ${c.archived}',
+        '$runtimeType',
+      );
 
       if (chats.isEmpty) {
         if (c.status.value.isLoadingMore) {

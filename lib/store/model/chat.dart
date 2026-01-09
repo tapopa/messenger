@@ -57,7 +57,7 @@ class DtoChat {
 
   @override
   String toString() =>
-      '$runtimeType($value, $ver, $lastItemCursor, $lastReadItemCursor, $recentCursor, $favoriteCursor)';
+      '$runtimeType($id, $ver) -> ${value.name} is a ${value.kind.name} with ${value.members.map((e) => '${e.user.name ?? e.user.num}').join(', ')} (total: ${value.membersCount}), muted: ${value.muted}, isHidden: ${value.isHidden}, isArchived: ${value.isArchived}, directLink: ${value.directLink}, createdAt: ${value.createdAt}, updatedAt: ${value.updatedAt}, lastReads: ${value.lastReads}, lastDelivery: ${value.lastDelivery}, firstItem: ${value.firstItem}, lastItem: ${value.lastItem}, unreadCount: ${value.unreadCount}, totalCount: ${value.totalCount}, ongoingCall: ${value.ongoingCall}, favoritePosition: ${value.favoritePosition}';
 
   @override
   bool operator ==(Object other) {

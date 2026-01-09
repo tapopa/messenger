@@ -15,8 +15,10 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'package:get/get.dart';
 import 'package:gherkin/gherkin.dart';
 import 'package:messenger/domain/model/chat.dart';
+import 'package:messenger/domain/service/chat.dart';
 import 'package:messenger/util/log.dart';
 
 import '../configuration.dart';
@@ -59,6 +61,19 @@ seeChatAsArchived = then2<String, ArchivedStatus, CustomWorld>(
           final isPresent =
               inArchive && await context.world.appDriver.isPresent(finder);
 
+          if (!isPresent) {
+            final ChatService chatService = Get.find<ChatService>();
+            Log.debug(
+              'seeChatAsArchived -> seems like `isPresent` is `false`, thus the whole archive list: ${chatService.archived.values.toList()}',
+              'E2E',
+            );
+
+            Log.debug(
+              'seeChatAsArchived -> and whole chats list: ${chatService.paginated.values.toList()}',
+              'E2E',
+            );
+          }
+
           return isPresent;
 
         case ArchivedStatus.unarchived:
@@ -73,6 +88,19 @@ seeChatAsArchived = then2<String, ArchivedStatus, CustomWorld>(
 
           final isPresent =
               !inArchive && await context.world.appDriver.isPresent(finder);
+
+          if (!isPresent) {
+            final ChatService chatService = Get.find<ChatService>();
+            Log.debug(
+              'seeChatAsArchived -> seems like `isPresent` is `false`, thus the whole chats list: ${chatService.paginated.values.toList()}',
+              'E2E',
+            );
+
+            Log.debug(
+              'seeChatAsArchived -> and whole archived list: ${chatService.archived.values.toList()}',
+              'E2E',
+            );
+          }
 
           return isPresent;
       }

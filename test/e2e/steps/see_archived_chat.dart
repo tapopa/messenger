@@ -40,7 +40,10 @@ seeChatAsArchived = then2<String, ArchivedStatus, CustomWorld>(
         context.world.appDriver.findByKeySkipOffstage('ArchivedChats'),
       );
 
-      Log.debug('seeChatAsArchived -> $chatId, inArchive? $inArchive', 'E2E');
+      Log.debug(
+        'seeChatAsArchived -> $chatId, inArchive? $inArchive -> ${context.world.appDriver.findByKeySkipOffstage('ArchivedChats')}',
+        'E2E',
+      );
 
       switch (status) {
         case ArchivedStatus.archived:

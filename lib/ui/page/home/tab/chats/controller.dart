@@ -827,6 +827,7 @@ class ChatsTabController extends GetxController {
 
   /// Toggles the [archivedOnly].
   void toggleArchive() {
+    Log.debug('toggleArchive() -> ${!archivedOnly.value}', '$runtimeType');
     archivedOnly.value = !archivedOnly.value;
   }
 

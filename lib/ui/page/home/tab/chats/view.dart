@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 
+import '../../../../../util/log.dart';
 import '/config.dart';
 import '/domain/repository/chat.dart';
 import '/l10n/l10n.dart';
@@ -238,6 +239,11 @@ class ChatsTabView extends StatelessWidget {
     return Obx(() {
       final Widget label;
       final bool padded;
+
+      Log.debug(
+        'build() -> _title() -> ${c.groupCreating.value}, ${c.selecting.value}, ${c.archivedOnly.value}',
+        '$runtimeType',
+      );
 
       if (c.groupCreating.value) {
         padded = false;

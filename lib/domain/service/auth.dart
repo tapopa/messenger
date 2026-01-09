@@ -469,7 +469,15 @@ class AuthService extends Dependency {
     status.value = _hasAuthorization
         ? RxStatus.loadingMore()
         : RxStatus.loading();
+
+    Log.debug('signIn() -> await protect()...', '$runtimeType');
     await protect(() async {
+      Log.debug('signIn() -> await protect()... done!', '$runtimeType');
+
+      if (isClosed) {
+        return;
+      }
+
       try {
         final Credentials creds = await _authRepository.signIn(
           password: password,

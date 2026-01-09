@@ -326,7 +326,7 @@ class Chat implements Comparable<Chat> {
 
   @override
   String toString() =>
-      '$runtimeType($id) -> ${kind.name} with ${members.map((e) => '${e.user.name ?? e.user.num}').join(', ')}';
+      '$runtimeType($id) -> "$name" is a ${kind.name} with ${members.map((e) => '${e.user.name ?? e.user.num}').join(', ')} (total: $membersCount), muted: $muted, isHidden: $isHidden, isArchived: $isArchived, directLink: $directLink, createdAt: $createdAt, updatedAt: $updatedAt, lastReads: $lastReads, lastDelivery: $lastDelivery, firstItem: $firstItem, lastItem: $lastItem, unreadCount: $unreadCount, totalCount: $totalCount, ongoingCall: $ongoingCall, favoritePosition: $favoritePosition';
 
   @override
   bool operator ==(Object other) {

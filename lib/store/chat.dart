@@ -2552,6 +2552,11 @@ class ChatRepository extends IdentityDependency
 
     if (paginated.isNotEmpty && !status.value.isSuccess) {
       status.value = RxStatus.loadingMore();
+
+      Log.debug(
+        '_initLocalPagination() -> status is `loadingMore`',
+        '$runtimeType',
+      );
     }
   }
 
@@ -2710,7 +2715,9 @@ class ChatRepository extends IdentityDependency
       ),
     ]);
 
+    Log.debug('_initRemotePagination() -> around()...', '$runtimeType');
     await _pagination!.around();
+    Log.debug('_initRemotePagination() -> around()... done!', '$runtimeType');
 
     await _paginationSubscription?.cancel();
     _paginationSubscription = _pagination!.changes.listen((event) async {
@@ -2779,6 +2786,8 @@ class ChatRepository extends IdentityDependency
     }
 
     status.value = RxStatus.success();
+
+    Log.debug('_initRemotePagination() -> status is `success`', '$runtimeType');
   }
 
   /// Subscribes to the remote updates of the [chats].
@@ -3092,16 +3101,18 @@ class ChatRepository extends IdentityDependency
           if (e is StaleVersionException) {
             status.value = RxStatus.loading();
 
-            await _pagination?.clear();
-            await _sessionLocal.upsert(
-              me,
-              favoriteChatsSynchronized: NewType(false),
-              favoriteChatsListVersion: NewType(null),
-            );
+            try {
+              await _pagination?.clear();
+              await _sessionLocal.upsert(
+                me,
+                favoriteChatsSynchronized: NewType(false),
+                favoriteChatsListVersion: NewType(null),
+              );
 
-            await _pagination?.around();
-
-            status.value = RxStatus.success();
+              await _pagination?.around();
+            } finally {
+              status.value = RxStatus.success();
+            }
           }
         },
       );

@@ -919,6 +919,11 @@ class ChatController extends GetxController with IdentityAware {
     try {
       _ignorePositionChanges = true;
 
+      if (isClosed) {
+        Log.debug('_fetchChat($id) -> isClosed', '$runtimeType');
+        return;
+      }
+
       status.value = RxStatus.loading();
 
       if (id.isLocal) {
@@ -927,6 +932,11 @@ class ChatController extends GetxController with IdentityAware {
         final RxUser? user = userOrFuture is RxUser?
             ? userOrFuture
             : await userOrFuture;
+
+        if (isClosed) {
+          Log.debug('_fetchChat($id) -> isClosed', '$runtimeType');
+          return;
+        }
 
         Log.debug(
           '_fetchChat($id) -> replacing id($id) with user -> `$user`, hash -> $hashCode',
@@ -946,6 +956,11 @@ class ChatController extends GetxController with IdentityAware {
 
       final FutureOr<RxChat?> fetched = _chatService.get(id);
       chat = fetched is RxChat? ? fetched : await fetched;
+
+      if (isClosed) {
+        Log.debug('_fetchChat($id) -> isClosed', '$runtimeType');
+        return;
+      }
 
       span.finish();
       span = _ready.startChild('fetch');
@@ -1075,6 +1090,11 @@ class ChatController extends GetxController with IdentityAware {
               }
             }
           });
+        }
+
+        if (isClosed) {
+          Log.debug('_fetchChat($id) -> isClosed', '$runtimeType');
+          return;
         }
 
         span.finish();

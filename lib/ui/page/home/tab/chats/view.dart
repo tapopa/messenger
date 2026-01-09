@@ -858,9 +858,13 @@ class ChatsTabView extends StatelessWidget {
         '_build() -> _archive() -> archived are: ${c.archived}',
         '$runtimeType',
       );
+      Log.debug(
+        '_build() -> isLoading(${c.status.value.isLoading}), isLoadingMore(${c.status.value.isLoadingMore}), isSuccess(${c.status.value.isSuccess})',
+        '$runtimeType',
+      );
 
       if (chats.isEmpty) {
-        if (c.status.value.isLoadingMore) {
+        if (c.status.value.isLoading || c.status.value.isLoadingMore) {
           return Center(
             key: UniqueKey(),
             child: ColoredBox(
@@ -1023,7 +1027,7 @@ class ChatsTabView extends StatelessWidget {
       }
 
       if (calls.isEmpty && favorites.isEmpty && chats.isEmpty) {
-        if (c.status.value.isLoadingMore) {
+        if (c.status.value.isLoading || c.status.value.isLoadingMore) {
           return Center(
             key: UniqueKey(),
             child: ColoredBox(

@@ -581,9 +581,7 @@ class ChatsTabView extends StatelessWidget {
     return Obx(() {
       final Widget? child;
 
-      if (c.status.value.isLoading) {
-        child = Center(child: CustomProgressIndicator.primary());
-      } else if (c.groupCreating.isTrue) {
+      if (c.groupCreating.isTrue) {
         child = _groupCreating(context, c);
       } else if (c.search.value?.search.isEmpty.value == false) {
         child = _searchResults(context, c);

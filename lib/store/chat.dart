@@ -379,6 +379,8 @@ class ChatRepository extends IdentityDependency
 
     status.value = RxStatus.loading();
 
+    Log.debug('onIdentityChanged() -> status is `loading`', '$runtimeType');
+
     // Set the initial values to local ones, however those will be redefined
     // during `_ensurePagination()` method, which invokes `_initSupport()` and
     // `_initMonolog()`.
@@ -2774,13 +2776,33 @@ class ChatRepository extends IdentityDependency
     );
 
     try {
+      Log.debug(
+        '_initRemotePagination() -> await _initMonolog()...',
+        '$runtimeType',
+      );
+
       await _initMonolog();
+
+      Log.debug(
+        '_initRemotePagination() -> await _initMonolog()... done!',
+        '$runtimeType',
+      );
     } catch (_) {
       // Still proceed with initialization.
     }
 
     try {
+      Log.debug(
+        '_initRemotePagination() -> await _initSupport()...',
+        '$runtimeType',
+      );
+
       await _initSupport();
+
+      Log.debug(
+        '_initRemotePagination() -> await _initSupport()... done!',
+        '$runtimeType',
+      );
     } catch (_) {
       // Still proceed with initialization.
     }
@@ -3342,15 +3364,36 @@ class ChatRepository extends IdentityDependency
     Log.debug('_initMonolog()', '$runtimeType');
 
     try {
+      Log.debug('_initMonolog() -> _monologGuard.protect()...', '$runtimeType');
+
       await _monologGuard.protect(() async {
+        Log.debug(
+          '_initMonolog() -> _monologGuard.protect()... done!',
+          '$runtimeType',
+        );
+
+        if (isClosed) {
+          return;
+        }
+
         final bool isLocal = monolog.isLocal;
         final bool isPaginated = paginated[monolog] != null;
         final bool canFetchMore =
             !me.isLocal && (_pagination?.hasNext.value ?? true);
 
+        Log.debug(
+          '_initMonolog() -> isLocal($isLocal), isPaginated($isPaginated), canFetchMore($canFetchMore)',
+          '$runtimeType',
+        );
+
         // If a non-local [monolog] isn't stored and it won't appear from the
         // [Pagination], then initialize local monolog or get a remote one.
         if (isLocal && !isPaginated && !canFetchMore) {
+          Log.debug(
+            '_initMonolog() -> await _monologLocal.read()...',
+            '$runtimeType',
+          );
+
           // Whether [ChatId] of [MyUser]'s monolog is known for the given device.
           final ChatId? stored = await _monologLocal.read(MonologKind.notes);
 
@@ -3393,6 +3436,8 @@ class ChatRepository extends IdentityDependency
             }
           }
         }
+
+        Log.debug('_initMonolog()... done!', '$runtimeType');
       });
     } catch (e) {
       Log.error('Unable to `_initMonolog()` due to: $e');

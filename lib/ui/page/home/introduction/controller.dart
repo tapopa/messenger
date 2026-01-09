@@ -1008,17 +1008,28 @@ class IntroductionController extends GetxController with IdentityAware {
     }
   }
 
+  /// Schedules [router] to go to a [Chat]-support.
   Future<void> _scheduleSupport() async {
+    Log.debug('_scheduleSupport()', '$runtimeType');
+
     final ChatId chatId = ChatId.local(UserId(Config.supportId));
 
     chat.value = await _chatService.get(chatId);
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      router.tab = HomeTab.chats;
-      router.chat(chatId);
+      Log.debug(
+        '_scheduleSupport() -> postFrameCallback -> `${router.route}` vs `${router.initial?.uri.path}`',
+        '$runtimeType',
+      );
+
+      if (router.route == router.initial?.uri.path) {
+        router.tab = HomeTab.chats;
+        router.chat(chatId);
+      }
     });
   }
 
+  /// Schedules [_chatService] to fetch [_slug] to a [chat], if any.
   Future<void> _scheduleChat() async {
     if (_slug != null) {
       try {

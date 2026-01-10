@@ -23,6 +23,7 @@ import 'package:dio/dio.dart' as dio;
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:get/get.dart';
 import 'package:mutex/mutex.dart';
+import 'package:synchronized/synchronized.dart';
 
 import '/api/backend/extension/call.dart';
 import '/api/backend/extension/chat.dart';
@@ -277,8 +278,11 @@ class ChatRepository extends IdentityDependency
   /// [Mutex]es guarding synchronized access to the [_putEntry].
   final Map<ChatId, Mutex> _putEntryGuards = {};
 
-  /// [Mutex] guarding synchronized access to the [GraphQlProvider.getMonolog].
-  final Mutex _monologGuard = Mutex();
+  /// [Lock] guarding synchronized access to the [GraphQlProvider.getMonolog].
+  final Lock _monologGuard = Lock();
+
+  /// [Lock] guarding synchronized access to the [_initSupport].
+  final Lock _supportGuard = Lock();
 
   /// [ChatFavoritePosition] of the local [Chat]-monolog.
   ///
@@ -388,12 +392,21 @@ class ChatRepository extends IdentityDependency
     support = ChatId.local(_supportId);
 
     if (!me.isLocal) {
-      _monologGuard.protect(() async {
+      _monologGuard.synchronized(() async {
+        if (isClosed) {
+          return;
+        }
+
         monolog = (await _graphQlProvider.getMonolog())?.id ?? ChatId.local(me);
+
+        if (isClosed) {
+          return;
+        }
+
         support =
             (await _graphQlProvider.getDialog(UserId(Config.supportId)))?.id ??
             ChatId.local(_supportId);
-      });
+      }, timeout: const Duration(minutes: 1));
     }
 
     // Popup shouldn't listen to recent chats remote updates, as it's happening
@@ -3366,7 +3379,7 @@ class ChatRepository extends IdentityDependency
     try {
       Log.debug('_initMonolog() -> _monologGuard.protect()...', '$runtimeType');
 
-      await _monologGuard.protect(() async {
+      await _monologGuard.synchronized(() async {
         Log.debug(
           '_initMonolog() -> _monologGuard.protect()... done!',
           '$runtimeType',
@@ -3438,7 +3451,7 @@ class ChatRepository extends IdentityDependency
         }
 
         Log.debug('_initMonolog()... done!', '$runtimeType');
-      });
+      }, timeout: const Duration(minutes: 1));
     } catch (e) {
       Log.error('Unable to `_initMonolog()` due to: $e');
       rethrow;
@@ -3454,7 +3467,14 @@ class ChatRepository extends IdentityDependency
     }
 
     try {
-      await _monologGuard.protect(() async {
+      Log.debug('_initSupport() -> _supportGuard.protect()...', '$runtimeType');
+
+      await _supportGuard.synchronized(() async {
+        Log.debug(
+          '_initSupport() -> _supportGuard.protect()... done!',
+          '$runtimeType',
+        );
+
         final bool isLocal = support.isLocal;
         final bool isPaginated = paginated[support] != null;
         final bool canFetchMore =
@@ -3479,7 +3499,9 @@ class ChatRepository extends IdentityDependency
 
             // If remote chat doesn't exist and local one is not stored, then
             // create it.
-            await _monologLocal.upsert(
+            //
+            // Doing `await` here might for some reason hang the E2E tests?
+            _monologLocal.upsert(
               MonologKind.support,
               support = (await _createLocalDialog(_supportId)).id,
             );
@@ -3501,7 +3523,8 @@ class ChatRepository extends IdentityDependency
             );
 
             if (maybeSupport != null) {
-              await _monologLocal.upsert(
+              // Doing `await` here might for some reason hang the E2E tests?
+              _monologLocal.upsert(
                 MonologKind.support,
                 support = maybeSupport.id,
               );
@@ -3519,7 +3542,7 @@ class ChatRepository extends IdentityDependency
             }
           }
         }
-      });
+      }, timeout: const Duration(minutes: 1));
     } catch (e) {
       Log.error('Unable to `_initSupport()` due to: $e');
       rethrow;

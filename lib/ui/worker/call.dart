@@ -61,7 +61,7 @@ import '/util/web/web_utils.dart';
 
 /// Worker responsible for showing an incoming call notification and playing an
 /// incoming or outgoing call audio.
-class CallWorker extends DisposableService {
+class CallWorker extends Dependency {
   CallWorker(
     this._callService,
     this._chatService,

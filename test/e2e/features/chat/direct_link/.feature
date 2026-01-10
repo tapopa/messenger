@@ -20,7 +20,7 @@ Feature: Direct links
   Background:
     Given user Bob
     And Bob has his direct link set up
-    And I wait until `AuthView` is present
+    And I wait until `IntroductionView` is present
 
   Scenario: Direct link can be opened in unauthorized mode
     When I go to Bob's direct link

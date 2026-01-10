@@ -317,7 +317,8 @@ class GraphQlClient {
         final dio.Options authorized = options ?? dio.Options();
         authorized.headers = (authorized.headers ?? {});
 
-        if (raw == null || raw.token != null) {
+        final AccessTokenSecret? bearer = raw?.token ?? token;
+        if (bearer != null && (raw == null || raw.token != null)) {
           authorized.headers!['Authorization'] =
               'Bearer ${raw?.token ?? token}';
         }
@@ -331,7 +332,10 @@ class GraphQlClient {
             cancelToken: cancelToken,
           );
         } on dio.DioException catch (e) {
-          Log.warning('post() -> `DioException` occurred: $e', '$runtimeType');
+          Log.warning(
+            'post() -> `DioException` occurred: $e\nData: ${e.response?.data}',
+            '$runtimeType',
+          );
 
           if (e.response != null) {
             if (onException != null &&

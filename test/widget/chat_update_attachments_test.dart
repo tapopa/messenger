@@ -348,9 +348,9 @@ void main() async {
   when(
     graphQlProvider.blocklistEvents(any),
   ).thenAnswer((_) => const Stream.empty());
-  when(
-    graphQlProvider.getUser(any),
-  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson({'user': null})));
+  when(graphQlProvider.getUser(any)).thenAnswer(
+    (_) => Future.value(GetUser$Query.fromJson({'user': null}).user),
+  );
   when(graphQlProvider.getMonolog()).thenAnswer(
     (_) => Future.value(GetMonolog$Query.fromJson({'monolog': null}).monolog),
   );
@@ -450,7 +450,7 @@ void main() async {
     authService.init();
 
     UserRepository userRepository = Get.put(
-      UserRepository(graphQlProvider, userProvider),
+      UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
     );
     BlocklistRepository blocklistRepository = Get.put(
       BlocklistRepository(
@@ -463,10 +463,10 @@ void main() async {
     );
     AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
-        const UserId('me'),
         settingsProvider,
         backgroundProvider,
         callRectProvider,
+        me: const UserId('me'),
       ),
     );
 
@@ -513,6 +513,7 @@ void main() async {
             blocklistRepository,
             userRepository,
             accountProvider,
+            me: const UserId('me'),
           ),
         ),
       ),
@@ -525,7 +526,7 @@ void main() async {
     Get.put(CacheWorker(cacheProvider, null));
 
     Get.put(ContactService(contactRepository));
-    Get.put(NotificationService(graphQlProvider));
+    Get.put(NotificationService(graphQlProvider, me: const UserId('me')));
 
     await tester.pumpWidget(
       createWidgetForTesting(

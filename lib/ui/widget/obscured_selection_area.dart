@@ -90,7 +90,25 @@ class _ObscuredSelectionAreaState extends State<ObscuredSelectionArea> {
       focusNode: widget.focusNode,
       selectionControls: widget.selectionControls,
       contextMenuBuilder: widget.contextMenuBuilder,
-      onSelectionChanged: widget.onSelectionChanged,
+      onSelectionChanged: (a) {
+        final String? selected = a?.plainText;
+
+        if (selected != null &&
+            selected.isNotEmpty == true &&
+            selected.length >= 2) {
+          final String selected1 = selected.substring(0, selected.length ~/ 2);
+          final String selected2 = selected.substring(
+            selected.length ~/ 2,
+            selected.length,
+          );
+
+          if (selected1 == selected2) {
+            a = SelectedContent(plainText: selected1);
+          }
+        }
+
+        widget.onSelectionChanged?.call(a);
+      },
       child: child(),
     );
 

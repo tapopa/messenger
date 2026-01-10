@@ -159,6 +159,9 @@ class RxUserImpl extends RxUser {
   @override
   Stream<void> get updates => _controller.stream;
 
+  /// Returns a [UserId] of the currently authenticated [MyUser].
+  UserId get me => _userRepository.me;
+
   /// Disposes this [RxUserImpl].
   void dispose() {
     Log.debug('dispose()', '$runtimeType($id)');
@@ -174,6 +177,10 @@ class RxUserImpl extends RxUser {
     Log.debug('_initRemoteSubscription()', '$runtimeType($id)');
 
     _remoteSubscription?.close(immediate: true);
+
+    if (me.isLocal || id.isLocal) {
+      return;
+    }
 
     await WebUtils.protect(() async {
       if (_disposed) {

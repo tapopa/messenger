@@ -22,14 +22,13 @@ Feature: Attachments downloading
     And Bob has dialog with Alice
     And I sign in as Alice
     And I pause for 2 seconds
-    And I wait until `IntroductionView` is present
-    And I scroll `IntroductionScrollable` until `ProceedButton` is present
-    And I tap `ProceedButton` button
     And I am in chat with Bob
+    And I pause for 2 seconds
 
   Scenario: Attachments can be downloaded
     When Bob sends "test.txt" attachment to me
     Then I wait until "test.txt" file is not downloaded
+    And I pause for 2 seconds
 
     When I download "test.txt" file
     Then I wait until "test.txt" file is downloading
@@ -38,6 +37,7 @@ Feature: Attachments downloading
   Scenario: Attachment download can be canceled
     When Bob sends "test.txt" attachment to me
     Then I wait until "test.txt" file is not downloaded
+    And I pause for 2 seconds
 
     When I download "test.txt" file
     Then I wait until "test.txt" file is downloading

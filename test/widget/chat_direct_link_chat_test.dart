@@ -139,9 +139,9 @@ void main() async {
     graphQlProvider.favoriteChatsEvents(any),
   ).thenAnswer((_) => const Stream.empty());
 
-  when(
-    graphQlProvider.getUser(any),
-  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson({'user': null})));
+  when(graphQlProvider.getUser(any)).thenAnswer(
+    (_) => Future.value(GetUser$Query.fromJson({'user': null}).user),
+  );
   when(graphQlProvider.getMonolog()).thenAnswer(
     (_) => Future.value(GetMonolog$Query.fromJson({'monolog': null}).monolog),
   );
@@ -362,14 +362,14 @@ void main() async {
     ).thenAnswer((_) => const Stream.empty());
 
     UserRepository userRepository = Get.put(
-      UserRepository(graphQlProvider, userProvider),
+      UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
     );
     AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
-        const UserId('me'),
         settingsProvider,
         backgroundProvider,
         callRectProvider,
+        me: const UserId('me'),
       ),
     );
     final callRepository = CallRepository(
@@ -396,7 +396,7 @@ void main() async {
     );
     AbstractContactRepository contactRepository = ContactRepository(
       graphQlProvider,
-      UserRepository(graphQlProvider, userProvider),
+      UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
       versionProvider,
       me: const UserId('me'),
     );
@@ -421,6 +421,7 @@ void main() async {
         blocklistRepository,
         userRepository,
         accountProvider,
+        me: const UserId('me'),
       ),
     );
     Get.put(MyUserService(authService, myUserRepository));

@@ -19,9 +19,7 @@ Feature: Chat members pagination
     And I pause for 2 seconds
     And I am in "Members" group
 
-    When I scroll `IntroductionScrollable` until `ProceedButton` is present
-    And I tap `ProceedButton` button
-    And I open chat's info
+    When I open chat's info
     Then I see 15 chat members
 
     Given I have Internet with delay of 3 seconds

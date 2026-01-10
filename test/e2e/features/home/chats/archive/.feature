@@ -26,7 +26,6 @@ Feature: Archive chats
     And Alice has "05" group in archive
     And I sign in as Alice
     And I wait for app to settle
-    And I tap `ProceedButton` button
 
     When I tap `ChatsMenu` button
     And I tap `ArchiveChatsButton` button

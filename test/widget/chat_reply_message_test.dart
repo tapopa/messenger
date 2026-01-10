@@ -97,10 +97,10 @@ void main() async {
   when(graphQlProvider.disconnect()).thenAnswer((_) => () {});
   when(
     graphQlProvider.getUser(const UserId('me')),
-  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson(userData)));
+  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson(userData).user));
   when(
     graphQlProvider.getUser(UserId(Config.supportId)),
-  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson({})));
+  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson({}).user));
   when(
     graphQlProvider.onStart,
   ).thenReturn(InternalFinalCallback(callback: () {}));
@@ -457,7 +457,7 @@ void main() async {
     authService.init();
 
     final UserRepository userRepository = Get.put(
-      UserRepository(graphQlProvider, userProvider),
+      UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
     );
     final BlocklistRepository blocklistRepository = Get.put(
       BlocklistRepository(
@@ -470,10 +470,10 @@ void main() async {
     );
     final AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
-        const UserId('me'),
         settingsProvider,
         backgroundProvider,
         callRectProvider,
+        me: const UserId('me'),
       ),
     );
     final callRepository = CallRepository(
@@ -509,7 +509,7 @@ void main() async {
       ),
     );
     Get.put(ContactService(contactRepository));
-    Get.put(NotificationService(graphQlProvider));
+    Get.put(NotificationService(graphQlProvider, me: const UserId('me')));
 
     final MyUserRepository myUserRepository = MyUserRepository(
       graphQlProvider,
@@ -517,6 +517,7 @@ void main() async {
       blocklistRepository,
       userRepository,
       accountProvider,
+      me: const UserId('me'),
     );
     Get.put(MyUserService(authService, myUserRepository));
 

@@ -193,9 +193,9 @@ void main() async {
     ),
   ).thenAnswer((_) => Future.value(GetChat$Query.fromJson({'chat': chatData})));
 
-  when(
-    graphQlProvider.getUser(any),
-  ).thenAnswer((_) => Future.value(GetUser$Query.fromJson({'user': null})));
+  when(graphQlProvider.getUser(any)).thenAnswer(
+    (_) => Future.value(GetUser$Query.fromJson({'user': null}).user),
+  );
   when(graphQlProvider.getMonolog()).thenAnswer(
     (_) => Future.value(GetMonolog$Query.fromJson({'monolog': null}).monolog),
   );
@@ -213,19 +213,20 @@ void main() async {
       ),
     );
     router = RouterState(authService);
-    authService.init();
+    await authService.init();
 
     AbstractSettingsRepository settingsRepository = Get.put(
       SettingsRepository(
-        const UserId('me'),
         settingsProvider,
         backgroundProvider,
         callRectProvider,
+        me: const UserId('me'),
       ),
     );
     UserRepository userRepository = UserRepository(
       graphQlProvider,
       userProvider,
+      me: const UserId('me'),
     );
 
     final callRepository = CallRepository(
@@ -291,19 +292,20 @@ void main() async {
         ),
       );
       router = RouterState(authService);
-      authService.init();
+      await authService.init();
 
       AbstractSettingsRepository settingsRepository = Get.put(
         SettingsRepository(
-          const UserId('me'),
           settingsProvider,
           backgroundProvider,
           callRectProvider,
+          me: const UserId('me'),
         ),
       );
       UserRepository userRepository = UserRepository(
         graphQlProvider,
         userProvider,
+        me: const UserId('me'),
       );
 
       final callRepository = CallRepository(

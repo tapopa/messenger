@@ -286,7 +286,7 @@ class AccountsView extends StatelessWidget {
                               Navigator.of(context).pop();
                               c.register();
                             }
-                          : () {},
+                          : null,
                       child: Text('btn_guest'.l10n),
                     );
                   }),

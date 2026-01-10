@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 
+import '/util/log.dart';
 import '/config.dart';
 import '/domain/repository/chat.dart';
 import '/l10n/l10n.dart';
@@ -238,6 +239,11 @@ class ChatsTabView extends StatelessWidget {
     return Obx(() {
       final Widget label;
       final bool padded;
+
+      Log.debug(
+        'build() -> _title() -> ${c.groupCreating.value}, ${c.selecting.value}, ${c.archivedOnly.value}',
+        '$runtimeType',
+      );
 
       if (c.groupCreating.value) {
         padded = false;
@@ -575,9 +581,7 @@ class ChatsTabView extends StatelessWidget {
     return Obx(() {
       final Widget? child;
 
-      if (c.status.value.isLoading) {
-        child = Center(child: CustomProgressIndicator.primary());
-      } else if (c.groupCreating.isTrue) {
+      if (c.groupCreating.isTrue) {
         child = _groupCreating(context, c);
       } else if (c.search.value?.search.isEmpty.value == false) {
         child = _searchResults(context, c);
@@ -847,8 +851,18 @@ class ChatsTabView extends StatelessWidget {
         }
       }
 
+      Log.debug('_build() -> _archive() -> chats are: $chats', '$runtimeType');
+      Log.debug(
+        '_build() -> _archive() -> archived are: ${c.archived}',
+        '$runtimeType',
+      );
+      Log.debug(
+        '_build() -> isLoading(${c.status.value.isLoading}), isLoadingMore(${c.status.value.isLoadingMore}), isSuccess(${c.status.value.isSuccess})',
+        '$runtimeType',
+      );
+
       if (chats.isEmpty) {
-        if (c.status.value.isLoadingMore) {
+        if (c.status.value.isLoading || c.status.value.isLoadingMore) {
           return Center(
             key: UniqueKey(),
             child: ColoredBox(
@@ -1011,7 +1025,7 @@ class ChatsTabView extends StatelessWidget {
       }
 
       if (calls.isEmpty && favorites.isEmpty && chats.isEmpty) {
-        if (c.status.value.isLoadingMore) {
+        if (c.status.value.isLoading || c.status.value.isLoadingMore) {
           return Center(
             key: UniqueKey(),
             child: ColoredBox(

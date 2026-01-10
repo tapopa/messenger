@@ -243,6 +243,11 @@ class ChatsTabController extends GetxController {
 
     chats.where((c) => c.chat.value.isDialog).forEach(listenUpdates);
     _chatsSubscription = _chatService.paginated.changes.listen((event) {
+      Log.debug(
+        '_chatsSubscription -> ${event.op} -> ${event.value}',
+        '$runtimeType',
+      );
+
       switch (event.op) {
         case OperationKind.added:
           final entry = ChatEntry(event.value!, chats.sort);
@@ -828,6 +833,7 @@ class ChatsTabController extends GetxController {
   /// Toggles the [archivedOnly].
   void toggleArchive() {
     archivedOnly.value = !archivedOnly.value;
+    Log.debug('toggleArchive() -> ${archivedOnly.value}', '$runtimeType');
   }
 
   /// Initializes the [search].

@@ -56,6 +56,7 @@ import 'parameters/search_category.dart';
 import 'parameters/selection_status.dart';
 import 'parameters/sending_status.dart';
 import 'parameters/users.dart';
+import 'steps/account_is_remote.dart';
 import 'steps/accounts.dart';
 import 'steps/appcast.dart';
 import 'steps/attach_file.dart';
@@ -80,6 +81,7 @@ import 'steps/has_blocked_users.dart';
 import 'steps/has_contact.dart';
 import 'steps/has_dialog.dart';
 import 'steps/has_group.dart';
+import 'steps/i_am_guest.dart';
 import 'steps/in_chat.dart';
 import 'steps/in_monolog.dart';
 import 'steps/internet.dart';
@@ -136,6 +138,7 @@ import 'steps/select_text.dart';
 import 'steps/sends_attachment.dart';
 import 'steps/sends_message.dart';
 import 'steps/set_credential.dart';
+import 'steps/submit_field.dart';
 import 'steps/tap_chat.dart';
 import 'steps/tap_chat_in_search_view.dart';
 import 'steps/tap_contact.dart';
@@ -170,6 +173,7 @@ import 'world/custom_world.dart';
 final FlutterTestConfiguration gherkinTestConfiguration =
     FlutterTestConfiguration()
       ..stepDefinitions = [
+        accountIsRemote,
         appcastIsAvailable,
         attachFile,
         blockedCountUsers,
@@ -218,6 +222,7 @@ final FlutterTestConfiguration gherkinTestConfiguration =
         haveInternetWithoutDelay,
         hasSession,
         iAm,
+        iAmGuest,
         iAmInChatNamed,
         iAmInChatWith,
         iAmInMonolog,
@@ -307,6 +312,7 @@ final FlutterTestConfiguration gherkinTestConfiguration =
         setMyCredential,
         signInAs,
         signsOutSession,
+        submitField,
         tapAccountInAccounts,
         tapChat,
         tapContact,

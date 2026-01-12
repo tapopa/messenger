@@ -123,7 +123,8 @@ class Config {
   /// Indicator whether [Log]s should be written to a [File].
   static bool logWrite = false;
 
-  static bool logDatabase = true;
+  /// Indicator whether logs for database related operations should be logged.
+  static bool logDatabase = false;
 
   /// URL of a Sparkle Appcast XML file.
   ///

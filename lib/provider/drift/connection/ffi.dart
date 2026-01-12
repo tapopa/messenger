@@ -25,7 +25,9 @@ import 'package:path/path.dart' as p;
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
+import '/config.dart';
 import '/domain/model/user.dart';
+import '/provider/drift/interceptor/log.dart';
 import '/util/ios_utils.dart';
 import '/util/platform_utils.dart';
 
@@ -61,10 +63,16 @@ QueryExecutor connect([UserId? userId]) {
     // Explicitly tell it about the correct temporary directory.
     sqlite3.tempDirectory = cache;
 
-    return NativeDatabase.createInBackground(
+    final connection = NativeDatabase.createInBackground(
       file,
       setup: (db) => db.execute('PRAGMA journal_mode = wal'),
     );
+
+    if (!Config.logDatabase) {
+      return connection;
+    }
+
+    return connection.interceptWith(LogInterceptor());
   });
 }
 

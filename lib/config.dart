@@ -123,6 +123,8 @@ class Config {
   /// Indicator whether [Log]s should be written to a [File].
   static bool logWrite = false;
 
+  static bool logDatabase = true;
+
   /// URL of a Sparkle Appcast XML file.
   ///
   /// Intended to be used in [UpgradeWorker] to notify users about new releases

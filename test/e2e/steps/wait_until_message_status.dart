@@ -131,6 +131,13 @@ waitUntilMessageStatus = then2<String, MessageSentStatus, CustomWorld>(
           }
         }
 
+        if (message == null) {
+          Log.debug(
+            'waitUntilMessageStatus($text, ${status.name}) -> `message` is still `null`, thus the whole list: ${chat?.messages.map((e) => e.value).whereType<ChatMessage>()}',
+            'E2E',
+          );
+        }
+
         final Finder finder = context.world.appDriver.findByKeySkipOffstage(
           'MessageStatus_${message?.id ?? id}',
         );

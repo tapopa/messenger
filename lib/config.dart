@@ -263,7 +263,7 @@ class Config {
 
     logObfuscated = const bool.hasEnvironment('SOCAPP_LOG_OBFUSCATED')
         ? const bool.fromEnvironment('SOCAPP_LOG_OBFUSCATED')
-        : (document['log']?['obfuscated'] ?? !kDebugMode);
+        : (document['log']?['obfuscated'] ?? !kDebugMode && !kProfileMode);
 
     logWrite = const bool.hasEnvironment('SOCAPP_LOG_WRITE')
         ? const bool.fromEnvironment('SOCAPP_LOG_WRITE')

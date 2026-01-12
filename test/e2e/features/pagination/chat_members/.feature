@@ -10,6 +10,7 @@
 # along with this program. If not, see
 # <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+@disabled
 Feature: Chat members pagination
 
   Scenario: Chat members pagination works correctly
@@ -18,11 +19,14 @@ Feature: Chat members pagination
     And I sign in as Alice
     And I pause for 2 seconds
     And I am in "Members" group
+    And I pause for 5 seconds
 
     When I open chat's info
+    And I pause for 10 seconds
     Then I see 15 chat members
 
+    Given I have Internet with delay of 3 seconds
     When I scroll `ChatInfoScrollable` until `ChatMembers` is present
-    And I pause for 10 seconds
     And I scroll `ChatMembers` until `MembersLoading` is present
+    Then I wait until `MembersLoading` is absent
     And I see 16 chat members

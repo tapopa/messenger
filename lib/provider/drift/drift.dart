@@ -594,12 +594,12 @@ final class ScopedDriftProvider extends IdentityDependency {
   }
 
   @override
-  void onIdentityChanged(UserId me) async {
+  void onIdentityChanged(UserId me) {
     super.onIdentityChanged(me);
 
     Log.debug('onIdentityChanged($me)', '$runtimeType');
 
-    await close();
+    close();
 
     if (_memory) {
       db = ScopedDatabase(me, inMemory());
@@ -607,7 +607,7 @@ final class ScopedDriftProvider extends IdentityDependency {
       db = ScopedDatabase(me);
     }
 
-    await _caught(db?.create());
+    _caught(db?.create());
   }
 
   /// Closes this [ScopedDriftProvider].
@@ -803,6 +803,15 @@ abstract class DriftProviderBaseWithScope extends DisposableInterface {
     bool exclusive = true,
     bool force = false,
   }) async {
+    if (_scoped.db == null) {
+      Log.debug(
+        'safe(tag: $tag) -> await WebUtils.protect(tag: ${_scoped.db?.userId}, exclusive: $exclusive) returns `null` due to `_scoped.db` being `null`',
+        '$runtimeType',
+      );
+
+      return null;
+    }
+
     if (PlatformUtils.isWeb && !force) {
       Log.debug(
         'safe(tag: $tag) -> await WebUtils.protect(tag: ${_scoped.db?.userId}, exclusive: $exclusive)...',

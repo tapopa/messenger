@@ -1757,7 +1757,10 @@ mixin ChatGraphQlMixin {
     int? last,
     ChatMembersCursor? before,
   }) async {
-    Log.debug('chatItems($id, $first, $after, $last, $before)', '$runtimeType');
+    Log.debug(
+      'chatMembers($id, $first, $after, $last, $before)',
+      '$runtimeType',
+    );
 
     final variables = GetMembersArguments(
       id: id,

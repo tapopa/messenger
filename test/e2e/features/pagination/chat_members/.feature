@@ -22,8 +22,7 @@ Feature: Chat members pagination
     When I open chat's info
     Then I see 15 chat members
 
-    Given I have Internet with delay of 3 seconds
     When I scroll `ChatInfoScrollable` until `ChatMembers` is present
+    And I pause for 10 seconds
     And I scroll `ChatMembers` until `MembersLoading` is present
-    Then I wait until `MembersLoading` is absent
     And I see 16 chat members

@@ -25,6 +25,7 @@ import 'package:get/get.dart';
 import '/l10n/l10n.dart';
 import '/themes.dart';
 import '/ui/widget/context_menu/menu.dart';
+import '/util/log.dart';
 import '/util/message_popup.dart';
 import '/util/platform_utils.dart';
 import 'allow_overflow.dart';
@@ -776,6 +777,11 @@ class TextFieldState extends ReactiveFieldState {
 
   @override
   void submit() {
+    Log.debug(
+      'submit() -> ${editable.isTrue} && ${submittable.isTrue} -> `${controller.text}`',
+      '$runtimeType',
+    );
+
     if (editable.isTrue && submittable.isTrue) {
       if (controller.text != _previousSubmit) {
         if (_previousText != controller.text) {

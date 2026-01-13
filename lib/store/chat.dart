@@ -2866,39 +2866,43 @@ class ChatRepository extends IdentityDependency
   Stream<RecentChatsEvent> _archiveChatsRemoteEvents() {
     Log.debug('_archiveChatsRemoteEvents()', '$runtimeType');
 
-    return _graphQlProvider.recentChatsTopEvents(1, archived: true).asyncExpand((
-      event,
-    ) async* {
-      Log.trace('_archiveChatsRemoteEvents(): ${event.data}', '$runtimeType');
+    // TODO: Remove when multiple [_graphQlProvider.recentChatsTopEvents] are
+    //       not interfering with each other.
+    return const Stream.empty();
 
-      var events = RecentChatsTopEvents$Subscription.fromJson(
-        event.data!,
-      ).recentChatsTopEvents;
+    // return _graphQlProvider.recentChatsTopEvents(1, archived: true).asyncExpand((
+    //   event,
+    // ) async* {
+    //   Log.trace('_archiveChatsRemoteEvents(): ${event.data}', '$runtimeType');
 
-      if (events.$$typename == 'SubscriptionInitialized') {
-        yield const RecentChatsTopInitialized();
-      } else if (events.$$typename == 'RecentChatsTop') {
-        var list =
-            (events
-                    as RecentChatsTopEvents$Subscription$RecentChatsTopEvents$RecentChatsTop)
-                .list;
-        yield RecentChatsTop(
-          list.map((e) => _chat(e.node)..chat.recentCursor = e.cursor).toList(),
-        );
-      } else if (events.$$typename == 'EventRecentChatsTopChatUpdated') {
-        var mixin =
-            events
-                as RecentChatsTopEvents$Subscription$RecentChatsTopEvents$EventRecentChatsTopChatUpdated;
-        yield EventRecentChatsUpdated(
-          _chat(mixin.chat.node)..chat.recentCursor = mixin.chat.cursor,
-        );
-      } else if (events.$$typename == 'EventRecentChatsTopChatRemoved') {
-        var mixin =
-            events
-                as RecentChatsTopEvents$Subscription$RecentChatsTopEvents$EventRecentChatsTopChatRemoved;
-        yield EventRecentChatsDeleted(mixin.chatId);
-      }
-    });
+    //   var events = RecentChatsTopEvents$Subscription.fromJson(
+    //     event.data!,
+    //   ).recentChatsTopEvents;
+
+    //   if (events.$$typename == 'SubscriptionInitialized') {
+    //     yield const RecentChatsTopInitialized();
+    //   } else if (events.$$typename == 'RecentChatsTop') {
+    //     var list =
+    //         (events
+    //                 as RecentChatsTopEvents$Subscription$RecentChatsTopEvents$RecentChatsTop)
+    //             .list;
+    //     yield RecentChatsTop(
+    //       list.map((e) => _chat(e.node)..chat.recentCursor = e.cursor).toList(),
+    //     );
+    //   } else if (events.$$typename == 'EventRecentChatsTopChatUpdated') {
+    //     var mixin =
+    //         events
+    //             as RecentChatsTopEvents$Subscription$RecentChatsTopEvents$EventRecentChatsTopChatUpdated;
+    //     yield EventRecentChatsUpdated(
+    //       _chat(mixin.chat.node)..chat.recentCursor = mixin.chat.cursor,
+    //     );
+    //   } else if (events.$$typename == 'EventRecentChatsTopChatRemoved') {
+    //     var mixin =
+    //         events
+    //             as RecentChatsTopEvents$Subscription$RecentChatsTopEvents$EventRecentChatsTopChatRemoved;
+    //     yield EventRecentChatsDeleted(mixin.chatId);
+    //   }
+    // });
   }
 
   /// Fetches [DtoChat]s ordered by their last updating time with pagination.
@@ -3445,7 +3449,7 @@ class ChatRepository extends IdentityDependency
             if (monolog.isLocal) {
               // If remote monolog doesn't exist and local one is not stored, then
               // create it.
-              await _createLocalDialog(me);
+              monolog = (await _createLocalDialog(me)).id;
             }
           }
         }

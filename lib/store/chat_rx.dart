@@ -457,7 +457,18 @@ class RxChatImpl extends RxChat {
     Log.debug('setDraft($text, $attachments, $repliesTo)', '$runtimeType($id)');
 
     await _draftGuard.protect(() async {
-      ChatMessage? draft = await _draftLocal.read(id);
+      ChatMessage? draft;
+
+      try {
+        draft = await _draftLocal.read(id);
+      } catch (e) {
+        Log.debug(
+          'setDraft() -> `_draftLocal.read($id)` failed -> $e',
+          '$runtimeType($id)',
+        );
+
+        // No-op?
+      }
 
       if (text == null && attachments.isEmpty && repliesTo.isEmpty) {
         if (draft != null) {

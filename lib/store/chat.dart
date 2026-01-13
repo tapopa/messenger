@@ -1379,6 +1379,11 @@ class ChatRepository extends IdentityDependency
       attachment.upload.value?.completeError(e);
       attachment.status.value = SendingStatus.error;
       attachment.progress.value = 0;
+
+      if (e is ConnectionException) {
+        return null;
+      }
+
       rethrow;
     }
   }
@@ -3380,6 +3385,12 @@ class ChatRepository extends IdentityDependency
   Future<void> _initMonolog() async {
     Log.debug('_initMonolog()', '$runtimeType');
 
+    if (me.isLocal) {
+      Log.debug('_initMonolog() -> `me.isLocal` is `true`', '$runtimeType');
+      monolog = (await _createLocalDialog(me)).id;
+      return;
+    }
+
     try {
       Log.debug('_initMonolog() -> _monologGuard.protect()...', '$runtimeType');
 
@@ -3467,6 +3478,12 @@ class ChatRepository extends IdentityDependency
     Log.debug('_initSupport()', '$runtimeType');
 
     if (_supportId.val.isEmpty) {
+      return;
+    }
+
+    if (me.isLocal) {
+      Log.debug('_initSupport() -> `me.isLocal` is `true`', '$runtimeType');
+      support = (await _createLocalDialog(_supportId)).id;
       return;
     }
 

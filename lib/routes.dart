@@ -532,6 +532,8 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
 
   /// [Navigator]'s pages generation based on the [_state].
   List<Page<dynamic>> get _pages {
+    Log.debug('get pages -> ${_state.routes}', '$runtimeType');
+
     if (_state.route == Routes.restart) {
       return [
         const MaterialPage(

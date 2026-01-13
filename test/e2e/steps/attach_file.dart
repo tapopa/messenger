@@ -39,7 +39,7 @@ final StepDefinitionGeneric
 attachFile = then2<String, AttachmentType, CustomWorld>(
   'I attach {string} {attachment}',
   (name, attachmentType, context) async {
-    await context.world.appDriver.waitForAppToSettle();
+    await context.world.appDriver.nativeDriver.pump(const Duration(seconds: 4));
 
     switch (attachmentType) {
       case AttachmentType.file:

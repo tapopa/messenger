@@ -26,6 +26,7 @@ import 'package:messenger/domain/model/user.dart';
 import 'package:messenger/provider/gql/base.dart';
 import 'package:messenger/provider/gql/exceptions.dart';
 import 'package:messenger/provider/gql/graphql.dart';
+import 'package:messenger/util/log.dart';
 import 'package:mutex/mutex.dart';
 
 /// Mocked [GraphQlProvider] containing the [MockGraphQlClient].
@@ -211,6 +212,11 @@ class MockGraphQlClient extends GraphQlClient {
     }
 
     if (throwException) {
+      Log.debug(
+        'query() -> throwing `ConnectionException` for $options',
+        '$runtimeType',
+      );
+
       connected.value = false;
       throw const ConnectionException('Mocked');
     }
@@ -229,6 +235,11 @@ class MockGraphQlClient extends GraphQlClient {
     }
 
     if (throwException) {
+      Log.debug(
+        'mutate() -> throwing `ConnectionException` for $options',
+        '$runtimeType',
+      );
+
       connected.value = false;
       throw const ConnectionException('Mocked');
     }
@@ -251,6 +262,11 @@ class MockGraphQlClient extends GraphQlClient {
     }
 
     if (throwException) {
+      Log.debug(
+        'post() -> throwing `ConnectionException` for $data',
+        '$runtimeType',
+      );
+
       connected.value = false;
       throw const ConnectionException('Mocked');
     }

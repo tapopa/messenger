@@ -24,6 +24,7 @@ Feature: Message editing
     And I am in chat with Bob
     And I wait for app to settle
 
+  @internet
   Scenario: User can change text of a failed message by editing it
     Given I do not have Internet
     When I fill `MessageField` field with "Hello"
@@ -37,6 +38,7 @@ Feature: Message editing
     And I tap `Send` button
     Then I wait until status of "Hi" message is sent
 
+  @internet
   Scenario: User can change attachments of a failed message by editing it
     Given I do not have Internet
     When I attach "test.txt" file

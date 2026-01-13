@@ -42,6 +42,7 @@ Feature: Chat attachments have correct sending status
     Then I wait until status of "test.jpg" attachment is sending
     And I wait until status of "test.jpg" attachment is sent
 
+  @internet
   Scenario: User resends file attachment
     Given I do not have Internet
     When I attach "test.txt" file
@@ -54,6 +55,7 @@ Feature: Chat attachments have correct sending status
     Then I wait until status of "test.txt" attachment is sending
     And I wait until status of "test.txt" attachment is sent
 
+  @internet
   Scenario: User resends image attachment
     Given I do not have Internet
     When I attach "test.jpg" image

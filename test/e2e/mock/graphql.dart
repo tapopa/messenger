@@ -212,8 +212,6 @@ class MockGraphQlClient extends GraphQlClient {
     }
 
     if (throwException) {
-      await Future.delayed(Duration(seconds: 3));
-
       Log.debug(
         'query() -> throwing `ConnectionException` for $options',
         '$runtimeType',
@@ -237,8 +235,6 @@ class MockGraphQlClient extends GraphQlClient {
     }
 
     if (throwException) {
-      await Future.delayed(Duration(seconds: 3));
-
       Log.debug(
         'mutate() -> throwing `ConnectionException` for $options',
         '$runtimeType',
@@ -266,8 +262,6 @@ class MockGraphQlClient extends GraphQlClient {
     }
 
     if (throwException) {
-      await Future.delayed(Duration(seconds: 3));
-
       Log.debug(
         'post() -> throwing `ConnectionException` for $data',
         '$runtimeType',

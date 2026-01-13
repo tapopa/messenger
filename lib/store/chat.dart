@@ -1379,11 +1379,6 @@ class ChatRepository extends IdentityDependency
       attachment.upload.value?.completeError(e);
       attachment.status.value = SendingStatus.error;
       attachment.progress.value = 0;
-
-      if (e is ConnectionException) {
-        return null;
-      }
-
       rethrow;
     }
   }

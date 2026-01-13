@@ -17,6 +17,7 @@
 
 Feature: Chat item searching
 
+  @internet
   Scenario: Chat item can be searched and jumped to
     Given user Alice
     And Alice has "Thoughts" group

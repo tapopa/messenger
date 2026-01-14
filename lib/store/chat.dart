@@ -1999,6 +1999,7 @@ class ChatRepository extends IdentityDependency
   Future<ChatId> useChatDirectLink(ChatDirectLinkSlug slug) async {
     Log.debug('useChatDirectLink($slug)', '$runtimeType');
 
+    // Account the transition.
     await _slugProvider.upsert(slug);
 
     if (me.isLocal) {

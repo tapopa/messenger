@@ -65,7 +65,7 @@ extension AnonUserConversion on AnonymousUserMixin {
     callCover: callCover?.toModel(),
     online: online?.$$typename == 'UserOnline',
     lastSeenAt: online?.$$typename == 'UserOffline'
-        ? (online as UserMixin$Online$UserOffline).lastSeenAt
+        ? (online as AnonymousUserMixin$Online$UserOffline).lastSeenAt
         : null,
     dialog: null,
     presenceIndex: presence?.index,

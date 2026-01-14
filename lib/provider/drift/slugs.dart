@@ -20,6 +20,7 @@ import 'dart:async';
 import 'package:drift/drift.dart';
 
 import '/domain/model/user.dart';
+import '/util/log.dart';
 import 'drift.dart';
 
 /// [ChatDirectLinkSlug] stored as an affiliate of this application.
@@ -38,6 +39,8 @@ class SlugDriftProvider extends DriftProviderBase {
 
   /// Creates or updates the provided [slug] in the database.
   Future<void> upsert(ChatDirectLinkSlug slug) async {
+    Log.debug('upsert($slug)', '$runtimeType');
+
     await safe((db) async {
       await db
           .into(db.slugs)
@@ -50,9 +53,13 @@ class SlugDriftProvider extends DriftProviderBase {
 
   /// Returns the [ChatDirectLinkSlug] stored in the database, if any.
   Future<ChatDirectLinkSlug?> read() async {
+    Log.debug('read()', '$runtimeType');
+
     return await safe<ChatDirectLinkSlug?>((db) async {
       final stmt = db.select(db.slugs)..where((u) => u.id.equals(0));
       final SlugRow? row = await stmt.getSingleOrNull();
+      Log.debug('read() -> $row', '$runtimeType');
+
       if (row == null) {
         return null;
       }
@@ -63,6 +70,8 @@ class SlugDriftProvider extends DriftProviderBase {
 
   /// Deletes the stored [ChatDirectLinkSlug] from the database.
   Future<void> delete() async {
+    Log.debug('delete()', '$runtimeType');
+
     await safe(
       (db) async => await db.delete(db.slugs).go(),
       tag: 'slugs.delete()',

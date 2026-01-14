@@ -26,7 +26,6 @@ import 'package:flutter/material.dart'
 import 'package:get/get.dart';
 import 'package:mutex/mutex.dart';
 
-import '/domain/model/chat.dart';
 import '/domain/model/my_user.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/session.dart';
@@ -1059,13 +1058,6 @@ class AuthService extends Dependency {
 
       await refreshSession(userId: userId);
     }
-  }
-
-  /// Uses the specified [ChatDirectLink] by the authenticated [MyUser] creating
-  /// a new [Chat]-dialog or joining an existing [Chat]-group.
-  Future<Chat> useChatDirectLink(ChatDirectLinkSlug slug) async {
-    Log.debug('useChatDirectLink($slug)', '$runtimeType');
-    return await _authRepository.useChatDirectLink(slug);
   }
 
   /// Puts the provided [creds] to [accounts].

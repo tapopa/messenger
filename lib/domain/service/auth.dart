@@ -180,6 +180,8 @@ class AuthService extends Dependency {
         return;
       }
 
+      previousId = userId;
+
       final List<IdentityAware> deps = Get.findAll<IdentityAware>();
       deps.sort((a, b) => a.order.compareTo(b.order));
 

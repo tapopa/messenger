@@ -1344,6 +1344,13 @@ class ChatRepository extends IdentityDependency
 
     if (attachment.upload.value?.isCompleted != false) {
       attachment.upload.value = Completer();
+      attachment.upload.value?.future.catchError((e) {
+        Log.debug(
+          'uploadAttachment($attachment) -> upload -> catchError($e)',
+          '$runtimeType',
+        );
+        return null;
+      });
     }
 
     if (attachment.read.value?.isCompleted != false) {
@@ -1358,13 +1365,13 @@ class ChatRepository extends IdentityDependency
       attachment.read.value?.complete(null);
       attachment.status.refresh();
 
-      var response = await _graphQlProvider.uploadAttachment(
+      final response = await _graphQlProvider.uploadAttachment(
         await attachment.file.toMultipartFile(),
         onSendProgress: (now, max) => attachment.progress.value = now / max,
         cancelToken: attachment.cancelToken,
       );
 
-      var model = response.attachment.toModel();
+      final model = response.attachment.toModel();
       attachment.id = model.id;
       attachment.filename = model.filename;
       attachment.original = model.original;
@@ -1372,12 +1379,18 @@ class ChatRepository extends IdentityDependency
       attachment.status.value = SendingStatus.sent;
       attachment.progress.value = 1;
       return model;
-    } on dio.DioException {
+    } on dio.DioException catch (e) {
       if (attachment.isCanceled) {
         attachment.upload.value?.complete(null);
         return null;
       }
 
+      if (attachment.read.value?.isCompleted == false) {
+        attachment.read.value?.complete(null);
+      }
+      attachment.upload.value?.completeError(e);
+      attachment.status.value = SendingStatus.error;
+      attachment.progress.value = 0;
       rethrow;
     } catch (e) {
       if (attachment.read.value?.isCompleted == false) {

@@ -1012,15 +1012,27 @@ class IntroductionController extends GetxController with IdentityAware {
   Future<void> _scheduleSupport() async {
     Log.debug('_scheduleSupport()', '$runtimeType');
 
+    if (isClosed || _authService.isClosed) {
+      return;
+    }
+
     final ChatId chatId = ChatId.local(UserId(Config.supportId));
 
     chat.value = await _chatService.get(chatId);
+
+    if (isClosed || _authService.isClosed) {
+      return;
+    }
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       Log.debug(
         '_scheduleSupport() -> postFrameCallback -> `${router.route}` vs `${router.initial?.uri.path}`',
         '$runtimeType',
       );
+
+      if (isClosed || _authService.isClosed) {
+        return;
+      }
 
       if (router.route == router.initial?.uri.path) {
         router.tab = HomeTab.chats;
@@ -1033,11 +1045,19 @@ class IntroductionController extends GetxController with IdentityAware {
   Future<void> _scheduleChat() async {
     Log.debug('_scheduleChat() -> $_slug', '$runtimeType');
 
+    if (isClosed || _authService.isClosed) {
+      return;
+    }
+
     if (_slug != null) {
       try {
         fetching.value = true;
 
         final ChatId chatId = await _chatService.useChatDirectLink(_slug!);
+        if (isClosed || _authService.isClosed) {
+          return;
+        }
+
         router.chat(chatId);
 
         chat.value = await _chatService.get(chatId);
@@ -1052,6 +1072,10 @@ class IntroductionController extends GetxController with IdentityAware {
             break;
 
           case UseChatDirectLinkErrorCode.unknownDirectLink:
+            if (isClosed || _authService.isClosed) {
+              return;
+            }
+
             await _scheduleSupport();
             break;
         }

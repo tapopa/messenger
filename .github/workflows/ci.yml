@@ -883,8 +883,8 @@ jobs:
           chromedriver --port=4444 --enable-chrome-logs \
                        --disable-dev-shm-usage \
                        2> >(grep -v -E '${{ join(fromJson(env.OMIT), '|') }}') &
-          make test.e2e start-app=yes device=web-server pull=yes no-cache=yes \
-               dart-env='SOCAPP_LOG_LEVEL=${{ steps.log.outputs.level }}'
+          make test.e2e start-app=no device=web-server pull=yes no-cache=yes \
+               dart-env='SOCAPP_LOG_LEVEL=${{ steps.log.outputs.level }}${{ secrets.E2E_DART_ENV }}'
         env:
           OMIT: |
             [

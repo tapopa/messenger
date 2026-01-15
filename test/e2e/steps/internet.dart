@@ -78,7 +78,6 @@ final StepDefinitionGeneric noInternetConnection = given<CustomWorld>(
   (context) => Future.sync(() {
     final GraphQlProvider provider = Get.find();
     if (provider is MockGraphQlProvider) {
-      provider.client.delay = 2.seconds;
       provider.client.throwException = true;
     }
   }),

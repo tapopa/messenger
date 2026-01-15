@@ -288,6 +288,7 @@ class MessageFieldController extends GetxController {
       BackButtonInterceptor.add(_onBack, ifNotYetIntercepted: true);
     }
 
+    // TODO?
     buttons = RxList(
       _toButtons(_settingsRepository?.applicationSettings.value?.pinnedActions),
     );

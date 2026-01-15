@@ -77,9 +77,8 @@ attachFile = then2<String, AttachmentType, CustomWorld>(
           try {
             await (controller.edit.value ?? controller.send)
                 .addPlatformAttachment(file);
-          } catch (e, stack) {
+          } catch (e) {
             Log.debug('attachFile -> caught `$e` and ignoring', 'E2E');
-            Log.debug('$stack', 'E2E');
           }
         }
         break;

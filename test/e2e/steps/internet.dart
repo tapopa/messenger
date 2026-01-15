@@ -84,8 +84,6 @@ final StepDefinitionGeneric noInternetConnection = given<CustomWorld>(
     PlatformUtils.client?.interceptors.removeWhere(
       (e) => e is DelayedInterceptor || e is DisabledInterceptor,
     );
-
-    (await PlatformUtils.dio).interceptors.add(DisabledInterceptor());
   },
 );
 

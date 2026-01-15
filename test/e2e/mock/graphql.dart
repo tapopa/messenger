@@ -254,7 +254,8 @@ class MockGraphQlClient extends GraphQlClient {
     }
 
     if (throwException) {
-      // No-op, since `DisabledInterceptor` will do the job here.
+      connected.value = false;
+      throw const ConnectionException('Mocked');
     }
 
     return super.post(

@@ -392,7 +392,7 @@ final FlutterTestConfiguration gherkinTestConfiguration =
         UsersParameter(),
         WidgetKeyParameter(),
       ]
-      ..tagExpression = 'not @disabled and @internet'
+      ..tagExpression = 'not @disabled and @only'
       // ..tagExpression = '@problem'
       ..createWorld = (config) => Future.sync(() => CustomWorld());
 

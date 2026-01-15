@@ -84,11 +84,15 @@ longPressMonolog = when<CustomWorld>('I long press monolog', (context) async {
     } catch (e) {
       Log.debug('longPressMonolog -> caught $e', 'E2E');
       Log.debug(
-        'longPressMonolog -> the whole chats list -> ${Get.find<ChatService>().paginated.values}',
+        'longPressMonolog -> the whole paginated list -> ${Get.find<ChatService>().paginated.values}',
+        'E2E',
+      );
+      Log.debug(
+        'longPressMonolog -> the whole chats list -> ${Get.find<ChatService>().chats.values}',
         'E2E',
       );
 
       return false;
     }
-  });
+  }, timeout: const Duration(seconds: 30));
 });

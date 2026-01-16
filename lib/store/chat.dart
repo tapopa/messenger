@@ -400,19 +400,27 @@ class ChatRepository extends IdentityDependency
 
     if (!me.isLocal) {
       _monologGuard.synchronized(() async {
-        if (isClosed) {
+        if (isClosed || this.me != me) {
           return;
         }
 
-        monolog = (await _graphQlProvider.getMonolog())?.id ?? ChatId.local(me);
-
-        if (isClosed) {
+        final monologMixin = await _graphQlProvider.getMonolog();
+        if (isClosed || this.me != me) {
           return;
         }
 
-        support =
-            (await _graphQlProvider.getDialog(UserId(Config.supportId)))?.id ??
-            ChatId.local(_supportId);
+        Log.debug('getMonolog() -> $monologMixin', '$runtimeType');
+        monolog = monologMixin?.id ?? monolog;
+
+        final supportMixin = await _graphQlProvider.getDialog(
+          UserId(Config.supportId),
+        );
+        if (isClosed || this.me != me) {
+          return;
+        }
+
+        Log.debug('getDialog(supportId) -> $supportMixin', '$runtimeType');
+        support = supportMixin?.id ?? support;
       }, timeout: const Duration(minutes: 1));
     }
 

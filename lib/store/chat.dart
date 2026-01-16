@@ -402,6 +402,7 @@ class ChatRepository extends IdentityDependency
     // during `_ensurePagination()` method, which invokes `_initSupport()` and
     // `_initMonolog()`.
     monolog = ChatId.local(me);
+    Log.debug('5 monolog = $monolog', '$runtimeType-for-E2E');
     support = ChatId.local(_supportId);
 
     if (!me.isLocal) {
@@ -417,6 +418,7 @@ class ChatRepository extends IdentityDependency
 
         Log.debug('getMonolog() -> $monologMixin', '$runtimeType');
         monolog = monologMixin?.id ?? monolog;
+        Log.debug('6 monolog = $monolog', '$runtimeType-for-E2E');
 
         final supportMixin = await _graphQlProvider.getDialog(
           UserId(Config.supportId),
@@ -604,6 +606,7 @@ class ChatRepository extends IdentityDependency
     final RxChatImpl chat = await _putEntry(chatData);
 
     if (!isClosed) {
+      Log.debug('7 monolog = $monolog', '$runtimeType-for-E2E');
       await _monologLocal.upsert(MonologKind.notes, monolog = chat.id);
     }
 
@@ -900,6 +903,7 @@ class ChatRepository extends IdentityDependency
         await remove(id);
 
         id = monologData.chat.value.id;
+        Log.debug('8 monolog = $monolog', '$runtimeType-for-E2E');
         await _monologLocal.upsert(MonologKind.notes, monolog = id);
       }
 
@@ -958,6 +962,7 @@ class ChatRepository extends IdentityDependency
         await remove(id);
 
         id = monologData.chat.value.id;
+        Log.debug('9 monolog = $monolog', '$runtimeType-for-E2E');
         await _monologLocal.upsert(MonologKind.notes, monolog = id);
       }
 
@@ -1885,6 +1890,7 @@ class ChatRepository extends IdentityDependency
           _monologLocal.upsert(MonologKind.notes, this.monolog = id),
           _putEntry(monolog, ignoreVersion: true),
         ]);
+        Log.debug('10 monolog = $monolog', '$runtimeType-for-E2E');
       } else if (id.isLocal) {
         final RxChatImpl? chat = await ensureRemoteDialog(id);
         if (chat != null) {
@@ -2446,6 +2452,7 @@ class ChatRepository extends IdentityDependency
             if (monolog.isLocal) {
               // Keep track of the [monolog]'s [isLocal] status.
               await _monologLocal.upsert(MonologKind.notes, monolog = chat.id);
+              Log.debug('11 monolog = $monolog', '$runtimeType-for-E2E');
             }
           }
 
@@ -2513,6 +2520,7 @@ class ChatRepository extends IdentityDependency
             if (monolog.isLocal) {
               // Keep track of the [monolog]'s [isLocal] status.
               await _monologLocal.upsert(MonologKind.notes, monolog = chat.id);
+              Log.debug('12 monolog = $monolog', '$runtimeType-for-E2E');
             }
           }
 
@@ -3443,6 +3451,7 @@ class ChatRepository extends IdentityDependency
     if (me.isLocal) {
       Log.debug('_initMonolog() -> `me.isLocal` is `true`', '$runtimeType');
       monolog = (await _createLocalDialog(me)).id;
+      Log.debug('0 monolog = $monolog', '$runtimeType-for-E2E');
       return;
     }
 
@@ -3489,6 +3498,7 @@ class ChatRepository extends IdentityDependency
               MonologKind.notes,
               monolog = (await _createLocalDialog(me)).id,
             );
+            Log.debug('1 monolog = $monolog', '$runtimeType-for-E2E');
           } else {
             // Check if there's a remote update (monolog could've been hidden)
             // before creating a local chat.
@@ -3508,14 +3518,17 @@ class ChatRepository extends IdentityDependency
                 MonologKind.notes,
                 monolog = maybeMonolog.id,
               );
+              Log.debug('2 monolog = $monolog', '$runtimeType-for-E2E');
             } else {
               monolog = stored;
+              Log.debug('3 monolog = $monolog', '$runtimeType-for-E2E');
             }
 
             if (monolog.isLocal) {
               // If remote monolog doesn't exist and local one is not stored, then
               // create it.
               monolog = (await _createLocalDialog(me)).id;
+              Log.debug('4 monolog = $monolog', '$runtimeType-for-E2E');
             }
           }
         }

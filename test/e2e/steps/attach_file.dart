@@ -59,11 +59,9 @@ attachFile = then2<String, AttachmentType, CustomWorld>(
             'E2E',
           );
 
-          try {
-            await controller.send.addPlatformAttachment(file);
-          } catch (e) {
-            Log.debug('attachFile -> caught `$e` and ignoring', 'E2E');
-          }
+          controller.send
+              .addPlatformAttachment(file)
+              .catchError((e) => Log.debug('attachFile -> `$e`', 'E2E'));
         } else {
           final controller = Get.find<ChatController>(
             tag: router.route.split('/').last,
@@ -74,12 +72,9 @@ attachFile = then2<String, AttachmentType, CustomWorld>(
             'E2E',
           );
 
-          try {
-            await (controller.edit.value ?? controller.send)
-                .addPlatformAttachment(file);
-          } catch (e) {
-            Log.debug('attachFile -> caught `$e` and ignoring', 'E2E');
-          }
+          (controller.edit.value ?? controller.send)
+              .addPlatformAttachment(file)
+              .catchError((e) => Log.debug('attachFile -> `$e`', 'E2E'));
         }
         break;
 
@@ -95,22 +90,17 @@ attachFile = then2<String, AttachmentType, CustomWorld>(
         if (Get.isRegistered<ChatForwardController>()) {
           final controller = Get.find<ChatForwardController>();
 
-          try {
-            await controller.send.addPlatformAttachment(image);
-          } catch (e) {
-            Log.debug('attachFile -> caught `$e` and ignoring', 'E2E');
-          }
+          controller.send
+              .addPlatformAttachment(image)
+              .catchError((e) => Log.debug('attachFile -> `$e`', 'E2E'));
         } else {
           final controller = Get.find<ChatController>(
             tag: router.route.split('/').last,
           );
 
-          try {
-            await (controller.edit.value ?? controller.send)
-                .addPlatformAttachment(image);
-          } catch (e) {
-            Log.debug('attachFile -> caught `$e` and ignoring', 'E2E');
-          }
+          (controller.edit.value ?? controller.send)
+              .addPlatformAttachment(image)
+              .catchError((e) => Log.debug('attachFile -> `$e`', 'E2E'));
         }
         break;
     }

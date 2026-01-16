@@ -366,7 +366,10 @@ class ChatRepository extends IdentityDependency
   void onIdentityChanged(UserId me) {
     super.onIdentityChanged(me);
 
-    Log.debug('onIdentityChanged($me) -> ${me.isLocal}', '$runtimeType');
+    Log.debug(
+      'onIdentityChanged($me) -> ${me.isLocal}',
+      '$runtimeType($hashCode)',
+    );
 
     paginated.clear();
     archived.clear();
@@ -390,7 +393,10 @@ class ChatRepository extends IdentityDependency
 
     status.value = RxStatus.loading();
 
-    Log.debug('onIdentityChanged() -> status is `loading`', '$runtimeType');
+    Log.debug(
+      'onIdentityChanged() -> status is `loading`',
+      '$runtimeType($hashCode)',
+    );
 
     // Set the initial values to local ones, however those will be redefined
     // during `_ensurePagination()` method, which invokes `_initSupport()` and

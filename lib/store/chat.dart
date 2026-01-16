@@ -3450,8 +3450,26 @@ class ChatRepository extends IdentityDependency
 
     if (me.isLocal) {
       Log.debug('_initMonolog() -> `me.isLocal` is `true`', '$runtimeType');
-      monolog = (await _createLocalDialog(me)).id;
-      Log.debug('0 monolog = $monolog', '$runtimeType-for-E2E');
+
+      final RxChatImpl entry = _add(
+        DtoChat(
+          Chat(
+            ChatId.local(me),
+            kindIndex: ChatKind.monolog.index,
+            updatedAt: PreciseDateTime.fromMicrosecondsSinceEpoch(0),
+          ),
+          ChatVersion('0'),
+          null,
+          null,
+          null,
+          null,
+        ),
+      );
+
+      if (me.isLocal) {
+        monolog = entry.id;
+        Log.debug('0 monolog = $monolog', '$runtimeType-for-E2E');
+      }
       return;
     }
 

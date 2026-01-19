@@ -15,6 +15,7 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_gherkin/flutter_gherkin.dart';
 import 'package:gherkin/gherkin.dart';
 import 'package:messenger/ui/widget/text_field.dart';
@@ -43,7 +44,7 @@ StepDefinitionGeneric submitField = when1<WidgetKey, FlutterWorld>(
       );
 
       if (isPresent && finder.tryEvaluate()) {
-        final input = await context.world.appDriver.widget(finder);
+        final Widget input = await context.world.appDriver.widget(finder);
         if (input is ReactiveTextField) {
           final ReactiveFieldState state = input.state;
           if (state is TextFieldState) {

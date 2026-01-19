@@ -2862,14 +2862,18 @@ class ChatRepository extends IdentityDependency
         '$runtimeType',
       );
 
-      await _initMonolog();
+      await _initMonolog().timeout(const Duration(seconds: 10));
 
       Log.debug(
         '_initRemotePagination() -> await _initMonolog()... done!',
         '$runtimeType',
       );
-    } catch (_) {
+    } catch (e) {
       // Still proceed with initialization.
+      Log.debug(
+        '_initRemotePagination() -> await _initMonolog()... failed with: $e',
+        '$runtimeType',
+      );
     }
 
     try {
@@ -2878,14 +2882,18 @@ class ChatRepository extends IdentityDependency
         '$runtimeType',
       );
 
-      await _initSupport();
+      await _initSupport().timeout(const Duration(seconds: 10));
 
       Log.debug(
         '_initRemotePagination() -> await _initSupport()... done!',
         '$runtimeType',
       );
-    } catch (_) {
+    } catch (e) {
       // Still proceed with initialization.
+      Log.debug(
+        '_initRemotePagination() -> await _initSupport()... failed with: $e',
+        '$runtimeType',
+      );
     }
 
     status.value = RxStatus.success();

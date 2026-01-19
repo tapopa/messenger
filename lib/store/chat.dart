@@ -99,6 +99,7 @@ import 'event/favorite_chat.dart';
 import 'model/chat.dart';
 import 'model/chat_member.dart';
 import 'model/page_info.dart';
+import 'model/user.dart';
 import 'paginated.dart';
 import 'pagination.dart';
 import 'pagination/drift.dart';
@@ -2034,10 +2035,12 @@ class ChatRepository extends IdentityDependency
 
     if (me.isLocal) {
       final query = await _graphQlProvider.searchLink(slug);
-      final User? user = query.searchUsers.edges.firstOrNull?.node.toModel();
+      final DtoUser? user = query.searchUsers.edges.firstOrNull?.node.toDto();
       if (user == null) {
         return support;
       }
+
+      _userRepo.put(user);
 
       // Store the transition only if [User] found by [slug] exists.
       await _slugProvider.upsert(slug);
@@ -2049,6 +2052,17 @@ class ChatRepository extends IdentityDependency
       () async => await _graphQlProvider.useChatDirectLink(slug),
       retryIf: (e) => e.isNetworkRelated,
       retries: 10,
+    );
+
+    _add(
+      DtoChat(
+        response.chat.toModel(),
+        response.chat.ver,
+        null,
+        null,
+        null,
+        null,
+      ),
     );
 
     return response.chat.id;
@@ -3476,6 +3490,7 @@ class ChatRepository extends IdentityDependency
 
       if (me.isLocal) {
         monolog = entry.id;
+        paginated[monolog] = entry;
         Log.debug('0 monolog = $monolog', '$runtimeType-for-E2E');
       }
       return;

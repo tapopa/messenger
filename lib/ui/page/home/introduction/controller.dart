@@ -429,6 +429,9 @@ class IntroductionController extends GetxController with IdentityAware {
   /// and [resetUserPassword].
   UserLogin? _recoveryLogin;
 
+  /// [Worker] reacting on [RouterState.routes] changes to [_scheduleChat].
+  Worker? _routesWorker;
+
   /// Returns the [UserId] of the currently authenticated account.
   UserId get me => _authService.userId;
 
@@ -484,6 +487,25 @@ class IntroductionController extends GetxController with IdentityAware {
 
     opacity.value = _authService.userId.isLocal ? 1 : 0;
 
+    String previous = router.route;
+    _routesWorker = ever(router.routes, (routes) {
+      final String last = routes.lastOrNull ?? '';
+
+      if (last != previous) {
+        Log.debug('_routesWorker -> `last` is `$last`', '$runtimeType');
+        if (last.startsWith(Routes.chatDirectLink)) {
+          final String slug = last.replaceFirst(Routes.chatDirectLink, '');
+
+          if (slug.isNotEmpty) {
+            _slug = ChatDirectLinkSlug(slug);
+            _scheduleChat(route: last);
+          }
+        }
+
+        previous = last;
+      }
+    });
+
     super.onInit();
   }
 
@@ -491,6 +513,7 @@ class IntroductionController extends GetxController with IdentityAware {
   void onClose() {
     super.onClose();
     _opacityWorker?.dispose();
+    _routesWorker?.dispose();
   }
 
   @override
@@ -1009,10 +1032,10 @@ class IntroductionController extends GetxController with IdentityAware {
   }
 
   /// Schedules [router] to go to a [Chat]-support.
-  Future<void> _scheduleSupport() async {
+  Future<void> _scheduleSupport({bool force = false, String? route}) async {
     Log.debug('_scheduleSupport()', '$runtimeType');
 
-    if (!me.isLocal) {
+    if (!force && !me.isLocal) {
       Log.debug('_scheduleSupport() -> `$me` is not local', '$runtimeType');
       return;
     }
@@ -1031,7 +1054,7 @@ class IntroductionController extends GetxController with IdentityAware {
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       Log.debug(
-        '_scheduleSupport() -> postFrameCallback -> `${router.route}` vs `${router.initial?.uri.path}`',
+        '_scheduleSupport() -> postFrameCallback -> `${router.route}` vs `${route ?? router.initial?.uri.path}`',
         '$runtimeType',
       );
 
@@ -1039,7 +1062,7 @@ class IntroductionController extends GetxController with IdentityAware {
         return;
       }
 
-      if (router.route == router.initial?.uri.path) {
+      if (router.route == (route ?? router.initial?.uri.path)) {
         router.tab = HomeTab.chats;
         router.chat(chatId);
       }
@@ -1047,8 +1070,8 @@ class IntroductionController extends GetxController with IdentityAware {
   }
 
   /// Schedules [_chatService] to fetch [_slug] to a [chat], if any.
-  Future<void> _scheduleChat() async {
-    Log.debug('_scheduleChat() -> $_slug', '$runtimeType');
+  Future<void> _scheduleChat({String? route}) async {
+    Log.debug('_scheduleChat($route) -> $_slug', '$runtimeType');
 
     if (isClosed || _authService.isClosed) {
       return;
@@ -1081,7 +1104,7 @@ class IntroductionController extends GetxController with IdentityAware {
               return;
             }
 
-            await _scheduleSupport();
+            await _scheduleSupport(force: true, route: route);
             break;
         }
       } catch (e) {

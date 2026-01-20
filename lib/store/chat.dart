@@ -2876,7 +2876,7 @@ class ChatRepository extends IdentityDependency
         '$runtimeType',
       );
 
-      await _initMonolog().timeout(const Duration(seconds: 10));
+      await _initMonolog();
 
       Log.debug(
         '_initRemotePagination() -> await _initMonolog()... done!',
@@ -2896,7 +2896,7 @@ class ChatRepository extends IdentityDependency
         '$runtimeType',
       );
 
-      await _initSupport().timeout(const Duration(seconds: 10));
+      await _initSupport();
 
       Log.debug(
         '_initRemotePagination() -> await _initSupport()... done!',

@@ -248,4 +248,8 @@ class LocalAttachment extends Attachment {
   @override
   Map<String, dynamic> toJson() =>
       _$LocalAttachmentToJson(this)..['runtimeType'] = 'LocalAttachment';
+
+  @override
+  String toString() =>
+      'LocalAttachment(name: ${file.name} vs filename($filename), size: ${file.size}, id: $id, width: ${file.dimensions.value?.width.round()}, height: ${file.dimensions.value?.height.round()}, status: ${status.value.name}), progress: ${progress.value}';
 }

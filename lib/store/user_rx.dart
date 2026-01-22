@@ -123,8 +123,12 @@ class RxUserImpl extends RxUser {
   /// invokes [_initRemoteSubscription], and when [updates] aren't listened,
   /// cancels it.
   late final StreamController<void> _controller = StreamController.broadcast(
-    onListen: _initRemoteSubscription,
+    onListen: () async {
+      Log.debug('get updates -> onListen()', '$runtimeType($id)');
+      await _initRemoteSubscription();
+    },
     onCancel: () {
+      Log.debug('get updates -> onCancel()', '$runtimeType($id)');
       _remoteSubscription?.close(immediate: true);
       _remoteSubscription = null;
     },
@@ -172,6 +176,12 @@ class RxUserImpl extends RxUser {
     _lastSeenTimer?.cancel();
     _worker?.dispose();
     _localSubscription?.cancel();
+  }
+
+  /// Applies to provided [events] to this [RxUserImpl].
+  Future<void> apply(UserEvents events) async {
+    Log.debug('apply($events)', '$runtimeType');
+    await _userEvent(events);
   }
 
   /// Initializes [UserRepository.userEvents] subscription.

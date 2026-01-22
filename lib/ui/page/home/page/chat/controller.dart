@@ -599,7 +599,17 @@ class ChatController extends GetxController with IdentityAware {
 
         _fragment = fragment;
 
+        Log.debug(
+          '_searchDebounce("$query") -> await fragment.around()...',
+          '$runtimeType',
+        );
+
         await _fragment!.around();
+
+        Log.debug(
+          '_searchDebounce("$query") -> await fragment.around()... done! Elements are -> ${_fragment!.items.values}',
+          '$runtimeType',
+        );
 
         elements.clear();
         _fragment!.items.values.forEach(_add);
@@ -2626,6 +2636,9 @@ class ChatMessageElement extends ListElement {
 
   /// [ChatItem] of this [ChatMessageElement].
   final Rx<ChatItem> item;
+
+  @override
+  String toString() => 'ChatMessageElement($id, ${item.value})';
 }
 
 /// [ListElement] representing a [ChatCall].
@@ -2635,6 +2648,9 @@ class ChatCallElement extends ListElement {
 
   /// [ChatItem] of this [ChatCallElement].
   final Rx<ChatItem> item;
+
+  @override
+  String toString() => 'ChatCallElement($id, ${item.value})';
 }
 
 /// [ListElement] representing a [ChatInfo].
@@ -2644,6 +2660,9 @@ class ChatInfoElement extends ListElement {
 
   /// [ChatItem] of this [ChatInfoElement].
   final Rx<ChatItem> item;
+
+  @override
+  String toString() => 'ChatInfoElement($id, ${item.value})';
 }
 
 /// [ListElement] representing a [ChatForward].
@@ -2665,18 +2684,28 @@ class ChatForwardElement extends ListElement {
 
   /// [UserId] being an author of the [forwards].
   final UserId authorId;
+
+  @override
+  String toString() =>
+      'ChatForwardElement($id, note(${note.value?.value}) -> ${forwards.map((e) => e.value)})';
 }
 
 /// [ListElement] representing a [DateTime] label.
 class DateTimeElement extends ListElement {
   DateTimeElement(PreciseDateTime at)
     : super(ListElementId(at, const ChatItemId('0')));
+
+  @override
+  String toString() => 'DateTimeElement($id)';
 }
 
 /// [ListElement] indicating unread [ChatItem]s below.
 class UnreadMessagesElement extends ListElement {
   UnreadMessagesElement(PreciseDateTime at)
     : super(ListElementId(at, const ChatItemId('1')));
+
+  @override
+  String toString() => 'UnreadMessagesElement($id)';
 }
 
 /// [ListElement] representing a [CustomProgressIndicator].
@@ -2696,6 +2725,9 @@ class LoaderElement extends ListElement {
           const ChatItemId('0'),
         ),
       );
+
+  @override
+  String toString() => 'LoaderElement($id)';
 }
 
 /// Extension adding [ChatView] related wrappers and helpers.

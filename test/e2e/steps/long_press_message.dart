@@ -104,24 +104,25 @@ final StepDefinitionGeneric longPressMessageByText = then1<String, CustomWorld>(
 /// Examples:
 /// - Then I long press message with "test.jpg"
 /// - Then I long press message with "test.txt"
-final StepDefinitionGeneric longPressMessageByAttachment =
-    then1<String, CustomWorld>('I long press message with {string}', (
-      name,
-      context,
-    ) async {
-      await context.world.appDriver.waitForAppToSettle();
+final StepDefinitionGeneric
+longPressMessageByAttachment = then1<String, CustomWorld>(
+  'I long press message with {string}',
+  (name, context) async {
+    await context.world.appDriver.nativeDriver.pump(const Duration(seconds: 2));
 
-      final RxChat? chat =
-          Get.find<ChatService>().chats[ChatId(router.route.split('/').last)];
-      final ChatMessage message = chat!.messages
-          .map((e) => e.value)
-          .whereType<ChatMessage>()
-          .firstWhere((e) => e.attachments.any((a) => a.filename == name));
+    final RxChat? chat =
+        Get.find<ChatService>().chats[ChatId(router.route.split('/').last)];
+    final ChatMessage message = chat!.messages
+        .map((e) => e.value)
+        .whereType<ChatMessage>()
+        .firstWhere((e) => e.attachments.any((a) => a.filename == name));
 
-      final Finder finder = context.world.appDriver.findByKeySkipOffstage(
-        'Message_${message.id}',
-      );
+    final Finder finder = context.world.appDriver.findByKeySkipOffstage(
+      'Message_${message.id}',
+    );
 
-      await context.world.appDriver.nativeDriver.longPress(finder);
-      await context.world.appDriver.waitForAppToSettle();
-    });
+    await context.world.appDriver.nativeDriver.longPress(finder);
+
+    await context.world.appDriver.nativeDriver.pump(const Duration(seconds: 2));
+  },
+);

@@ -76,13 +76,15 @@ class UserView extends StatelessWidget {
             );
           }
 
+          final BlocklistRecord? isBlocked = c.user?.user.value.isBlocked;
+
           final List<Widget> blocks = [
             const SizedBox(height: 8),
-            if (c.isBlocked != null)
+            if (isBlocked != null)
               Block(
                 title: 'label_user_is_blocked'.l10n,
                 children: [
-                  BlocklistRecordWidget(c.isBlocked!, onUnblock: c.unblock),
+                  BlocklistRecordWidget(isBlocked, onUnblock: c.unblock),
                 ],
               ),
             _name(c, context, index: c.isBlocked != null ? 2 : 1),

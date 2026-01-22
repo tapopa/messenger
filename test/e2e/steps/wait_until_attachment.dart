@@ -15,7 +15,6 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-import 'package:flutter_gherkin/flutter_gherkin.dart';
 import 'package:flutter_gherkin/src/flutter/parameters/existence_parameter.dart';
 import 'package:get/get.dart';
 import 'package:gherkin/gherkin.dart' hide Attachment;
@@ -24,6 +23,9 @@ import 'package:messenger/domain/model/chat_item.dart';
 import 'package:messenger/domain/repository/chat.dart';
 import 'package:messenger/domain/service/chat.dart';
 import 'package:messenger/routes.dart';
+import 'package:messenger/util/log.dart';
+
+import '../world/custom_world.dart';
 
 /// Waits until the [Attachment] with provided [Attachment.filename] is present
 /// or absent.
@@ -31,28 +33,43 @@ import 'package:messenger/routes.dart';
 /// Examples:
 /// - Then I wait until attachment "test.txt" is absent
 /// - Then I wait until attachment "test.jpg" is present
-final StepDefinitionGeneric untilAttachmentExists =
-    then2<String, Existence, FlutterWorld>(
-      'I wait until attachment {string} is {existence}',
-      (filename, existence, context) async {
-        await context.world.appDriver.waitUntil(() async {
-          await context.world.appDriver.waitForAppToSettle();
+final StepDefinitionGeneric
+untilAttachmentExists = then2<String, Existence, CustomWorld>(
+  'I wait until attachment {string} is {existence}',
+  (filename, existence, context) async {
+    await context.world.appDriver.waitUntil(() async {
+      await context.world.appDriver.nativeDriver.pump(
+        const Duration(seconds: 2),
+      );
 
-          final RxChat? chat = Get.find<ChatService>()
-              .chats[ChatId(router.route.split('/').last)];
+      final RxChat? chat =
+          Get.find<ChatService>().chats[ChatId(router.route.split('/').last)];
 
-          bool exist = chat!.messages
-              .map((m) => m.value)
-              .whereType<ChatMessage>()
-              .any((m) => m.attachments.any((a) => a.filename == filename));
+      Log.debug('untilAttachmentExists -> chat is $chat');
 
-          switch (existence) {
-            case Existence.present:
-              return exist;
+      final Iterable<ChatItem>? items = chat?.messages.map((m) => m.value);
+      final Iterable<ChatMessage>? messages = items?.whereType<ChatMessage>();
 
-            case Existence.absent:
-              return !exist;
-          }
-        }, timeout: const Duration(seconds: 30));
-      },
-    );
+      final bool exist =
+          messages?.any(
+            (m) => m.attachments.any((a) => a.filename == filename),
+          ) ==
+          true;
+
+      Log.debug('untilAttachmentExists -> items are: $items', 'E2E');
+      Log.debug('untilAttachmentExists -> messages are: $messages', 'E2E');
+      Log.debug(
+        'untilAttachmentExists -> any with `$filename` filename -> $exist',
+        'E2E',
+      );
+
+      switch (existence) {
+        case Existence.present:
+          return exist;
+
+        case Existence.absent:
+          return !exist;
+      }
+    }, timeout: const Duration(seconds: 30));
+  },
+);

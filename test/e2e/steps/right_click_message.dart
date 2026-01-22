@@ -15,6 +15,7 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
@@ -24,6 +25,7 @@ import 'package:messenger/domain/model/chat_item.dart';
 import 'package:messenger/domain/repository/chat.dart';
 import 'package:messenger/domain/service/chat.dart';
 import 'package:messenger/routes.dart';
+import 'package:messenger/util/log.dart';
 
 import '../configuration.dart';
 import '../world/custom_world.dart';
@@ -37,31 +39,58 @@ final StepDefinitionGeneric rightClickMessage = when1<String, CustomWorld>(
   RegExp(r'I right click {string} message'),
   (text, context) async {
     await context.world.appDriver.waitUntil(() async {
-      await context.world.appDriver.waitForAppToSettle();
+      await context.world.appDriver.nativeDriver.pump(
+        const Duration(seconds: 2),
+      );
 
       try {
-        RxChat? chat =
+        final RxChat? chat =
             Get.find<ChatService>().chats[ChatId(router.route.split('/').last)];
-        ChatMessage message = chat!.messages
-            .map((e) => e.value)
-            .whereType<ChatMessage>()
-            .firstWhere((e) => e.text?.val == text);
 
-        Finder finder = context.world.appDriver.findByKeySkipOffstage(
+        Log.debug('rightClickMessage("$text") -> $chat', 'E2E');
+
+        final Iterable<ChatMessage>? messages = chat?.messages
+            .map((e) => e.value)
+            .whereType<ChatMessage>();
+        final ChatMessage? message = messages?.firstWhereOrNull(
+          (e) => e.text?.val == text,
+        );
+
+        Log.debug('rightClickMessage("$text") -> message is $message', 'E2E');
+
+        if (message == null) {
+          Log.debug(
+            'rightClickMessage("$text") -> message is `null`, thus the whole messages -> $messages',
+            'E2E',
+          );
+
+          return false;
+        }
+
+        final Finder finder = context.world.appDriver.findByKeySkipOffstage(
           'Message_${message.id}',
         );
 
-        await context.world.appDriver.waitForAppToSettle();
+        Log.debug('rightClickMessage("$text") -> finder is $finder', 'E2E');
+
+        await context.world.appDriver.nativeDriver.pump(
+          const Duration(seconds: 2),
+        );
+
+        Log.debug('rightClickMessage("$text") -> await tap()...', 'E2E');
         await context.world.appDriver.nativeDriver.tap(
           finder,
           buttons: kSecondaryMouseButton,
         );
+        Log.debug('rightClickMessage("$text") -> await tap()... done!', 'E2E');
 
-        await context.world.appDriver.waitForAppToSettle();
+        await context.world.appDriver.nativeDriver.pump(
+          const Duration(seconds: 2),
+        );
 
         return true;
-      } catch (_) {
-        // No-op.
+      } catch (e) {
+        Log.debug('rightClickMessage -> caught $e', 'E2E');
       }
 
       return false;

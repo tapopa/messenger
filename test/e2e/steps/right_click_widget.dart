@@ -40,39 +40,52 @@ final StepDefinitionGeneric rightClickWidget = when1<WidgetKey, CustomWorld>(
     r'I right click {key} (?:button|element|label|icon|field|text|widget)$',
   ),
   (key, context) async {
-    await context.world.appDriver.waitUntil(() async {
-      await context.world.appDriver.nativeDriver.pump(
-        const Duration(seconds: 2),
-      );
-
-      try {
-        final finder = context.world.appDriver
-            .findByKeySkipOffstage(key.name)
-            .first;
-
-        Log.debug('rightClickWidget -> `${key.name}` is $finder', 'E2E');
-
+    await context.world.appDriver.waitUntil(
+      () async {
         await context.world.appDriver.nativeDriver.pump(
           const Duration(seconds: 2),
         );
 
-        Log.debug('rightClickWidget -> await tap()...', 'E2E');
-        await context.world.appDriver.nativeDriver.tap(
-          finder,
-          buttons: kSecondaryMouseButton,
-        );
-        Log.debug('rightClickWidget -> await tap()... done', 'E2E');
+        try {
+          final finder = context.world.appDriver.findByKeySkipOffstage(
+            key.name,
+          );
 
-        await context.world.appDriver.nativeDriver.pump(
-          const Duration(seconds: 2),
-        );
+          Log.debug('rightClickWidget -> `${key.name}` is $finder', 'E2E');
 
-        return true;
-      } catch (_) {
-        // No-op.
-      }
+          if (finder.evaluate().isEmpty) {
+            Log.debug(
+              'rightClickWidget -> `${key.name}` evaluate() is empty...',
+              'E2E',
+            );
 
-      return false;
-    }, timeout: const Duration(seconds: 30));
+            return false;
+          }
+
+          await context.world.appDriver.nativeDriver.pump(
+            const Duration(seconds: 2),
+          );
+
+          Log.debug('rightClickWidget -> await tap()...', 'E2E');
+          await context.world.appDriver.nativeDriver.tap(
+            finder,
+            buttons: kSecondaryMouseButton,
+          );
+          Log.debug('rightClickWidget -> await tap()... done', 'E2E');
+
+          await context.world.appDriver.nativeDriver.pump(
+            const Duration(seconds: 2),
+          );
+
+          return true;
+        } catch (e) {
+          Log.debug('rightClickWidget -> `${key.name}` caught $e', 'E2E');
+        }
+
+        return false;
+      },
+      timeout: const Duration(seconds: 30),
+      pollInterval: const Duration(seconds: 2),
+    );
   },
 );

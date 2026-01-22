@@ -26,7 +26,6 @@ Feature: Local chats
     And Bob sees no dialog with me in recent chats
     And I pause for 5 seconds
 
-  @internet
   Scenario: Message can be posted in local dialog
     When I fill `MessageField` field with "Hello, my local friend"
     And I tap `Send` button

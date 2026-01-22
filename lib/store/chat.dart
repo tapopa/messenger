@@ -1715,6 +1715,11 @@ class ChatRepository extends IdentityDependency
           : null,
     );
 
+    Log.debug(
+      'messages($id, $first, $after, $last, $before, onlyAttachments: $onlyAttachments) -> returned $query',
+      '$runtimeType',
+    );
+
     return Page(
       RxList(query.chat!.items.edges.map((e) => e.toDto()).toList()),
       query.chat!.items.pageInfo.toModel((c) => ChatItemsCursor(c)),

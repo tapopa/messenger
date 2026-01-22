@@ -236,6 +236,16 @@ class MockGraphQlClient extends GraphQlClient {
       await Future.delayed(delay!);
     }
 
+    if (throwException) {
+      Log.debug(
+        'query() -> throwing `ConnectionException` for $options',
+        '$runtimeType',
+      );
+
+      connected.value = false;
+      throw const ConnectionException('Mocked');
+    }
+
     return super.mutate(options, raw: raw, onException: onException);
   }
 

@@ -209,7 +209,7 @@ class UserRepository extends IdentityDependency
   Future<void> blockUser(UserId id, BlocklistReason? reason) async {
     Log.debug('blockUser($id, $reason)', '$runtimeType');
 
-    final RxUser? user = users[id];
+    final RxUserImpl? user = users[id];
     final BlocklistRecord? record = user?.user.value.isBlocked;
 
     if (user?.user.value.isBlocked == null) {
@@ -225,7 +225,22 @@ class UserRepository extends IdentityDependency
       try {
         await Backoff.run(
           () async {
-            await _graphQlProvider.blockUser(id, reason);
+            final mixin = await _graphQlProvider.blockUser(id, reason);
+            Log.debug(
+              'blockUser($id, $reason) -> mixin is `$mixin`',
+              '$runtimeType',
+            );
+
+            if (mixin != null) {
+              await user?.apply(
+                UserEventsBlocklistEventsEvent(
+                  BlocklistEventsVersioned(
+                    mixin.events.map((e) => _blocklistEvent(e)).toList(),
+                    mixin.blocklistVer,
+                  ),
+                ),
+              );
+            }
           },
           retryIf: (e) => e.isNetworkRelated,
           retries: 10,

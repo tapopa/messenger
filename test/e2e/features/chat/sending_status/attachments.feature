@@ -46,8 +46,6 @@ Feature: Chat attachments have correct sending status
     And I wait until status of "test.jpg" attachment is sent
 
   @failing
-  @failing
-  @failing
   Scenario: User resends file attachment
     Given I do not have Internet
     When I attach "test.txt" file

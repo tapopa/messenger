@@ -19,7 +19,6 @@
 
 Feature: Connection status
 
-  @internet
   Scenario: Connection status is properly displayed
     Given I am guest
     And I wait for app to settle

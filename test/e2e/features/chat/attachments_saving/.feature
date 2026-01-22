@@ -36,7 +36,6 @@ Feature: Attachments downloading
     Then I wait until "test.txt" file is downloading
     And I wait until "test.txt" file is downloaded
 
-  @internet
   Scenario: Attachment download can be canceled
     When Bob sends "test.txt" attachment to me
     Then I wait until "test.txt" file is not downloaded

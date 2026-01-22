@@ -1534,6 +1534,11 @@ class RxChatImpl extends RxChat {
                       withText: text,
                     );
 
+                Log.debug(
+                  '_searchItems("$text") -> found ${reversed.edges.map((e) => e.toJson())}',
+                  '$runtimeType($id)',
+                );
+
                 return reversed;
               },
             ),

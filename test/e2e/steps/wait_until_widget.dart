@@ -17,7 +17,15 @@
 
 import 'package:flutter_gherkin/flutter_gherkin.dart';
 import 'package:flutter_gherkin/src/flutter/parameters/existence_parameter.dart';
+import 'package:get/get.dart';
 import 'package:gherkin/gherkin.dart';
+import 'package:messenger/domain/model/chat.dart';
+import 'package:messenger/domain/model/chat_item.dart';
+import 'package:messenger/domain/repository/chat.dart';
+import 'package:messenger/domain/service/chat.dart';
+import 'package:messenger/routes.dart';
+import 'package:messenger/ui/page/home/page/chat/controller.dart';
+import 'package:messenger/util/get.dart';
 import 'package:messenger/util/log.dart';
 
 import '../configuration.dart';
@@ -36,6 +44,29 @@ waitUntilKeyExists = then2<WidgetKey, Existence, FlutterWorld>(
       final finder = context.world.appDriver.findByKeySkipOffstage(key.name);
 
       Log.debug('waitUntilKeyExists -> finder for `$key` is $finder', 'E2E');
+
+      if (key == WidgetKey.NoMessages) {
+        final ChatId chatId = ChatId(router.route.split('/').last);
+        final RxChat? chat = Get.find<ChatService>().chats[chatId];
+
+        Log.debug(
+          'waitUntilKeyExists -> looking for `NoMessage`s, thus the current `Chat` is probably `$chatId` -> $chat',
+        );
+
+        final RxChat? paginated = Get.find<ChatService>().paginated[chatId];
+        Log.debug(
+          'waitUntilKeyExists -> looking for `NoMessage`s, the paginated one -> $paginated',
+        );
+
+        final Iterable<ChatItem>? items = chat?.messages.map((e) => e.value);
+        Log.debug('waitUntilKeyExists -> the items -> $items');
+
+        final ChatController? controller = Get.findOrNull<ChatController>();
+        Log.debug('waitUntilKeyExists -> the controller -> $controller');
+        Log.debug(
+          'waitUntilKeyExists -> the elements in controller -> ${controller?.elements.values}',
+        );
+      }
 
       return switch (existence) {
         Existence.absent => finder.evaluate().isEmpty,

@@ -780,7 +780,7 @@ class TextFieldState extends ReactiveFieldState {
   @override
   void submit() {
     Log.debug(
-      'submit() -> ${editable.isTrue} && ${submittable.isTrue} -> `${controller.text}`',
+      'submit() -> ${editable.isTrue} && ${submittable.isTrue} -> `${controller.text}` vs `_previousSubmit` ($_previousSubmit)',
       '$runtimeType',
     );
 

@@ -1068,7 +1068,10 @@ class AuthService extends Dependency {
 
     final Rx<Credentials>? stored = accounts[creds.userId];
     if (stored == null) {
-      accounts[creds.userId] = Rx(creds);
+      // Don't store local `Credentials` to the accounts list.
+      if (!creds.userId.isLocal) {
+        accounts[creds.userId] = Rx(creds);
+      }
     } else {
       stored.value = creds;
     }

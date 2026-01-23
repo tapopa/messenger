@@ -837,7 +837,10 @@ class MyUserRepository extends IdentityDependency
     Log.debug('_initProfiles()', '$runtimeType');
 
     for (final DtoMyUser u in await _driftMyUser.accounts()) {
-      profiles[u.value.id] = Rx(u.value);
+      // Don't account local IDs as separate profiles.
+      if (!u.id.isLocal) {
+        profiles[u.value.id] = Rx(u.value);
+      }
     }
   }
 
@@ -1072,7 +1075,10 @@ class MyUserRepository extends IdentityDependency
 
         final Rx<MyUser>? existing = profiles[e.id];
         if (existing == null) {
-          profiles[e.id] = Rx(user);
+          // Don't account local IDs as separate profiles.
+          if (!e.id.isLocal) {
+            profiles[e.id] = Rx(user);
+          }
         } else {
           existing.value = user;
         }

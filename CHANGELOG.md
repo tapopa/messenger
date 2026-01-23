@@ -6,6 +6,22 @@ All user visible changes to this project will be documented in this file. This p
 
 
 
+## [0.3.0] · 2026-??-??
+[0.3.0]: /../../tree/v0.3.0
+
+[Diff](/../../compare/v0.2.0...v0.3.0) | [Milestone](/../../milestone/3)
+
+### Fixed
+
+- UI:
+    - Login modal:
+        - Invalid accounts being displayed in accounts list. ([#16])
+
+[#16]: /../../pull/16
+
+
+
+
 ## [0.2.0] · 2026-01-21
 [0.2.0]: /../../tree/v0.2.0
 

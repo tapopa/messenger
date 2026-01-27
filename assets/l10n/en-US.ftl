@@ -40,7 +40,6 @@ btn_add_account_with_desc =
     Add
     account
 btn_add_funds = Top up wallet
-btn_add_funds_subtitle = PayPal
 btn_add_participant = Add member
 btn_add_participant_desc =
     Add

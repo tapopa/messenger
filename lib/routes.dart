@@ -111,7 +111,6 @@ class Routes {
   static const chatInfo = '/info';
   static const chats = '/chats';
   static const contacts = '/contacts';
-  static const deposit = '/wallet/deposit';
   static const erase = '/erase';
   static const gallery = '/gallery';
   static const home = '/';
@@ -1374,9 +1373,6 @@ extension RouteLinks on RouterState {
   /// Changes router location to the [Routes.walletTransactions] page.
   void walletTransactions({bool push = false}) =>
       (push ? this.push : go)(Routes.walletTransactions);
-
-  /// Changes router location to the [Routes.deposit] page.
-  void deposit({bool push = false}) => (push ? this.push : go)(Routes.deposit);
 
   /// Changes router location to the [Routes.deposit] page.
   void support({bool push = false}) => chat(

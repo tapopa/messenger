@@ -191,10 +191,6 @@ class _HomeViewState extends State<HomeView> {
 
                         if (!context.isNarrow) {
                           switch (router.tab) {
-                            case HomeTab.wallet:
-                              router.deposit();
-                              break;
-
                             case HomeTab.menu:
                               router.me();
                               break;

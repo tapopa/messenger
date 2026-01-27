@@ -6,6 +6,21 @@ All user visible changes to this project will be documented in this file. This p
 
 
 
+## [0.3.0] · 2026-??-??
+[0.3.0]: /../../tree/v0.3.0
+
+[Diff](/../../compare/v0.2.1...v0.3.0) | [Milestone](/../../milestone/4)
+
+### Changed
+
+- UI:
+    - Redesigned deposit page on desktop to be only in tab. ([#18])
+
+[#18]: /../../pull/18
+
+
+
+
 ## [0.2.1] · 2026-01-27
 [0.2.1]: /../../tree/v0.2.1
 

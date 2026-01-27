@@ -1,3 +1,1 @@
-- Added reconnecting notification when network changes during a call.
-- Added collect logs button to notes and support chat.
 - Bug fixes and performance improvements.

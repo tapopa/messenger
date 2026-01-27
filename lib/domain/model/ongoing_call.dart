@@ -367,6 +367,9 @@ class OngoingCall {
   /// removed.
   void Function()? _onRemove;
 
+  /// [Mutex] guarding access to [setRemoteVideoEnabled].
+  final Mutex _videoGuard = Mutex();
+
   /// [ChatItemId] of this [OngoingCall].
   ChatItemId? get callChatItemId => call.value?.id;
 
@@ -1329,17 +1332,39 @@ class OngoingCall {
   Future<void> setRemoteVideoEnabled(bool enabled) async {
     Log.debug('setRemoteVideoEnabled($enabled)', '$runtimeType');
 
-    try {
-      if (enabled) {
-        await _room?.enableRemoteVideo();
-      } else {
-        await _room?.disableRemoteVideo();
-      }
-
-      isRemoteVideoEnabled.toggle();
-    } on MediaStateTransitionException catch (_) {
-      // No-op.
+    if (_videoGuard.isLocked) {
+      return;
     }
+
+    await _videoGuard.protect(() async {
+      final Map<CallMemberId, bool> previous = Map.fromEntries(
+        members.values
+            .where((e) => e.id != _me)
+            .map((e) => MapEntry(e.id, e.hasVideo.value)),
+      );
+
+      try {
+        for (var e in members.values.where((e) => e.id != _me)) {
+          e.hasVideo.value = enabled;
+        }
+
+        if (enabled) {
+          await _room?.enableRemoteVideo();
+        } else {
+          await _room?.disableRemoteVideo();
+        }
+
+        isRemoteVideoEnabled.value = enabled;
+      } on MediaStateTransitionException catch (_) {
+        // No-op.
+      } catch (e) {
+        for (var e in previous.entries) {
+          members[e.key]?.hasVideo.value = e.value;
+        }
+
+        rethrow;
+      }
+    });
   }
 
   /// Toggles inbound audio in this [OngoingCall] on and off.
@@ -1715,6 +1740,7 @@ class OngoingCall {
                   break;
 
                 case MediaKind.video:
+                  members[id]?.hasVideo.value = true;
                   await t.createRenderer();
                   break;
               }
@@ -1750,12 +1776,9 @@ class OngoingCall {
             break;
 
           case MediaKind.video:
-            if (isRemoteVideoEnabled.isTrue) {
-              if (track.mediaDirection().isEmitting) {
-                await t.createRenderer();
-              }
-            } else {
-              await members[id]?.setVideoEnabled(false, source: t.source);
+            if (track.mediaDirection().isEmitting) {
+              members[id]?.hasVideo.value = true;
+              await t.createRenderer();
             }
             break;
         }
@@ -2430,6 +2453,7 @@ class OngoingCall {
               break;
           }
 
+          members[_me]?.hasVideo.value = true;
           await t.createRenderer();
         }
         break;
@@ -2895,8 +2919,15 @@ class CallMember {
   /// [DateTime] when this [CallMember] has joined.
   final Rx<PreciseDateTime?> joinedAt;
 
+  /// Indicator whether video [tracks] of this [CallMember] should be ignored or
+  /// not.
+  final RxBool hasVideo = RxBool(true);
+
   /// [ConnectionHandle] of this [CallMember].
   ConnectionHandle? _connection;
+
+  /// [Mutex] guarding access to [setVideoEnabled].
+  final Mutex _videoGuard = Mutex();
 
   /// Disposes the [tracks] of this [CallMember].
   void dispose() {
@@ -2914,11 +2945,25 @@ class CallMember {
   }) async {
     Log.debug('setVideoEnabled($enabled, $source)', '$runtimeType');
 
-    if (enabled) {
-      await _connection?.enableRemoteVideo(source);
-    } else {
-      await _connection?.disableRemoteVideo(source);
+    if (_videoGuard.isLocked) {
+      return;
     }
+
+    await _videoGuard.protect(() async {
+      final bool previous = hasVideo.value;
+
+      try {
+        hasVideo.value = enabled;
+
+        if (enabled) {
+          await _connection?.enableRemoteVideo(source);
+        } else {
+          await _connection?.disableRemoteVideo(source);
+        }
+      } catch (e) {
+        hasVideo.value = previous;
+      }
+    });
   }
 
   /// Sets the inbound audio of this [CallMember] as [enabled].
@@ -3139,7 +3184,7 @@ class MediaFailedNotification extends CallNotification {
   MediaFailedNotification(this.exception);
 
   @override
-  CallNotificationKind get kind => CallNotificationKind.screenDeviceFailed;
+  CallNotificationKind get kind => CallNotificationKind.mediaFailed;
 
   /// [LocalMediaInitException] blocked the request.
   final LocalMediaInitException? exception;

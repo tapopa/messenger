@@ -26,6 +26,7 @@ class ApplicationSettings {
     this.pinnedActions = const [],
     this.muteKeys,
     this.videoVolume = 1,
+    this.logLevel = 1,
   });
 
   /// Indicator whether [OngoingCall]s are preferred to be displayed in the
@@ -54,6 +55,9 @@ class ApplicationSettings {
   /// Volume that should be applied a video being played.
   double videoVolume;
 
+  /// Level of [Log]s that should be printed to the console.
+  int logLevel;
+
   @override
   bool operator ==(Object other) {
     return other is ApplicationSettings &&
@@ -64,7 +68,8 @@ class ApplicationSettings {
         callButtons.toString() == other.callButtons.toString() &&
         pinnedActions.toString() == other.pinnedActions.toString() &&
         muteKeys?.toString() == other.muteKeys?.toString() &&
-        videoVolume == other.videoVolume;
+        videoVolume == other.videoVolume &&
+        logLevel == other.logLevel;
   }
 
   @override
@@ -77,5 +82,6 @@ class ApplicationSettings {
     pinnedActions.toString(),
     muteKeys.toString(),
     videoVolume,
+    logLevel,
   );
 }

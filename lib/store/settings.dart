@@ -242,6 +242,12 @@ class SettingsRepository extends IdentityDependency
     await _set(settings: (e) => e..videoVolume = volume);
   }
 
+  @override
+  Future<void> setLogLevel(int level) async {
+    Log.debug('setLogLevel($level)', '$runtimeType');
+    await _set(settings: (e) => e..logLevel = level);
+  }
+
   /// Stores the provided [ApplicationSettings] and [MediaSettings] to the local
   /// storage.
   Future<void> _set({

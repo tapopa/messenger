@@ -1787,9 +1787,9 @@ class ChatRepository extends IdentityDependency
   }
 
   /// Adds the provided [ChatCall] to the [AbstractCallRepository].
-  void addCall(ChatCall call, {bool dontAddIfAccounted = false}) {
+  Future<void> addCall(ChatCall call, {bool dontAddIfAccounted = false}) async {
     Log.debug('addCall($call, $dontAddIfAccounted)', '$runtimeType');
-    _callRepo.add(call, dontAddIfAccounted: dontAddIfAccounted);
+    await _callRepo.add(call, dontAddIfAccounted: dontAddIfAccounted);
   }
 
   /// Ends an [OngoingCall] happening in the [Chat] identified by the provided

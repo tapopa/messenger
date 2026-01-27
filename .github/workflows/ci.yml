@@ -302,7 +302,7 @@ jobs:
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '16.4'
+          xcode-version: '26.2'
         if: ${{ runner.os == 'macos' }}
 
       - name: Configure FCM (Firebase Cloud Messaging)
@@ -828,6 +828,21 @@ jobs:
   test-e2e:
     name: test (E2E)
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        tag:
+          - "@auth"
+          - "@chats"
+          - "@common"
+          - "@dialog"
+          - "@group"
+          - "@home"
+          - "@messaging"
+          - "@monolog"
+          - "@profile"
+          - "@settings"
+          - "@system"
     steps:
       - uses: actions/checkout@v6
         with:
@@ -897,7 +912,8 @@ jobs:
                        --disable-dev-shm-usage \
                        2> >(grep -v -E '${{ join(fromJson(env.OMIT), '|') }}') &
           make test.e2e start-app=yes device=web-server pull=yes no-cache=yes \
-               dart-env='SOCAPP_LOG_LEVEL=${{ steps.log.outputs.level }}'
+               dart-env='SOCAPP_LOG_LEVEL=${{ steps.log.outputs.level }}
+                         E2E_TAG=${{ matrix.tag }}'
         env:
           OMIT: |
             [

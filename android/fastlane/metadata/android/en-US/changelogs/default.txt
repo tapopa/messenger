@@ -1,4 +1,1 @@
-- Added monetization and wallet tabs.
-- Added top up and transactions pages to wallet tab.
-- Added partner programs, your promotion, set your prices and withdraw pages.
-- Added chat with Tapopa.
+- Bug fixes and performance improvements.

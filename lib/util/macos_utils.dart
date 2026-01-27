@@ -28,4 +28,9 @@ class MacosUtils {
       'thread': thread,
     });
   }
+
+  /// Redirects `stdout` and `stderr` streams to a `app.log` file.
+  static Future<void> redirectStdOut() async {
+    await _platform.invokeMethod('redirectStdOut');
+  }
 }

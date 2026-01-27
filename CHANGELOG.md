@@ -16,8 +16,13 @@ All user visible changes to this project will be documented in this file. This p
 - UI:
     - Login modal:
         - Invalid accounts being displayed in accounts list. ([#16])
+    - Media panel:
+        - Camera disabling for remote peers when disable screen sharing. ([team113/messenger#1594])
+- iOS:
+    - Dialogue calls not being connected sometimes. ([team113/messenger#1594])
 
 [#16]: /../../pull/16
+[team113/messenger#1594]: /../../pull/1594
 
 
 

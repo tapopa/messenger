@@ -1,3 +1,1 @@
-- Se agregó una notificación de reconexión cuando la red cambia durante una llamada.
-- Se agregó el botón de recopilar registros a las notas y al chat de soporte.
 - Se corrigieron errores y se mejoraron el rendimiento.

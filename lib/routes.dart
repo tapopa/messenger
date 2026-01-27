@@ -1374,7 +1374,7 @@ extension RouteLinks on RouterState {
   void walletTransactions({bool push = false}) =>
       (push ? this.push : go)(Routes.walletTransactions);
 
-  /// Changes router location to the [Routes.support] page.
+  /// Changes router location to the [Config.supportId] page.
   void support({bool push = false}) => chat(
     ChatId.local(UserId(Config.supportId)),
     mode: push ? RouteAs.push : RouteAs.replace,

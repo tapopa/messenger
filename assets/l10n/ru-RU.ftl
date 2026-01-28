@@ -40,7 +40,6 @@ btn_add_account_with_desc =
     Добавить
     аккаунт
 btn_add_funds = Пополнить кошелёк
-btn_add_funds_subtitle = PayPal
 btn_add_participant = Добавить участника
 btn_add_participant_desc =
     Добавить

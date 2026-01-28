@@ -40,7 +40,6 @@ btn_add_account_with_desc =
     Agregar
     cuenta
 btn_add_funds = Recargar billetera
-btn_add_funds_subtitle = PayPal
 btn_add_participant = Añadir miembro
 btn_add_participant_desc =
     Añadir

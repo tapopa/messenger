@@ -1062,7 +1062,8 @@ class IntroductionController extends GetxController with IdentityAware {
         return;
       }
 
-      if (router.route == (route ?? router.initial?.uri.path)) {
+      if (router.route == (route ?? router.initial?.uri.path) &&
+          router.tab == HomeTab.chats) {
         router.tab = HomeTab.chats;
         router.chat(chatId);
       }

@@ -2077,12 +2077,6 @@ class SvgIcons {
     height: 50,
   );
 
-  static const SvgData menuTopUp = SvgData(
-    'assets/icons/menu/top_up.svg',
-    width: 50,
-    height: 50,
-  );
-
   static const SvgData wallet = SvgData(
     'assets/icons/wallet.svg',
     width: 34.01,

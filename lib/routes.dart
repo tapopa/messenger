@@ -111,7 +111,6 @@ class Routes {
   static const chatInfo = '/info';
   static const chats = '/chats';
   static const contacts = '/contacts';
-  static const deposit = '/wallet/deposit';
   static const erase = '/erase';
   static const gallery = '/gallery';
   static const home = '/';
@@ -258,6 +257,8 @@ class RouterState extends ChangeNotifier {
 
   /// Changes selected [tab] to the provided one.
   set tab(HomeTab to) {
+    Log.debug('set tab(${to.name})', '$runtimeType');
+
     if (_tab != to) {
       _tab = to;
       notifyListeners();
@@ -1375,10 +1376,7 @@ extension RouteLinks on RouterState {
   void walletTransactions({bool push = false}) =>
       (push ? this.push : go)(Routes.walletTransactions);
 
-  /// Changes router location to the [Routes.deposit] page.
-  void deposit({bool push = false}) => (push ? this.push : go)(Routes.deposit);
-
-  /// Changes router location to the [Routes.deposit] page.
+  /// Changes router location to the [Config.supportId] page.
   void support({bool push = false}) => chat(
     ChatId.local(UserId(Config.supportId)),
     mode: push ? RouteAs.push : RouteAs.replace,

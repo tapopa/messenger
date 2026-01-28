@@ -31,7 +31,6 @@ import 'page/affiliate/view.dart';
 import 'page/chat/info/view.dart';
 import 'page/chat/view.dart';
 import 'page/contact/view.dart';
-import 'page/deposit/view.dart';
 import 'page/my_profile/view.dart';
 import 'page/partner_transactions/view.dart';
 import 'page/prices/view.dart';
@@ -173,14 +172,6 @@ class HomeRouterDelegate extends RouterDelegate<RouteConfiguration>
             key: ValueKey('WithdrawPage'),
             name: Routes.withdraw,
             child: WithdrawView(),
-          ),
-        );
-      } else if (route.startsWith(Routes.deposit)) {
-        pages.add(
-          const CustomPage(
-            key: ValueKey('DepositPage'),
-            name: Routes.deposit,
-            child: DepositView(),
           ),
         );
       } else if (route.startsWith(Routes.walletTransactions)) {

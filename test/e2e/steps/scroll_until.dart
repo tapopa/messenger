@@ -24,6 +24,7 @@ import 'package:flutter_gherkin/flutter_gherkin.dart';
 import 'package:flutter_gherkin/flutter_gherkin_with_driver.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gherkin/gherkin.dart';
+import 'package:messenger/util/log.dart';
 
 import '../configuration.dart';
 import '../parameters/keys.dart';
@@ -34,48 +35,79 @@ import '../world/custom_world.dart';
 ///
 /// Examples:
 /// - Then I scroll `Menu` until `LogoutButton` is present
-final StepDefinitionGeneric<CustomWorld> scrollUntilPresent =
-    then2<WidgetKey, WidgetKey, CustomWorld>(
-      RegExp(r'I scroll {key} until {key} is present'),
-      (WidgetKey list, WidgetKey key, StepContext<CustomWorld> context) async {
-        await context.world.appDriver.waitUntil(() async {
-          await context.world.appDriver.nativeDriver.pump(
-            const Duration(seconds: 2),
-            EnginePhase.sendSemanticsUpdate,
-          );
-
-          final scrollable = find.descendant(
-            of: find.byKey(Key(list.name)),
-            matching: find.byWidgetPredicate((widget) {
-              // TODO: Find a proper way to differentiate [Scrollable]s from
-              //       [TextField]s:
-              //       https://github.com/flutter/flutter/issues/76981
-              if (widget is Scrollable) {
-                return widget.restorationId == null;
-              }
-              return false;
-            }),
-          );
-
-          if (scrollable.evaluate().isEmpty) {
-            return false;
-          }
-
-          await context.world.appDriver.scrollIntoVisible(
-            context.world.appDriver.findByKeySkipOffstage(key.name),
-            scrollable.first,
-            dy: 50,
-          );
-
-          return true;
-        }, timeout: const Duration(seconds: 30));
-
+final StepDefinitionGeneric<CustomWorld>
+scrollUntilPresent = then2<WidgetKey, WidgetKey, CustomWorld>(
+  RegExp(r'I scroll {key} until {key} is present'),
+  (WidgetKey list, WidgetKey key, StepContext<CustomWorld> context) async {
+    await context.world.appDriver.waitUntil(
+      () async {
         await context.world.appDriver.nativeDriver.pump(
           const Duration(seconds: 2),
-          EnginePhase.sendSemanticsUpdate,
         );
+
+        final Finder scrollable = find.descendant(
+          of: find.byKey(Key(list.name)),
+          matching: find.byWidgetPredicate((widget) {
+            // TODO: Find a proper way to differentiate [Scrollable]s from
+            //       [TextField]s:
+            //       https://github.com/flutter/flutter/issues/76981
+            if (widget is Scrollable) {
+              return widget.restorationId == null;
+            }
+            return false;
+          }),
+        );
+
+        Log.debug(
+          'scrollUntilPresent -> scrollable for `${list.name}` -> $scrollable',
+          'E2E',
+        );
+
+        if (scrollable.evaluate().isEmpty) {
+          return false;
+        }
+
+        final finder = context.world.appDriver.findByKeySkipOffstage(key.name);
+
+        Log.debug(
+          'scrollUntilPresent -> `finder` for `${key.name}` is $finder',
+          'E2E',
+        );
+
+        Log.debug(
+          'scrollUntilPresent -> await scrollIntoVisible(${key.name})...',
+          'E2E',
+        );
+
+        await context.world.appDriver.scrollIntoVisible(
+          finder,
+          scrollable.first,
+          dy: 50,
+        );
+
+        Log.debug(
+          'scrollUntilPresent -> await scrollIntoVisible(${key.name})... done!',
+          'E2E',
+        );
+
+        Log.debug(
+          'scrollUntilPresent -> is `${key.name}` present now -> ${finder.evaluate()}',
+          'E2E',
+        );
+
+        if (finder.evaluate().isEmpty) {
+          return false;
+        }
+
+        return true;
       },
+      timeout: const Duration(seconds: 30),
+      pollInterval: const Duration(seconds: 2),
     );
+
+    await context.world.appDriver.nativeDriver.pump(const Duration(seconds: 2));
+  },
+);
 
 /// Scrolls the provided [Scrollable] to the bottom.
 ///

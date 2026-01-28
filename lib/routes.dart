@@ -257,6 +257,8 @@ class RouterState extends ChangeNotifier {
 
   /// Changes selected [tab] to the provided one.
   set tab(HomeTab to) {
+    Log.debug('set tab(${to.name})', '$runtimeType');
+
     if (_tab != to) {
       _tab = to;
       notifyListeners();

@@ -90,6 +90,15 @@ scrollUntilPresent = then2<WidgetKey, WidgetKey, CustomWorld>(
           'E2E',
         );
 
+        Log.debug(
+          'scrollUntilPresent -> is `${key.name}` present now -> ${finder.evaluate()}',
+          'E2E',
+        );
+
+        if (finder.evaluate().isEmpty) {
+          return false;
+        }
+
         return true;
       },
       timeout: const Duration(seconds: 30),

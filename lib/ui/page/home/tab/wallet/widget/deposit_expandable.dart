@@ -185,7 +185,7 @@ class DepositExpandable extends StatelessWidget {
               show: expanded,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
-                child: provider.build(context, withLogo: false, fields: fields),
+                child: _body(context),
               ),
             ),
           ),
@@ -193,66 +193,78 @@ class DepositExpandable extends StatelessWidget {
       ),
     );
   }
-}
 
-extension BuildProviderExtension on OperationDepositMethod {
-  Widget build(
+  /// Builds a [FieldButton] representing the provided [country].
+  Widget _country(
     BuildContext context, {
-    bool withLogo = true,
-    DepositFields? fields,
+    bool error = false,
+    required Rx<IsoCode?> country,
   }) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+      child: Obx(() {
+        return FieldButton(
+          headline: Text('label_country'.l10n),
+          onPressed: () async {
+            final result = await SelectCountryView.show(
+              context,
+              available: IsoCodeExtension.available(provider),
+            );
+
+            if (result != null) {
+              country.value = result;
+            }
+          },
+          error: error,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (country.value != null) ...[
+                SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: ClipOval(
+                    child: SvgImage.asset(
+                      'assets/images/country/${country.value?.name.toLowerCase()}.svg',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+              ],
+              Text(
+                country.value == null
+                    ? 'label_choose_country'.l10n
+                    : 'country_${country.value?.name.toLowerCase()}'.l10n,
+              ),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
+  /// Builds the contents of the [OperationDepositMethod].
+  Widget _body(BuildContext context) {
     final style = Theme.of(context).style;
 
-    final PayPalDepositFields? paypal = fields?.paypal;
+    final PayPalDepositFields paypal = fields.paypal;
+    final Rx<IsoCode?> country = fields.getCountry(provider.kind);
 
-    final Rx<IsoCode?>? country = fields?.getCountry(kind);
-
-    Widget countryButton({bool error = false}) {
-      return Padding(
-        padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-        child: Obx(() {
-          return _countryButton(
-            context,
-            country: country?.value,
-            onCode: (code) => country?.value = code,
-            available: IsoCodeExtension.available(this),
-            error: error,
-          );
-        }),
-      );
-    }
-
-    switch (kind) {
+    switch (provider.kind) {
       case OperationDepositKind.paypal:
-        if (paypal == null) {
-          return const SizedBox();
-        }
-
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (withLogo) ...[
-              const SizedBox(height: 8),
-              Container(
-                width: 96,
-                padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                child: const SvgImage.asset(
-                  'assets/images/paypal.svg',
-                  width: 64,
-                  height: 32,
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
             Obx(() {
-              final available = IsoCodeExtension.available(
-                this,
+              final bool available = IsoCodeExtension.available(
+                provider,
               ).contains(paypal.country.value);
 
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  countryButton(error: !available),
+                  _country(context, error: !available, country: country),
                   if (!available) ...[
                     const SizedBox(height: 8),
                     Align(
@@ -273,7 +285,7 @@ extension BuildProviderExtension on OperationDepositMethod {
             Flexible(
               child: Obx(() {
                 final available = IsoCodeExtension.available(
-                  this,
+                  provider,
                 ).contains(paypal.country.value);
 
                 return Opacity(
@@ -281,12 +293,12 @@ extension BuildProviderExtension on OperationDepositMethod {
                   child: IgnorePointer(
                     ignoring: !available,
                     child: _responsive(
-                      nominals ?? [],
+                      provider.nominals ?? [],
                       onPressed: (e) async {
                         if (paypal.country.value == null) {
                           final result = await SelectCountryView.show(
                             context,
-                            available: IsoCodeExtension.available(this),
+                            available: IsoCodeExtension.available(provider),
                           );
                           if (result != null) {
                             paypal.country.value = result;
@@ -325,76 +337,31 @@ Widget _responsive(List<Price> nominals, {void Function(Price)? onPressed}) {
     children: [
       Row(
         children: [
-          Flexible(flex: 100, child: tile(0)),
+          if (nominals.isNotEmpty) Flexible(flex: 100, child: tile(0)),
           const SizedBox(width: 4),
-          Flexible(flex: 112, child: tile(1)),
+          if (nominals.length >= 2) Flexible(flex: 112, child: tile(1)),
           const SizedBox(width: 4),
-          Flexible(flex: 140, child: tile(2)),
+          if (nominals.length >= 3) Flexible(flex: 140, child: tile(2)),
         ],
       ),
       const SizedBox(height: 4),
-      Row(
-        children: [
-          Flexible(flex: 160, child: tile(3)),
-          const SizedBox(width: 4),
-          Flexible(flex: 196, child: tile(4)),
-        ],
-      ),
+      if (nominals.length >= 4)
+        Row(
+          children: [
+            if (nominals.length >= 4) Flexible(flex: 160, child: tile(3)),
+            const SizedBox(width: 4),
+            if (nominals.length >= 5) Flexible(flex: 196, child: tile(4)),
+          ],
+        ),
       const SizedBox(height: 4),
-      tile(5),
+      if (nominals.length >= 6) tile(5),
     ],
   );
 }
 
-Widget _countryButton(
-  BuildContext context, {
-  IsoCode? country,
-  void Function(IsoCode)? onCode,
-  Set<IsoCode> available = const {},
-  Set<IsoCode> restricted = const {},
-  bool error = false,
-}) {
-  return FieldButton(
-    headline: Text('label_country'.l10n),
-    onPressed: () async {
-      final result = await SelectCountryView.show(
-        context,
-        available: available,
-        restricted: restricted,
-      );
-
-      if (result != null) {
-        onCode?.call(result);
-      }
-    },
-    error: error,
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (country != null) ...[
-          SizedBox(
-            width: 24,
-            height: 24,
-            child: ClipOval(
-              child: SvgImage.asset(
-                'assets/images/country/${country.name.toLowerCase()}.svg',
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-        ],
-        Text(
-          country == null
-              ? 'label_choose_country'.l10n
-              : 'country_${country.name.toLowerCase()}'.l10n,
-        ),
-      ],
-    ),
-  );
-}
-
+/// Extension adding decoration related getters to [OperationDepositKind].
 extension on OperationDepositKind {
+  /// Returns a [Border] to associate this [OperationDepositKind] with.
   Border get border {
     return switch (this) {
       OperationDepositKind.paypal => Border.all(
@@ -405,6 +372,8 @@ extension on OperationDepositKind {
     };
   }
 
+  /// Returns a [Color] of a shadow that should be applied to this
+  /// [OperationDepositKind].
   Color get shadow {
     return switch (this) {
       OperationDepositKind.paypal => Color(

@@ -132,7 +132,6 @@ class AmountTile extends StatelessWidget {
             top: 16,
             child: Text(
               'currency_amount'.l10nfmt({'amount': nominal.sum.val}),
-              // nominal.l10n,
               style: style.fonts.largest.bold.onPrimary.copyWith(
                 fontSize: 36,
                 shadows: [
@@ -153,11 +152,7 @@ class AmountTile extends StatelessWidget {
               alignment: Alignment.center,
               children: [
                 SvgIcon(SvgIcons.priceSticker),
-                Text(
-                  nominal.l10n,
-                  // '\$${(nominal * 1.299).toStringAsFixed(2)}',
-                  style: style.fonts.small.regular.secondary,
-                ),
+                Text(nominal.l10n, style: style.fonts.small.regular.secondary),
               ],
             ),
           ),

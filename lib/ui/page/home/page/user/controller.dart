@@ -164,7 +164,7 @@ class UserController extends GetxController {
       user?.dialog.value?.chat.value.favoritePosition != null;
 
   /// Indicates whether this [user] is a [Config.supportId].
-  bool get isSupport => (user?.id ?? id).val == Config.supportId;
+  bool get isSupport => Config.isSupport(user?.id ?? id);
 
   @override
   void onInit() {
@@ -231,7 +231,8 @@ class UserController extends GetxController {
   // TODO: Replace with GraphQL mutation when implemented.
   /// Reports the [user].
   Future<void> report() async {
-    // TODO: Open support chat.
+    // TODO: Open with `ChatMessage` set up.
+    router.support(push: true);
   }
 
   /// Removes the [user] from the blocklist of the authenticated [MyUser].

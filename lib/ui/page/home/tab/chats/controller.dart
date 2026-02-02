@@ -204,6 +204,9 @@ class ChatsTabController extends GetxController {
       !connected.value ||
       (fetching.value == null && status.value.isLoadingMore);
 
+  /// Indicates whether currently authenticated [MyUser] is a support.
+  bool get isSupport => me?.isSupport == true;
+
   @override
   void onInit() {
     chatsController.addListener(_chatsListener);
@@ -696,6 +699,7 @@ class ChatsTabController extends GetxController {
       SearchCategory.contact,
       SearchCategory.user,
     ];
+    search.value?.excludeSupports = true;
     router.navigation.value = false;
     router.navigator.value = (context) =>
         ChatsTabView.createGroupBuilder(context, this);
@@ -713,6 +717,7 @@ class ChatsTabController extends GetxController {
       SearchCategory.contact,
       SearchCategory.user,
     ];
+    search.value?.excludeSupports = false;
     router.navigation.value = true;
     router.navigator.value = null;
   }

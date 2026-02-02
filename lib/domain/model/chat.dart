@@ -30,8 +30,8 @@ import 'chat_item.dart';
 import 'mute_duration.dart';
 import 'my_user.dart';
 import 'precise_date_time/precise_date_time.dart';
-import 'user.dart';
 import 'user_call_cover.dart';
+import 'user.dart';
 
 part 'chat.g.dart';
 
@@ -169,10 +169,10 @@ class Chat implements Comparable<Chat> {
   /// Indicates whether this [Chat] is a support chat.
   bool get isSupport {
     if (id.isLocal) {
-      return id.userId.val == Config.supportId;
+      return Config.isSupport(id.userId);
     }
 
-    return isDialog && members.any((e) => e.user.id.val == Config.supportId);
+    return isDialog && members.any((e) => Config.isSupport(e.user.id));
   }
 
   /// Returns an [UserAvatar] of this [Chat].

@@ -26,6 +26,7 @@ import 'package:yaml/yaml.dart';
 
 import '/util/log.dart';
 import '/util/platform_utils.dart';
+import 'domain/model/user.dart';
 import 'pubspec.g.dart';
 import 'routes.dart';
 import 'util/ios_utils.dart';
@@ -165,13 +166,15 @@ class Config {
   /// Each key is expected to be a string of Unicode BCP47 Locale Identifier.
   static Map<String, Announcement> announcements = {};
 
-  // TODO: Replace this hardcoded [UserId] with backend query.
-  /// [UserId] of the support [Chat] user.
-  static String supportId = '5TnWvlDyfr1pYagapHpInO';
-
   /// Indicator whether logs from `stdout` and `stderr` streams should be
   /// redirected.
   static bool redirectStdOut = true;
+
+  /// [UserId] of the [User]-support.
+  static String supportId = '5TnWvlDyfr1pYagapHpInO';
+
+  /// [UserId]s of the [User]s that should be considered as supports.
+  static List<String> supportIds = [];
 
   /// Initializes this [Config] by applying values from the following sources
   /// (in the following order):
@@ -335,9 +338,15 @@ class Config {
       Log.warning('init() -> announcements failed: $e', 'Config');
     }
 
-    supportId = const bool.hasEnvironment('SOCAPP_SUPPORT_ID')
-        ? const String.fromEnvironment('SOCAPP_SUPPORT_ID')
-        : (document['support']?['id'] ?? supportId);
+    supportId = const bool.hasEnvironment('SOCAPP_SUPPORT_PRIMARY')
+        ? const String.fromEnvironment('SOCAPP_SUPPORT_PRIMARY')
+        : (document['support']?['primary'] ?? supportId);
+
+    final String? ids = const bool.hasEnvironment('SOCAPP_SUPPORT_SECONDARY')
+        ? const String.fromEnvironment('SOCAPP_SUPPORT_SECONDARY')
+        : document['support']?['secondary'];
+
+    supportIds = ids == null ? [supportId] : ids.split(',');
 
     // Change default values to browser's location on web platform.
     if (PlatformUtils.isWeb) {
@@ -436,7 +445,11 @@ class Config {
               Log.warning('init() -> announcements failed: $e', 'Config');
             }
 
-            supportId = remote['support']?['id'] ?? supportId;
+            supportId = remote['support']?['primary'] ?? supportId;
+            final String? ids = remote['support']?['secondary'];
+            if (ids != null) {
+              supportIds = ids.split(',');
+            }
 
             origin = url;
           }
@@ -478,6 +491,10 @@ class Config {
       });
     }
   }
+
+  /// Indicates whether the provided [UserId] is within [supportIds].
+  static bool isSupport(UserId id) =>
+      [Config.supportId, ...Config.supportIds].contains(id.val);
 }
 
 /// [title] with a [body] intended to be used as an announcement to make to the

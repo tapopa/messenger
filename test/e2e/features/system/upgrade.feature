@@ -21,7 +21,7 @@ Feature: Upgrade popup
   Background: I am guest
     Given I am guest
 
-  @home
+  @system
   Scenario: New versions are prompted in upgrade alerts
     Given appcast with newer version is available
 
@@ -29,7 +29,7 @@ Feature: Upgrade popup
     And I pause for 5 seconds
     Then I wait until `UpgradeAlert` is present
 
-  @home
+  @system
   Scenario: Upgrade alerts aren't displayed for current version
     Given appcast with current version is available
 

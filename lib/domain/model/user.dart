@@ -167,6 +167,9 @@ class UserId extends NewType<String> implements Comparable<UserId> {
   /// Indicates whether this [UserId] is local.
   bool get isLocal => val == '0';
 
+  /// Indicates whether this [UserId] is considered a support ID.
+  bool get isSupport => Config.isSupport(this);
+
   /// Returns a [String] representing this [UserId].
   String toJson() => val;
 

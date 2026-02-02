@@ -72,6 +72,12 @@ class _ChatMoreWidgetState extends State<ChatMoreWidget> {
   /// Indicator whether this [ChatMoreWidget] is hovered.
   bool _hovered = false;
 
+  /// [GlobalKey] to prevent icon widget from rebuilding.
+  final GlobalKey _iconKey = GlobalKey();
+
+  /// [GlobalKey] to prevent pin widget from rebuilding.
+  final GlobalKey _pinKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     final style = Theme.of(context).style;
@@ -104,6 +110,7 @@ class _ChatMoreWidgetState extends State<ChatMoreWidget> {
                     child: Transform.translate(
                       offset: widget.offset,
                       child: Opacity(
+                        key: _iconKey,
                         opacity: disabled ? 0.6 : 1,
                         child: widget.icon,
                       ),
@@ -128,6 +135,7 @@ class _ChatMoreWidgetState extends State<ChatMoreWidget> {
                       child: Center(
                         child: AnimatedButton(
                           child: SafeAnimatedSwitcher(
+                            key: _pinKey,
                             duration: 100.milliseconds,
                             child: widget.pinned
                                 ? const SvgIcon(

@@ -357,10 +357,10 @@ class ChatInfoController extends GetxController {
     }
   }
 
-  // TODO: Replace with GraphQL mutation when implemented.
   /// Reports the [chat].
   Future<void> reportChat() async {
-    // TODO: Open support chat.
+    // TODO: Open with `ChatMessage` set up.
+    router.support(push: true);
   }
 
   /// Clears all the [ChatItem]s of the [chat].

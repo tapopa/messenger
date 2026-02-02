@@ -2,4 +2,5 @@
 - Se añadió el botón de registros a las notas y los chats de soporte.
 - Se añadió un selector modal de dispositivo de salida al pulsar el botón de cambio en una llamada con dispositivos externos conectados en dispositivos móviles.
 - Se añadieron botones para unirse y rechazar llamadas a la página de perfil del usuario.
+- Se rediseñó la página de depósito en el escritorio para que solo aparezca en la pestaña.
 - Corrección de errores y mejoras de rendimiento.

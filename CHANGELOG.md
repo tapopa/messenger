@@ -6,6 +6,22 @@ All user visible changes to this project will be documented in this file. This p
 
 
 
+## [0.3.0] · 2026-??-??
+[0.3.0]: /../../tree/v0.3.0
+
+[Diff](/../../compare/v0.2.2...v0.3.0) | [Milestone](/../../milestone/5)
+
+### Fixed
+
+- Web:
+    - Chats tab:
+        - Default context menu displayed when pressing on first chat. ([#21])
+
+[#21]: /../../pull/21
+
+
+
+
 ## [0.2.2] · 2026-02-02
 [0.2.2]: /../../tree/v0.2.2
 

@@ -108,6 +108,16 @@ class WalletTabView extends StatelessWidget {
                     child: LineDivider('btn_add_funds'.l10n),
                   ),
                   const SizedBox(height: 8),
+                  if (c.methods.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
+                      child: Center(
+                        child: Text(
+                          'label_nothing_found'.l10n,
+                          style: style.fonts.small.regular.secondary,
+                        ),
+                      ),
+                    ),
                   ...c.methods.map((e) {
                     switch (e.kind) {
                       case OperationDepositKind.paypal:

@@ -104,7 +104,10 @@ mixin WalletGraphQlMixin {
         {
           'id': '4gfFC3',
           'kind': 'PAYPAL',
-          'countries': null,
+          'countries': {
+            '__typename': 'CriteriaCountryOnly',
+            'only': ['TG', 'UZ', 'KG'],
+          },
           'nominals': [
             {'currency': 'EUR', 'sum': '5'},
             {'currency': 'EUR', 'sum': '10'},

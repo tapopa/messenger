@@ -24,6 +24,7 @@ import '/api/backend/schema.dart' show OperationDepositKind;
 import '/domain/model/country.dart';
 import '/domain/model/deposit.dart';
 import '/domain/model/operation_deposit_method.dart';
+import '/domain/model/price.dart';
 import '/l10n/l10n.dart';
 import '/themes.dart';
 import '/ui/page/home/tab/wallet/select_country/view.dart';
@@ -204,7 +205,7 @@ extension BuildProviderExtension on OperationDepositMethod {
 
     final PayPalDepositFields? paypal = fields?.paypal;
 
-    final country = fields?.getCountry(kind);
+    final Rx<IsoCode?>? country = fields?.getCountry(kind);
 
     Widget countryButton({bool error = false}) {
       return Padding(
@@ -214,7 +215,7 @@ extension BuildProviderExtension on OperationDepositMethod {
             context,
             country: country?.value,
             onCode: (code) => country?.value = code,
-            available: IsoCodeExtension.available(kind),
+            available: IsoCodeExtension.available(this),
             error: error,
           );
         }),
@@ -226,8 +227,6 @@ extension BuildProviderExtension on OperationDepositMethod {
         if (paypal == null) {
           return const SizedBox();
         }
-
-        final nominals = [5, 10, 25, 50, 75, 100];
 
         return Column(
           mainAxisSize: MainAxisSize.min,
@@ -247,7 +246,7 @@ extension BuildProviderExtension on OperationDepositMethod {
             ],
             Obx(() {
               final available = IsoCodeExtension.available(
-                kind,
+                this,
               ).contains(paypal.country.value);
 
               return Column(
@@ -274,7 +273,7 @@ extension BuildProviderExtension on OperationDepositMethod {
             Flexible(
               child: Obx(() {
                 final available = IsoCodeExtension.available(
-                  kind,
+                  this,
                 ).contains(paypal.country.value);
 
                 return Opacity(
@@ -282,12 +281,12 @@ extension BuildProviderExtension on OperationDepositMethod {
                   child: IgnorePointer(
                     ignoring: !available,
                     child: _responsive(
-                      nominals,
+                      nominals ?? [],
                       onPressed: (e) async {
                         if (paypal.country.value == null) {
                           final result = await SelectCountryView.show(
                             context,
-                            available: IsoCodeExtension.available(kind),
+                            available: IsoCodeExtension.available(this),
                           );
                           if (result != null) {
                             paypal.country.value = result;
@@ -314,7 +313,7 @@ extension BuildProviderExtension on OperationDepositMethod {
   }
 }
 
-Widget _responsive(List<int> nominals, {void Function(int)? onPressed}) {
+Widget _responsive(List<Price> nominals, {void Function(Price)? onPressed}) {
   Widget tile(int i) {
     return WidgetButton(
       onPressed: () => onPressed?.call(nominals[i]),

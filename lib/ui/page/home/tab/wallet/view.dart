@@ -18,7 +18,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '/api/backend/schema.dart' show OperationDepositKind;
 import '/l10n/l10n.dart';
 import '/routes.dart';
 import '/themes.dart';
@@ -119,42 +118,19 @@ class WalletTabView extends StatelessWidget {
                       ),
                     ),
                   ...c.methods.map((e) {
-                    switch (e.kind) {
-                      case OperationDepositKind.paypal:
-                        return Obx(() {
-                          final bool expanded = c.expanded.contains(e.id);
+                    return Obx(() {
+                      final bool expanded = c.expanded.contains(e.id);
 
-                          return DepositExpandable(
-                            expanded: expanded,
-                            onPressed: expanded
-                                ? () => c.expanded.remove(e.id)
-                                : () => c.expanded.add(e.id),
-                            provider: e,
-                            fields: c.fields.value,
-                          );
-                        });
-
-                      case OperationDepositKind.artemisUnknown:
-                        return ListTile(
-                          title: Text(e.kind.name),
-                          subtitle: Text('${e.id}'),
-                        );
-                    }
+                      return DepositExpandable(
+                        expanded: expanded,
+                        onPressed: expanded
+                            ? () => c.expanded.remove(e.id)
+                            : () => c.expanded.add(e.id),
+                        provider: e,
+                        fields: c.fields.value,
+                      );
+                    });
                   }),
-                  // ...DepositKind.values.map((e) {
-                  //   return Obx(() {
-                  //     final bool expanded = c.expanded.contains(e);
-
-                  //     return DepositExpandable(
-                  //       expanded: expanded,
-                  //       onPressed: expanded
-                  //           ? () => c.expanded.remove(e)
-                  //           : () => c.expanded.add(e),
-                  //       provider: e,
-                  //       fields: c.fields.value,
-                  //     );
-                  //   });
-                  // }),
                   const SizedBox(height: 8),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),

@@ -22,10 +22,10 @@ class Price {
   const Price({required this.sum, required this.currency});
 
   /// [Price] with value of zero with a `G` currency.
-  static const zero = Price(sum: Sum(0), currency: Currency('G'));
+  static const zero = Price(sum: Sum(0), currency: Currency('XXX'));
 
   /// Constructs a [Price] with `G` currency of the provided [amount].
-  Price.g(double amount) : sum = Sum(amount), currency = Currency('G');
+  Price.g(double amount) : sum = Sum(amount), currency = Currency('XXX');
 
   /// Constructs a [Price] with `USDT` currency of the provided [amount].
   Price.usdt(double amount) : sum = Sum(amount), currency = Currency('USDT');
@@ -41,6 +41,9 @@ class Price {
 
   /// [Currency] of this [Price].
   final Currency currency;
+
+  @override
+  String toString() => 'Price(${currency.val} -> ${sum.val})';
 }
 
 /// Sum of money.

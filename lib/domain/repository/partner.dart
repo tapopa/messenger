@@ -17,13 +17,17 @@
 
 import 'package:get/get.dart';
 
+import '/domain/model/balance.dart';
 import '/domain/model/operation.dart';
 import 'paginated.dart';
 
 /// [MyUser] partner repository interface.
 abstract class AbstractPartnerRepository {
-  /// Returns the balance [MyUser] has in their partner wallet.
-  RxDouble get balance;
+  /// Returns the balance [MyUser] has in their partner available wallet.
+  Rx<Balance> get available;
+
+  /// Returns the balance [MyUser] has in their partner hold wallet.
+  Rx<Balance> get hold;
 
   /// Returns the [Operation]s happening in [MyUser]'s partner wallet.
   Paginated<OperationId, Operation> get operations;

@@ -787,7 +787,7 @@ label_audio_call =
         *[other] {" "}de {$by}
     }
 label_auto_gain_control = Auto gain control
-label_available_balance_amount = Saldo disponible: ¤{$amount}
+label_available_balance_amount = Saldo disponible: {$amount}
 label_available_semicolon_amount = Disponible: {$amount}
 label_avatar_removed = {$author} eliminó el avatar
 label_avatar_removed1 = {$author}

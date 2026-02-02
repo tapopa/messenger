@@ -15,11 +15,20 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'package:async/async.dart';
 import 'package:get/get.dart';
+import 'package:graphql/client.dart' show QueryResult;
 
 import '/api/backend/extension/page_info.dart';
 import '/api/backend/extension/wallet.dart';
-import '/api/backend/schema.dart' show OperationStatus;
+import '/api/backend/schema.dart'
+    show
+        OperationStatus,
+        BalanceOrigin,
+        BalanceUpdates$Subscription,
+        BalanceUpdates$Subscription$BalanceUpdates$SubscriptionInitialized,
+        BalanceUpdates$Subscription$BalanceUpdates$Balance;
+import '/domain/model/balance.dart';
 import '/domain/model/country.dart';
 import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
@@ -30,6 +39,9 @@ import '/domain/repository/wallet.dart';
 import '/domain/service/disposable_service.dart';
 import '/provider/gql/graphql.dart';
 import '/util/log.dart';
+import '/util/stream_utils.dart';
+import '/util/web/web.dart';
+import 'event/balance.dart';
 import 'model/operation.dart';
 import 'model/page_info.dart';
 import 'paginated.dart';
@@ -45,7 +57,7 @@ class WalletRepository extends IdentityDependency
   WalletRepository(this._graphQlProvider, {required super.me});
 
   @override
-  final RxDouble balance = RxDouble(0);
+  final Rx<Balance> balance = Rx(Balance.zero);
 
   @override
   late final OperationsPaginated operations = OperationsPaginated(
@@ -117,10 +129,19 @@ class WalletRepository extends IdentityDependency
   /// [GraphQlProvider] for fetching the [Operation]s list.
   final GraphQlProvider _graphQlProvider;
 
+  /// [Balance] subscription.
+  StreamQueue<BalanceUpdates>? _remoteSubscription;
+
   @override
   void onInit() {
     Log.debug('onInit()', '$runtimeType');
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    _remoteSubscription?.close(immediate: true);
+    super.onClose();
   }
 
   @override
@@ -130,10 +151,14 @@ class WalletRepository extends IdentityDependency
     Log.debug('onIdentityChanged($me)', '$runtimeType');
 
     operations.clear();
+    balance.value = Balance.zero;
+    _remoteSubscription?.close(immediate: true);
 
     if (!me.isLocal) {
       operations.around();
       _queryMethods();
+
+      _initRemoteSubscription();
     }
   }
 
@@ -167,5 +192,71 @@ class WalletRepository extends IdentityDependency
   Future<void> _queryMethods() async {
     final list = await _graphQlProvider.operationDepositMethods();
     methods.value = list.map((e) => e.toModel()).toList();
+  }
+
+  /// Initializes [_balanceUpdates] subscription.
+  Future<void> _initRemoteSubscription() async {
+    Log.debug('_initRemoteSubscription()', '$runtimeType');
+
+    _remoteSubscription?.close(immediate: true);
+
+    if (me.isLocal || isClosed) {
+      return;
+    }
+
+    await WebUtils.protect(() async {
+      if (me.isLocal || isClosed) {
+        return;
+      }
+
+      _remoteSubscription = StreamQueue(await _balanceUpdates());
+      await _remoteSubscription!.execute(_balanceUpdate);
+    }, tag: 'balanceUpdates()');
+  }
+
+  /// Returns a [Stream] of [Balance]s of the specified [MyUser]'s purse.
+  Future<Stream<BalanceUpdates>> _balanceUpdates() async {
+    Log.debug('_balanceEvents()', '$runtimeType');
+
+    final Stream<QueryResult> events = await _graphQlProvider.balanceUpdates(
+      BalanceOrigin.purse,
+    );
+
+    return events.asyncExpand((event) async* {
+      Log.trace('_balanceEvents() -> ${event.data}', '$runtimeType');
+
+      final events = BalanceUpdates$Subscription.fromJson(
+        event.data!,
+      ).balanceUpdates;
+      if (events.$$typename == 'SubscriptionInitialized') {
+        events
+            as BalanceUpdates$Subscription$BalanceUpdates$SubscriptionInitialized;
+        yield const BalanceUpdatesInitialized();
+      } else if (events.$$typename == 'Balance') {
+        final mixin =
+            events as BalanceUpdates$Subscription$BalanceUpdates$Balance;
+        yield BalanceUpdatesBalance(mixin.toModel());
+      }
+    });
+  }
+
+  /// Handles [BalanceUpdates] from the [_balanceUpdates] subscription.
+  Future<void> _balanceUpdate(BalanceUpdates events) async {
+    switch (events.kind) {
+      case BalanceUpdatesKind.initialized:
+        Log.debug('_balanceUpdate(${events.kind})', '$runtimeType');
+        break;
+
+      case BalanceUpdatesKind.balance:
+        events as BalanceUpdatesBalance;
+
+        Log.debug(
+          '_balanceUpdate(${events.kind}) -> ${events.balance}',
+          '$runtimeType',
+        );
+
+        balance.value = events.balance;
+        break;
+    }
   }
 }

@@ -18,6 +18,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '/domain/model/balance.dart';
+import '/domain/model/price.dart';
 import '/l10n/l10n.dart';
 import '/routes.dart';
 import '/themes.dart';
@@ -37,7 +39,7 @@ class PartnerTabView extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder(
       key: const Key('PartnerTab'),
-      init: PartnerTabController(),
+      init: PartnerTabController(Get.find()),
       builder: (PartnerTabController c) {
         final style = Theme.of(context).style;
 
@@ -63,11 +65,12 @@ class PartnerTabView extends StatelessWidget {
                 return WidgetButton(
                   onPressed: router.partnerTransactions,
                   child: Text(
-                    'currency_amount'.l10nfmt({
-                      'amount': (c.balance.value + c.hold.value)
-                          .toDouble()
-                          .withSpaces,
-                    }),
+                    Balance(
+                      currency: c.available.value.currency,
+                      sum: Sum(
+                        c.available.value.sum.val + c.hold.value.sum.val,
+                      ),
+                    ).l10n,
                     style: style.fonts.big.regular.onBackground.copyWith(
                       color: style.colors.primary,
                     ),
@@ -98,7 +101,7 @@ class PartnerTabView extends StatelessWidget {
                       leading: const SvgIcon(SvgIcons.menuOrderMoney),
                       inverted: enabled,
                       subtitle: 'label_available_balance_amount'.l10nfmt({
-                        'amount': c.balance.value.toStringAsFixed(2),
+                        'amount': c.available.value.l10n,
                       }),
                     );
                   }),

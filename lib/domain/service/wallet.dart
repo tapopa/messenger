@@ -17,6 +17,7 @@
 
 import 'package:get/get.dart';
 
+import '/domain/model/balance.dart';
 import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
 import '/domain/repository/paginated.dart';
@@ -31,7 +32,7 @@ class WalletService extends Dependency {
   final AbstractWalletRepository _walletRepository;
 
   /// Returns the balance [MyUser] has in their wallet.
-  RxDouble get balance => _walletRepository.balance;
+  Rx<Balance> get balance => _walletRepository.balance;
 
   /// Returns the [Operation]s happening in [MyUser]'s wallet.
   Paginated<OperationId, Operation> get operations =>

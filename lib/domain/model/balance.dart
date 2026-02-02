@@ -15,21 +15,21 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-import 'package:get/get.dart';
+import 'price.dart';
 
-import '/domain/model/balance.dart';
-import '/domain/model/operation_deposit_method.dart';
-import '/domain/model/operation.dart';
-import 'paginated.dart';
+/// Balance of some [BalanceOrigin].
+class Balance {
+  const Balance({required this.sum, required this.currency});
 
-/// [MyUser] wallet repository interface.
-abstract class AbstractWalletRepository {
-  /// Returns the balance [MyUser] has in their wallet.
-  Rx<Balance> get balance;
+  /// [Price] with value of zero with a `G` currency.
+  static const zero = Balance(sum: Sum(0), currency: Currency('XXX'));
 
-  /// Returns the [Operation]s happening in [MyUser]'s wallet.
-  Paginated<OperationId, Operation> get operations;
+  /// [Sum] of this [Price].
+  final Sum sum;
 
-  /// Returns the [OperationDepositMethod]s available for the [MyUser].
-  RxList<OperationDepositMethod> get methods;
+  /// [Currency] of this [Price].
+  final Currency currency;
+
+  @override
+  String toString() => 'Balance(${currency.val} -> ${sum.val})';
 }

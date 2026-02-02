@@ -25,6 +25,7 @@ import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
+import '/domain/model/balance.dart';
 import '/domain/model/price.dart';
 import '/routes.dart';
 import '/util/platform_utils.dart';
@@ -410,7 +411,7 @@ extension SpacesNumExtension on num {
 extension CurrencyL10nExtension on Currency {
   /// Returns a symbol of this [Currency].
   String get l10n => switch (val) {
-    'G' => '¤',
+    'XXX' => '¤',
     'USD' => '\$',
     'EUR' => '€',
     (_) => val,
@@ -420,6 +421,25 @@ extension CurrencyL10nExtension on Currency {
 /// Extension adding ability to retrieve a localized string of a [Price].
 extension PriceL10nExtention on Price {
   /// Returns a localized string of this [Price].
+  String get l10n {
+    return switch (currency.val) {
+      'USDT' => '${sum.val.toStringAsDigits(2)} ${currency.l10n}',
+      (_) => '${currency.l10n}${sum.val.toStringAsDigits(2)}',
+    };
+  }
+
+  /// Returns a localized string of this [Price] with [digits] configurable.
+  String l10next({int digits = 2}) {
+    return switch (currency.val) {
+      'USDT' => '${sum.val.toStringAsDigits(digits)} ${currency.l10n}',
+      (_) => '${currency.l10n}${sum.val.toStringAsDigits(digits)}',
+    };
+  }
+}
+
+/// Extension adding ability to retrieve a localized string of a [Balance].
+extension BalanceL10nExtention on Balance {
+  /// Returns a localized string of this [Balance].
   String get l10n {
     return switch (currency.val) {
       'USDT' => '${sum.val.toStringAsDigits(2)} ${currency.l10n}',

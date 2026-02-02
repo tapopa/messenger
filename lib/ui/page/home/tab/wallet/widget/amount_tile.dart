@@ -131,7 +131,7 @@ class AmountTile extends StatelessWidget {
             left: 16,
             top: 16,
             child: Text(
-              'currency_amount'.l10nfmt({'amount': nominal.sum.val}),
+              nominal.l10next(digits: 0),
               style: style.fonts.largest.bold.onPrimary.copyWith(
                 fontSize: 36,
                 shadows: [

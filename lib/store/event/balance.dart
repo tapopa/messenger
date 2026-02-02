@@ -15,31 +15,35 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
 import '/domain/model/balance.dart';
-import '/domain/service/partner.dart';
 
-/// Controller of the `HomeTab.partner` tab.
-class PartnerTabController extends GetxController {
-  PartnerTabController(this._partnerService);
+/// Tag representing a [BalanceUpdates] kind.
+enum BalanceUpdatesKind { initialized, balance }
 
-  /// [ScrollController] to pass to a [Scrollbar].
-  final ScrollController scrollController = ScrollController();
+/// [Balance] event union.
+abstract class BalanceUpdates {
+  const BalanceUpdates();
 
-  /// Returns the balance [MyUser] has in their partner available wallet.
-  Rx<Balance> get available => _partnerService.available;
+  /// [BalanceUpdatesKind] of this event.
+  BalanceUpdatesKind get kind;
+}
 
-  /// Returns the balance [MyUser] has in their partner hold wallet.
-  Rx<Balance> get hold => _partnerService.hold;
+/// [BalanceUpdates] with [Balance] itself.
+class BalanceUpdatesBalance extends BalanceUpdates {
+  const BalanceUpdatesBalance(this.balance);
 
-  /// [PartnerService] used to query [available] and [hold] balances.
-  final PartnerService _partnerService;
+  /// [Balance] itself.
+  final Balance balance;
 
   @override
-  void onClose() {
-    scrollController.dispose();
-    super.onClose();
-  }
+  BalanceUpdatesKind get kind => BalanceUpdatesKind.balance;
+}
+
+/// Indicator notifying about a GraphQL subscription being successfully
+/// initialized.
+class BalanceUpdatesInitialized extends BalanceUpdates {
+  const BalanceUpdatesInitialized();
+
+  @override
+  BalanceUpdatesKind get kind => BalanceUpdatesKind.initialized;
 }

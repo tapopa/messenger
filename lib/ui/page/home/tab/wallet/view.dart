@@ -26,7 +26,6 @@ import '/ui/page/home/widget/app_bar.dart';
 import '/ui/widget/line_divider.dart';
 import '/ui/widget/menu_button.dart';
 import '/ui/widget/svg/svg.dart';
-import '/ui/widget/widget_button.dart';
 import 'controller.dart';
 import 'widget/deposit_expandable.dart';
 
@@ -79,16 +78,9 @@ class WalletTabView extends StatelessWidget {
             ),
             actions: [
               Obx(() {
-                return WidgetButton(
-                  onPressed: router.walletTransactions,
-                  child: Text(
-                    'currency_amount'.l10nfmt({
-                      'amount': c.balance.value.toDouble().withSpaces,
-                    }),
-                    style: style.fonts.big.regular.onBackground.copyWith(
-                      color: style.colors.primary,
-                    ),
-                  ),
+                return Text(
+                  c.balance.value.l10n,
+                  style: style.fonts.big.regular.currencyPrimary,
                 );
               }),
               const SizedBox(width: 16),

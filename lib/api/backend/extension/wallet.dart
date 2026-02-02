@@ -16,6 +16,7 @@
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
 import '/api/backend/schema.dart';
+import '/domain/model/balance.dart';
 import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/price.dart';
@@ -105,4 +106,10 @@ DtoOperation _operation(dynamic node, OperationsCursor? cursor) {
   }
 
   throw UnimplementedError('$node is not implemented');
+}
+
+/// Extension adding models construction from an [BalanceMixin].
+extension BalanceConversion on BalanceMixin {
+  /// Constructs a new [Balance] from this [BalanceMixin].
+  Balance toModel() => Balance(sum: sum, currency: currency);
 }

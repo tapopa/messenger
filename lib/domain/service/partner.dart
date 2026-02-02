@@ -17,6 +17,7 @@
 
 import 'package:get/get.dart';
 
+import '/domain/model/balance.dart';
 import '/domain/model/operation.dart';
 import '/domain/repository/paginated.dart';
 import '/domain/repository/partner.dart';
@@ -29,8 +30,11 @@ class PartnerService extends Dependency {
   /// [AbstractPartnerRepository] managing the wallet data.
   final AbstractPartnerRepository _partnerRepository;
 
-  /// Returns the balance [MyUser] has in their partner wallet.
-  RxDouble get balance => _partnerRepository.balance;
+  /// Returns the balance [MyUser] has in their partner available wallet.
+  Rx<Balance> get available => _partnerRepository.available;
+
+  /// Returns the balance [MyUser] has in their partner hold wallet.
+  Rx<Balance> get hold => _partnerRepository.hold;
 
   /// Returns the [Operation]s happening in [MyUser]'s partner wallet.
   Paginated<OperationId, Operation> get operations =>

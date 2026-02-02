@@ -784,7 +784,7 @@ label_audio_call = Audio call{$by ->
         *[other] {" "}by {$by}
     }
 label_auto_gain_control = Auto gain control
-label_available_balance_amount = Available balance: ¤{$amount}
+label_available_balance_amount = Available balance: {$amount}
 label_available_semicolon_amount = Available: {$amount}
 label_avatar_removed = {$author} removed avatar
 label_avatar_removed1 = {$author}

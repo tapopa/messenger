@@ -15,13 +15,22 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'package:async/async.dart';
 import 'package:get/get.dart';
+import 'package:graphql/client.dart' show QueryResult;
 
+import '/api/backend/extension/wallet.dart';
+import '/api/backend/schema.dart';
+import '/domain/model/balance.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/user.dart';
 import '/domain/repository/partner.dart';
 import '/domain/service/disposable_service.dart';
+import '/provider/gql/graphql.dart';
 import '/util/log.dart';
+import '/util/stream_utils.dart';
+import '/util/web/web.dart';
+import 'event/balance.dart';
 import 'model/operation.dart';
 import 'model/page_info.dart';
 import 'pagination.dart';
@@ -31,10 +40,22 @@ import 'wallet.dart';
 /// [MyUser] wallet repository interface.
 class PartnerRepository extends IdentityDependency
     implements AbstractPartnerRepository {
-  PartnerRepository({required super.me});
+  PartnerRepository(this._graphQlProvider, {required super.me});
 
   @override
-  final RxDouble balance = RxDouble(0);
+  final Rx<Balance> available = Rx(Balance.zero);
+
+  @override
+  final Rx<Balance> hold = Rx(Balance.zero);
+
+  /// [GraphQlProvider] for fetching the [Balance]s.
+  final GraphQlProvider _graphQlProvider;
+
+  /// [Balance] subscription.
+  StreamQueue<BalanceUpdates>? _availableSubscription;
+
+  /// [Balance] subscription.
+  StreamQueue<BalanceUpdates>? _holdSubscription;
 
   @override
   late final OperationsPaginated operations = OperationsPaginated(
@@ -58,15 +79,141 @@ class PartnerRepository extends IdentityDependency
   }
 
   @override
+  void onClose() {
+    _availableSubscription?.close(immediate: true);
+    _holdSubscription?.close(immediate: true);
+    super.onClose();
+  }
+
+  @override
   void onIdentityChanged(UserId me) {
     super.onIdentityChanged(me);
 
     Log.debug('onIdentityChanged($me)', '$runtimeType');
 
     operations.clear();
+    available.value = Balance.zero;
+    hold.value = Balance.zero;
+    _availableSubscription?.close(immediate: true);
+    _holdSubscription?.close(immediate: true);
 
     if (!me.isLocal) {
       operations.around();
+
+      _initAvailableSubscription();
+      _initHoldSubscription();
     }
+  }
+
+  /// Initializes [_availableSubscription] subscription.
+  Future<void> _initAvailableSubscription() async {
+    Log.debug('_initAvailableSubscription()', '$runtimeType');
+
+    _availableSubscription?.close(immediate: true);
+
+    if (me.isLocal || isClosed) {
+      return;
+    }
+
+    await WebUtils.protect(() async {
+      if (me.isLocal || isClosed) {
+        return;
+      }
+
+      _availableSubscription = StreamQueue(
+        await _balanceUpdates(BalanceOrigin.incomeAvailable),
+      );
+
+      await _availableSubscription!.execute(_availableUpdate);
+    }, tag: 'availableUpdates()');
+  }
+
+  /// Handles [BalanceUpdates] from the [_availableUpdate] subscription.
+  Future<void> _availableUpdate(BalanceUpdates events) async {
+    switch (events.kind) {
+      case BalanceUpdatesKind.initialized:
+        Log.debug('_availableUpdate(${events.kind})', '$runtimeType');
+        break;
+
+      case BalanceUpdatesKind.balance:
+        events as BalanceUpdatesBalance;
+
+        Log.debug(
+          '_availableUpdate(${events.kind}) -> ${events.balance}',
+          '$runtimeType',
+        );
+
+        available.value = events.balance;
+        break;
+    }
+  }
+
+  /// Initializes [_holdSubscription] subscription.
+  Future<void> _initHoldSubscription() async {
+    Log.debug('_initHoldSubscription()', '$runtimeType');
+
+    _holdSubscription?.close(immediate: true);
+
+    if (me.isLocal || isClosed) {
+      return;
+    }
+
+    await WebUtils.protect(() async {
+      if (me.isLocal || isClosed) {
+        return;
+      }
+
+      _holdSubscription = StreamQueue(
+        await _balanceUpdates(BalanceOrigin.incomeHold),
+      );
+
+      await _holdSubscription!.execute(_holdUpdate);
+    }, tag: 'holdUpdates()');
+  }
+
+  /// Handles [BalanceUpdates] from the [_holdUpdate] subscription.
+  Future<void> _holdUpdate(BalanceUpdates events) async {
+    switch (events.kind) {
+      case BalanceUpdatesKind.initialized:
+        Log.debug('_holdUpdate(${events.kind})', '$runtimeType');
+        break;
+
+      case BalanceUpdatesKind.balance:
+        events as BalanceUpdatesBalance;
+
+        Log.debug(
+          '_holdUpdate(${events.kind}) -> ${events.balance}',
+          '$runtimeType',
+        );
+
+        hold.value = events.balance;
+        break;
+    }
+  }
+
+  /// Returns a [Stream] of [Balance]s of the specified [MyUser]'s purse.
+  Future<Stream<BalanceUpdates>> _balanceUpdates(BalanceOrigin origin) async {
+    Log.debug('_balanceEvents()', '$runtimeType');
+
+    final Stream<QueryResult> events = await _graphQlProvider.balanceUpdates(
+      origin,
+    );
+
+    return events.asyncExpand((event) async* {
+      Log.trace('_balanceEvents() -> ${event.data}', '$runtimeType');
+
+      final events = BalanceUpdates$Subscription.fromJson(
+        event.data!,
+      ).balanceUpdates;
+      if (events.$$typename == 'SubscriptionInitialized') {
+        events
+            as BalanceUpdates$Subscription$BalanceUpdates$SubscriptionInitialized;
+        yield const BalanceUpdatesInitialized();
+      } else if (events.$$typename == 'Balance') {
+        final mixin =
+            events as BalanceUpdates$Subscription$BalanceUpdates$Balance;
+        yield BalanceUpdatesBalance(mixin.toModel());
+      }
+    });
   }
 }

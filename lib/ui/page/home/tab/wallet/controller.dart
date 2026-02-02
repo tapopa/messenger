@@ -18,6 +18,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '/domain/model/balance.dart';
 import '/domain/model/country.dart';
 import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/session.dart';
@@ -31,9 +32,6 @@ class WalletTabController extends GetxController {
 
   /// [ScrollController] to pass to a [Scrollbar].
   final ScrollController scrollController = ScrollController();
-
-  /// Balance [MyUser] has in its wallet to display.
-  final RxDouble balance = RxDouble(0);
 
   /// [OperationDepositMethodId]s being expanded currently.
   final RxSet<OperationDepositMethodId> expanded = RxSet();
@@ -49,6 +47,9 @@ class WalletTabController extends GetxController {
 
   /// Returns the [OperationDepositMethod]s available for the [MyUser].
   RxList<OperationDepositMethod> get methods => _walletService.methods;
+
+  /// Balance [MyUser] has in its wallet to display.
+  Rx<Balance> get balance => _walletService.balance;
 
   @override
   void onInit() {

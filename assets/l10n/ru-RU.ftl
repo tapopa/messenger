@@ -800,7 +800,7 @@ label_audio_call = Аудиозвонок{$by ->
         *[other] {" "}от {$by}
     }
 label_auto_gain_control = Авторегулировка громкости
-label_available_balance_amount = Доступный баланс: ¤{$amount}
+label_available_balance_amount = Доступный баланс: {$amount}
 label_available_semicolon_amount = Доступно: {$amount}
 label_avatar_removed = {$author} удалил(а) аватар
 label_avatar_removed1 = {$author}

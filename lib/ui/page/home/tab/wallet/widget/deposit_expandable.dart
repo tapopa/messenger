@@ -20,8 +20,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '/api/backend/schema.dart' show OperationDepositKind;
 import '/domain/model/country.dart';
 import '/domain/model/deposit.dart';
+import '/domain/model/operation_deposit_method.dart';
 import '/l10n/l10n.dart';
 import '/themes.dart';
 import '/ui/page/home/tab/wallet/select_country/view.dart';
@@ -32,13 +34,14 @@ import 'amount_tile.dart';
 
 /// Fields required for [DepositExpandable] for inputs.
 class DepositFields {
-  /// Fields for [DepositKind.payPal].
+  /// Fields for [OperationDepositKind.paypal].
   final PayPalDepositFields paypal = PayPalDepositFields();
 
   /// Returns an [IsoCode] of the provided [provider].
-  Rx<IsoCode?> getCountry(DepositKind provider) {
+  Rx<IsoCode?> getCountry(OperationDepositKind provider) {
     return switch (provider) {
-      DepositKind.payPal => paypal.country,
+      OperationDepositKind.paypal => paypal.country,
+      OperationDepositKind.artemisUnknown => Rx(null),
     };
   }
 
@@ -66,7 +69,7 @@ class DepositExpandable extends StatelessWidget {
     required this.fields,
   });
 
-  final DepositKind provider;
+  final OperationDepositMethod provider;
   final bool expanded;
   final void Function()? onPressed;
   final DepositFields fields;
@@ -75,17 +78,20 @@ class DepositExpandable extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = Theme.of(context).style;
 
-    final title = switch (provider) {
-      DepositKind.payPal => 'label_paypal'.l10n,
+    final title = switch (provider.kind) {
+      OperationDepositKind.paypal => 'label_paypal'.l10n,
+      OperationDepositKind.artemisUnknown => 'label_unknown'.l10n,
     };
 
-    final asset = switch (provider) {
-      DepositKind.payPal => SvgIcons.payPal,
+    final asset = switch (provider.kind) {
+      OperationDepositKind.paypal => SvgIcons.payPal,
+      OperationDepositKind.artemisUnknown => SvgIcons.menuMonetization,
     };
 
     final List<Text> texts = [
-      ...switch (provider) {
-        DepositKind.payPal => [Text('label_instant_top_up'.l10n)],
+      ...switch (provider.kind) {
+        OperationDepositKind.paypal => [Text('label_instant_top_up'.l10n)],
+        OperationDepositKind.artemisUnknown => [],
       },
     ];
 
@@ -108,9 +114,9 @@ class DepositExpandable extends StatelessWidget {
       decoration: BoxDecoration(
         color: style.colors.onPrimary,
         borderRadius: style.cardRadius,
-        border: expanded ? provider.border : style.cardBorder,
+        border: expanded ? provider.kind.border : style.cardBorder,
         boxShadow: expanded
-            ? [BoxShadow(color: provider.shadow, blurRadius: 4)]
+            ? [BoxShadow(color: provider.kind.shadow, blurRadius: 4)]
             : [],
       ),
       child: Column(
@@ -188,7 +194,7 @@ class DepositExpandable extends StatelessWidget {
   }
 }
 
-extension BuildProviderExtension on DepositKind {
+extension BuildProviderExtension on OperationDepositMethod {
   Widget build(
     BuildContext context, {
     bool withLogo = true,
@@ -198,7 +204,7 @@ extension BuildProviderExtension on DepositKind {
 
     final PayPalDepositFields? paypal = fields?.paypal;
 
-    final country = fields?.getCountry(this);
+    final country = fields?.getCountry(kind);
 
     Widget countryButton({bool error = false}) {
       return Padding(
@@ -208,15 +214,15 @@ extension BuildProviderExtension on DepositKind {
             context,
             country: country?.value,
             onCode: (code) => country?.value = code,
-            available: IsoCodeExtension.available(this),
+            available: IsoCodeExtension.available(kind),
             error: error,
           );
         }),
       );
     }
 
-    switch (this) {
-      case DepositKind.payPal:
+    switch (kind) {
+      case OperationDepositKind.paypal:
         if (paypal == null) {
           return const SizedBox();
         }
@@ -241,7 +247,7 @@ extension BuildProviderExtension on DepositKind {
             ],
             Obx(() {
               final available = IsoCodeExtension.available(
-                this,
+                kind,
               ).contains(paypal.country.value);
 
               return Column(
@@ -268,7 +274,7 @@ extension BuildProviderExtension on DepositKind {
             Flexible(
               child: Obx(() {
                 final available = IsoCodeExtension.available(
-                  this,
+                  kind,
                 ).contains(paypal.country.value);
 
                 return Opacity(
@@ -281,7 +287,7 @@ extension BuildProviderExtension on DepositKind {
                         if (paypal.country.value == null) {
                           final result = await SelectCountryView.show(
                             context,
-                            available: IsoCodeExtension.available(this),
+                            available: IsoCodeExtension.available(kind),
                           );
                           if (result != null) {
                             paypal.country.value = result;
@@ -301,6 +307,9 @@ extension BuildProviderExtension on DepositKind {
             ),
           ],
         );
+
+      case OperationDepositKind.artemisUnknown:
+        return const SizedBox();
     }
   }
 }
@@ -386,16 +395,23 @@ Widget _countryButton(
   );
 }
 
-extension on DepositKind {
+extension on OperationDepositKind {
   Border get border {
     return switch (this) {
-      DepositKind.payPal => Border.all(color: Color(0xFF2997D8), width: 0.5),
+      OperationDepositKind.paypal => Border.all(
+        color: Color(0xFF2997D8),
+        width: 0.5,
+      ),
+      OperationDepositKind.artemisUnknown => Border(),
     };
   }
 
   Color get shadow {
     return switch (this) {
-      DepositKind.payPal => Color(0xFF2997D8).withAlpha((255 * 0.25).round()),
+      OperationDepositKind.paypal => Color(
+        0xFF2997D8,
+      ).withAlpha((255 * 0.25).round()),
+      OperationDepositKind.artemisUnknown => Colors.grey,
     };
   }
 }

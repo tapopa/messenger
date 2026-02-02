@@ -17,6 +17,7 @@
 
 import '/domain/model/country.dart';
 import '/domain/model/donation.dart';
+import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/price.dart';
 import '/domain/model/promo_share.dart';
@@ -574,4 +575,104 @@ fromDartListNullableDonationIdNullableToGraphQLListNullableDonationIdNullable(
   List<DonationId?>? v,
 ) => v
     ?.map((e) => fromDartDonationIdNullableToGraphQLDonationIdNullable(e))
+    .toList();
+
+// OperationDepositMethodId
+
+OperationDepositMethodId
+fromGraphQLOperationDepositMethodIdToDartOperationDepositMethodId(String v) =>
+    OperationDepositMethodId(v);
+String fromDartOperationDepositMethodIdToGraphQLOperationDepositMethodId(
+  OperationDepositMethodId v,
+) => v.val;
+List<OperationDepositMethodId>
+fromGraphQLListOperationDepositMethodIdToDartListOperationDepositMethodId(
+  List<Object?> v,
+) => v
+    .map(
+      (e) => fromGraphQLOperationDepositMethodIdToDartOperationDepositMethodId(
+        e as String,
+      ),
+    )
+    .toList();
+List<String>
+fromDartListOperationDepositMethodIdToGraphQLListOperationDepositMethodId(
+  List<OperationDepositMethodId> v,
+) => v
+    .map(
+      (e) =>
+          fromDartOperationDepositMethodIdToGraphQLOperationDepositMethodId(e),
+    )
+    .toList();
+List<OperationDepositMethodId>?
+fromGraphQLListNullableOperationDepositMethodIdToDartListNullableOperationDepositMethodId(
+  List<Object?>? v,
+) => v
+    ?.map(
+      (e) => fromGraphQLOperationDepositMethodIdToDartOperationDepositMethodId(
+        e as String,
+      ),
+    )
+    .toList();
+List<String>?
+fromDartListNullableOperationDepositMethodIdToGraphQLListNullableOperationDepositMethodId(
+  List<OperationDepositMethodId>? v,
+) => v
+    ?.map(
+      (e) =>
+          fromDartOperationDepositMethodIdToGraphQLOperationDepositMethodId(e),
+    )
+    .toList();
+
+OperationDepositMethodId?
+fromGraphQLOperationDepositMethodIdNullableToDartOperationDepositMethodIdNullable(
+  String? v,
+) => v == null ? null : OperationDepositMethodId(v);
+String?
+fromDartOperationDepositMethodIdNullableToGraphQLOperationDepositMethodIdNullable(
+  OperationDepositMethodId? v,
+) => v?.val;
+List<OperationDepositMethodId?>
+fromGraphQLListOperationDepositMethodIdNullableToDartListOperationDepositMethodIdNullable(
+  List<Object?> v,
+) => v
+    .map(
+      (e) =>
+          fromGraphQLOperationDepositMethodIdNullableToDartOperationDepositMethodIdNullable(
+            e as String?,
+          ),
+    )
+    .toList();
+List<String?>
+fromDartListOperationDepositMethodIdNullableToGraphQLListOperationDepositMethodIdNullable(
+  List<OperationDepositMethodId?> v,
+) => v
+    .map(
+      (e) =>
+          fromDartOperationDepositMethodIdNullableToGraphQLOperationDepositMethodIdNullable(
+            e,
+          ),
+    )
+    .toList();
+List<OperationDepositMethodId?>?
+fromGraphQLListNullableOperationDepositMethodIdNullableToDartListNullableOperationDepositMethodIdNullable(
+  List<Object?>? v,
+) => v
+    ?.map(
+      (e) =>
+          fromGraphQLOperationDepositMethodIdNullableToDartOperationDepositMethodIdNullable(
+            e as String?,
+          ),
+    )
+    .toList();
+List<String?>?
+fromDartListNullableOperationDepositMethodIdNullableToGraphQLListNullableOperationDepositMethodIdNullable(
+  List<OperationDepositMethodId?>? v,
+) => v
+    ?.map(
+      (e) =>
+          fromDartOperationDepositMethodIdNullableToGraphQLOperationDepositMethodIdNullable(
+            e,
+          ),
+    )
     .toList();

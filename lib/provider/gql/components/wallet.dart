@@ -85,4 +85,40 @@ mixin WalletGraphQlMixin {
     );
     return Operations$Query.fromJson(result.data!).operations;
   }
+
+  /// Returns information about available [OperationDepositMethod]s for the
+  /// authenticated [MyUser].
+  Future<List<OperationDepositMethods$Query$OperationDepositMethods>>
+  operationDepositMethods() async {
+    Log.debug('OperationDepositMethods()', '$runtimeType');
+
+    // final QueryResult result = await client.query(
+    //   QueryOptions(
+    //     operationName: 'OperationDepositMethods',
+    //     document: OperationDepositMethodsQuery().document,
+    //   ),
+    // );
+
+    return OperationDepositMethods$Query.fromJson({
+      'operationDepositMethods': [
+        {
+          'id': '4gfFC3',
+          'kind': 'PAYPAL',
+          'countries': null,
+          'nominals': [
+            {'currency': 'EUR', 'sum': '5'},
+            {'currency': 'EUR', 'sum': '10'},
+            {'currency': 'EUR', 'sum': '25'},
+            {'currency': 'EUR', 'sum': '50'},
+            {'currency': 'EUR', 'sum': '75'},
+            {'currency': 'EUR', 'sum': '100'},
+          ],
+        },
+      ],
+    }).operationDepositMethods;
+
+    // return OperationDepositMethods$Query.fromJson(
+    //   result.data!,
+    // ).operationDepositMethods;
+  }
 }

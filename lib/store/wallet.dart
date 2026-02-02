@@ -21,6 +21,7 @@ import '/api/backend/extension/page_info.dart';
 import '/api/backend/extension/wallet.dart';
 import '/api/backend/schema.dart' show OperationStatus;
 import '/domain/model/country.dart';
+import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/price.dart';
@@ -110,6 +111,9 @@ class WalletRepository extends IdentityDependency
     },
   );
 
+  @override
+  final RxList<OperationDepositMethod> methods = RxList();
+
   /// [GraphQlProvider] for fetching the [Operation]s list.
   final GraphQlProvider _graphQlProvider;
 
@@ -129,6 +133,7 @@ class WalletRepository extends IdentityDependency
 
     if (!me.isLocal) {
       operations.around();
+      _queryMethods();
     }
   }
 
@@ -156,5 +161,11 @@ class WalletRepository extends IdentityDependency
       query.edges.map((e) => e.node.toDto(cursor: e.cursor)).toList(),
       query.pageInfo.toModel((c) => OperationsCursor(c)),
     );
+  }
+
+  /// Queries the available [OperationDepositMethod]s into [methods].
+  Future<void> _queryMethods() async {
+    final list = await _graphQlProvider.operationDepositMethods();
+    methods.value = list.map((e) => e.toModel()).toList();
   }
 }

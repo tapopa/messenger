@@ -18,7 +18,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '/domain/model/deposit.dart';
+import '/api/backend/schema.dart' show OperationDepositKind;
 import '/l10n/l10n.dart';
 import '/routes.dart';
 import '/themes.dart';
@@ -39,7 +39,7 @@ class WalletTabView extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder(
       key: const Key('WalletTab'),
-      init: WalletTabController(Get.find()),
+      init: WalletTabController(Get.find(), Get.find()),
       builder: (WalletTabController c) {
         final style = Theme.of(context).style;
 
@@ -97,39 +97,64 @@ class WalletTabView extends StatelessWidget {
           ),
           body: Scrollbar(
             controller: c.scrollController,
-            child: ListView(
-              padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
-              controller: c.scrollController,
-              children: [
-                const SizedBox(height: 8),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: LineDivider('btn_add_funds'.l10n),
-                ),
-                const SizedBox(height: 8),
-                ...DepositKind.values.map((e) {
-                  return Obx(() {
-                    final bool expanded = c.expanded.contains(e);
+            child: Obx(() {
+              return ListView(
+                padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
+                controller: c.scrollController,
+                children: [
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: LineDivider('btn_add_funds'.l10n),
+                  ),
+                  const SizedBox(height: 8),
+                  ...c.methods.map((e) {
+                    switch (e.kind) {
+                      case OperationDepositKind.paypal:
+                        return Obx(() {
+                          final bool expanded = c.expanded.contains(e.id);
 
-                    return DepositExpandable(
-                      expanded: expanded,
-                      onPressed: expanded
-                          ? () => c.expanded.remove(e)
-                          : () => c.expanded.add(e),
-                      provider: e,
-                      fields: c.fields.value,
-                    );
-                  });
-                }),
-                const SizedBox(height: 8),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: LineDivider('label_wallet_history'.l10n),
-                ),
-                const SizedBox(height: 8),
-                transactions,
-              ],
-            ),
+                          return DepositExpandable(
+                            expanded: expanded,
+                            onPressed: expanded
+                                ? () => c.expanded.remove(e.id)
+                                : () => c.expanded.add(e.id),
+                            provider: e,
+                            fields: c.fields.value,
+                          );
+                        });
+
+                      case OperationDepositKind.artemisUnknown:
+                        return ListTile(
+                          title: Text(e.kind.name),
+                          subtitle: Text('${e.id}'),
+                        );
+                    }
+                  }),
+                  // ...DepositKind.values.map((e) {
+                  //   return Obx(() {
+                  //     final bool expanded = c.expanded.contains(e);
+
+                  //     return DepositExpandable(
+                  //       expanded: expanded,
+                  //       onPressed: expanded
+                  //           ? () => c.expanded.remove(e)
+                  //           : () => c.expanded.add(e),
+                  //       provider: e,
+                  //       fields: c.fields.value,
+                  //     );
+                  //   });
+                  // }),
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: LineDivider('label_wallet_history'.l10n),
+                  ),
+                  const SizedBox(height: 8),
+                  transactions,
+                ],
+              );
+            }),
           ),
         );
       },

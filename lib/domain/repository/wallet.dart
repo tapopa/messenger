@@ -17,6 +17,7 @@
 
 import 'package:get/get.dart';
 
+import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
 import 'paginated.dart';
 
@@ -27,4 +28,7 @@ abstract class AbstractWalletRepository {
 
   /// Returns the [Operation]s happening in [MyUser]'s wallet.
   Paginated<OperationId, Operation> get operations;
+
+  /// Returns the [OperationDepositMethod]s available for the [MyUser].
+  RxList<OperationDepositMethod> get methods;
 }

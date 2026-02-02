@@ -15,9 +15,10 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-import '/domain/model/price.dart';
 import '/api/backend/schema.dart';
+import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
+import '/domain/model/price.dart';
 import '/store/model/operation.dart';
 
 /// Extension adding models construction from an [PriceMixin].
@@ -61,6 +62,29 @@ extension OperationDepositBonusConversion on OperationDepositBonusMixin {
   /// Constructs a new [DtoOperation] from this [OperationDepositBonusMixin].
   DtoOperation toDto(OperationsCursor? cursor) =>
       DtoOperation(toModel(), ver, cursor: cursor);
+}
+
+/// Extension adding models construction from an [OperationDepositMethodMixin].
+extension OperationDepositMethodConversion on OperationDepositMethodMixin {
+  /// Constructs a new [OperationDepositMethod] from this
+  /// [OperationDepositMethodMixin].
+  OperationDepositMethod toModel() => OperationDepositMethod(
+    id: id,
+    kind: kind,
+    countries: switch (countries?.$$typename) {
+      'CriteriaCountryExcept' => CriteriaCountryExcept(
+        (countries
+                as OperationDepositMethodMixin$Countries$CriteriaCountryExcept)
+            .except,
+      ),
+      'CriteriaCountryOnly' => CriteriaCountryOnly(
+        (countries as OperationDepositMethodMixin$Countries$CriteriaCountryOnly)
+            .only,
+      ),
+      (_) => null,
+    },
+    nominals: nominals?.map((e) => e.toModel()).toList(),
+  );
 }
 
 /// Extension adding models construction from

@@ -17,8 +17,8 @@
 
 import 'package:collection/collection.dart';
 
+import '/api/backend/schema.dart' show OperationDepositKind;
 import '/util/new_type.dart';
-import 'deposit.dart';
 
 // ignore_for_file: constant_identifier_names
 
@@ -292,22 +292,26 @@ enum IsoCode {
   String toJson() => name;
 }
 
-/// Extention adding ability to list restricted [IsoCode] for [DepositKind]s.
+/// Extention adding ability to list restricted [IsoCode] for
+/// [OperationDepositKind]s.
 extension IsoCodeExtension on IsoCode {
-  /// Returns [IsoCode]s that aren't available for the provided [DepositKind].
-  static Set<IsoCode> restricted(DepositKind provider) {
+  /// Returns [IsoCode]s that aren't available for the provided [OperationDepositKind].
+  static Set<IsoCode> restricted(OperationDepositKind provider) {
     switch (provider) {
-      case DepositKind.payPal:
+      case OperationDepositKind.paypal:
         return IsoCode.values
             .whereNot((e) => available(provider).contains(e))
             .toSet();
+
+      case OperationDepositKind.artemisUnknown:
+        return {};
     }
   }
 
-  /// Returns [IsoCode] that are available for the provided [DepositKind].
-  static Set<IsoCode> available(DepositKind provider) {
+  /// Returns [IsoCode] that are available for the provided [OperationDepositKind].
+  static Set<IsoCode> available(OperationDepositKind provider) {
     switch (provider) {
-      case DepositKind.payPal:
+      case OperationDepositKind.paypal:
         return {
           IsoCode.DZ,
           IsoCode.AO,
@@ -508,6 +512,9 @@ extension IsoCodeExtension on IsoCode {
           IsoCode.RU,
           IsoCode.BY,
         };
+
+      case OperationDepositKind.artemisUnknown:
+        return {};
     }
   }
 }

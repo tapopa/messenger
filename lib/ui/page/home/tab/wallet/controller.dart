@@ -19,14 +19,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '/domain/model/country.dart';
-import '/domain/model/deposit.dart';
+import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/session.dart';
 import '/domain/service/session.dart';
+import '/domain/service/wallet.dart';
 import 'widget/deposit_expandable.dart';
 
 /// Controller of the `HomeTab.wallet` tab.
 class WalletTabController extends GetxController {
-  WalletTabController(this._sessionService);
+  WalletTabController(this._sessionService, this._walletService);
 
   /// [ScrollController] to pass to a [Scrollbar].
   final ScrollController scrollController = ScrollController();
@@ -34,14 +35,20 @@ class WalletTabController extends GetxController {
   /// Balance [MyUser] has in its wallet to display.
   final RxDouble balance = RxDouble(0);
 
-  /// [DepositKind]s being expanded currently.
-  final RxSet<DepositKind> expanded = RxSet();
+  /// [OperationDepositMethodId]s being expanded currently.
+  final RxSet<OperationDepositMethodId> expanded = RxSet();
 
   /// [DepositFields] to pass to a [DepositExpandable].
   final Rx<DepositFields> fields = Rx(DepositFields());
 
   /// [SessionService] used for [IpGeoLocation] retrieving.
   final SessionService _sessionService;
+
+  /// [WalletService] used to retrieve available [OperationDepositMethod]s.
+  final WalletService _walletService;
+
+  /// Returns the [OperationDepositMethod]s available for the [MyUser].
+  RxList<OperationDepositMethod> get methods => _walletService.methods;
 
   @override
   void onInit() {

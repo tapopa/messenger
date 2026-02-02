@@ -19,7 +19,7 @@
 
 Feature: Blocklist
 
-  @profile
+  @settings
   Scenario: Blocked user cannot send me a message
     Given I am Alice
     And user Bob

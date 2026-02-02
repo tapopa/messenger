@@ -11,12 +11,33 @@ All user visible changes to this project will be documented in this file. This p
 
 [Diff](/../../compare/v0.2.1...v0.3.0) | [Milestone](/../../milestone/4)
 
+### Added
+
+- Mobile:
+    - Media panel:
+        - Output device modal being displayed when any external device is connected. ([team113/messenger#1596], [team113/messenger#1593])
+
 ### Changed
 
 - UI:
     - Redesigned deposit page on desktop to be only in tab. ([#18])
+    - User page:
+        - Join and decline call buttons. ([team113/messenger#1597])
+
+### Fixed
+
+- UI:
+    - Media panel:
+        - Camera disabling for remote peers when disable screen sharing. ([team113/messenger#1594])
+- iOS:
+    - Dialogue calls not being connected sometimes. ([team113/messenger#1594])
+    - Output device not switching to headphones or not displaying being switched. ([team113/messenger#1593])
 
 [#18]: /../../pull/18
+[team113/messenger#1593]: https://github.com/team113/messenger/pull/1593
+[team113/messenger#1594]: https://github.com/team113/messenger/pull/1594
+[team113/messenger#1596]: https://github.com/team113/messenger/pull/1596
+[team113/messenger#1597]: https://github.com/team113/messenger/pull/1597
 
 
 
@@ -37,7 +58,7 @@ All user visible changes to this project will be documented in this file. This p
     - Dialogue calls not being connected sometimes. ([team113/messenger#1594])
 
 [#16]: /../../pull/16
-[team113/messenger#1594]: /../../pull/1594
+[team113/messenger#1594]: https://github.com/team113/messenger/pull/1594
 
 
 

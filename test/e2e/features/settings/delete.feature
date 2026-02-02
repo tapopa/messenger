@@ -19,7 +19,7 @@
 
 Feature: Account deletion
 
-  @profile
+  @settings
   Scenario: User creates and deletes account without confirmation
     When I wait until `IntroductionView` is present
     And I tap `GuestButton` button

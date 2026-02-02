@@ -19,6 +19,7 @@
 
 Feature: MyUser's online status is correctly updated
 
+  @system
   Scenario: Bob sees Alice changing her online status
     Given I am Alice
     And user Bob

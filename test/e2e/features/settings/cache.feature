@@ -19,7 +19,7 @@
 
 Feature: Cache
 
-  @profile
+  @settings
   Scenario: Cache is cleaned when application version updates
     Given I am guest
     Then my account is indeed remote

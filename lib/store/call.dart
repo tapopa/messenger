@@ -37,6 +37,7 @@ import '/domain/model/user.dart';
 import '/domain/repository/call.dart';
 import '/domain/repository/chat.dart';
 import '/domain/repository/settings.dart';
+import '/domain/repository/user.dart';
 import '/domain/service/disposable_service.dart';
 import '/provider/drift/call_credentials.dart';
 import '/provider/drift/chat_credentials.dart';
@@ -264,6 +265,12 @@ class CallRepository extends IdentityDependency
   @override
   Rx<OngoingCall>? remove(ChatId chatId) {
     Log.debug('remove($chatId)', '$runtimeType');
+
+    if (chatId.isLocal) {
+      final UserId userId = chatId.userId;
+      final RxUser? user = _userRepo.users[userId];
+      chatId = user?.user.value.dialog ?? chatId;
+    }
 
     final Rx<OngoingCall>? call = calls.remove(chatId);
     call?.value.state.value = OngoingCallState.ended;

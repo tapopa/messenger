@@ -17,6 +17,9 @@
 
 import 'package:get/get.dart';
 
+import '/domain/model/balance.dart';
+import '/domain/model/country.dart';
+import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
 import '/domain/repository/paginated.dart';
 import '/domain/repository/wallet.dart';
@@ -30,9 +33,16 @@ class WalletService extends Dependency {
   final AbstractWalletRepository _walletRepository;
 
   /// Returns the balance [MyUser] has in their wallet.
-  RxDouble get balance => _walletRepository.balance;
+  Rx<Balance> get balance => _walletRepository.balance;
 
   /// Returns the [Operation]s happening in [MyUser]'s wallet.
   Paginated<OperationId, Operation> get operations =>
       _walletRepository.operations;
+
+  /// Returns the [OperationDepositMethod]s available for the [MyUser].
+  RxList<OperationDepositMethod> get methods => _walletRepository.methods;
+
+  /// Sets the available [methods] to be accounted as the provided [country].
+  Future<void> setCountry(CountryCode country) =>
+      _walletRepository.setCountry(country);
 }

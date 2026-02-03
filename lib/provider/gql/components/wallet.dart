@@ -19,7 +19,9 @@ import 'package:graphql/client.dart';
 
 import '../base.dart';
 import '/api/backend/schema.dart';
+import '/domain/model/country.dart';
 import '/domain/model/my_user.dart';
+import '/domain/model/price.dart';
 import '/domain/model/session.dart';
 import '/store/model/operation.dart';
 import '/util/log.dart';
@@ -84,5 +86,95 @@ mixin WalletGraphQlMixin {
       ),
     );
     return Operations$Query.fromJson(result.data!).operations;
+  }
+
+  /// Returns information about available [OperationDepositMethod]s for the
+  /// authenticated [MyUser].
+  Future<List<OperationDepositMethods$Query$OperationDepositMethods>>
+  operationDepositMethods(CountryCode country, Currency? currency) async {
+    Log.debug('OperationDepositMethods($country, $currency)', '$runtimeType');
+
+    final variables = OperationDepositMethodsArguments(
+      country: country,
+      currency: currency,
+    );
+    final QueryResult result = await client.query(
+      QueryOptions(
+        operationName: 'OperationDepositMethods',
+        document: OperationDepositMethodsQuery(variables: variables).document,
+        variables: variables.toJson(),
+      ),
+    );
+
+    return OperationDepositMethods$Query.fromJson(
+      result.data!,
+    ).operationDepositMethods;
+  }
+
+  /// Returns the current [Balance] of the authenticated [MyUser] in the
+  /// provided [BalanceOrigin].
+  Future<Balance$Query$Balance> balance(BalanceOrigin origin) async {
+    Log.debug('balance(${origin.name})', '$runtimeType');
+
+    final variables = BalanceArguments(origin: origin);
+    final QueryResult result = await client.query(
+      QueryOptions(
+        operationName: 'Balance',
+        document: BalanceQuery(variables: variables).document,
+        variables: variables.toJson(),
+      ),
+    );
+
+    return Balance$Query.fromJson(result.data!).balance;
+  }
+
+  /// Subscribes to [Balance] updates of the authenticated [MyUser] in the
+  /// provided [BalanceOrigin].
+  ///
+  /// ### Authentication
+  ///
+  /// Mandatory.
+  ///
+  /// ### Initialization
+  ///
+  /// Once this subscription is initialized completely, it immediately emits
+  /// `SubscriptionInitialized`.
+  ///
+  /// If nothing has been emitted for a long period of time after establishing
+  /// this subscription (while not being completed), it should be considered as
+  /// an unexpected server error. This fact can be used on a client side to
+  /// decide whether this subscription has been initialized successfully.
+  ///
+  /// ### Result
+  ///
+  /// Initial [Balance] will be emitted after `SubscriptionInitialized`. This
+  /// allows to skip calling [balance] before establishing this subscription.
+  ///
+  /// ### Completion
+  ///
+  /// Infinite.
+  ///
+  /// Completes requiring a re-subscription when:
+  /// - Authenticated Session expires (`SESSION_EXPIRED` error is emitted).
+  /// - An error occurs on the server (error is emitted).
+  /// - The server is shutting down or becoming unreachable (unexpectedly
+  /// completes after initialization).
+  ///
+  /// ### Idempotency
+  ///
+  /// Emits only changed [Balance] against the previously emitted one, so a
+  /// client side is expected to handle all the updates idempotently using the
+  /// same logic.
+  Future<Stream<QueryResult>> balanceUpdates(BalanceOrigin origin) async {
+    Log.debug('balanceUpdates(${origin.name})', '$runtimeType');
+
+    final variables = BalanceUpdatesArguments(origin: origin);
+    return client.subscribe(
+      SubscriptionOptions(
+        operationName: 'BalanceUpdates',
+        document: BalanceUpdatesSubscription(variables: variables).document,
+        variables: variables.toJson(),
+      ),
+    );
   }
 }

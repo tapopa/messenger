@@ -16,16 +16,17 @@
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
 import '/util/new_type.dart';
+import 'promo_share.dart';
 
 /// Price of something.
 class Price {
   const Price({required this.sum, required this.currency});
 
   /// [Price] with value of zero with a `G` currency.
-  static const zero = Price(sum: Sum(0), currency: Currency('G'));
+  static const zero = Price(sum: Sum(0), currency: Currency('XXX'));
 
   /// Constructs a [Price] with `G` currency of the provided [amount].
-  Price.g(double amount) : sum = Sum(amount), currency = Currency('G');
+  Price.g(double amount) : sum = Sum(amount), currency = Currency('XXX');
 
   /// Constructs a [Price] with `USDT` currency of the provided [amount].
   Price.usdt(double amount) : sum = Sum(amount), currency = Currency('USDT');
@@ -41,6 +42,9 @@ class Price {
 
   /// [Currency] of this [Price].
   final Currency currency;
+
+  @override
+  String toString() => 'Price(${currency.val} -> ${sum.val})';
 }
 
 /// Sum of money.
@@ -67,4 +71,20 @@ class Sum extends NewType<double> implements Comparable<Sum> {
 /// [ISO 4217]: https://iso.org/iso-4217-currency-codes.html
 class Currency extends NewType<String> {
   const Currency(super.val);
+}
+
+/// Modifier of a [Price].
+class PriceModifier {
+  PriceModifier({required this.percentage, required this.amount});
+
+  /// [Percentage] to apply to the [Price].
+  ///
+  /// `null` means this [PriceModifier] modifies the [Price] by a fixed [Sum].
+  final Percentage? percentage;
+
+  /// Concrete [Sum] amount to apply to the [Price].
+  ///
+  /// If the [percentage] is not `null`, then it represents the already
+  /// calculated [Sum] of the percentage.
+  final Price amount;
 }

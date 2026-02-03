@@ -18,17 +18,24 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '/domain/model/balance.dart';
+import '/domain/service/partner.dart';
+
 /// Controller of the `HomeTab.partner` tab.
 class PartnerTabController extends GetxController {
+  PartnerTabController(this._partnerService);
+
   /// [ScrollController] to pass to a [Scrollbar].
   final ScrollController scrollController = ScrollController();
 
-  /// Balance of the current [MyUser] available for withdrawal.
-  final RxDouble balance = RxDouble(0);
+  /// Returns the balance [MyUser] has in their partner available wallet.
+  Rx<Balance> get available => _partnerService.available;
 
-  /// Balance of the current [MyUser] not currently available for withdrawal (in
-  /// hold).
-  final RxDouble hold = RxDouble(0);
+  /// Returns the balance [MyUser] has in their partner hold wallet.
+  Rx<Balance> get hold => _partnerService.hold;
+
+  /// [PartnerService] used to query [available] and [hold] balances.
+  final PartnerService _partnerService;
 
   @override
   void onClose() {

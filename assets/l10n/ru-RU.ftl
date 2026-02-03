@@ -506,7 +506,6 @@ country_yt = Майотта
 country_za = Южная Африка
 country_zm = Замбия
 country_zw = Зимбабве
-currency_amount = ¤{$amount}
 dot = .
 email_confirmation_code =
     Код: {$token}
@@ -800,7 +799,7 @@ label_audio_call = Аудиозвонок{$by ->
         *[other] {" "}от {$by}
     }
 label_auto_gain_control = Авторегулировка громкости
-label_available_balance_amount = Доступный баланс: ¤{$amount}
+label_available_balance_amount = Доступный баланс: {$amount}
 label_available_semicolon_amount = Доступно: {$amount}
 label_avatar_removed = {$author} удалил(а) аватар
 label_avatar_removed1 = {$author}

@@ -44,7 +44,13 @@ part 'themes.g.dart';
     'regular': ['onBackground', 'secondary'],
   },
   'big': {
-    'regular': ['onBackground', 'onPrimary', 'secondary', 'primary'],
+    'regular': [
+      'onBackground',
+      'onPrimary',
+      'secondary',
+      'primary',
+      'currencyPrimary',
+    ],
   },
   'medium': {
     'regular': [

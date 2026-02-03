@@ -15,25 +15,35 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-import 'package:get/get.dart';
-
 import '/domain/model/balance.dart';
-import '/domain/model/country.dart';
-import '/domain/model/operation_deposit_method.dart';
-import '/domain/model/operation.dart';
-import 'paginated.dart';
 
-/// [MyUser] wallet repository interface.
-abstract class AbstractWalletRepository {
-  /// Returns the balance [MyUser] has in their wallet.
-  Rx<Balance> get balance;
+/// Tag representing a [BalanceUpdates] kind.
+enum BalanceUpdatesKind { initialized, balance }
 
-  /// Returns the [Operation]s happening in [MyUser]'s wallet.
-  Paginated<OperationId, Operation> get operations;
+/// [Balance] event union.
+abstract class BalanceUpdates {
+  const BalanceUpdates();
 
-  /// Returns the [OperationDepositMethod]s available for the [MyUser].
-  RxList<OperationDepositMethod> get methods;
+  /// [BalanceUpdatesKind] of this event.
+  BalanceUpdatesKind get kind;
+}
 
-  /// Sets the available [methods] to be accounted as the provided [country].
-  Future<void> setCountry(CountryCode country);
+/// [BalanceUpdates] with [Balance] itself.
+class BalanceUpdatesBalance extends BalanceUpdates {
+  const BalanceUpdatesBalance(this.balance);
+
+  /// [Balance] itself.
+  final Balance balance;
+
+  @override
+  BalanceUpdatesKind get kind => BalanceUpdatesKind.balance;
+}
+
+/// Indicator notifying about a GraphQL subscription being successfully
+/// initialized.
+class BalanceUpdatesInitialized extends BalanceUpdates {
+  const BalanceUpdatesInitialized();
+
+  @override
+  BalanceUpdatesKind get kind => BalanceUpdatesKind.initialized;
 }

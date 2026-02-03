@@ -17,19 +17,29 @@
 
 import 'package:flutter/material.dart';
 
+import '/domain/model/operation_deposit_method.dart';
+import '/domain/model/price.dart';
 import '/l10n/l10n.dart';
 import '/themes.dart';
 import '/ui/widget/svg/svg.dart';
 
 /// Card displaying [nominal] over a stylized asset.
 class AmountTile extends StatelessWidget {
-  const AmountTile({super.key, this.nominal = 0, this.height = 100});
+  const AmountTile({
+    super.key,
+    required this.nominal,
+    this.height = 100,
+    this.pricing,
+  });
 
-  /// Amount to display over the asset.
-  final num nominal;
+  /// [Price] to display over the asset.
+  final Price nominal;
 
   /// Height of the asset.
   final double height;
+
+  /// [OperationDepositPricing] to calculate the real prices on the [nominal].
+  final OperationDepositPricing? pricing;
 
   /// Resolves a [Color] to display [AmountTile] with according to the [amount].
   static Color _colorFor(num amount) {
@@ -118,19 +128,19 @@ class AmountTile extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: _colorFor(nominal),
+        color: _colorFor(nominal.sum.val),
         borderRadius: BorderRadius.circular(10),
       ),
       height: height,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          _positionedFor(nominal),
+          _positionedFor(nominal.sum.val),
           Positioned(
             left: 16,
             top: 16,
             child: Text(
-              'currency_amount'.l10nfmt({'amount': nominal}),
+              nominal.l10next(digits: 0),
               style: style.fonts.largest.bold.onPrimary.copyWith(
                 fontSize: 36,
                 shadows: [
@@ -144,20 +154,22 @@ class AmountTile extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            right: 4,
-            bottom: 4,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                SvgIcon(SvgIcons.priceSticker),
-                Text(
-                  '\$${(nominal * 1.299).toStringAsFixed(2)}',
-                  style: style.fonts.small.regular.secondary,
-                ),
-              ],
+
+          if (pricing != null)
+            Positioned(
+              right: 4,
+              bottom: 4,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  SvgIcon(SvgIcons.priceSticker),
+                  Text(
+                    pricing!.nominal.l10n,
+                    style: style.fonts.small.regular.secondary,
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );

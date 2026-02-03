@@ -18,7 +18,7 @@
 import 'package:collection/collection.dart';
 
 import '/util/new_type.dart';
-import 'deposit.dart';
+import 'operation_deposit_method.dart';
 
 // ignore_for_file: constant_identifier_names
 
@@ -292,222 +292,38 @@ enum IsoCode {
   String toJson() => name;
 }
 
-/// Extention adding ability to list restricted [IsoCode] for [DepositKind]s.
+/// Extention adding ability to list restricted [IsoCode] for
+/// [OperationDepositMethod]s.
 extension IsoCodeExtension on IsoCode {
-  /// Returns [IsoCode]s that aren't available for the provided [DepositKind].
-  static Set<IsoCode> restricted(DepositKind provider) {
-    switch (provider) {
-      case DepositKind.payPal:
-        return IsoCode.values
-            .whereNot((e) => available(provider).contains(e))
-            .toSet();
-    }
+  /// Returns [IsoCode]s that aren't available for the provided
+  /// [OperationDepositMethod].
+  static Set<IsoCode> restricted(OperationDepositMethod method) {
+    return IsoCode.values
+        .whereNot((e) => available(method).contains(e))
+        .toSet();
   }
 
-  /// Returns [IsoCode] that are available for the provided [DepositKind].
-  static Set<IsoCode> available(DepositKind provider) {
-    switch (provider) {
-      case DepositKind.payPal:
-        return {
-          IsoCode.DZ,
-          IsoCode.AO,
-          IsoCode.BJ,
-          IsoCode.BW,
-          IsoCode.BF,
-          IsoCode.BI,
-          IsoCode.ET,
-          IsoCode.CI,
-          IsoCode.CM,
-          IsoCode.KE,
-          IsoCode.MR,
-          IsoCode.MU,
-          IsoCode.CV,
-          IsoCode.TD,
-          IsoCode.KM,
-          IsoCode.CD,
-          IsoCode.DJ,
-          IsoCode.EG,
-          IsoCode.ER,
-          IsoCode.GA,
-          IsoCode.GM,
-          IsoCode.GN,
-          IsoCode.GW,
-          IsoCode.LS,
-          IsoCode.MG,
-          IsoCode.MW,
-          IsoCode.ML,
-          IsoCode.YT,
-          IsoCode.MA,
-          IsoCode.MZ,
-          IsoCode.NA,
-          IsoCode.NE,
-          IsoCode.NG,
-          IsoCode.CG,
-          IsoCode.RE,
-          IsoCode.SH,
-          IsoCode.ST,
-          IsoCode.SN,
-          IsoCode.SC,
-          IsoCode.SL,
-          IsoCode.SO,
-          IsoCode.ZA,
-          IsoCode.SZ,
-          IsoCode.TZ,
-          IsoCode.TG,
-          IsoCode.TN,
-          IsoCode.UG,
-          IsoCode.ZM,
-          IsoCode.ZW,
-          IsoCode.AI,
-          IsoCode.AG,
-          IsoCode.AR,
-          IsoCode.AW,
-          IsoCode.BS,
-          IsoCode.BB,
-          IsoCode.BZ,
-          IsoCode.BM,
-          IsoCode.BO,
-          IsoCode.BR,
-          IsoCode.VG,
-          IsoCode.CA,
-          IsoCode.KY,
-          IsoCode.CL,
-          IsoCode.CO,
-          IsoCode.CR,
-          IsoCode.DM,
-          IsoCode.DO,
-          IsoCode.EC,
-          IsoCode.SV,
-          IsoCode.FK,
-          IsoCode.GF,
-          IsoCode.GL,
-          IsoCode.GD,
-          IsoCode.GP,
-          IsoCode.GT,
-          IsoCode.GY,
-          IsoCode.HN,
-          IsoCode.JM,
-          IsoCode.MQ,
-          IsoCode.MX,
-          IsoCode.MS,
-          IsoCode.NI,
-          IsoCode.PA,
-          IsoCode.PY,
-          IsoCode.PE,
-          IsoCode.KN,
-          IsoCode.LC,
-          IsoCode.PM,
-          IsoCode.VC,
-          IsoCode.SR,
-          IsoCode.TT,
-          IsoCode.TC,
-          IsoCode.US,
-          IsoCode.UY,
-          IsoCode.VE,
-          IsoCode.AM,
-          IsoCode.AU,
-          IsoCode.BH,
-          IsoCode.BT,
-          IsoCode.BN,
-          IsoCode.KH,
-          IsoCode.CN,
-          IsoCode.CK,
-          IsoCode.FJ,
-          IsoCode.PF,
-          IsoCode.IN,
-          IsoCode.ID,
-          IsoCode.IL,
-          IsoCode.JP,
-          IsoCode.JO,
-          IsoCode.KZ,
-          IsoCode.KI,
-          IsoCode.KW,
-          IsoCode.KG,
-          IsoCode.LA,
-          IsoCode.MY,
-          IsoCode.MV,
-          IsoCode.MH,
-          IsoCode.FM,
-          IsoCode.MN,
-          IsoCode.NR,
-          IsoCode.NP,
-          IsoCode.NC,
-          IsoCode.NZ,
-          IsoCode.NU,
-          IsoCode.NF,
-          IsoCode.OM,
-          IsoCode.PW,
-          IsoCode.PG,
-          IsoCode.PH,
-          IsoCode.QA,
-          IsoCode.WS,
-          IsoCode.SA,
-          IsoCode.SG,
-          IsoCode.SB,
-          IsoCode.KR,
-          IsoCode.LK,
-          IsoCode.TW,
-          IsoCode.TJ,
-          IsoCode.TH,
-          IsoCode.TO,
-          IsoCode.TM,
-          IsoCode.TV,
-          IsoCode.AE,
-          IsoCode.VU,
-          IsoCode.VN,
-          IsoCode.WF,
-          IsoCode.YE,
-          IsoCode.AL,
-          IsoCode.AD,
-          IsoCode.AT,
-          IsoCode.AZ,
-          IsoCode.BE,
-          IsoCode.BA,
-          IsoCode.BG,
-          IsoCode.HR,
-          IsoCode.CY,
-          IsoCode.CZ,
-          IsoCode.DK,
-          IsoCode.EE,
-          IsoCode.FO,
-          IsoCode.FI,
-          IsoCode.FR,
-          IsoCode.GE,
-          IsoCode.DE,
-          IsoCode.GR,
-          IsoCode.HU,
-          IsoCode.IS,
-          IsoCode.IE,
-          IsoCode.IT,
-          IsoCode.LV,
-          IsoCode.LI,
-          IsoCode.LT,
-          IsoCode.LU,
-          IsoCode.MK,
-          IsoCode.MT,
-          IsoCode.MD,
-          IsoCode.MC,
-          IsoCode.ME,
-          IsoCode.NL,
-          IsoCode.NO,
-          IsoCode.PL,
-          IsoCode.PT,
-          IsoCode.RO,
-          IsoCode.SM,
-          IsoCode.RS,
-          IsoCode.SK,
-          IsoCode.SI,
-          IsoCode.ES,
-          IsoCode.SJ,
-          IsoCode.SE,
-          IsoCode.CH,
-          IsoCode.UA,
-          IsoCode.GB,
-          IsoCode.VA,
-          IsoCode.RW,
-          IsoCode.RU,
-          IsoCode.BY,
-        };
+  /// Returns [IsoCode] that are available for the provided
+  /// [OperationDepositMethod].
+  static Set<IsoCode> available(OperationDepositMethod method) {
+    final CriteriaCountry? countries = method.countries;
+
+    if (countries == null) {
+      return IsoCode.values.toSet();
     }
+
+    if (countries is CriteriaCountryOnly) {
+      return IsoCode.values
+          .where((e) => countries.only.contains(CountryCode(e.name)))
+          .toSet();
+    }
+
+    if (countries is CriteriaCountryExcept) {
+      return IsoCode.values
+          .whereNot((e) => countries.except.contains(CountryCode(e.name)))
+          .toSet();
+    }
+
+    return {};
   }
 }

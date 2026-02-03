@@ -18,7 +18,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '/domain/model/deposit.dart';
+import '/domain/model/country.dart';
 import '/l10n/l10n.dart';
 import '/routes.dart';
 import '/themes.dart';
@@ -27,7 +27,6 @@ import '/ui/page/home/widget/app_bar.dart';
 import '/ui/widget/line_divider.dart';
 import '/ui/widget/menu_button.dart';
 import '/ui/widget/svg/svg.dart';
-import '/ui/widget/widget_button.dart';
 import 'controller.dart';
 import 'widget/deposit_expandable.dart';
 
@@ -39,7 +38,7 @@ class WalletTabView extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder(
       key: const Key('WalletTab'),
-      init: WalletTabController(Get.find()),
+      init: WalletTabController(Get.find(), Get.find()),
       builder: (WalletTabController c) {
         final style = Theme.of(context).style;
 
@@ -80,16 +79,9 @@ class WalletTabView extends StatelessWidget {
             ),
             actions: [
               Obx(() {
-                return WidgetButton(
-                  onPressed: router.walletTransactions,
-                  child: Text(
-                    'currency_amount'.l10nfmt({
-                      'amount': c.balance.value.toDouble().withSpaces,
-                    }),
-                    style: style.fonts.big.regular.onBackground.copyWith(
-                      color: style.colors.primary,
-                    ),
-                  ),
+                return Text(
+                  c.balance.value.l10n,
+                  style: style.fonts.big.regular.currencyPrimary,
                 );
               }),
               const SizedBox(width: 16),
@@ -97,39 +89,55 @@ class WalletTabView extends StatelessWidget {
           ),
           body: Scrollbar(
             controller: c.scrollController,
-            child: ListView(
-              padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
-              controller: c.scrollController,
-              children: [
-                const SizedBox(height: 8),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: LineDivider('btn_add_funds'.l10n),
-                ),
-                const SizedBox(height: 8),
-                ...DepositKind.values.map((e) {
-                  return Obx(() {
-                    final bool expanded = c.expanded.contains(e);
+            child: Obx(() {
+              return ListView(
+                padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
+                controller: c.scrollController,
+                children: [
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: LineDivider('btn_add_funds'.l10n),
+                  ),
+                  const SizedBox(height: 8),
+                  if (c.methods.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
+                      child: Center(
+                        child: Text(
+                          'label_nothing_found'.l10n,
+                          style: style.fonts.small.regular.secondary,
+                        ),
+                      ),
+                    ),
+                  ...c.methods.map((e) {
+                    return Obx(() {
+                      final bool expanded = c.expanded.contains(e.id);
 
-                    return DepositExpandable(
-                      expanded: expanded,
-                      onPressed: expanded
-                          ? () => c.expanded.remove(e)
-                          : () => c.expanded.add(e),
-                      provider: e,
-                      fields: c.fields.value,
-                    );
-                  });
-                }),
-                const SizedBox(height: 8),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: LineDivider('label_wallet_history'.l10n),
-                ),
-                const SizedBox(height: 8),
-                transactions,
-              ],
-            ),
+                      return DepositExpandable(
+                        expanded: expanded,
+                        onPressed: expanded
+                            ? () => c.expanded.remove(e.id)
+                            : () => c.expanded.add(e.id),
+                        provider: e,
+                        fields: c.fields.value,
+                        onCountry: (country) {
+                          c.fields.value.applyCountry(country);
+                          c.setCountry(CountryCode(country.name));
+                        },
+                      );
+                    });
+                  }),
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: LineDivider('label_wallet_history'.l10n),
+                  ),
+                  const SizedBox(height: 8),
+                  transactions,
+                ],
+              );
+            }),
           ),
         );
       },

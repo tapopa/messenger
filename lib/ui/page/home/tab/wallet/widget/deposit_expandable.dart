@@ -20,8 +20,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '/api/backend/schema.dart' show OperationDepositKind;
 import '/domain/model/country.dart';
 import '/domain/model/deposit.dart';
+import '/domain/model/operation_deposit_method.dart';
+import '/domain/model/price.dart';
 import '/l10n/l10n.dart';
 import '/themes.dart';
 import '/ui/page/home/tab/wallet/select_country/view.dart';
@@ -32,13 +35,14 @@ import 'amount_tile.dart';
 
 /// Fields required for [DepositExpandable] for inputs.
 class DepositFields {
-  /// Fields for [DepositKind.payPal].
+  /// Fields for [OperationDepositKind.paypal].
   final PayPalDepositFields paypal = PayPalDepositFields();
 
   /// Returns an [IsoCode] of the provided [provider].
-  Rx<IsoCode?> getCountry(DepositKind provider) {
+  Rx<IsoCode?> getCountry(OperationDepositKind provider) {
     return switch (provider) {
-      DepositKind.payPal => paypal.country,
+      OperationDepositKind.paypal => paypal.country,
+      OperationDepositKind.artemisUnknown => Rx(null),
     };
   }
 
@@ -64,28 +68,42 @@ class DepositExpandable extends StatelessWidget {
     this.expanded = false,
     this.onPressed,
     required this.fields,
+    this.onCountry,
   });
 
-  final DepositKind provider;
+  /// [OperationDepositMethod] to display.
+  final OperationDepositMethod provider;
+
+  /// Indicator whether this tile should be expanded.
   final bool expanded;
+
+  /// Callback, called when title is pressed.
   final void Function()? onPressed;
+
+  /// [DepositFields] of the deposit methods to use.
   final DepositFields fields;
+
+  /// Callback, called when country is changed.
+  final void Function(IsoCode)? onCountry;
 
   @override
   Widget build(BuildContext context) {
     final style = Theme.of(context).style;
 
-    final title = switch (provider) {
-      DepositKind.payPal => 'label_paypal'.l10n,
+    final title = switch (provider.kind) {
+      OperationDepositKind.paypal => 'label_paypal'.l10n,
+      OperationDepositKind.artemisUnknown => 'label_unknown'.l10n,
     };
 
-    final asset = switch (provider) {
-      DepositKind.payPal => SvgIcons.payPal,
+    final asset = switch (provider.kind) {
+      OperationDepositKind.paypal => SvgIcons.payPal,
+      OperationDepositKind.artemisUnknown => SvgIcons.menuMonetization,
     };
 
     final List<Text> texts = [
-      ...switch (provider) {
-        DepositKind.payPal => [Text('label_instant_top_up'.l10n)],
+      ...switch (provider.kind) {
+        OperationDepositKind.paypal => [Text('label_instant_top_up'.l10n)],
+        OperationDepositKind.artemisUnknown => [],
       },
     ];
 
@@ -108,9 +126,9 @@ class DepositExpandable extends StatelessWidget {
       decoration: BoxDecoration(
         color: style.colors.onPrimary,
         borderRadius: style.cardRadius,
-        border: expanded ? provider.border : style.cardBorder,
+        border: expanded ? provider.kind.border : style.cardBorder,
         boxShadow: expanded
-            ? [BoxShadow(color: provider.shadow, blurRadius: 4)]
+            ? [BoxShadow(color: provider.kind.shadow, blurRadius: 4)]
             : [],
       ),
       child: Column(
@@ -178,7 +196,7 @@ class DepositExpandable extends StatelessWidget {
               show: expanded,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
-                child: provider.build(context, withLogo: false, fields: fields),
+                child: _body(context),
               ),
             ),
           ),
@@ -186,68 +204,79 @@ class DepositExpandable extends StatelessWidget {
       ),
     );
   }
-}
 
-extension BuildProviderExtension on DepositKind {
-  Widget build(
+  /// Builds a [FieldButton] representing the provided [country].
+  Widget _country(
     BuildContext context, {
-    bool withLogo = true,
-    DepositFields? fields,
+    bool error = false,
+    required Rx<IsoCode?> country,
   }) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+      child: Obx(() {
+        return FieldButton(
+          headline: Text('label_country'.l10n),
+          onPressed: () async {
+            final result = await SelectCountryView.show(
+              context,
+              available: IsoCodeExtension.available(provider),
+            );
+
+            if (result != null) {
+              country.value = result;
+              onCountry?.call(result);
+            }
+          },
+          error: error,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (country.value != null) ...[
+                SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: ClipOval(
+                    child: SvgImage.asset(
+                      'assets/images/country/${country.value?.name.toLowerCase()}.svg',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+              ],
+              Text(
+                country.value == null
+                    ? 'label_choose_country'.l10n
+                    : 'country_${country.value?.name.toLowerCase()}'.l10n,
+              ),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
+  /// Builds the contents of the [OperationDepositMethod].
+  Widget _body(BuildContext context) {
     final style = Theme.of(context).style;
 
-    final PayPalDepositFields? paypal = fields?.paypal;
+    final PayPalDepositFields paypal = fields.paypal;
+    final Rx<IsoCode?> country = fields.getCountry(provider.kind);
 
-    final country = fields?.getCountry(this);
-
-    Widget countryButton({bool error = false}) {
-      return Padding(
-        padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-        child: Obx(() {
-          return _countryButton(
-            context,
-            country: country?.value,
-            onCode: (code) => country?.value = code,
-            available: IsoCodeExtension.available(this),
-            error: error,
-          );
-        }),
-      );
-    }
-
-    switch (this) {
-      case DepositKind.payPal:
-        if (paypal == null) {
-          return const SizedBox();
-        }
-
-        final nominals = [5, 10, 25, 50, 75, 100];
-
+    switch (provider.kind) {
+      case OperationDepositKind.paypal:
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (withLogo) ...[
-              const SizedBox(height: 8),
-              Container(
-                width: 96,
-                padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                child: const SvgImage.asset(
-                  'assets/images/paypal.svg',
-                  width: 64,
-                  height: 32,
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
             Obx(() {
-              final available = IsoCodeExtension.available(
-                this,
+              final bool available = IsoCodeExtension.available(
+                provider,
               ).contains(paypal.country.value);
 
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  countryButton(error: !available),
+                  _country(context, error: !available, country: country),
                   if (!available) ...[
                     const SizedBox(height: 8),
                     Align(
@@ -268,7 +297,7 @@ extension BuildProviderExtension on DepositKind {
             Flexible(
               child: Obx(() {
                 final available = IsoCodeExtension.available(
-                  this,
+                  provider,
                 ).contains(paypal.country.value);
 
                 return Opacity(
@@ -276,12 +305,13 @@ extension BuildProviderExtension on DepositKind {
                   child: IgnorePointer(
                     ignoring: !available,
                     child: _responsive(
-                      nominals,
+                      provider.nominals ?? [],
+                      pricing: provider.pricing,
                       onPressed: (e) async {
                         if (paypal.country.value == null) {
                           final result = await SelectCountryView.show(
                             context,
-                            available: IsoCodeExtension.available(this),
+                            available: IsoCodeExtension.available(provider),
                           );
                           if (result != null) {
                             paypal.country.value = result;
@@ -301,15 +331,23 @@ extension BuildProviderExtension on DepositKind {
             ),
           ],
         );
+
+      case OperationDepositKind.artemisUnknown:
+        return const SizedBox();
     }
   }
 }
 
-Widget _responsive(List<int> nominals, {void Function(int)? onPressed}) {
+/// Builds the provided [nominals] in a responsive grid.
+Widget _responsive(
+  List<Price> nominals, {
+  void Function(Price)? onPressed,
+  OperationDepositPricing? pricing,
+}) {
   Widget tile(int i) {
     return WidgetButton(
       onPressed: () => onPressed?.call(nominals[i]),
-      child: AmountTile(nominal: nominals[i]),
+      child: AmountTile(nominal: nominals[i], pricing: pricing),
     );
   }
 
@@ -317,85 +355,49 @@ Widget _responsive(List<int> nominals, {void Function(int)? onPressed}) {
     children: [
       Row(
         children: [
-          Flexible(flex: 100, child: tile(0)),
+          if (nominals.isNotEmpty) Flexible(flex: 100, child: tile(0)),
           const SizedBox(width: 4),
-          Flexible(flex: 112, child: tile(1)),
+          if (nominals.length >= 2) Flexible(flex: 112, child: tile(1)),
           const SizedBox(width: 4),
-          Flexible(flex: 140, child: tile(2)),
+          if (nominals.length >= 3) Flexible(flex: 140, child: tile(2)),
         ],
       ),
       const SizedBox(height: 4),
-      Row(
-        children: [
-          Flexible(flex: 160, child: tile(3)),
-          const SizedBox(width: 4),
-          Flexible(flex: 196, child: tile(4)),
-        ],
-      ),
+      if (nominals.length >= 4)
+        Row(
+          children: [
+            if (nominals.length >= 4) Flexible(flex: 160, child: tile(3)),
+            const SizedBox(width: 4),
+            if (nominals.length >= 5) Flexible(flex: 196, child: tile(4)),
+          ],
+        ),
       const SizedBox(height: 4),
-      tile(5),
+      if (nominals.length >= 6) tile(5),
     ],
   );
 }
 
-Widget _countryButton(
-  BuildContext context, {
-  IsoCode? country,
-  void Function(IsoCode)? onCode,
-  Set<IsoCode> available = const {},
-  Set<IsoCode> restricted = const {},
-  bool error = false,
-}) {
-  return FieldButton(
-    headline: Text('label_country'.l10n),
-    onPressed: () async {
-      final result = await SelectCountryView.show(
-        context,
-        available: available,
-        restricted: restricted,
-      );
-
-      if (result != null) {
-        onCode?.call(result);
-      }
-    },
-    error: error,
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (country != null) ...[
-          SizedBox(
-            width: 24,
-            height: 24,
-            child: ClipOval(
-              child: SvgImage.asset(
-                'assets/images/country/${country.name.toLowerCase()}.svg',
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-        ],
-        Text(
-          country == null
-              ? 'label_choose_country'.l10n
-              : 'country_${country.name.toLowerCase()}'.l10n,
-        ),
-      ],
-    ),
-  );
-}
-
-extension on DepositKind {
+/// Extension adding decoration related getters to [OperationDepositKind].
+extension on OperationDepositKind {
+  /// Returns a [Border] to associate this [OperationDepositKind] with.
   Border get border {
     return switch (this) {
-      DepositKind.payPal => Border.all(color: Color(0xFF2997D8), width: 0.5),
+      OperationDepositKind.paypal => Border.all(
+        color: Color(0xFF2997D8),
+        width: 0.5,
+      ),
+      OperationDepositKind.artemisUnknown => Border(),
     };
   }
 
+  /// Returns a [Color] of a shadow that should be applied to this
+  /// [OperationDepositKind].
   Color get shadow {
     return switch (this) {
-      DepositKind.payPal => Color(0xFF2997D8).withAlpha((255 * 0.25).round()),
+      OperationDepositKind.paypal => Color(
+        0xFF2997D8,
+      ).withAlpha((255 * 0.25).round()),
+      OperationDepositKind.artemisUnknown => Colors.grey,
     };
   }
 }

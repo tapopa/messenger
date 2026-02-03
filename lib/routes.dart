@@ -1121,12 +1121,14 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
 
           final AbstractWalletRepository walletRepository = deps
               .put<AbstractWalletRepository>(
-                WalletRepository(Get.find(), me: me),
+                WalletRepository(Get.find(), sessionRepository, me: me),
               );
           deps.put(WalletService(walletRepository));
 
           final AbstractPartnerRepository partnerRepository = deps
-              .put<AbstractPartnerRepository>(PartnerRepository(me: me));
+              .put<AbstractPartnerRepository>(
+                PartnerRepository(Get.find(), me: me),
+              );
           deps.put(PartnerService(partnerRepository));
 
           deps.put(

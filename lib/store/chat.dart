@@ -1826,17 +1826,19 @@ class ChatRepository extends IdentityDependency
         .asyncExpand((event) async* {
           Log.trace('chatEvents($chatId): ${event.data}', '$runtimeType');
 
-          var events = ChatEvents$Subscription.fromJson(event.data!).chatEvents;
+          final events = ChatEvents$Subscription.fromJson(
+            event.data!,
+          ).chatEvents;
+
           if (events.$$typename == 'SubscriptionInitialized') {
             events
                 as ChatEvents$Subscription$ChatEvents$SubscriptionInitialized;
             yield const ChatEventsInitialized();
           } else if (events.$$typename == 'Chat') {
             final chat = events as ChatEvents$Subscription$ChatEvents$Chat;
-            final data = _chat(chat);
-            yield ChatEventsChat(data.chat);
+            yield ChatEventsChat(_chat(chat).chat);
           } else if (events.$$typename == 'ChatEventsVersioned') {
-            var mixin =
+            final mixin =
                 events
                     as ChatEvents$Subscription$ChatEvents$ChatEventsVersioned;
             yield ChatEventsEvent(

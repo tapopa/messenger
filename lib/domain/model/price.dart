@@ -45,6 +45,10 @@ class Price {
 
   @override
   String toString() => 'Price(${currency.val} -> ${sum.val})';
+
+  Price operator *(Price other) {
+    return Price(currency: currency, sum: Sum(sum.val * other.sum.val));
+  }
 }
 
 /// Sum of money.

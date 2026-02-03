@@ -62,31 +62,11 @@ class OperationWidget extends StatelessWidget {
   }) {
     final style = Theme.of(context).style;
 
-    final bool positive = operation.amount.sum.val >= 0;
-
-    TableRow row(String label, Widget child) {
-      return TableRow(
-        children: [
-          Text(
-            label,
-            style: style.fonts.normal.regular.secondary,
-            textAlign: TextAlign.right,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16, bottom: 4),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: DefaultTextStyle(
-                style: style.fonts.normal.regular.secondary.copyWith(
-                  color: style.colors.secondaryBackgroundLight,
-                ),
-                child: child,
-              ),
-            ),
-          ),
-        ],
-      );
-    }
+    final bool positive = switch (operation.direction) {
+      OperationDirection.outgoing => false,
+      OperationDirection.incoming => true,
+      OperationDirection.artemisUnknown => true,
+    };
 
     final List<Widget> more;
 
@@ -95,55 +75,11 @@ class OperationWidget extends StatelessWidget {
         operation as OperationDeposit;
 
         more = [
-          const SizedBox(height: 8),
-          LineDivider('label_information'.l10n),
-          const SizedBox(height: 8),
           Table(
             children: [
-              row('label_status'.l10n, switch (operation.status) {
-                OperationStatus.completed => Text(
-                  'label_operation_completed'.l10n,
-                ),
-                OperationStatus.inProgress => Text(
-                  'label_operation_in_progress'.l10n,
-                ),
-                OperationStatus.failed => Text(
-                  'label_operation_failed'.l10n,
-                  style: style.fonts.normal.regular.secondary,
-                ),
-                OperationStatus.canceled => Text(
-                  'label_operation_canceled'.l10n,
-                  style: style.fonts.normal.regular.secondary,
-                ),
-                OperationStatus.declined => Text(
-                  'label_operation_declined'.l10n,
-                  style: style.fonts.normal.regular.secondary,
-                ),
-                OperationStatus.artemisUnknown => Text('label_unknown'.l10n),
-              }),
-              row(
-                'label_transaction_id'.l10n,
-                Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(text: '${operation.id}'),
-                      WidgetSpan(
-                        child: WidgetButton(
-                          onPressed: () async {
-                            PlatformUtils.copy(text: '${operation.id}');
-                            MessagePopup.success('label_copied'.l10n);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 6),
-                            child: SvgIcon(SvgIcons.copySmallThick),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              row('label_details'.l10n, switch (operation.kind) {
+              _status(context, operation),
+              _id(context, operation),
+              _row(context, 'label_details'.l10n, switch (operation.kind) {
                 OperationDepositKind.paypal => Text('label_top_up_paypal'.l10n),
                 OperationDepositKind.artemisUnknown => Text(
                   'label_unknown'.l10n,
@@ -153,7 +89,6 @@ class OperationWidget extends StatelessWidget {
           ),
 
           if (operation.invoice != null) ...[
-            // const SizedBox(height: 8),
             Align(
               alignment: Alignment.centerRight,
               child: WidgetButton(
@@ -182,61 +117,135 @@ class OperationWidget extends StatelessWidget {
         operation as OperationDepositBonus;
 
         more = [
-          const SizedBox(height: 8),
-          LineDivider('label_information'.l10n),
-          const SizedBox(height: 16),
           Table(
             children: [
-              row('label_status'.l10n, switch (operation.status) {
-                OperationStatus.completed => Text(
-                  'label_operation_completed'.l10n,
-                ),
-                OperationStatus.inProgress => Text(
-                  'label_operation_in_progress'.l10n,
-                ),
-                OperationStatus.failed => Text(
-                  'label_operation_failed'.l10n,
-                  style: style.fonts.normal.regular.secondary,
-                ),
-                OperationStatus.canceled => Text(
-                  'label_operation_canceled'.l10n,
-                  style: style.fonts.normal.regular.secondary,
-                ),
-                OperationStatus.declined => Text(
-                  'label_operation_declined'.l10n,
-                  style: style.fonts.normal.regular.secondary,
-                ),
-                OperationStatus.artemisUnknown => Text('label_unknown'.l10n),
-              }),
-              row(
-                'label_transaction_id'.l10n,
-                Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(text: '${operation.id}'),
-                      WidgetSpan(
-                        child: WidgetButton(
-                          onPressed: () async {
-                            PlatformUtils.copy(text: '${operation.id}');
-                            MessagePopup.success('label_copied'.l10n);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 6),
-                            child: SvgIcon(SvgIcons.copySmallThick),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              row(
+              _status(context, operation),
+              _id(context, operation),
+              _row(
+                context,
                 'label_details'.l10n,
                 Text(
                   'label_top_up_bonus_with_id'.l10nfmt({
                     'id': operation.depositId.val,
                   }),
                 ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+        ];
+        break;
+
+      case const (OperationCharge):
+        operation as OperationCharge;
+
+        more = [
+          Table(
+            children: [
+              _status(context, operation),
+              _id(context, operation),
+              _row(context, 'label_details'.l10n, Text('${operation.reason}')),
+            ],
+          ),
+          const SizedBox(height: 8),
+        ];
+        break;
+
+      case const (OperationGrant):
+        operation as OperationGrant;
+
+        more = [
+          Table(
+            children: [
+              _status(context, operation),
+              _id(context, operation),
+              _row(context, 'label_details'.l10n, Text('${operation.reason}')),
+            ],
+          ),
+          const SizedBox(height: 8),
+        ];
+        break;
+
+      case const (OperationDividend):
+        operation as OperationDividend;
+
+        more = [
+          Table(
+            children: [
+              _status(context, operation),
+              _id(context, operation),
+              _row(
+                context,
+                'label_details'.l10n,
+                Text('${operation.sourceId}'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+        ];
+        break;
+
+      case const (OperationReward):
+        operation as OperationReward;
+
+        more = [
+          Table(
+            children: [
+              _status(context, operation),
+              _id(context, operation),
+              _row(
+                context,
+                'label_search_category_contacts'.l10n,
+                Text('${operation.affiliatedNum}'),
+              ),
+              _row(context, 'label_details'.l10n, Text(operation.cause.name)),
+            ],
+          ),
+          const SizedBox(height: 8),
+        ];
+        break;
+
+      case const (OperationEarnDonation):
+        operation as OperationEarnDonation;
+
+        more = [
+          Table(
+            children: [
+              _status(context, operation),
+              _id(context, operation),
+              _row(
+                context,
+                'label_search_category_contacts'.l10n,
+                Text('${operation.customerId}'),
+              ),
+              _row(
+                context,
+                'label_details'.l10n,
+                Text(operation.donationId.val),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+        ];
+        break;
+
+      case const (OperationPurchaseDonation):
+        operation as OperationPurchaseDonation;
+
+        more = [
+          Table(
+            children: [
+              _status(context, operation),
+              _id(context, operation),
+              _row(
+                context,
+                'label_search_category_contacts'.l10n,
+                Text('${operation.vendorId}'),
+              ),
+              _row(
+                context,
+                'label_details'.l10n,
+                Text(operation.donationId.val),
               ),
             ],
           ),
@@ -254,13 +263,24 @@ class OperationWidget extends StatelessWidget {
     final TextStyle primaryStyle = style.fonts.big.regular.onBackground
         .copyWith(
           fontWeight: FontWeight.bold,
-          color: switch (operation.status) {
-            OperationStatus.completed => style.colors.currencyPrimary,
-            OperationStatus.inProgress => style.colors.currencySecondary,
-            OperationStatus.failed => style.colors.currencySecondary,
-            OperationStatus.declined => style.colors.currencySecondary,
-            OperationStatus.canceled => style.colors.currencySecondary,
-            OperationStatus.artemisUnknown => style.colors.secondary,
+          color: switch (operation.direction) {
+            OperationDirection.incoming => switch (operation.status) {
+              OperationStatus.completed => style.colors.currencyPrimary,
+              OperationStatus.inProgress => style.colors.currencySecondary,
+              OperationStatus.failed => style.colors.currencySecondary,
+              OperationStatus.declined => style.colors.currencySecondary,
+              OperationStatus.canceled => style.colors.currencySecondary,
+              OperationStatus.artemisUnknown => style.colors.secondary,
+            },
+            OperationDirection.outgoing => switch (operation.status) {
+              OperationStatus.completed => style.colors.onBackground,
+              OperationStatus.inProgress => style.colors.secondary,
+              OperationStatus.failed => style.colors.secondary,
+              OperationStatus.declined => style.colors.secondary,
+              OperationStatus.canceled => style.colors.secondary,
+              OperationStatus.artemisUnknown => style.colors.secondary,
+            },
+            OperationDirection.artemisUnknown => style.colors.currencyPrimary,
           },
         );
 
@@ -323,7 +343,14 @@ class OperationWidget extends StatelessWidget {
           fadeDuration: const Duration(milliseconds: 250),
           sizeDuration: const Duration(milliseconds: 250),
           child: expanded
-              ? Column(children: more)
+              ? Column(
+                  children: [
+                    const SizedBox(height: 8),
+                    LineDivider('label_information'.l10n),
+                    const SizedBox(height: 8),
+                    ...more,
+                  ],
+                )
               : const SizedBox(
                   key: Key('None'),
                   width: double.infinity,
@@ -332,6 +359,82 @@ class OperationWidget extends StatelessWidget {
         ),
         SizedBox(height: 8),
       ],
+    );
+  }
+
+  TableRow _row(BuildContext context, String label, Widget child) {
+    final style = Theme.of(context).style;
+
+    return TableRow(
+      children: [
+        Text(
+          label,
+          style: style.fonts.normal.regular.secondary,
+          textAlign: TextAlign.right,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 16, bottom: 4),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: DefaultTextStyle(
+              style: style.fonts.normal.regular.secondary.copyWith(
+                color: style.colors.secondaryBackgroundLight,
+              ),
+              child: child,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Returns a [TableRow] describing the status of [operation].
+  TableRow _status(BuildContext context, Operation operation) {
+    final style = Theme.of(context).style;
+
+    return _row(context, 'label_status'.l10n, switch (operation.status) {
+      OperationStatus.completed => Text('label_operation_completed'.l10n),
+      OperationStatus.inProgress => Text('label_operation_in_progress'.l10n),
+      OperationStatus.failed => Text(
+        'label_operation_failed'.l10n,
+        style: style.fonts.normal.regular.secondary,
+      ),
+      OperationStatus.canceled => Text(
+        'label_operation_canceled'.l10n,
+        style: style.fonts.normal.regular.secondary,
+      ),
+      OperationStatus.declined => Text(
+        'label_operation_declined'.l10n,
+        style: style.fonts.normal.regular.secondary,
+      ),
+      OperationStatus.artemisUnknown => Text('label_unknown'.l10n),
+    });
+  }
+
+  /// Returns a [TableRow] describing the ID of [operation].
+  TableRow _id(BuildContext context, Operation operation) {
+    return _row(
+      context,
+      'label_transaction_id'.l10n,
+      Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(text: '${operation.num}'),
+            WidgetSpan(
+              child: WidgetButton(
+                onPressed: () async {
+                  PlatformUtils.copy(text: '${operation.num}');
+                  MessagePopup.success('label_copied'.l10n);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 6),
+                  child: SvgIcon(SvgIcons.copySmallThick),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

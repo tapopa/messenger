@@ -28,11 +28,30 @@ query Operations(
         edges {
             node {
                 __typename
+                ... on OperationCharge {
+                    ...OperationCharge
+                }
                 ... on OperationDeposit {
                     ...OperationDeposit
                 }
                 ... on OperationDepositBonus {
                     ...OperationDepositBonus
+                }
+                # TODO: Uncomment when upgrading to 0.9.0.
+                # ... on OperationDividend {
+                #     ...OperationDividend
+                # }
+                ... on OperationEarnDonation{
+                    ...OperationEarnDonation
+                }
+                ... on OperationGrant {
+                    ...OperationGrant
+                }
+                ... on OperationPurchaseDonation {
+                    ...OperationPurchaseDonation
+                }
+                ... on OperationReward {
+                    ...OperationReward
                 }
             }
             cursor

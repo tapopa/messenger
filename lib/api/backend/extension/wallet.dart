@@ -28,6 +28,14 @@ extension PriceConversion on PriceMixin {
   Price toModel() => Price(sum: sum, currency: currency);
 }
 
+/// Extension adding models construction from an [OperationCancellationMixin].
+extension OperationCancellationConversion on OperationCancellationMixin {
+  /// Constructs a new [OperationCancellation] from this
+  /// [OperationCancellationMixin].
+  OperationCancellation toModel() =>
+      OperationCancellation(code: code, reason: reason, at: at);
+}
+
 /// Extension adding models construction from an [OperationDepositMixin].
 extension OperationDepositConversion on OperationDepositMixin {
   /// Constructs a new [OperationDeposit] from this [OperationDepositMixin].
@@ -35,11 +43,16 @@ extension OperationDepositConversion on OperationDepositMixin {
     id: id,
     num: this.num,
     status: status,
+    origin: origin,
+    direction: direction,
     amount: amount.toModel(),
+    holdUntil: holdUntil,
     createdAt: createdAt,
+    canceled: canceled?.toModel(),
     kind: kind,
     billingCountry: billingCountry,
     invoice: invoice,
+    processingUrl: processingUrl == null ? null : Url(processingUrl!),
   );
 
   /// Constructs a new [DtoOperation] from this [OperationDepositMixin].
@@ -55,12 +68,135 @@ extension OperationDepositBonusConversion on OperationDepositBonusMixin {
     id: id,
     num: this.num,
     status: status,
+    origin: origin,
+    direction: direction,
     amount: amount.toModel(),
+    holdUntil: holdUntil,
     createdAt: createdAt,
+    canceled: canceled?.toModel(),
     depositId: deposit.node.id,
   );
 
   /// Constructs a new [DtoOperation] from this [OperationDepositBonusMixin].
+  DtoOperation toDto(OperationsCursor? cursor) =>
+      DtoOperation(toModel(), ver, cursor: cursor);
+}
+
+/// Extension adding models construction from an [OperationChargeMixin].
+extension OperationChargeConversion on OperationChargeMixin {
+  /// Constructs a new [OperationCharge] from this
+  /// [OperationChargeMixin].
+  OperationCharge toModel() => OperationCharge(
+    id: id,
+    num: this.num,
+    status: status,
+    origin: origin,
+    direction: direction,
+    amount: amount.toModel(),
+    holdUntil: holdUntil,
+    createdAt: createdAt,
+    canceled: canceled?.toModel(),
+    reason: reason,
+  );
+
+  /// Constructs a new [DtoOperation] from this [OperationChargeMixin].
+  DtoOperation toDto(OperationsCursor? cursor) =>
+      DtoOperation(toModel(), ver, cursor: cursor);
+}
+
+/// Extension adding models construction from an [OperationEarnDonationMixin].
+extension OperationEarnDonationConversion on OperationEarnDonationMixin {
+  /// Constructs a new [OperationCharge] from this [OperationEarnDonationMixin].
+  OperationEarnDonation toModel() => OperationEarnDonation(
+    id: id,
+    num: this.num,
+    status: status,
+    origin: origin,
+    direction: direction,
+    amount: amount.toModel(),
+    holdUntil: holdUntil,
+    createdAt: createdAt,
+    canceled: canceled?.toModel(),
+    chatItemId: chatItem?.node.id,
+    chatId: chat?.id,
+    donationId: donationId,
+    customerId: customer.id,
+  );
+
+  /// Constructs a new [DtoOperation] from this [OperationEarnDonationMixin].
+  DtoOperation toDto(OperationsCursor? cursor) =>
+      DtoOperation(toModel(), ver, cursor: cursor);
+}
+
+/// Extension adding models construction from an [OperationGrantMixin].
+extension OperationGrantConversion on OperationGrantMixin {
+  /// Constructs a new [OperationGrant] from this [OperationGrantMixin].
+  OperationGrant toModel() => OperationGrant(
+    id: id,
+    num: this.num,
+    status: status,
+    origin: origin,
+    direction: direction,
+    amount: amount.toModel(),
+    holdUntil: holdUntil,
+    createdAt: createdAt,
+    canceled: canceled?.toModel(),
+    reason: reason,
+  );
+
+  /// Constructs a new [DtoOperation] from this [OperationGrantMixin].
+  DtoOperation toDto(OperationsCursor? cursor) =>
+      DtoOperation(toModel(), ver, cursor: cursor);
+}
+
+/// Extension adding models construction from an
+/// [OperationPurchaseDonationMixin].
+extension OperationPurchaseDonationConversion
+    on OperationPurchaseDonationMixin {
+  /// Constructs a new [OperationPurchaseDonation] from this
+  /// [OperationPurchaseDonationMixin].
+  OperationPurchaseDonation toModel() => OperationPurchaseDonation(
+    id: id,
+    num: this.num,
+    status: status,
+    origin: origin,
+    direction: direction,
+    amount: amount.toModel(),
+    holdUntil: holdUntil,
+    createdAt: createdAt,
+    canceled: canceled?.toModel(),
+    chatItemId: chatItem?.node.id,
+    chatId: chat?.id,
+    donationId: donationId,
+    vendorId: switch (vendor.$$typename) {
+      'User' => (vendor as OperationPurchaseDonationMixin$Vendor$User).id,
+      (_) => throw Exception('Unknown `Vendor` -> $vendor'),
+    },
+  );
+
+  /// Constructs a new [DtoOperation] from this [OperationPurchaseDonationMixin].
+  DtoOperation toDto(OperationsCursor? cursor) =>
+      DtoOperation(toModel(), ver, cursor: cursor);
+}
+
+/// Extension adding models construction from an [OperationRewardMixin].
+extension OperationRewardConversion on OperationRewardMixin {
+  /// Constructs a new [OperationReward] from this [OperationRewardMixin].
+  OperationReward toModel() => OperationReward(
+    id: id,
+    num: this.num,
+    status: status,
+    origin: origin,
+    direction: direction,
+    amount: amount.toModel(),
+    holdUntil: holdUntil,
+    createdAt: createdAt,
+    canceled: canceled?.toModel(),
+    cause: cause,
+    affiliatedNum: affiliatedNum,
+  );
+
+  /// Constructs a new [DtoOperation] from this [OperationRewardMixin].
   DtoOperation toDto(OperationsCursor? cursor) =>
       DtoOperation(toModel(), ver, cursor: cursor);
 }
@@ -141,11 +277,90 @@ extension OperationsOperationConversion
   DtoOperation toDto({OperationsCursor? cursor}) => _operation(this, cursor);
 }
 
+/// Extension adding models construction from
+/// [OperationEventsVersionedMixin$Events$EventOperationChargeCreated$Operation$Node].
+extension EventOperationChargeCreatedConversion
+    on
+        OperationEventsVersionedMixin$Events$EventOperationChargeCreated$Operation$Node {
+  /// Constructs the new [DtoOperation] from this
+  /// [OperationEventsVersionedMixin$Events$EventOperationChargeCreated$Operation$Node].
+  DtoOperation toDto({OperationsCursor? cursor}) => _operation(this, cursor);
+}
+
+/// Extension adding models construction from
+/// [OperationEventsVersionedMixin$Events$EventOperationDepositBonusCreated$Operation$Node].
+extension EventOperationDepositBonusCreatedConversion
+    on
+        OperationEventsVersionedMixin$Events$EventOperationDepositBonusCreated$Operation$Node {
+  /// Constructs the new [DtoOperation] from this
+  /// [OperationEventsVersionedMixin$Events$EventOperationDepositBonusCreated$Operation$Node].
+  DtoOperation toDto({OperationsCursor? cursor}) => _operation(this, cursor);
+}
+
+/// Extension adding models construction from
+/// [OperationEventsVersionedMixin$Events$EventOperationDepositCreated$Operation$Node].
+extension EventOperationDepositCreatedConversion
+    on
+        OperationEventsVersionedMixin$Events$EventOperationDepositCreated$Operation$Node {
+  /// Constructs the new [DtoOperation] from this
+  /// [OperationEventsVersionedMixin$Events$EventOperationDepositCreated$Operation$Node].
+  DtoOperation toDto({OperationsCursor? cursor}) => _operation(this, cursor);
+}
+
+/// Extension adding models construction from
+/// [OperationEventsVersionedMixin$Events$EventOperationEarnDonationCreated$Operation$Node].
+extension EventOperationEarnDonationCreatedConversion
+    on
+        OperationEventsVersionedMixin$Events$EventOperationEarnDonationCreated$Operation$Node {
+  /// Constructs the new [DtoOperation] from this
+  /// [OperationEventsVersionedMixin$Events$EventOperationEarnDonationCreated$Operation$Node].
+  DtoOperation toDto({OperationsCursor? cursor}) => _operation(this, cursor);
+}
+
+/// Extension adding models construction from
+/// [OperationEventsVersionedMixin$Events$EventOperationGrantCreated$Operation$Node].
+extension EventOperationGrantCreatedConversion
+    on OperationEventsVersionedMixin$Events$EventOperationGrantCreated$Operation$Node {
+  /// Constructs the new [DtoOperation] from this
+  /// [OperationEventsVersionedMixin$Events$EventOperationGrantCreated$Operation$Node].
+  DtoOperation toDto({OperationsCursor? cursor}) => _operation(this, cursor);
+}
+
+/// Extension adding models construction from
+/// [OperationEventsVersionedMixin$Events$EventOperationPurchaseDonationCreated$Operation$Node].
+extension EventOperationPurchaseDonationCreatedConversion
+    on
+        OperationEventsVersionedMixin$Events$EventOperationPurchaseDonationCreated$Operation$Node {
+  /// Constructs the new [DtoOperation] from this
+  /// [OperationEventsVersionedMixin$Events$EventOperationPurchaseDonationCreated$Operation$Node].
+  DtoOperation toDto({OperationsCursor? cursor}) => _operation(this, cursor);
+}
+
+/// Extension adding models construction from
+/// [OperationEventsVersionedMixin$Events$EventOperationRewardCreated$Operation$Node].
+extension EventOperationRewardCreatedConversion
+    on
+        OperationEventsVersionedMixin$Events$EventOperationRewardCreated$Operation$Node {
+  /// Constructs the new [DtoOperation] from this
+  /// [OperationEventsVersionedMixin$Events$EventOperationRewardCreated$Operation$Node].
+  DtoOperation toDto({OperationsCursor? cursor}) => _operation(this, cursor);
+}
+
 /// Constructs a new [DtoOperation]s based on the [node] and [cursor].
 DtoOperation _operation(dynamic node, OperationsCursor? cursor) {
   if (node is OperationDepositMixin) {
     return node.toDto(cursor);
   } else if (node is OperationDepositBonusMixin) {
+    return node.toDto(cursor);
+  } else if (node is OperationChargeMixin) {
+    return node.toDto(cursor);
+  } else if (node is OperationEarnDonationMixin) {
+    return node.toDto(cursor);
+  } else if (node is OperationGrantMixin) {
+    return node.toDto(cursor);
+  } else if (node is OperationPurchaseDonationMixin) {
+    return node.toDto(cursor);
+  } else if (node is OperationRewardMixin) {
     return node.toDto(cursor);
   }
 

@@ -22,18 +22,11 @@ import 'package:graphql/client.dart' show QueryResult;
 
 import '/api/backend/extension/page_info.dart';
 import '/api/backend/extension/wallet.dart';
-import '/api/backend/schema.dart'
-    show
-        OperationStatus,
-        BalanceOrigin,
-        BalanceUpdates$Subscription,
-        BalanceUpdates$Subscription$BalanceUpdates$SubscriptionInitialized,
-        BalanceUpdates$Subscription$BalanceUpdates$Balance;
+import '/api/backend/schema.dart';
 import '/domain/model/balance.dart';
 import '/domain/model/country.dart';
 import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
-import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/price.dart';
 import '/domain/model/session.dart';
 import '/domain/model/user.dart';
@@ -46,6 +39,7 @@ import '/util/log.dart';
 import '/util/stream_utils.dart';
 import '/util/web/web_utils.dart';
 import 'event/balance.dart';
+import 'event/operation.dart';
 import 'model/operation.dart';
 import 'model/page_info.dart';
 import 'paginated.dart';
@@ -69,47 +63,6 @@ class WalletRepository extends IdentityDependency
 
   @override
   late final OperationsPaginated operations = OperationsPaginated(
-    initial: [
-      {
-        OperationId('aaaaaaaaaa'): OperationDeposit(
-          id: OperationId('aaaaaaaaaa'),
-          num: OperationNum(BigInt.from(1)),
-          status: OperationStatus.inProgress,
-          amount: Price(sum: Sum(10), currency: Currency('G')),
-          createdAt: PreciseDateTime.now().subtract(
-            Duration(days: 5, hours: 3, minutes: 2, seconds: 10),
-          ),
-          billingCountry: CountryCode('US'),
-        ),
-        OperationId('bbbbbbbbbb'): OperationDeposit(
-          id: OperationId('bbbbbbbbbb'),
-          num: OperationNum(BigInt.from(2)),
-          status: OperationStatus.failed,
-          amount: Price(sum: Sum(50), currency: Currency('G')),
-          createdAt: PreciseDateTime.now().subtract(
-            Duration(days: 2, hours: 7, minutes: 49, seconds: 49),
-          ),
-          billingCountry: CountryCode('US'),
-        ),
-        OperationId('cccccccccc'): OperationDeposit(
-          id: OperationId('cccccccccc'),
-          num: OperationNum(BigInt.from(3)),
-          status: OperationStatus.completed,
-          invoice: InvoiceFile('example.com'),
-          amount: Price(sum: Sum(1000), currency: Currency('G')),
-          createdAt: PreciseDateTime.now(),
-          billingCountry: CountryCode('US'),
-        ),
-        OperationId('dddddddddd'): OperationDepositBonus(
-          id: OperationId('dddddddddd'),
-          num: OperationNum(BigInt.from(4)),
-          status: OperationStatus.completed,
-          amount: Price(sum: Sum(5), currency: Currency('G')),
-          createdAt: PreciseDateTime.now(),
-          depositId: OperationId('cccccccccc'),
-        ),
-      },
-    ],
     pagination: Pagination(
       onKey: (e) => e.id,
       perPage: 15,
@@ -125,6 +78,14 @@ class WalletRepository extends IdentityDependency
           return page;
         },
       ),
+      compare: (a, b) {
+        final int at = a.value.createdAt.compareTo(b.value.createdAt);
+        if (at == 0) {
+          return a.id.val.compareTo(b.id.val);
+        }
+
+        return at;
+      },
     ),
     transform: ({required DtoOperation data, Operation? previous}) {
       return data.value;
@@ -141,7 +102,10 @@ class WalletRepository extends IdentityDependency
   final AbstractSessionRepository _sessionRepository;
 
   /// [Balance] subscription.
-  StreamQueue<BalanceUpdates>? _remoteSubscription;
+  StreamQueue<BalanceUpdates>? _balanceSubscription;
+
+  /// [Operation]s subscription.
+  StreamQueue<OperationsEvents>? _operationsSubscription;
 
   /// [IpGeoLocation] of the current device.
   IpGeoLocation? _ip;
@@ -150,7 +114,7 @@ class WalletRepository extends IdentityDependency
   CountryCode? _country;
 
   /// [Currency] to see [OperationDepositMethod] pricing in.
-  // final Currency _currency = Currency('USD');
+  final Currency _currency = Currency('USD');
 
   /// [CancelToken] to cancel [_queryMethods].
   CancelToken? _queryToken;
@@ -163,7 +127,8 @@ class WalletRepository extends IdentityDependency
 
   @override
   void onClose() {
-    _remoteSubscription?.close(immediate: true);
+    _balanceSubscription?.close(immediate: true);
+    _operationsSubscription?.close(immediate: true);
     super.onClose();
   }
 
@@ -178,13 +143,16 @@ class WalletRepository extends IdentityDependency
 
     operations.clear();
     balance.value = Balance.zero;
-    _remoteSubscription?.close(immediate: true);
+
+    _balanceSubscription?.close(immediate: true);
+    _operationsSubscription?.close(immediate: true);
 
     if (!me.isLocal) {
       operations.around();
 
       _queryMethods();
-      _initRemoteSubscription();
+      _initBalanceSubscription();
+      _initOperationsSubscription();
     }
   }
 
@@ -222,7 +190,7 @@ class WalletRepository extends IdentityDependency
 
     return Page(
       query.edges.map((e) => e.node.toDto(cursor: e.cursor)).toList(),
-      query.pageInfo.toModel((c) => OperationsCursor(c)),
+      query.pageInfo.toModel(OperationsCursor.new),
     );
   }
 
@@ -252,8 +220,7 @@ class WalletRepository extends IdentityDependency
       await Backoff.run(() async {
         final list = await _graphQlProvider.operationDepositMethods(
           _country!,
-          null,
-          // _currency,
+          _currency,
         );
         methods.value = list.map((e) => e.toModel()).toList();
       }, cancel: _queryToken);
@@ -263,10 +230,10 @@ class WalletRepository extends IdentityDependency
   }
 
   /// Initializes [_balanceUpdates] subscription.
-  Future<void> _initRemoteSubscription() async {
-    Log.debug('_initRemoteSubscription()', '$runtimeType');
+  Future<void> _initBalanceSubscription() async {
+    Log.debug('_initBalanceSubscription()', '$runtimeType');
 
-    _remoteSubscription?.close(immediate: true);
+    _balanceSubscription?.close(immediate: true);
 
     if (me.isLocal || isClosed) {
       return;
@@ -277,8 +244,8 @@ class WalletRepository extends IdentityDependency
         return;
       }
 
-      _remoteSubscription = StreamQueue(await _balanceUpdates());
-      await _remoteSubscription!.execute(_balanceUpdate);
+      _balanceSubscription = StreamQueue(await _balanceUpdates());
+      await _balanceSubscription!.execute(_balanceUpdate);
     }, tag: 'balanceUpdates()');
   }
 
@@ -324,6 +291,230 @@ class WalletRepository extends IdentityDependency
         );
 
         balance.value = events.balance;
+        break;
+    }
+  }
+
+  /// Initializes [operations] subscription.
+  Future<void> _initOperationsSubscription() async {
+    Log.debug('_initOperationsSubscription()', '$runtimeType');
+
+    _operationsSubscription?.close(immediate: true);
+
+    if (me.isLocal || isClosed) {
+      return;
+    }
+
+    await WebUtils.protect(() async {
+      if (me.isLocal || isClosed) {
+        return;
+      }
+
+      _operationsSubscription = StreamQueue(await _operationsEvents());
+      await _operationsSubscription!.execute(_operationsEvent);
+    }, tag: 'operationsEvents()');
+  }
+
+  /// Returns a [Stream] of [Balance]s of the specified [MyUser]'s purse.
+  Future<Stream<OperationsEvents>> _operationsEvents() async {
+    Log.debug('_operationsEvents()', '$runtimeType');
+
+    final Stream<QueryResult> events = await _graphQlProvider.operationsEvents(
+      OperationOrigin.purse,
+      null,
+      () => null,
+    );
+
+    return events.asyncExpand((event) async* {
+      Log.trace('_operationsEvents() -> ${event.data}', '$runtimeType');
+
+      final events = OperationsEvents$Subscription.fromJson(
+        event.data!,
+      ).operationsEvents;
+
+      if (events.$$typename == 'SubscriptionInitialized') {
+        events
+            as OperationsEvents$Subscription$OperationsEvents$SubscriptionInitialized;
+        yield const OperationsEventsInitialized();
+      } else if (events.$$typename == 'OperationsList') {
+        events as OperationsEvents$Subscription$OperationsEvents$OperationsList;
+        yield OperationsEventsList();
+      } else if (events.$$typename == 'OperationEventsVersioned') {
+        final mixin =
+            events
+                as OperationsEvents$Subscription$OperationsEvents$OperationEventsVersioned;
+        yield OperationsEventsEvent(
+          OperationsEventsVersioned(
+            mixin.events.map(_operationEvent).toList(),
+            mixin.ver,
+            mixin.listVer,
+          ),
+        );
+      }
+    });
+  }
+
+  /// Constructs a [OperationEvent] from the
+  /// [OperationEventsVersionedMixin$Events].
+  OperationEvent _operationEvent(OperationEventsVersionedMixin$Events e) {
+    Log.trace('_operationEvent($e)', '$runtimeType');
+
+    if (e.$$typename == 'EventOperationCanceled') {
+      e as OperationEventsVersionedMixin$Events$EventOperationCanceled;
+      return EventOperationCanceled(e.id, e.origin, e.at, e.canceled.toModel());
+    } else if (e.$$typename == 'EventOperationChargeCreated') {
+      e as OperationEventsVersionedMixin$Events$EventOperationChargeCreated;
+      return EventOperationChargeCreated(
+        e.id,
+        e.origin,
+        e.at,
+        e.operation.node.toDto(cursor: e.operation.cursor),
+      );
+    } else if (e.$$typename == 'EventOperationDepositBonusCreated') {
+      e as OperationEventsVersionedMixin$Events$EventOperationDepositBonusCreated;
+      return EventOperationDepositBonusCreated(
+        e.id,
+        e.origin,
+        e.at,
+        e.operation.node.toDto(cursor: e.operation.cursor),
+      );
+    } else if (e.$$typename == 'EventOperationDepositCompleted') {
+      // e as OperationEventsVersionedMixin$Events$EventOperationDepositCompleted;
+      return EventOperationDepositCompleted(e.id, e.origin, e.at);
+    } else if (e.$$typename == 'EventOperationDepositCreated') {
+      e as OperationEventsVersionedMixin$Events$EventOperationDepositCreated;
+      return EventOperationDepositCreated(
+        e.id,
+        e.origin,
+        e.at,
+        e.operation.node.toDto(cursor: e.operation.cursor),
+      );
+    } else if (e.$$typename == 'EventOperationDepositDeclined') {
+      // e as OperationEventsVersionedMixin$Events$EventOperationDepositDeclined;
+      return EventOperationDepositDeclined(e.id, e.origin, e.at);
+    } else if (e.$$typename == 'EventOperationDepositFailed') {
+      // e as OperationEventsVersionedMixin$Events$EventOperationDepositFailed;
+      return EventOperationDepositFailed(e.id, e.origin, e.at);
+    } else if (e.$$typename == 'EventOperationEarnDonationCreated') {
+      e as OperationEventsVersionedMixin$Events$EventOperationEarnDonationCreated;
+      return EventOperationEarnDonationCreated(
+        e.id,
+        e.origin,
+        e.at,
+        e.operation.node.toDto(cursor: e.operation.cursor),
+      );
+    } else if (e.$$typename == 'EventOperationGrantCreated') {
+      e as OperationEventsVersionedMixin$Events$EventOperationGrantCreated;
+      return EventOperationGrantCreated(
+        e.id,
+        e.origin,
+        e.at,
+        e.operation.node.toDto(cursor: e.operation.cursor),
+      );
+    } else if (e.$$typename == 'EventOperationPurchaseDonationCreated') {
+      e
+          as OperationEventsVersionedMixin$Events$EventOperationPurchaseDonationCreated;
+      return EventOperationPurchaseDonationCreated(
+        e.id,
+        e.origin,
+        e.at,
+        e.operation.node.toDto(cursor: e.operation.cursor),
+      );
+    } else if (e.$$typename == 'EventOperationRewardCreated') {
+      e as OperationEventsVersionedMixin$Events$EventOperationRewardCreated;
+      return EventOperationRewardCreated(
+        e.id,
+        e.origin,
+        e.at,
+        e.operation.node.toDto(cursor: e.operation.cursor),
+      );
+    } else {
+      throw UnimplementedError('Unknown ChatEvent: ${e.$$typename}');
+    }
+  }
+
+  /// Handles [OperationsEvents] from the [_operationsEvents] subscription.
+  Future<void> _operationsEvent(OperationsEvents events) async {
+    switch (events.kind) {
+      case OperationsEventsKind.initialized:
+        events as OperationsEventsInitialized;
+        Log.debug('_operationsEvent(${events.kind})', '$runtimeType');
+        break;
+
+      case OperationsEventsKind.list:
+        events as OperationsEventsList;
+        Log.debug('_operationsEvent(${events.kind})', '$runtimeType');
+        break;
+
+      case OperationsEventsKind.event:
+        events as OperationsEventsEvent;
+
+        final OperationsEventsVersioned versioned = events.event;
+
+        Log.debug(
+          '_operationsEvent(${events.kind}): ${versioned.events.map((e) => e.kind.name).join(', ')}',
+          '$runtimeType',
+        );
+
+        for (var event in versioned.events) {
+          switch (event.kind) {
+            case OperationEventKind.canceled:
+              event as EventOperationCanceled;
+              break;
+
+            case OperationEventKind.chargeCreated:
+              event as EventOperationChargeCreated;
+              await operations.put(event.operation);
+              break;
+
+            case OperationEventKind.depositBonusCreated:
+              event as EventOperationDepositBonusCreated;
+              await operations.put(event.operation);
+              break;
+
+            case OperationEventKind.depositCompleted:
+              event as EventOperationDepositCompleted;
+              break;
+
+            case OperationEventKind.depositCreated:
+              event as EventOperationDepositCreated;
+              await operations.put(event.operation);
+              break;
+
+            case OperationEventKind.depositDeclined:
+              event as EventOperationDepositDeclined;
+              break;
+
+            case OperationEventKind.depositFailed:
+              event as EventOperationDepositFailed;
+              break;
+
+            case OperationEventKind.dividendCreated:
+              event as EventOperationDividendCreated;
+              await operations.put(event.operation);
+              break;
+
+            case OperationEventKind.earnDonationCreated:
+              event as EventOperationEarnDonationCreated;
+              await operations.put(event.operation);
+              break;
+
+            case OperationEventKind.grantCreated:
+              event as EventOperationGrantCreated;
+              await operations.put(event.operation);
+              break;
+
+            case OperationEventKind.purchaseDonationCreated:
+              event as EventOperationPurchaseDonationCreated;
+              await operations.put(event.operation);
+              break;
+
+            case OperationEventKind.rewardCreated:
+              event as EventOperationRewardCreated;
+              await operations.put(event.operation);
+              break;
+          }
+        }
         break;
     }
   }

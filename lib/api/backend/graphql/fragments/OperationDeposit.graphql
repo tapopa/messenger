@@ -19,14 +19,22 @@ fragment OperationDeposit on OperationDeposit {
     id
     num
     status
+    origin
+    direction
     amount {
         __typename
         ...Price
     }
+    holdUntil
     createdAt
+    canceled {
+        __typename
+        ...OperationCancellation
+    }
     ver
+
     kind
     billingCountry
-    # price
     invoice
+    processingUrl
 }

@@ -15,6 +15,8 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:async';
+
 import 'package:graphql/client.dart';
 
 import '../base.dart';
@@ -175,6 +177,24 @@ mixin WalletGraphQlMixin {
         document: BalanceUpdatesSubscription(variables: variables).document,
         variables: variables.toJson(),
       ),
+    );
+  }
+
+  Future<Stream<QueryResult>> operationsEvents(
+    OperationOrigin origin,
+    OperationVersion? ver,
+    FutureOr<OperationVersion?> Function() onVer,
+  ) async {
+    Log.debug('operationsEvents(${origin.name})', '$runtimeType');
+
+    final variables = OperationsEventsArguments(origin: origin, ver: ver);
+    return client.subscribe(
+      SubscriptionOptions(
+        operationName: 'OperationsEvents',
+        document: OperationsEventsSubscription(variables: variables).document,
+        variables: variables.toJson(),
+      ),
+      ver: onVer,
     );
   }
 }

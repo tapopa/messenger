@@ -1,0 +1,132 @@
+# Copyright © 2025-2026 Ideas Networks Solutions S.A.,
+#                       <https://github.com/team113>
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU Affero General Public License v3.0 as published by the
+# Free Software Foundation, either version 3 of the License, or (at your
+# option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License v3.0 for
+# more details.
+#
+# You should have received a copy of the GNU Affero General Public License v3.0
+# along with this program. If not, see
+# <https://www.gnu.org/licenses/agpl-3.0.html>.
+
+fragment OperationEventsVersioned on OperationEventsVersioned {
+    events {
+        __typename
+        id
+        origin
+        # operation
+        at
+        ... on EventOperationCanceled {
+            canceled {
+                __typename
+                ...OperationCancellation
+            }
+        }
+        ... on EventOperationChargeCreated {
+            operation {
+                node {
+                    __typename
+                    ... on OperationCharge {
+                        ...OperationCharge
+                    }
+                }
+                cursor
+            }
+        }
+        ... on EventOperationDepositBonusCreated {
+            operation {
+                node {
+                    __typename
+                    ... on OperationDepositBonus {
+                        ...OperationDepositBonus
+                    }
+                }
+                cursor
+            }
+        }
+        # ... on EventOperationDepositCompleted {
+
+        # }
+        ... on EventOperationDepositCreated {
+            operation {
+                node {
+                    __typename
+                    ... on OperationDeposit {
+                        ...OperationDeposit
+                    }
+                }
+                cursor
+            }
+        }
+        # ... on EventOperationDepositDeclined {
+
+        # }
+        # ... on EventOperationDepositFailed {
+
+        # }
+        # TODO: Uncomment when upgraded to 0.9.0.
+        # ... on EventOperationDividendCreated {
+        #     operation {
+        #         node {
+        #             __typename
+        #             ... on OperationDividend {
+        #                 ...OperationDividend
+        #             }
+        #         }
+        #         cursor
+        #     }
+        # }
+        ... on EventOperationEarnDonationCreated {
+            operation {
+                node {
+                    __typename
+                    ... on OperationEarnDonation {
+                        ...OperationEarnDonation
+                    }
+                }
+                cursor
+            }
+        }
+        ... on EventOperationGrantCreated {
+            operation {
+                node {
+                    __typename
+                    ... on OperationGrant {
+                        ...OperationGrant
+                    }
+                }
+                cursor
+            }
+        }
+        ... on EventOperationPurchaseDonationCreated {
+            operation {
+                node {
+                    __typename
+                    ... on OperationPurchaseDonation {
+                        ...OperationPurchaseDonation
+                    }
+                }
+                cursor
+            }
+        }
+        ... on EventOperationRewardCreated {
+            operation {
+                node {
+                    __typename
+                    ... on OperationReward {
+                        ...OperationReward
+                    }
+                }
+                cursor
+            }
+        }
+    }
+    ver
+    listVer
+}

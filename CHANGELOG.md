@@ -17,7 +17,14 @@ All user visible changes to this project will be documented in this file. This p
     - Wallet tab:
         - Deposit methods. ([#20])
 
+### Fixed
+
+- Web:
+    - Chats tab:
+        - Default context menu displayed when pressing on first chat. ([#21])
+
 [#20]: /../../pull/20
+[#21]: /../../pull/21
 
 
 

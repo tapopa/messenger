@@ -506,7 +506,6 @@ country_yt = Майотта
 country_za = Южная Африка
 country_zm = Замбия
 country_zw = Зимбабве
-currency_amount = ¤{$amount}
 dot = .
 email_confirmation_code =
     Код: {$token}

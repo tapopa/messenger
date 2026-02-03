@@ -89,7 +89,7 @@ class OperationDepositPricing {
   /// Nominal [Price] of the [OperationDeposit].
   final Price nominal;
 
-  /// [Bonus] of the nominal [Price] to be granted as a separate
+  /// Bonus of the nominal [Price] to be granted as a separate
   /// [OperationDepositBonus] once the original [OperationDeposit] is completed
   /// successfully.
   ///

@@ -16,6 +16,7 @@
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
 import '/util/new_type.dart';
+import 'promo_share.dart';
 
 /// Price of something.
 class Price {
@@ -70,4 +71,20 @@ class Sum extends NewType<double> implements Comparable<Sum> {
 /// [ISO 4217]: https://iso.org/iso-4217-currency-codes.html
 class Currency extends NewType<String> {
   const Currency(super.val);
+}
+
+/// Modifier of a [Price].
+class PriceModifier {
+  PriceModifier({required this.percentage, required this.amount});
+
+  /// [Percentage] to apply to the [Price].
+  ///
+  /// `null` means this [PriceModifier] modifies the [Price] by a fixed [Sum].
+  final Percentage? percentage;
+
+  /// Concrete [Sum] amount to apply to the [Price].
+  ///
+  /// If the [percentage] is not `null`, then it represents the already
+  /// calculated [Sum] of the percentage.
+  final Price amount;
 }

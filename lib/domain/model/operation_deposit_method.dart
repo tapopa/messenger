@@ -27,6 +27,7 @@ class OperationDepositMethod {
     required this.kind,
     this.countries,
     this.nominals,
+    this.pricing,
   });
 
   /// Unique ID of this [OperationDepositMethod].
@@ -41,6 +42,12 @@ class OperationDepositMethod {
 
   /// List of available nominal [Price]s this [OperationDepositMethod] accepts.
   final List<Price>? nominals;
+
+  /// [OperationDepositPricing] of this [OperationDepositMethod].
+  ///
+  /// `null` in case this [OperationDepositMethod] is unavailable for the
+  /// provided [CountryCode].
+  final OperationDepositPricing? pricing;
 }
 
 /// Entities' criteria matching [CountryCode]s.
@@ -67,4 +74,51 @@ class CriteriaCountryOnly extends CriteriaCountry {
 /// ID of an [OperationDepositMethod].
 class OperationDepositMethodId extends NewType<String> {
   const OperationDepositMethodId(super.val);
+}
+
+/// Pricing of an [OperationDeposit].
+class OperationDepositPricing {
+  OperationDepositPricing({
+    required this.nominal,
+    this.bonus,
+    this.withoutTax,
+    this.tax,
+    this.total,
+  });
+
+  /// Nominal [Price] of the [OperationDeposit].
+  final Price nominal;
+
+  /// [Bonus] of the nominal [Price] to be granted as a separate
+  /// [OperationDepositBonus] once the original [OperationDeposit] is completed
+  /// successfully.
+  ///
+  /// `null` if no bonus is granted.
+  final PriceModifier? bonus;
+
+  /// Calculated [Price] of the [OperationDeposit] to be paid, before the tax
+  /// being applied, in the provided [Currency].
+  ///
+  /// `null` if the provided [Currency] is not supported by the [OperationDeposit].
+  ///
+  /// Doesn't include [bonus].
+  final Price? withoutTax;
+
+  /// Tax applied to the [withoutTax] [Price], according to the billing
+  /// [CountryCode] of the [OperationDeposit], in the provided [Currency].
+  ///
+  /// `null` if the provided [Currency] is not supported by the
+  /// [OperationDeposit].
+  final PriceModifier? tax;
+
+  /// Calculated total [Price] of the [OperationDeposit] to be paid, after the
+  /// tax being applied, in the provided [Currency].
+  ///
+  /// It's calculated as: `total = withoutTax + tax`.
+  ///
+  /// `null` if the provided [Currency] is not supported by the
+  /// [OperationDeposit].
+  ///
+  /// Doesn't include [bonus].
+  final Price? total;
 }

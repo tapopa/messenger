@@ -63,6 +63,11 @@ class WalletTabController extends GetxController {
     super.onClose();
   }
 
+  /// Sets the [country].
+  Future<void> setCountry(CountryCode country) async {
+    await _walletService.setCountry(country);
+  }
+
   /// Fetches the current [IpGeoLocation] to update [IsoCode].
   Future<void> _fetchIp() async {
     final IpGeoLocation ip = await _sessionService.fetch();

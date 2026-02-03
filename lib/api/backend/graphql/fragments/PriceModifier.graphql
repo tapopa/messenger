@@ -15,34 +15,10 @@
 # along with this program. If not, see
 # <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-query OperationDepositMethods(
-    $country: CountryCode!
-    $currency: Currency
-) {
-    operationDepositMethods {
+fragment PriceModifier on PriceModifier {
+    percentage
+    amount {
         __typename
-        ...OperationDepositMethod
-        pricing(country: $country) {
-            nominal {
-                __typename
-                ...Price
-            }
-            bonus {
-                __typename
-                ...PriceModifier
-            }
-            withoutTax(currency: $currency) {
-                __typename
-                ...Price
-            }
-            tax(currency: $currency) {
-                __typename
-                ...PriceModifier
-            }
-            total(currency: $currency) {
-                __typename
-                ...Price
-            }
-        }
+        ...Price
     }
 }

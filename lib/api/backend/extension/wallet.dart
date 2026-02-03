@@ -65,6 +65,50 @@ extension OperationDepositBonusConversion on OperationDepositBonusMixin {
       DtoOperation(toModel(), ver, cursor: cursor);
 }
 
+/// Extension adding models construction from an [PriceModifierMixin].
+extension PriceModifierConversion on PriceModifierMixin {
+  /// Constructs a new [PriceModifier] from this [PriceModifierMixin].
+  PriceModifier toModel() =>
+      PriceModifier(percentage: percentage, amount: amount.toModel());
+}
+
+/// Extension adding models construction from an
+/// [OperationDepositMethods$Query$OperationDepositMethods].
+extension OperationDepositMethodsConversion
+    on OperationDepositMethods$Query$OperationDepositMethods {
+  /// Constructs a new [OperationDepositMethod] from this
+  /// [OperationDepositMethods$Query$OperationDepositMethods].
+  OperationDepositMethod toModel() {
+    return OperationDepositMethod(
+      id: id,
+      kind: kind,
+      countries: switch (countries?.$$typename) {
+        'CriteriaCountryExcept' => CriteriaCountryExcept(
+          (countries
+                  as OperationDepositMethodMixin$Countries$CriteriaCountryExcept)
+              .except,
+        ),
+        'CriteriaCountryOnly' => CriteriaCountryOnly(
+          (countries
+                  as OperationDepositMethodMixin$Countries$CriteriaCountryOnly)
+              .only,
+        ),
+        (_) => null,
+      },
+      nominals: nominals?.map((e) => e.toModel()).toList(),
+      pricing: pricing == null
+          ? null
+          : OperationDepositPricing(
+              nominal: pricing!.nominal.toModel(),
+              bonus: pricing!.bonus?.toModel(),
+              withoutTax: pricing!.withoutTax?.toModel(),
+              tax: pricing!.tax?.toModel(),
+              total: pricing!.total?.toModel(),
+            ),
+    );
+  }
+}
+
 /// Extension adding models construction from an [OperationDepositMethodMixin].
 extension OperationDepositMethodConversion on OperationDepositMethodMixin {
   /// Constructs a new [OperationDepositMethod] from this

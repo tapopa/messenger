@@ -18,6 +18,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '/domain/model/country.dart';
 import '/l10n/l10n.dart';
 import '/routes.dart';
 import '/themes.dart';
@@ -120,6 +121,10 @@ class WalletTabView extends StatelessWidget {
                             : () => c.expanded.add(e.id),
                         provider: e,
                         fields: c.fields.value,
+                        onCountry: (country) {
+                          c.fields.value.applyCountry(country);
+                          c.setCountry(CountryCode(country.name));
+                        },
                       );
                     });
                   }),

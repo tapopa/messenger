@@ -16,6 +16,7 @@
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
 import 'package:async/async.dart';
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:graphql/client.dart' show QueryResult;
 
@@ -34,13 +35,16 @@ import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/price.dart';
+import '/domain/model/session.dart';
 import '/domain/model/user.dart';
+import '/domain/repository/session.dart';
 import '/domain/repository/wallet.dart';
 import '/domain/service/disposable_service.dart';
 import '/provider/gql/graphql.dart';
+import '/util/backoff.dart';
 import '/util/log.dart';
 import '/util/stream_utils.dart';
-import '/util/web/web.dart';
+import '/util/web/web_utils.dart';
 import 'event/balance.dart';
 import 'model/operation.dart';
 import 'model/page_info.dart';
@@ -54,7 +58,11 @@ typedef OperationsPaginated =
 /// [MyUser] wallet repository interface.
 class WalletRepository extends IdentityDependency
     implements AbstractWalletRepository {
-  WalletRepository(this._graphQlProvider, {required super.me});
+  WalletRepository(
+    this._graphQlProvider,
+    this._sessionRepository, {
+    required super.me,
+  });
 
   @override
   final Rx<Balance> balance = Rx(Balance.zero);
@@ -129,8 +137,23 @@ class WalletRepository extends IdentityDependency
   /// [GraphQlProvider] for fetching the [Operation]s list.
   final GraphQlProvider _graphQlProvider;
 
+  /// [AbstractSessionRepository] used to fetch [IpAddress].
+  final AbstractSessionRepository _sessionRepository;
+
   /// [Balance] subscription.
   StreamQueue<BalanceUpdates>? _remoteSubscription;
+
+  /// [IpGeoLocation] of the current device.
+  IpGeoLocation? _ip;
+
+  /// [CountryCode] selected for the [OperationDepositMethod].
+  CountryCode? _country;
+
+  /// [Currency] to see [OperationDepositMethod] pricing in.
+  // final Currency _currency = Currency('USD');
+
+  /// [CancelToken] to cancel [_queryMethods].
+  CancelToken? _queryToken;
 
   @override
   void onInit() {
@@ -150,16 +173,31 @@ class WalletRepository extends IdentityDependency
 
     Log.debug('onIdentityChanged($me)', '$runtimeType');
 
+    _queryToken?.cancel();
+    _queryToken = null;
+
     operations.clear();
     balance.value = Balance.zero;
     _remoteSubscription?.close(immediate: true);
 
     if (!me.isLocal) {
       operations.around();
-      _queryMethods();
 
+      _queryMethods();
       _initRemoteSubscription();
     }
+  }
+
+  @override
+  Future<void> setCountry(CountryCode country) async {
+    Log.debug('setCountry($country)', '$runtimeType');
+
+    if (isClosed || me.isLocal) {
+      return;
+    }
+
+    _country = country;
+    await _queryMethods();
   }
 
   /// Fetches purse operations with pagination.
@@ -190,8 +228,38 @@ class WalletRepository extends IdentityDependency
 
   /// Queries the available [OperationDepositMethod]s into [methods].
   Future<void> _queryMethods() async {
-    final list = await _graphQlProvider.operationDepositMethods();
-    methods.value = list.map((e) => e.toModel()).toList();
+    Log.debug('_queryMethods()', '$runtimeType');
+
+    _queryToken?.cancel();
+    _queryToken = CancelToken();
+
+    _ip ??= await _sessionRepository.fetch();
+    if (_ip != null) {
+      _country ??= CountryCode(_ip?.countryCode ?? 'us');
+    }
+
+    if (isClosed || me.isLocal) {
+      return;
+    }
+
+    if (_country == null) {
+      Log.warning('_queryMethods() -> country is `null`', '$runtimeType');
+      methods.value = [];
+      return;
+    }
+
+    try {
+      await Backoff.run(() async {
+        final list = await _graphQlProvider.operationDepositMethods(
+          _country!,
+          null,
+          // _currency,
+        );
+        methods.value = list.map((e) => e.toModel()).toList();
+      }, cancel: _queryToken);
+    } on OperationCanceledException {
+      // No-op.
+    }
   }
 
   /// Initializes [_balanceUpdates] subscription.

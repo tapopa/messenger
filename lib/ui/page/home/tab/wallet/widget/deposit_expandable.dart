@@ -68,12 +68,23 @@ class DepositExpandable extends StatelessWidget {
     this.expanded = false,
     this.onPressed,
     required this.fields,
+    this.onCountry,
   });
 
+  /// [OperationDepositMethod] to display.
   final OperationDepositMethod provider;
+
+  /// Indicator whether this tile should be expanded.
   final bool expanded;
+
+  /// Callback, called when title is pressed.
   final void Function()? onPressed;
+
+  /// [DepositFields] of the deposit methods to use.
   final DepositFields fields;
+
+  /// Callback, called when country is changed.
+  final void Function(IsoCode)? onCountry;
 
   @override
   Widget build(BuildContext context) {
@@ -213,6 +224,7 @@ class DepositExpandable extends StatelessWidget {
 
             if (result != null) {
               country.value = result;
+              onCountry?.call(result);
             }
           },
           error: error,
@@ -294,6 +306,7 @@ class DepositExpandable extends StatelessWidget {
                     ignoring: !available,
                     child: _responsive(
                       provider.nominals ?? [],
+                      pricing: provider.pricing,
                       onPressed: (e) async {
                         if (paypal.country.value == null) {
                           final result = await SelectCountryView.show(
@@ -325,11 +338,16 @@ class DepositExpandable extends StatelessWidget {
   }
 }
 
-Widget _responsive(List<Price> nominals, {void Function(Price)? onPressed}) {
+/// Builds the provided [nominals] in a responsive grid.
+Widget _responsive(
+  List<Price> nominals, {
+  void Function(Price)? onPressed,
+  OperationDepositPricing? pricing,
+}) {
   Widget tile(int i) {
     return WidgetButton(
       onPressed: () => onPressed?.call(nominals[i]),
-      child: AmountTile(nominal: nominals[i]),
+      child: AmountTile(nominal: nominals[i], pricing: pricing),
     );
   }
 

@@ -29,7 +29,7 @@ import '/domain/service/disposable_service.dart';
 import '/provider/gql/graphql.dart';
 import '/util/log.dart';
 import '/util/stream_utils.dart';
-import '/util/web/web.dart';
+import '/util/web/web_utils.dart';
 import 'event/balance.dart';
 import 'model/operation.dart';
 import 'model/page_info.dart';

@@ -19,7 +19,9 @@ import 'package:graphql/client.dart';
 
 import '../base.dart';
 import '/api/backend/schema.dart';
+import '/domain/model/country.dart';
 import '/domain/model/my_user.dart';
+import '/domain/model/price.dart';
 import '/domain/model/session.dart';
 import '/store/model/operation.dart';
 import '/util/log.dart';
@@ -89,13 +91,18 @@ mixin WalletGraphQlMixin {
   /// Returns information about available [OperationDepositMethod]s for the
   /// authenticated [MyUser].
   Future<List<OperationDepositMethods$Query$OperationDepositMethods>>
-  operationDepositMethods() async {
-    Log.debug('OperationDepositMethods()', '$runtimeType');
+  operationDepositMethods(CountryCode country, Currency? currency) async {
+    Log.debug('OperationDepositMethods($country, $currency)', '$runtimeType');
 
+    final variables = OperationDepositMethodsArguments(
+      country: country,
+      currency: currency,
+    );
     final QueryResult result = await client.query(
       QueryOptions(
         operationName: 'OperationDepositMethods',
-        document: OperationDepositMethodsQuery().document,
+        document: OperationDepositMethodsQuery(variables: variables).document,
+        variables: variables.toJson(),
       ),
     );
 

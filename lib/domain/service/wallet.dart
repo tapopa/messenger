@@ -18,6 +18,7 @@
 import 'package:get/get.dart';
 
 import '/domain/model/balance.dart';
+import '/domain/model/country.dart';
 import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
 import '/domain/repository/paginated.dart';
@@ -40,4 +41,8 @@ class WalletService extends Dependency {
 
   /// Returns the [OperationDepositMethod]s available for the [MyUser].
   RxList<OperationDepositMethod> get methods => _walletRepository.methods;
+
+  /// Sets the available [methods] to be accounted as the provided [country].
+  Future<void> setCountry(CountryCode country) =>
+      _walletRepository.setCountry(country);
 }

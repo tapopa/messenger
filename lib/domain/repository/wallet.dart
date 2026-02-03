@@ -18,6 +18,7 @@
 import 'package:get/get.dart';
 
 import '/domain/model/balance.dart';
+import '/domain/model/country.dart';
 import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
 import 'paginated.dart';
@@ -32,4 +33,7 @@ abstract class AbstractWalletRepository {
 
   /// Returns the [OperationDepositMethod]s available for the [MyUser].
   RxList<OperationDepositMethod> get methods;
+
+  /// Sets the available [methods] to be accounted as the provided [country].
+  Future<void> setCountry(CountryCode country);
 }

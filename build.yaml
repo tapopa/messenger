@@ -274,7 +274,7 @@ targets:
               dart_type:
                 name: Percentage
                 imports:
-                  - "package:messenger/domain/model/operation.dart"
+                  - "package:messenger/domain/model/promo_share.dart"
             - graphql_type: PromoShareVersion
               custom_parser_import: "package:messenger/api/backend/graphql/parsers/session.dart"
               dart_type:

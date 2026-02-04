@@ -362,6 +362,7 @@ class OperationWidget extends StatelessWidget {
     );
   }
 
+  /// Returns a [TableRow] styled to build [label] and [child].
   TableRow _row(BuildContext context, String label, Widget child) {
     final style = Theme.of(context).style;
 

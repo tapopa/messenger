@@ -423,6 +423,7 @@ targets:
                 name: UserAgent
                 imports:
                   - "package:messenger/domain/model/session.dart"
+            # Mapping `URL` to a `Url` fails on `json_serializable` level.
             - graphql_type: URL
               dart_type: String
             - graphql_type: RefreshTokenSecret

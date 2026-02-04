@@ -1165,6 +1165,10 @@ label_paypal = PayPal
 label_paypal_account_email = PayPal account e-mail
 label_paypal_account_email_example = dummy@example.com
 label_paypal_is_not_available_in_this_country = PayPal is not available in this country
+label_paypal_popup_window_instruction =
+    To make the payment a pop-up window of the processing service will open.
+
+    If the pop-up window does not open, check your browser settings. It's possible that your browser is blocking pop-up windows from opening.
 label_personal_data_deletion = Delete account
 label_personal_data_deletion_description1 = This process is{" "}
 label_personal_data_deletion_description2 = IRREVERSIBLE
@@ -1264,6 +1268,8 @@ label_tab_chats = Chats
 label_tab_menu = Menu
 label_tab_partner = Partner
 label_tab_wallet = Wallet
+label_tapopa_will_be_grateful_for_reporting_problems_when_paying1 = Tapopa
+label_tapopa_will_be_grateful_for_reporting_problems_when_paying2 = {" "}would be very grateful if you reported any inconveniences or problems encountered when making a payment.
 label_terminate_sessions = Terminate session(s)
 label_terms_and_privacy_policy = Terms & Privacy Policy
 label_text_status = Text status
@@ -1276,7 +1282,9 @@ label_to_confirm_identity_upload_photo = To confirm your identity, upload a phot
 label_to_restore_chats_use_search = To restore the chats, use the search
 label_ton = TON
 label_top_up_bonus_with_id = Top up bonus. Transaction ID: {$id}.
+label_top_up_by_paypal = Top up by PayPal
 label_top_up_paypal = Top up. PayPal.
+label_transaction = Transaction
 label_transaction_id = Transaction ID
 label_tron_trc20 = TRON (TRC-20)
 label_typing = Typing

@@ -17,12 +17,15 @@
 
 import 'dart:async';
 
-import 'package:graphql/client.dart';
+import 'package:graphql/client.dart' hide Operation;
 
 import '../base.dart';
+import '../exceptions.dart';
 import '/api/backend/schema.dart';
 import '/domain/model/country.dart';
 import '/domain/model/my_user.dart';
+import '/domain/model/operation_deposit_method.dart';
+import '/domain/model/operation.dart';
 import '/domain/model/price.dart';
 import '/domain/model/session.dart';
 import '/store/model/operation.dart';
@@ -245,5 +248,147 @@ mixin WalletGraphQlMixin {
       ),
       ver: onVer,
     );
+  }
+
+  /// Creates a new [OperationDeposit].
+  ///
+  /// Exactly one of [kind] argument's fields must be specified (be non-`null`).
+  ///
+  /// ### Authentication
+  ///
+  /// Mandatory.
+  ///
+  /// ### Non-idempotent
+  ///
+  /// Each time creates a new unique [OperationDeposit].
+  Future<OperationEventsVersionedMixin> createOperationDeposit({
+    required OperationDepositMethodId methodId,
+    required OperationDepositInput kind,
+    required CountryCode country,
+  }) async {
+    Log.debug(
+      'createOperationDeposit(methodId: $methodId, kind: $kind, country: $country)',
+      '$runtimeType',
+    );
+
+    final variables = CreateOperationDepositArguments(
+      methodId: methodId,
+      kind: kind,
+      billingCountry: country,
+    );
+
+    final QueryResult res = await client.mutate(
+      MutationOptions(
+        operationName: 'CreateOperationDeposit',
+        document: CreateOperationDepositMutation(variables: variables).document,
+        variables: variables.toJson(),
+      ),
+      onException: (data) => CreateOperationDepositException(
+        (CreateOperationDeposit$Mutation.fromJson(data).createOperationDeposit
+                as CreateOperationDeposit$Mutation$CreateOperationDeposit$CreateOperationDepositError)
+            .code,
+      ),
+    );
+
+    return CreateOperationDeposit$Mutation.fromJson(
+          res.data!,
+        ).createOperationDeposit
+        as CreateOperationDeposit$Mutation$CreateOperationDeposit$OperationEventsVersioned;
+  }
+
+  /// Completes an [OperationDeposit].
+  ///
+  /// ### Authentication
+  ///
+  /// Mandatory if the [secret] argument is not specified (or is `null`).
+  ///
+  /// ### Result
+  ///
+  /// One of the following [OperationEvent]s may be produced on success:
+  /// - [EventOperationDepositCompleted];
+  /// - [EventOperationDepositFailed].
+  ///
+  /// ### Idempotent
+  ///
+  /// Succeeds as no-op (and returns no [OperationEvent]) if the
+  /// [OperationDeposit] with the specified id is completed or failed already.
+  Future<OperationEventsVersionedMixin> completeOperationDeposit({
+    required OperationId id,
+    OperationDepositSecret? secret,
+  }) async {
+    Log.debug(
+      'completeOperationDeposit(id: $id, secret: ${secret?.obscured})',
+      '$runtimeType',
+    );
+
+    final variables = CompleteOperationDepositArguments(id: id, secret: secret);
+    final QueryResult res = await client.mutate(
+      MutationOptions(
+        operationName: 'CompleteOperationDeposit',
+        document: CompleteOperationDepositMutation(
+          variables: variables,
+        ).document,
+        variables: variables.toJson(),
+      ),
+      onException: (data) => CompleteOperationDepositException(
+        (CompleteOperationDeposit$Mutation.fromJson(
+                  data,
+                ).completeOperationDeposit
+                as CompleteOperationDeposit$Mutation$CompleteOperationDeposit$CompleteOperationDepositError)
+            .code,
+      ),
+    );
+
+    return CompleteOperationDeposit$Mutation.fromJson(
+          res.data!,
+        ).completeOperationDeposit
+        as CompleteOperationDeposit$Mutation$CompleteOperationDeposit$OperationEventsVersioned;
+  }
+
+  /// Declines an [OperationDeposit].
+  ///
+  /// ### Authentication
+  ///
+  ///  Mandatory if the [secret] argument is not specified (or is `null`).
+  ///
+  /// ### Result
+  ///
+  /// Only the following [OperationEvent] may be produced on success:
+  /// - [EventOperationDepositDeclined].
+  ///
+  /// ### Idempotent
+  ///
+  /// Succeeds if the [OperationDeposit] with the specified id is declined
+  /// already.
+  Future<OperationEventsVersionedMixin?> declineOperationDeposit({
+    required OperationId id,
+    OperationDepositSecret? secret,
+  }) async {
+    Log.debug(
+      'declineOperationDeposit(id: $id, secret: ${secret?.obscured})',
+      '$runtimeType',
+    );
+
+    final variables = DeclineOperationDepositArguments(id: id, secret: secret);
+
+    final QueryResult res = await client.mutate(
+      MutationOptions(
+        operationName: 'DeclineOperationDeposit',
+        document: DeclineOperationDepositMutation(
+          variables: variables,
+        ).document,
+        variables: variables.toJson(),
+      ),
+      onException: (data) => DeclineOperationDepositException(
+        (DeclineOperationDeposit$Mutation.fromJson(data).declineOperationDeposit
+                as DeclineOperationDeposit$Mutation$DeclineOperationDeposit$DeclineOperationDepositError)
+            .code,
+      ),
+    );
+
+    return DeclineOperationDeposit$Mutation.fromJson(
+          res.data!,
+        ).declineOperationDeposit
+        as DeclineOperationDeposit$Mutation$DeclineOperationDeposit$OperationEventsVersioned?;
   }
 }

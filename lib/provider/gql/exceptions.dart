@@ -1647,3 +1647,80 @@ class UpdateWelcomeMessageException
     }
   }
 }
+
+/// Exception of `Mutation.createOperationDeposit` described in the [code].
+class CreateOperationDepositException
+    with LocalizedExceptionMixin
+    implements Exception {
+  const CreateOperationDepositException(this.code);
+
+  /// Reason of why the mutation has failed.
+  final CreateOperationDepositErrorCode code;
+
+  @override
+  String toString() => 'CreateOperationDepositException($code)';
+
+  @override
+  String toMessage() {
+    switch (code) {
+      case CreateOperationDepositErrorCode.unavailable:
+      case CreateOperationDepositErrorCode.unavailableMethod:
+        return toString();
+
+      case CreateOperationDepositErrorCode.artemisUnknown:
+        return 'err_unknown'.l10n;
+    }
+  }
+}
+
+/// Exception of `Mutation.completeOperationDeposit` described in the [code].
+class CompleteOperationDepositException
+    with LocalizedExceptionMixin
+    implements Exception {
+  const CompleteOperationDepositException(this.code);
+
+  /// Reason of why the mutation has failed.
+  final CompleteOperationDepositErrorCode code;
+
+  @override
+  String toString() => 'CompleteOperationDepositException($code)';
+
+  @override
+  String toMessage() {
+    switch (code) {
+      case CompleteOperationDepositErrorCode.unavailable:
+      case CompleteOperationDepositErrorCode.unknownOperation:
+      case CompleteOperationDepositErrorCode.inProgress:
+      case CompleteOperationDepositErrorCode.unprocessable:
+        return toString();
+
+      case CompleteOperationDepositErrorCode.artemisUnknown:
+        return 'err_unknown'.l10n;
+    }
+  }
+}
+
+/// Exception of `Mutation.declineOperationDeposit` described in the [code].
+class DeclineOperationDepositException
+    with LocalizedExceptionMixin
+    implements Exception {
+  const DeclineOperationDepositException(this.code);
+
+  /// Reason of why the mutation has failed.
+  final DeclineOperationDepositErrorCode code;
+
+  @override
+  String toString() => 'DeclineOperationDepositException($code)';
+
+  @override
+  String toMessage() {
+    switch (code) {
+      case DeclineOperationDepositErrorCode.unknownOperation:
+      case DeclineOperationDepositErrorCode.unprocessable:
+        return toString();
+
+      case DeclineOperationDepositErrorCode.artemisUnknown:
+        return 'err_unknown'.l10n;
+    }
+  }
+}

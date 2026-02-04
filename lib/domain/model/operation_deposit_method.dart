@@ -15,6 +15,9 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:convert';
+import 'dart:math';
+
 import '/api/backend/schema.dart' show OperationDepositKind;
 import '/util/new_type.dart';
 import 'country.dart';
@@ -121,4 +124,22 @@ class OperationDepositPricing {
   ///
   /// Doesn't include [bonus].
   final Price? total;
+}
+
+/// Secret authenticating client operations on an [OperationDeposit].
+///
+/// Must represent 32 random bytes encoded as [valid Base64 string][1].
+///
+/// Use a cryptographically secure random generator to produce array of bytes
+/// for this value.
+///
+/// [1]: https://base64.guru/learn/base64-characters
+class OperationDepositSecret extends NewType<String> {
+  const OperationDepositSecret(super.val);
+
+  factory OperationDepositSecret.generate() {
+    return OperationDepositSecret(
+      base64Encode(List.generate(32, (_) => Random.secure().nextInt(255))),
+    );
+  }
 }

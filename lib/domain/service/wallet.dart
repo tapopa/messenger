@@ -21,8 +21,10 @@ import '/domain/model/balance.dart';
 import '/domain/model/country.dart';
 import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
+import '/domain/model/price.dart';
 import '/domain/repository/paginated.dart';
 import '/domain/repository/wallet.dart';
+import '/util/log.dart';
 import 'disposable_service.dart';
 
 /// Service responsible for [MyUser] wallet functionality.
@@ -43,6 +45,54 @@ class WalletService extends Dependency {
   RxList<OperationDepositMethod> get methods => _walletRepository.methods;
 
   /// Sets the available [methods] to be accounted as the provided [country].
-  Future<void> setCountry(CountryCode country) =>
-      _walletRepository.setCountry(country);
+  Future<void> setCountry(CountryCode country) {
+    Log.debug('setCountry($country)', '$runtimeType');
+    return _walletRepository.setCountry(country);
+  }
+
+  /// Creates a new [OperationDeposit].
+  Future<OperationDeposit?> createOperationDeposit({
+    required OperationDepositMethodId methodId,
+    required Price nominal,
+    OperationDepositSecret? paypal,
+    required CountryCode country,
+  }) {
+    Log.debug(
+      'createOperationDeposit(methodId: $methodId, nominal: $nominal, paypal: ${paypal?.obscured}, country: $country)',
+      '$runtimeType',
+    );
+
+    return _walletRepository.createOperationDeposit(
+      methodId: methodId,
+      nominal: nominal,
+      paypal: paypal,
+      country: country,
+    );
+  }
+
+  /// Completes an [OperationDeposit].
+  Future<OperationDeposit?> completeOperationDeposit({
+    required OperationId id,
+    OperationDepositSecret? secret,
+  }) {
+    Log.debug(
+      'completeOperationDeposit(id: $id, secret: ${secret?.obscured})',
+      '$runtimeType',
+    );
+
+    return _walletRepository.completeOperationDeposit(id: id, secret: secret);
+  }
+
+  /// Declines an [OperationDeposit].
+  Future<OperationDeposit?> declineOperationDeposit({
+    required OperationId id,
+    OperationDepositSecret? secret,
+  }) {
+    Log.debug(
+      'completeOperationDeposit(id: $id, secret: ${secret?.obscured})',
+      '$runtimeType',
+    );
+
+    return _walletRepository.declineOperationDeposit(id: id, secret: secret);
+  }
 }

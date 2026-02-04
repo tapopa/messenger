@@ -174,6 +174,133 @@ class WalletRepository extends IdentityDependency
     await _queryMethods();
   }
 
+  @override
+  Future<OperationDeposit?> createOperationDeposit({
+    required OperationDepositMethodId methodId,
+    required Price nominal,
+    OperationDepositSecret? paypal,
+    required CountryCode country,
+  }) async {
+    Log.debug(
+      'createOperationDeposit(methodId: $methodId, nominal: $nominal, paypal: ${paypal?.obscured}, country: $country)',
+      '$runtimeType',
+    );
+
+    if (paypal == null) {
+      throw Exception('`paypal` shouldn\'t be `null`');
+    }
+
+    final mixin = await _graphQlProvider.createOperationDeposit(
+      methodId: methodId,
+      kind: OperationDepositInput(
+        paypal: OperationDepositPayPalInput(
+          nominal: nominal.sum,
+          secret: paypal,
+        ),
+      ),
+      country: country,
+    );
+
+    final OperationsEventsEvent events = OperationsEventsEvent(
+      OperationsEventsVersioned(
+        mixin.events.map(_operationEvent).toList(),
+        mixin.ver,
+        mixin.listVer,
+      ),
+    );
+
+    await _operationsEvent(events);
+
+    final Operation? operation = events.event.events
+        .firstWhereOrNull((e) => e.operation.value is OperationDeposit)
+        ?.operation
+        .value;
+
+    if (operation is OperationDeposit) {
+      return operation;
+    }
+
+    return null;
+  }
+
+  @override
+  Future<OperationDeposit?> completeOperationDeposit({
+    required OperationId id,
+    OperationDepositSecret? secret,
+  }) async {
+    Log.debug(
+      'completeOperationDeposit(id: $id, secret: ${secret?.obscured})',
+      '$runtimeType',
+    );
+
+    final mixin = await _graphQlProvider.completeOperationDeposit(
+      id: id,
+      secret: secret,
+    );
+
+    final OperationsEventsEvent events = OperationsEventsEvent(
+      OperationsEventsVersioned(
+        mixin.events.map(_operationEvent).toList(),
+        mixin.ver,
+        mixin.listVer,
+      ),
+    );
+
+    await _operationsEvent(events);
+
+    final Operation? operation = events.event.events
+        .firstWhereOrNull((e) => e.operation.value is OperationDeposit)
+        ?.operation
+        .value;
+
+    if (operation is OperationDeposit) {
+      return operation;
+    }
+
+    return null;
+  }
+
+  @override
+  Future<OperationDeposit?> declineOperationDeposit({
+    required OperationId id,
+    OperationDepositSecret? secret,
+  }) async {
+    Log.debug(
+      'declineOperationDeposit(id: $id, secret: ${secret?.obscured})',
+      '$runtimeType',
+    );
+
+    final mixin = await _graphQlProvider.declineOperationDeposit(
+      id: id,
+      secret: secret,
+    );
+
+    if (mixin == null) {
+      return null;
+    }
+
+    final OperationsEventsEvent events = OperationsEventsEvent(
+      OperationsEventsVersioned(
+        mixin.events.map(_operationEvent).toList(),
+        mixin.ver,
+        mixin.listVer,
+      ),
+    );
+
+    await _operationsEvent(events);
+
+    final Operation? operation = events.event.events
+        .firstWhereOrNull((e) => e.operation.value is OperationDeposit)
+        ?.operation
+        .value;
+
+    if (operation is OperationDeposit) {
+      return operation;
+    }
+
+    return null;
+  }
+
   /// Fetches purse operations with pagination.
   Future<Page<DtoOperation, OperationsCursor>> _operations({
     int? first,
@@ -228,6 +355,7 @@ class WalletRepository extends IdentityDependency
           _country!,
           _currency,
         );
+
         methods.value = list.map((e) => e.toModel()).toList();
       }, cancel: _queryToken);
     } on OperationCanceledException {

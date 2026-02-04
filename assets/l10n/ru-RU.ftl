@@ -1182,6 +1182,10 @@ label_paypal = PayPal
 label_paypal_account_email = E-mail аккаунта PayPal
 label_paypal_account_email_example = dummy@example.com
 label_paypal_is_not_available_in_this_country = PayPal недоступен в этой стране
+label_paypal_popup_window_instruction =
+    Для совершения платежа будет открыто всплывающее окно процессора.
+
+    Если всплывающее окно не открылось, проверьте настройки Вашего браузера. Возможно, Ваш бразуер блокирует открытие всплывающих окон.
 label_personal_data_deletion = Удалить аккаунт
 label_personal_data_deletion_description1 = Данный процесс{" "}
 label_personal_data_deletion_description2 = НЕОБРАТИМ
@@ -1283,6 +1287,8 @@ label_tab_chats = Чаты
 label_tab_menu = Меню
 label_tab_partner = Партнёрство
 label_tab_wallet = Кошелёк
+label_tapopa_will_be_grateful_for_reporting_problems_when_paying1 = Tapopa
+label_tapopa_will_be_grateful_for_reporting_problems_when_paying2 = {" "}будет очень благодарна, если Вы сообщите о любых неудобствах или проблемах, возникших во время совершения платежа.
 label_terminate_sessions = Завершить сессию(-ии)
 label_terms_and_privacy_policy = Условия и Политика конфиденциальности
 label_text_status = Текстовый статус
@@ -1295,7 +1301,9 @@ label_to_confirm_identity_upload_photo = Для подтверждения ли�
 label_to_restore_chats_use_search = Чтобы восстановить чаты, воспользуйтесь поиском
 label_ton = TON
 label_top_up_bonus_with_id = Бонус пополнения. ID транзакции: {$id}.
+label_top_up_by_paypal = Пополнить с PayPal
 label_top_up_paypal = Пополнение. PayPal.
+label_transaction = Транзакция
 label_transaction_id = ID транзакции
 label_tron_trc20 = TRON (TRC-20)
 label_typing = Печатает

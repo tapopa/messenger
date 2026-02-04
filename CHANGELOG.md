@@ -16,6 +16,7 @@ All user visible changes to this project will be documented in this file. This p
 - UI:
     - Wallet tab:
         - Deposit methods. ([#20])
+        - PayPal deposit. ([#22])
 
 ### Fixed
 
@@ -25,6 +26,7 @@ All user visible changes to this project will be documented in this file. This p
 
 [#20]: /../../pull/20
 [#21]: /../../pull/21
+[#22]: /../../pull/22
 
 
 

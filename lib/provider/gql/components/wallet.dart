@@ -15,6 +15,8 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:async';
+
 import 'package:graphql/client.dart';
 
 import '../base.dart';
@@ -175,6 +177,73 @@ mixin WalletGraphQlMixin {
         document: BalanceUpdatesSubscription(variables: variables).document,
         variables: variables.toJson(),
       ),
+    );
+  }
+
+  /// Subscribes to [OperationEvent]s happening in the provided
+  /// [OperationOrigin].
+  ///
+  /// ### Authentication
+  ///
+  /// Mandatory.
+  ///
+  /// ### Initialization
+  ///
+  /// Once this subscription is initialized completely, it immediately emits
+  /// `SubscriptionInitialized`.
+  ///
+  /// If nothing has been emitted for a long period of time after establishing
+  /// this subscription (while not being completed), it should be considered as
+  /// an unexpected server error. This fact can be used on a client side to
+  /// decide whether this subscription has been initialized successfully.
+  ///
+  /// ### Result
+  ///
+  /// If [ver] argument is not specified (or is `null`) an initial state of the
+  /// `OperationsList` will be emitted after `SubscriptionInitialized` and
+  /// before any other [OperationEvent]s (and won't be emitted ever again until
+  /// this subscription completes). This allows to skip calling [operations]
+  /// before establishing this subscription.
+  ///
+  /// If the specified [ver] is not fresh (was queried quite a time ago), it may
+  /// become stale, so this subscription will return `STALE_VERSION` error on
+  /// initialization. In such case:
+  /// - either a fresh version should be obtained via [operations];
+  /// - or a re-subscription should be done without specifying a ver argument
+  /// (so the fresh ver may be obtained in the emitted initial state of the
+  /// `OperationsList`).
+  ///
+  /// ### Completion
+  ///
+  /// Infinite.
+  ///
+  /// Completes requiring a re-subscription when:
+  /// - Authenticated [Session] expires (`SESSION_EXPIRED` error is emitted).
+  /// - An error occurs on the server (error is emitted).
+  /// - The server is shutting down or becoming unreachable (unexpectedly
+  /// completes after initialization).
+  ///
+  /// ### Idempotency
+  ///
+  /// It's possible that in rare scenarios this subscription could emit an event
+  /// which have already been applied to the state of some [Operation], so a
+  /// client side is expected to handle all the events idempotently considering
+  /// the [DtoOperation.version].
+  Future<Stream<QueryResult>> operationsEvents(
+    OperationOrigin origin,
+    OperationVersion? ver,
+    FutureOr<OperationVersion?> Function() onVer,
+  ) async {
+    Log.debug('operationsEvents(${origin.name})', '$runtimeType');
+
+    final variables = OperationsEventsArguments(origin: origin, ver: ver);
+    return client.subscribe(
+      SubscriptionOptions(
+        operationName: 'OperationsEvents',
+        document: OperationsEventsSubscription(variables: variables).document,
+        variables: variables.toJson(),
+      ),
+      ver: onVer,
     );
   }
 }

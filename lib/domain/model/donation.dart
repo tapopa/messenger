@@ -16,6 +16,22 @@
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
 import '/util/new_type.dart';
+import 'operation.dart';
+import 'price.dart';
+
+/// [Donation] attached to a [ChatMessage].
+class Donation {
+  const Donation({required this.id, required this.amount, this.operation});
+
+  /// Unique ID of this [Donation].
+  final DonationId id;
+
+  /// [Sum] of this [Donation].
+  final Sum amount;
+
+  /// [Operation] representing this [Donation].
+  final Operation? operation;
+}
 
 /// ID of a `Donation`.
 class DonationId extends NewType<String> {

@@ -15,27 +15,24 @@
 # along with this program. If not, see
 # <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-fragment OperationDepositBonus on OperationDepositBonus {
-    id
-    num
-    status
-    origin
-    direction
-    amount {
+subscription OperationsEvents(
+    $origin: OperationOrigin!
+    $ver: OperationVersion
+) {
+    operationsEvents(
+        origin: $origin
+        ver: $ver
+    ) {
         __typename
-        ...Price
-    }
-    holdUntil
-    createdAt
-    canceled {
-        __typename
-        ...OperationCancellation
-    }
-    ver
-
-    deposit {
-        node {
-            id
+        ... on SubscriptionInitialized {
+            ok
+        }
+        ... on OperationsList {
+            __typename
+        }
+        ... on OperationEventsVersioned {
+            __typename
+            ...OperationEventsVersioned
         }
     }
 }

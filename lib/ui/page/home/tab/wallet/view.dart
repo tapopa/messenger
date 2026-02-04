@@ -22,7 +22,6 @@ import '/domain/model/country.dart';
 import '/l10n/l10n.dart';
 import '/routes.dart';
 import '/themes.dart';
-import '/ui/page/home/tab/chats/widget/unread_counter.dart';
 import '/ui/page/home/widget/app_bar.dart';
 import '/ui/widget/line_divider.dart';
 import '/ui/widget/menu_button.dart';
@@ -54,10 +53,6 @@ class WalletTabView extends StatelessWidget {
               leading: const SvgIcon(SvgIcons.menuTransactions),
               inverted: enabled,
               subtitle: 'label_wallet_history'.l10n,
-              trailing: const Padding(
-                padding: EdgeInsets.fromLTRB(0, 0, 7, 0),
-                child: UnreadCounter(1),
-              ),
             );
           }),
         );

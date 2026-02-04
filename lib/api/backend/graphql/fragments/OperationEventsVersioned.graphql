@@ -1,5 +1,5 @@
 # Copyright © 2025-2026 Ideas Networks Solutions S.A.,
-#                       <https://github.com/tapopa>
+#                       <https://github.com/team113>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU Affero General Public License v3.0 as published by the
@@ -15,17 +15,12 @@
 # along with this program. If not, see
 # <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-query Operations(
-    $origin: OperationOrigin!
-    $by: OperationsFilter
-    $pagination: OperationsPagination
-) {
-    operations(
-        origin: $origin
-        by: $by
-        pagination: $pagination
-    ) {
-        edges {
+fragment OperationEventsVersioned on OperationEventsVersioned {
+    events {
+        __typename
+        id
+        origin
+        operation {
             node {
                 __typename
                 ... on OperationCharge {
@@ -56,11 +51,25 @@ query Operations(
             }
             cursor
         }
-        pageInfo {
-            __typename
-            ...PageInfo
+        at
+        ... on EventOperationCanceled {
+            canceled {
+                __typename
+                ...OperationCancellation
+            }
         }
-        totalCount
-        ver
+        # ... on EventOperationChargeCreated
+        # ... on EventOperationDepositBonusCreated
+        # ... on EventOperationDepositCompleted
+        # ... on EventOperationDepositCreated
+        # ... on EventOperationDepositDeclined
+        # ... on EventOperationDepositFailed
+        # ... on EventOperationDividendCreated
+        # ... on EventOperationEarnDonationCreated
+        # ... on EventOperationGrantCreated
+        # ... on EventOperationPurchaseDonationCreated
+        # ... on EventOperationRewardCreated
     }
+    ver
+    listVer
 }

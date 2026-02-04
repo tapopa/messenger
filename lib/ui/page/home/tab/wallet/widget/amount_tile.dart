@@ -164,7 +164,7 @@ class AmountTile extends StatelessWidget {
                 children: [
                   SvgIcon(SvgIcons.priceSticker),
                   Text(
-                    pricing!.nominal.l10n,
+                    (nominal * (pricing!.total ?? pricing!.nominal)).l10n,
                     style: style.fonts.small.regular.secondary,
                   ),
                 ],

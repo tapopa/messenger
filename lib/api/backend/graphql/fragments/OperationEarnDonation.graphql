@@ -15,7 +15,7 @@
 # along with this program. If not, see
 # <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-fragment OperationDepositBonus on OperationDepositBonus {
+fragment OperationEarnDonation on OperationEarnDonation {
     id
     num
     status
@@ -33,9 +33,16 @@ fragment OperationDepositBonus on OperationDepositBonus {
     }
     ver
 
-    deposit {
+    chatItem {
         node {
             id
         }
+    }
+    chat {
+        id
+    }
+    donationId
+    customer {
+        id
     }
 }

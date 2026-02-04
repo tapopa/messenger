@@ -79,7 +79,7 @@ class WalletRepository extends IdentityDependency
         },
       ),
       compare: (a, b) {
-        final int at = a.value.createdAt.compareTo(b.value.createdAt);
+        final int at = b.value.createdAt.compareTo(a.value.createdAt);
         if (at == 0) {
           return a.id.val.compareTo(b.id.val);
         }
@@ -114,7 +114,7 @@ class WalletRepository extends IdentityDependency
   CountryCode? _country;
 
   /// [Currency] to see [OperationDepositMethod] pricing in.
-  final Currency _currency = Currency('USD');
+  Currency _currency = Currency('USD');
 
   /// [CancelToken] to cancel [_queryMethods].
   CancelToken? _queryToken;
@@ -165,6 +165,12 @@ class WalletRepository extends IdentityDependency
     }
 
     _country = country;
+
+    // TODO: Might replace currencies when local ones are supported.
+    _currency = Currency(switch (country.val) {
+      (_) => 'USD',
+    });
+
     await _queryMethods();
   }
 
@@ -326,7 +332,7 @@ class WalletRepository extends IdentityDependency
     );
 
     return events.asyncExpand((event) async* {
-      Log.trace('_operationsEvents() -> ${event.data}', '$runtimeType');
+      Log.debug('_operationsEvents() -> ${event.data}', '$runtimeType');
 
       final events = OperationsEvents$Subscription.fromJson(
         event.data!,
@@ -446,7 +452,7 @@ class WalletRepository extends IdentityDependency
         e.operation.node.toDto(cursor: e.operation.cursor),
       );
     } else {
-      throw UnimplementedError('Unknown ChatEvent: ${e.$$typename}');
+      throw UnimplementedError('Unknown OperationEvent: ${e.$$typename}');
     }
   }
 

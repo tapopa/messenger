@@ -427,6 +427,10 @@ class AppRouteInformationParser
       tab = HomeTab.chats;
     } else if (route.startsWith(Routes.menu) || route == Routes.me) {
       tab = HomeTab.menu;
+    } else if (route.startsWith(Routes.wallet)) {
+      tab = HomeTab.wallet;
+    } else if (route.startsWith(Routes.partner)) {
+      tab = HomeTab.partner;
     }
 
     if (route == Routes.contacts ||

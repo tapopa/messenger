@@ -77,7 +77,7 @@ abstract class Operation implements Comparable<Operation> {
 
   @override
   int compareTo(Operation other) {
-    final at = createdAt.compareTo(other.createdAt);
+    final at = other.createdAt.compareTo(createdAt);
     if (at == 0) {
       return id.val.compareTo(other.id.val);
     }

@@ -20,7 +20,6 @@ import '/domain/model/chat_call.dart';
 import '/domain/model/chat.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
-import '/domain/model/user.dart';
 import '/store/model/operation.dart';
 
 /// Possible kinds of a [OperationEvent].
@@ -181,7 +180,7 @@ class EventOperationDepositCreated extends OperationEvent {
   OperationEventKind get kind => OperationEventKind.depositCreated;
 }
 
-/// Event of a [User] being redialed in a [ChatCall].
+/// Event of an [OperationDeposit] being declined.
 class EventOperationDepositDeclined extends OperationEvent {
   const EventOperationDepositDeclined(
     super.id,
@@ -194,7 +193,7 @@ class EventOperationDepositDeclined extends OperationEvent {
   OperationEventKind get kind => OperationEventKind.depositDeclined;
 }
 
-/// Event of a [User] being redialed in a [ChatCall].
+/// Event of an [OperationDeposit] being failed.
 class EventOperationDepositFailed extends OperationEvent {
   const EventOperationDepositFailed(
     super.id,
@@ -207,7 +206,7 @@ class EventOperationDepositFailed extends OperationEvent {
   OperationEventKind get kind => OperationEventKind.depositFailed;
 }
 
-/// Event of a [User] being redialed in a [ChatCall].
+/// Event of a new [OperationDividend] being created.
 class EventOperationDividendCreated extends OperationEvent {
   const EventOperationDividendCreated(
     super.id,
@@ -220,7 +219,7 @@ class EventOperationDividendCreated extends OperationEvent {
   OperationEventKind get kind => OperationEventKind.dividendCreated;
 }
 
-/// Event of a [User] being redialed in a [ChatCall].
+/// Event of a new [OperationEarnDonation] being created.
 class EventOperationEarnDonationCreated extends OperationEvent {
   const EventOperationEarnDonationCreated(
     super.id,
@@ -233,7 +232,7 @@ class EventOperationEarnDonationCreated extends OperationEvent {
   OperationEventKind get kind => OperationEventKind.earnDonationCreated;
 }
 
-/// Event of a [User] being redialed in a [ChatCall].
+/// Event of a new [OperationGrant] being created.
 class EventOperationGrantCreated extends OperationEvent {
   const EventOperationGrantCreated(
     super.id,
@@ -246,7 +245,7 @@ class EventOperationGrantCreated extends OperationEvent {
   OperationEventKind get kind => OperationEventKind.grantCreated;
 }
 
-/// Event of a [User] being redialed in a [ChatCall].
+/// Event of a new [OperationPurchaseDonation] being created.
 class EventOperationPurchaseDonationCreated extends OperationEvent {
   const EventOperationPurchaseDonationCreated(
     super.id,
@@ -259,7 +258,7 @@ class EventOperationPurchaseDonationCreated extends OperationEvent {
   OperationEventKind get kind => OperationEventKind.purchaseDonationCreated;
 }
 
-/// Event of a [User] being redialed in a [ChatCall].
+/// Event of a new [OperationReward] being created.
 class EventOperationRewardCreated extends OperationEvent {
   const EventOperationRewardCreated(
     super.id,

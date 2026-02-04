@@ -278,71 +278,11 @@ extension OperationsOperationConversion
 }
 
 /// Extension adding models construction from
-/// [OperationEventsVersionedMixin$Events$EventOperationChargeCreated$Operation$Node].
-extension EventOperationChargeCreatedConversion
-    on
-        OperationEventsVersionedMixin$Events$EventOperationChargeCreated$Operation$Node {
+/// [OperationEventsVersionedMixin$Events$Operation$Node].
+extension OperationEventsVersionedMixinConversion
+    on OperationEventsVersionedMixin$Events$Operation$Node {
   /// Constructs the new [DtoOperation] from this
-  /// [OperationEventsVersionedMixin$Events$EventOperationChargeCreated$Operation$Node].
-  DtoOperation toDto({OperationsCursor? cursor}) => _operation(this, cursor);
-}
-
-/// Extension adding models construction from
-/// [OperationEventsVersionedMixin$Events$EventOperationDepositBonusCreated$Operation$Node].
-extension EventOperationDepositBonusCreatedConversion
-    on
-        OperationEventsVersionedMixin$Events$EventOperationDepositBonusCreated$Operation$Node {
-  /// Constructs the new [DtoOperation] from this
-  /// [OperationEventsVersionedMixin$Events$EventOperationDepositBonusCreated$Operation$Node].
-  DtoOperation toDto({OperationsCursor? cursor}) => _operation(this, cursor);
-}
-
-/// Extension adding models construction from
-/// [OperationEventsVersionedMixin$Events$EventOperationDepositCreated$Operation$Node].
-extension EventOperationDepositCreatedConversion
-    on
-        OperationEventsVersionedMixin$Events$EventOperationDepositCreated$Operation$Node {
-  /// Constructs the new [DtoOperation] from this
-  /// [OperationEventsVersionedMixin$Events$EventOperationDepositCreated$Operation$Node].
-  DtoOperation toDto({OperationsCursor? cursor}) => _operation(this, cursor);
-}
-
-/// Extension adding models construction from
-/// [OperationEventsVersionedMixin$Events$EventOperationEarnDonationCreated$Operation$Node].
-extension EventOperationEarnDonationCreatedConversion
-    on
-        OperationEventsVersionedMixin$Events$EventOperationEarnDonationCreated$Operation$Node {
-  /// Constructs the new [DtoOperation] from this
-  /// [OperationEventsVersionedMixin$Events$EventOperationEarnDonationCreated$Operation$Node].
-  DtoOperation toDto({OperationsCursor? cursor}) => _operation(this, cursor);
-}
-
-/// Extension adding models construction from
-/// [OperationEventsVersionedMixin$Events$EventOperationGrantCreated$Operation$Node].
-extension EventOperationGrantCreatedConversion
-    on OperationEventsVersionedMixin$Events$EventOperationGrantCreated$Operation$Node {
-  /// Constructs the new [DtoOperation] from this
-  /// [OperationEventsVersionedMixin$Events$EventOperationGrantCreated$Operation$Node].
-  DtoOperation toDto({OperationsCursor? cursor}) => _operation(this, cursor);
-}
-
-/// Extension adding models construction from
-/// [OperationEventsVersionedMixin$Events$EventOperationPurchaseDonationCreated$Operation$Node].
-extension EventOperationPurchaseDonationCreatedConversion
-    on
-        OperationEventsVersionedMixin$Events$EventOperationPurchaseDonationCreated$Operation$Node {
-  /// Constructs the new [DtoOperation] from this
-  /// [OperationEventsVersionedMixin$Events$EventOperationPurchaseDonationCreated$Operation$Node].
-  DtoOperation toDto({OperationsCursor? cursor}) => _operation(this, cursor);
-}
-
-/// Extension adding models construction from
-/// [OperationEventsVersionedMixin$Events$EventOperationRewardCreated$Operation$Node].
-extension EventOperationRewardCreatedConversion
-    on
-        OperationEventsVersionedMixin$Events$EventOperationRewardCreated$Operation$Node {
-  /// Constructs the new [DtoOperation] from this
-  /// [OperationEventsVersionedMixin$Events$EventOperationRewardCreated$Operation$Node].
+  /// [OperationEventsVersionedMixin$Events$Operation$Node].
   DtoOperation toDto({OperationsCursor? cursor}) => _operation(this, cursor);
 }
 

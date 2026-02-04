@@ -94,7 +94,7 @@ class OperationsEventsVersioned {
 
 /// Events happening in a [Chat].
 abstract class OperationEvent {
-  const OperationEvent(this.id, this.origin, this.at);
+  const OperationEvent(this.id, this.origin, this.at, this.operation);
 
   /// ID of the [Operation] this [OperationEvent] is related to.
   final OperationId id;
@@ -105,13 +105,22 @@ abstract class OperationEvent {
   /// [PreciseDateTime] when this [OperationEvent] happened.
   final PreciseDateTime at;
 
+  /// [DtoOperation] that was affected by this [OperationEvent].
+  final DtoOperation operation;
+
   /// Returns [OperationEventKind] of this [OperationEvent].
   OperationEventKind get kind;
 }
 
 /// Event of an [Operation] being canceled.
 class EventOperationCanceled extends OperationEvent {
-  const EventOperationCanceled(super.id, super.origin, super.at, this.canceled);
+  const EventOperationCanceled(
+    super.id,
+    super.origin,
+    super.at,
+    super.operation,
+    this.canceled,
+  );
 
   /// [PreciseDateTime] when the [ChatCall] was moved.
   final OperationCancellation canceled;
@@ -126,11 +135,8 @@ class EventOperationChargeCreated extends OperationEvent {
     super.id,
     super.origin,
     super.at,
-    this.operation,
+    super.operation,
   );
-
-  /// [DtoOperation] that was created.
-  final DtoOperation operation;
 
   @override
   OperationEventKind get kind => OperationEventKind.chargeCreated;
@@ -142,11 +148,8 @@ class EventOperationDepositBonusCreated extends OperationEvent {
     super.id,
     super.origin,
     super.at,
-    this.operation,
+    super.operation,
   );
-
-  /// [DtoOperation] that was created.
-  final DtoOperation operation;
 
   @override
   OperationEventKind get kind => OperationEventKind.depositBonusCreated;
@@ -154,7 +157,12 @@ class EventOperationDepositBonusCreated extends OperationEvent {
 
 /// Event of an [OperationDeposit] being completed.
 class EventOperationDepositCompleted extends OperationEvent {
-  const EventOperationDepositCompleted(super.id, super.origin, super.at);
+  const EventOperationDepositCompleted(
+    super.id,
+    super.origin,
+    super.at,
+    super.operation,
+  );
 
   @override
   OperationEventKind get kind => OperationEventKind.depositCompleted;
@@ -166,11 +174,8 @@ class EventOperationDepositCreated extends OperationEvent {
     super.id,
     super.origin,
     super.at,
-    this.operation,
+    super.operation,
   );
-
-  /// [DtoOperation] that was created.
-  final DtoOperation operation;
 
   @override
   OperationEventKind get kind => OperationEventKind.depositCreated;
@@ -178,7 +183,12 @@ class EventOperationDepositCreated extends OperationEvent {
 
 /// Event of a [User] being redialed in a [ChatCall].
 class EventOperationDepositDeclined extends OperationEvent {
-  const EventOperationDepositDeclined(super.id, super.origin, super.at);
+  const EventOperationDepositDeclined(
+    super.id,
+    super.origin,
+    super.at,
+    super.operation,
+  );
 
   @override
   OperationEventKind get kind => OperationEventKind.depositDeclined;
@@ -186,7 +196,12 @@ class EventOperationDepositDeclined extends OperationEvent {
 
 /// Event of a [User] being redialed in a [ChatCall].
 class EventOperationDepositFailed extends OperationEvent {
-  const EventOperationDepositFailed(super.id, super.origin, super.at);
+  const EventOperationDepositFailed(
+    super.id,
+    super.origin,
+    super.at,
+    super.operation,
+  );
 
   @override
   OperationEventKind get kind => OperationEventKind.depositFailed;
@@ -198,11 +213,8 @@ class EventOperationDividendCreated extends OperationEvent {
     super.id,
     super.origin,
     super.at,
-    this.operation,
+    super.operation,
   );
-
-  /// [DtoOperation] that was created.
-  final DtoOperation operation;
 
   @override
   OperationEventKind get kind => OperationEventKind.dividendCreated;
@@ -214,11 +226,8 @@ class EventOperationEarnDonationCreated extends OperationEvent {
     super.id,
     super.origin,
     super.at,
-    this.operation,
+    super.operation,
   );
-
-  /// [DtoOperation] that was created.
-  final DtoOperation operation;
 
   @override
   OperationEventKind get kind => OperationEventKind.earnDonationCreated;
@@ -230,11 +239,8 @@ class EventOperationGrantCreated extends OperationEvent {
     super.id,
     super.origin,
     super.at,
-    this.operation,
+    super.operation,
   );
-
-  /// [DtoOperation] that was created.
-  final DtoOperation operation;
 
   @override
   OperationEventKind get kind => OperationEventKind.grantCreated;
@@ -246,11 +252,8 @@ class EventOperationPurchaseDonationCreated extends OperationEvent {
     super.id,
     super.origin,
     super.at,
-    this.operation,
+    super.operation,
   );
-
-  /// [DtoOperation] that was created.
-  final DtoOperation operation;
 
   @override
   OperationEventKind get kind => OperationEventKind.purchaseDonationCreated;
@@ -262,11 +265,8 @@ class EventOperationRewardCreated extends OperationEvent {
     super.id,
     super.origin,
     super.at,
-    this.operation,
+    super.operation,
   );
-
-  /// [DtoOperation] that was created.
-  final DtoOperation operation;
 
   @override
   OperationEventKind get kind => OperationEventKind.rewardCreated;

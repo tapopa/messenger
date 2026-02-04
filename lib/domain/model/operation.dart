@@ -55,7 +55,7 @@ abstract class Operation implements Comparable<Operation> {
   final OperationNum num;
 
   /// [OperationStatus] of this [Operation].
-  final OperationStatus status;
+  OperationStatus status;
 
   /// Money [Sum] and [Currency] of this [Operation].
   final Price amount;

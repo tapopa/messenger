@@ -361,9 +361,14 @@ class WalletRepository extends IdentityDependency
 
     if (e.$$typename == 'EventOperationCanceled') {
       e as OperationEventsVersionedMixin$Events$EventOperationCanceled;
-      return EventOperationCanceled(e.id, e.origin, e.at, e.canceled.toModel());
+      return EventOperationCanceled(
+        e.id,
+        e.origin,
+        e.at,
+        e.operation.node.toDto(cursor: e.operation.cursor),
+        e.canceled.toModel(),
+      );
     } else if (e.$$typename == 'EventOperationChargeCreated') {
-      e as OperationEventsVersionedMixin$Events$EventOperationChargeCreated;
       return EventOperationChargeCreated(
         e.id,
         e.origin,
@@ -371,7 +376,6 @@ class WalletRepository extends IdentityDependency
         e.operation.node.toDto(cursor: e.operation.cursor),
       );
     } else if (e.$$typename == 'EventOperationDepositBonusCreated') {
-      e as OperationEventsVersionedMixin$Events$EventOperationDepositBonusCreated;
       return EventOperationDepositBonusCreated(
         e.id,
         e.origin,
@@ -379,10 +383,13 @@ class WalletRepository extends IdentityDependency
         e.operation.node.toDto(cursor: e.operation.cursor),
       );
     } else if (e.$$typename == 'EventOperationDepositCompleted') {
-      // e as OperationEventsVersionedMixin$Events$EventOperationDepositCompleted;
-      return EventOperationDepositCompleted(e.id, e.origin, e.at);
+      return EventOperationDepositCompleted(
+        e.id,
+        e.origin,
+        e.at,
+        e.operation.node.toDto(cursor: e.operation.cursor),
+      );
     } else if (e.$$typename == 'EventOperationDepositCreated') {
-      e as OperationEventsVersionedMixin$Events$EventOperationDepositCreated;
       return EventOperationDepositCreated(
         e.id,
         e.origin,
@@ -390,13 +397,27 @@ class WalletRepository extends IdentityDependency
         e.operation.node.toDto(cursor: e.operation.cursor),
       );
     } else if (e.$$typename == 'EventOperationDepositDeclined') {
-      // e as OperationEventsVersionedMixin$Events$EventOperationDepositDeclined;
-      return EventOperationDepositDeclined(e.id, e.origin, e.at);
+      return EventOperationDepositDeclined(
+        e.id,
+        e.origin,
+        e.at,
+        e.operation.node.toDto(cursor: e.operation.cursor),
+      );
     } else if (e.$$typename == 'EventOperationDepositFailed') {
-      // e as OperationEventsVersionedMixin$Events$EventOperationDepositFailed;
-      return EventOperationDepositFailed(e.id, e.origin, e.at);
+      return EventOperationDepositFailed(
+        e.id,
+        e.origin,
+        e.at,
+        e.operation.node.toDto(cursor: e.operation.cursor),
+      );
+    } else if (e.$$typename == 'EventOperationDividendCreated') {
+      return EventOperationDividendCreated(
+        e.id,
+        e.origin,
+        e.at,
+        e.operation.node.toDto(cursor: e.operation.cursor),
+      );
     } else if (e.$$typename == 'EventOperationEarnDonationCreated') {
-      e as OperationEventsVersionedMixin$Events$EventOperationEarnDonationCreated;
       return EventOperationEarnDonationCreated(
         e.id,
         e.origin,
@@ -404,7 +425,6 @@ class WalletRepository extends IdentityDependency
         e.operation.node.toDto(cursor: e.operation.cursor),
       );
     } else if (e.$$typename == 'EventOperationGrantCreated') {
-      e as OperationEventsVersionedMixin$Events$EventOperationGrantCreated;
       return EventOperationGrantCreated(
         e.id,
         e.origin,
@@ -412,8 +432,6 @@ class WalletRepository extends IdentityDependency
         e.operation.node.toDto(cursor: e.operation.cursor),
       );
     } else if (e.$$typename == 'EventOperationPurchaseDonationCreated') {
-      e
-          as OperationEventsVersionedMixin$Events$EventOperationPurchaseDonationCreated;
       return EventOperationPurchaseDonationCreated(
         e.id,
         e.origin,
@@ -421,7 +439,6 @@ class WalletRepository extends IdentityDependency
         e.operation.node.toDto(cursor: e.operation.cursor),
       );
     } else if (e.$$typename == 'EventOperationRewardCreated') {
-      e as OperationEventsVersionedMixin$Events$EventOperationRewardCreated;
       return EventOperationRewardCreated(
         e.id,
         e.origin,
@@ -460,6 +477,7 @@ class WalletRepository extends IdentityDependency
           switch (event.kind) {
             case OperationEventKind.canceled:
               event as EventOperationCanceled;
+              await operations.put(event.operation);
               break;
 
             case OperationEventKind.chargeCreated:
@@ -474,6 +492,7 @@ class WalletRepository extends IdentityDependency
 
             case OperationEventKind.depositCompleted:
               event as EventOperationDepositCompleted;
+              await operations.put(event.operation);
               break;
 
             case OperationEventKind.depositCreated:
@@ -483,10 +502,12 @@ class WalletRepository extends IdentityDependency
 
             case OperationEventKind.depositDeclined:
               event as EventOperationDepositDeclined;
+              await operations.put(event.operation);
               break;
 
             case OperationEventKind.depositFailed:
               event as EventOperationDepositFailed;
+              await operations.put(event.operation);
               break;
 
             case OperationEventKind.dividendCreated:

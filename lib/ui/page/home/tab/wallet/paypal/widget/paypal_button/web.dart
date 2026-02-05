@@ -198,7 +198,7 @@ class _PayPalButtonWebState extends State<PayPalButton> {
 
       final script = web.HTMLScriptElement()
         ..src =
-            'https://www.paypal.com/sdk/js?client-id=${Config.payPalClientId}&currency=${widget.currency}&disable-funding=credit,paylater,venmo&intent=authorize'
+            'https://www.paypal.com/sdk/js?client-id=${Config.payPalClientId}&currency=${widget.currency}&disable-funding=credit,card,paylater,venmo&intent=authorize'
         ..async = true
         ..dataset['paypalSdk'] = 'true'
         ..type = 'text/javascript'

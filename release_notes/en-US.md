@@ -1,1 +1,2 @@
 - Allow user name to be 1 symbols long.
+- Bug fixes and performance improvements.

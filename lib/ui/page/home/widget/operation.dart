@@ -15,9 +15,11 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:convert';
+
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '/api/backend/schema.graphql.dart';
 import '/domain/model/operation.dart';
@@ -93,13 +95,15 @@ class OperationWidget extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: WidgetButton(
                 onPressed: () async {
-                  if (PlatformUtils.isWeb) {
-                    await launchUrlString(
-                      operation.invoice!.val,
-                      webOnlyWindowName: '_blank',
+                  final file = await PlatformUtils.createAndDownload(
+                    'invoice_${operation.num.val}.pdf',
+                    base64.decode(operation.invoice!.val),
+                  );
+
+                  if (file != null && PlatformUtils.isMobile) {
+                    await SharePlus.instance.share(
+                      ShareParams(files: [XFile(file.path)]),
                     );
-                  } else {
-                    await PlatformUtils.saveTo(operation.invoice!.val);
                   }
                 },
                 child: Text(

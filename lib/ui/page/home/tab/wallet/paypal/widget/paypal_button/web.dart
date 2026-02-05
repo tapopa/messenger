@@ -36,7 +36,6 @@ external JSObject get paypal;
 class PayPalButton extends StatefulWidget {
   const PayPalButton({
     super.key,
-
     this.onCreateOrder,
     this.onSuccess,
     this.onCancel,
@@ -200,6 +199,7 @@ class _PayPalButtonWebState extends State<PayPalButton> {
         ..src =
             'https://www.paypal.com/sdk/js?client-id=${Config.payPalClientId}&currency=${widget.currency}&disable-funding=credit,card,paylater,venmo&intent=authorize'
         ..async = true
+        ..crossOrigin = 'anonymous'
         ..dataset['paypalSdk'] = 'true'
         ..type = 'text/javascript'
         ..async = true

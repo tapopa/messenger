@@ -84,6 +84,10 @@ class PayPalDepositController extends GetxController {
 
     final Operation? operation = this.operation.value?.value;
     if (operation != null) {
+      // Wait for ~5 seconds, since PayPal might take some time to validate the
+      // transaction.
+      await Future.delayed(Duration(seconds: 5));
+
       try {
         this.operation.value = await _walletService.completeOperationDeposit(
           id: operation.id,

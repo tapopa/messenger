@@ -1,0 +1,10 @@
+<item><title>0.2.2</title><description xml:lang="en-US"><![CDATA[- Added output device modal switcher when pressing switch button in call with external devices connected on mobile devices.
+- Added join and decline call buttons to user profile page.
+- Redesigned deposit page on desktop to be only in tab.
+- Bug fixes and performance improvements.]]></description> <description xml:lang="es-ES"><![CDATA[- Se añadió un selector modal de dispositivo de salida al pulsar el botón de cambio en una llamada con dispositivos externos conectados en dispositivos móviles.
+- Se añadieron botones para unirse y rechazar llamadas a la página de perfil del usuario.
+- Se rediseñó la página de depósito en el escritorio para que solo aparezca en la pestaña.
+- Corrección de errores y mejoras de rendimiento.]]></description> <description xml:lang="ru-RU"><![CDATA[- Добавлено отображение списка всех устройств выхода в звонке при подключенных внешних устройствах на мобильных устройствах.
+- Добавлены кнопки присоединения и отклонения звонка в профиле пользователя.
+- Обновлён дизайн пополнения счёта для десктоп платформ.
+- Исправления ошибок и улучшения производительности.]]></description><pubDate>Mon, 02 Feb 2026 05:58:40 +0000</pubDate><enclosure sparkle:os="macos" url="tapopa-macos.zip" /><enclosure sparkle:os="windows" url="tapopa-windows.zip" /><enclosure sparkle:os="linux" url="tapopa-linux.zip" /><enclosure sparkle:os="android" url="tapopa-android.apk" /><enclosure sparkle:os="ios" url="tapopa-ios.ipa" /></item>

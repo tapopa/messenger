@@ -17,6 +17,12 @@ All user visible changes to this project will be documented in this file. This p
     - Wallet tab:
         - Deposit methods. ([#20])
 
+### Changed
+
+- UI:
+    - Profile page:
+        - Allow name to be 1 symbols long. ([team113/messenger#1600])
+
 ### Fixed
 
 - Web:
@@ -25,6 +31,7 @@ All user visible changes to this project will be documented in this file. This p
 
 [#20]: /../../pull/20
 [#21]: /../../pull/21
+[team113/messenger#1600]: https://github.com/team113/messenger/pull/1600
 
 
 

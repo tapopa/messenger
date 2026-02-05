@@ -1,4 +1,1 @@
-- Added output device modal switcher when pressing switch button in call with external devices connected on mobile devices.
-- Added join and decline call buttons to user profile page.
-- Redesigned deposit page on desktop to be only in tab.
-- Bug fixes and performance improvements.
+- Allow user name to be 1 symbols long.

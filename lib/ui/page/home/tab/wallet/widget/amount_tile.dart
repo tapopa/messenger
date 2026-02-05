@@ -38,8 +38,9 @@ class AmountTile extends StatelessWidget {
   /// Height of the asset.
   final double height;
 
-  /// [OperationDepositPricing] to calculate the real prices on the [nominal].
-  final OperationDepositPricing? pricing;
+  /// [OperationDepositMethodPricing] to calculate the real prices on the
+  /// [nominal].
+  final OperationDepositMethodPricing? pricing;
 
   /// Resolves a [Color] to display [AmountTile] with according to the [amount].
   static Color _colorFor(num amount) {

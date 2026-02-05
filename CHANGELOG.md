@@ -6,7 +6,23 @@ All user visible changes to this project will be documented in this file. This p
 
 
 
-## [0.3.0] · 2026-??-??
+## [0.4.0] · 2026-??-??
+[0.4.0]: /../../tree/v0.4.0
+
+[Diff](/../../compare/v0.3.0...v0.4.0) | [Milestone](/../../milestone/6)
+
+### Added
+
+- UI:
+    - Wallet tab:
+        - PayPal deposit. ([#22])
+
+[#22]: /../../pull/22
+
+
+
+
+## [0.3.0] · 2026-02-05
 [0.3.0]: /../../tree/v0.3.0
 
 [Diff](/../../compare/v0.2.2...v0.3.0) | [Milestone](/../../milestone/5)
@@ -16,7 +32,12 @@ All user visible changes to this project will be documented in this file. This p
 - UI:
     - Wallet tab:
         - Deposit methods. ([#20])
-        - PayPal deposit. ([#22])
+
+### Changed
+
+- UI:
+    - Profile page:
+        - Allow name to be 1 symbols long. ([team113/messenger#1600])
 
 ### Fixed
 
@@ -26,7 +47,7 @@ All user visible changes to this project will be documented in this file. This p
 
 [#20]: /../../pull/20
 [#21]: /../../pull/21
-[#22]: /../../pull/22
+[team113/messenger#1600]: https://github.com/team113/messenger/pull/1600
 
 
 

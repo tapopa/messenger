@@ -234,7 +234,7 @@ extension OperationDepositMethodsConversion
       nominals: nominals?.map((e) => e.toModel()).toList(),
       pricing: pricing == null
           ? null
-          : OperationDepositPricing(
+          : OperationDepositMethodPricing(
               nominal: pricing!.nominal.toModel(),
               bonus: pricing!.bonus?.toModel(),
               withoutTax: pricing!.withoutTax?.toModel(),

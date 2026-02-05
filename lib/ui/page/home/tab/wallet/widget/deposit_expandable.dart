@@ -349,7 +349,7 @@ class DepositExpandable extends StatelessWidget {
 Widget _responsive(
   List<Price> nominals, {
   void Function(Price)? onPressed,
-  OperationDepositPricing? pricing,
+  OperationDepositMethodPricing? pricing,
 }) {
   Widget tile(int i) {
     return WidgetButton(

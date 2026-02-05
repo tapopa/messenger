@@ -46,11 +46,11 @@ class OperationDepositMethod {
   /// List of available nominal [Price]s this [OperationDepositMethod] accepts.
   final List<Price>? nominals;
 
-  /// [OperationDepositPricing] of this [OperationDepositMethod].
+  /// [OperationDepositMethodPricing] of this [OperationDepositMethod].
   ///
   /// `null` in case this [OperationDepositMethod] is unavailable for the
   /// provided [CountryCode].
-  final OperationDepositPricing? pricing;
+  final OperationDepositMethodPricing? pricing;
 }
 
 /// Entities' criteria matching [CountryCode]s.
@@ -80,8 +80,8 @@ class OperationDepositMethodId extends NewType<String> {
 }
 
 /// Pricing of an [OperationDeposit].
-class OperationDepositPricing {
-  OperationDepositPricing({
+class OperationDepositMethodPricing {
+  OperationDepositMethodPricing({
     required this.nominal,
     this.bonus,
     this.withoutTax,

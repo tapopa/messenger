@@ -76,20 +76,20 @@ class WalletTransactionsView extends StatelessWidget {
                           padding: const EdgeInsets.fromLTRB(10, 3, 10, 3),
                           child: WidgetButton(
                             onPressed: () {
-                              if (c.ids.contains(e.id)) {
-                                c.ids.remove(e.id);
+                              if (c.ids.contains(e.value.id)) {
+                                c.ids.remove(e.value.id);
                               } else {
-                                c.ids.add(e.id);
+                                c.ids.add(e.value.id);
                               }
                             },
                             child: Obx(() {
                               final bool expanded = c.expanded.value;
 
                               return OperationWidget(
-                                e,
+                                e.value,
                                 expanded:
-                                    (expanded && !c.ids.contains(e.id)) ||
-                                    (!expanded && c.ids.contains(e.id)),
+                                    (expanded && !c.ids.contains(e.value.id)) ||
+                                    (!expanded && c.ids.contains(e.value.id)),
                               );
                             }),
                           ),

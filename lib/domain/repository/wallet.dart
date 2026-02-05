@@ -30,7 +30,7 @@ abstract class AbstractWalletRepository {
   Rx<Balance> get balance;
 
   /// Returns the [Operation]s happening in [MyUser]'s wallet.
-  Paginated<OperationId, Operation> get operations;
+  Paginated<OperationId, Rx<Operation>> get operations;
 
   /// Returns the [OperationDepositMethod]s available for the [MyUser].
   RxList<OperationDepositMethod> get methods;
@@ -39,7 +39,7 @@ abstract class AbstractWalletRepository {
   Future<void> setCountry(CountryCode country);
 
   /// Creates a new [OperationDeposit].
-  Future<OperationDeposit?> createOperationDeposit({
+  Future<Rx<Operation>?> createOperationDeposit({
     required OperationDepositMethodId methodId,
     required Price nominal,
     OperationDepositSecret? paypal,
@@ -47,13 +47,13 @@ abstract class AbstractWalletRepository {
   });
 
   /// Completes an [OperationDeposit].
-  Future<OperationDeposit?> completeOperationDeposit({
+  Future<Rx<Operation>?> completeOperationDeposit({
     required OperationId id,
     OperationDepositSecret? secret,
   });
 
   /// Declines an [OperationDeposit].
-  Future<OperationDeposit?> declineOperationDeposit({
+  Future<Rx<Operation>?> declineOperationDeposit({
     required OperationId id,
     OperationDepositSecret? secret,
   });

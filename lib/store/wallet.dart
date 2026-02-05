@@ -47,7 +47,7 @@ import 'pagination.dart';
 import 'pagination/graphql.dart';
 
 typedef OperationsPaginated =
-    RxPaginatedImpl<OperationId, Operation, DtoOperation, OperationsCursor>;
+    RxPaginatedImpl<OperationId, Rx<Operation>, DtoOperation, OperationsCursor>;
 
 /// [MyUser] wallet repository interface.
 class WalletRepository extends IdentityDependency
@@ -87,8 +87,9 @@ class WalletRepository extends IdentityDependency
         return at;
       },
     ),
-    transform: ({required DtoOperation data, Operation? previous}) {
-      return data.value;
+    transform: ({required DtoOperation data, Rx<Operation>? previous}) {
+      previous?.value = data.value;
+      return previous ?? Rx(data.value);
     },
   );
 
@@ -175,7 +176,7 @@ class WalletRepository extends IdentityDependency
   }
 
   @override
-  Future<OperationDeposit?> createOperationDeposit({
+  Future<Rx<Operation>?> createOperationDeposit({
     required OperationDepositMethodId methodId,
     required Price nominal,
     OperationDepositSecret? paypal,
@@ -217,14 +218,14 @@ class WalletRepository extends IdentityDependency
         .value;
 
     if (operation is OperationDeposit) {
-      return operation;
+      return operations.items[operation.id];
     }
 
     return null;
   }
 
   @override
-  Future<OperationDeposit?> completeOperationDeposit({
+  Future<Rx<Operation>?> completeOperationDeposit({
     required OperationId id,
     OperationDepositSecret? secret,
   }) async {
@@ -248,20 +249,11 @@ class WalletRepository extends IdentityDependency
 
     await _operationsEvent(events);
 
-    final Operation? operation = events.event.events
-        .firstWhereOrNull((e) => e.operation.value is OperationDeposit)
-        ?.operation
-        .value;
-
-    if (operation is OperationDeposit) {
-      return operation;
-    }
-
-    return null;
+    return operations.items[id];
   }
 
   @override
-  Future<OperationDeposit?> declineOperationDeposit({
+  Future<Rx<Operation>?> declineOperationDeposit({
     required OperationId id,
     OperationDepositSecret? secret,
   }) async {
@@ -289,16 +281,7 @@ class WalletRepository extends IdentityDependency
 
     await _operationsEvent(events);
 
-    final Operation? operation = events.event.events
-        .firstWhereOrNull((e) => e.operation.value is OperationDeposit)
-        ?.operation
-        .value;
-
-    if (operation is OperationDeposit) {
-      return operation;
-    }
-
-    return null;
+    return operations.items[id];
   }
 
   /// Fetches purse operations with pagination.

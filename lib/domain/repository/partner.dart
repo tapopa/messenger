@@ -30,5 +30,5 @@ abstract class AbstractPartnerRepository {
   Rx<Balance> get hold;
 
   /// Returns the [Operation]s happening in [MyUser]'s partner wallet.
-  Paginated<OperationId, Operation> get operations;
+  Paginated<OperationId, Rx<Operation>> get operations;
 }

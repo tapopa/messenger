@@ -42,7 +42,7 @@ class GraphQlProviderExceptions {
   /// [parse]s exceptions of the given [result] and throws if any.
   static void fire(
     QueryResult result, [
-    Exception Function(Map<String, dynamic>)? handleException,
+    Exception? Function(Map<String, dynamic>)? handleException,
   ]) {
     Object? exception = parse(result, handleException);
     if (exception != null) throw exception;
@@ -52,7 +52,7 @@ class GraphQlProviderExceptions {
   /// has the specified error code or `null` if no exception was found.
   static Object? parse(
     QueryResult result, [
-    Exception Function(Map<String, dynamic>)? handleException,
+    Exception? Function(Map<String, dynamic>)? handleException,
   ]) {
     if (result.hasException) {
       if (result.exception == null) {

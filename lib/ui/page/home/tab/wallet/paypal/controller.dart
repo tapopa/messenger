@@ -24,7 +24,6 @@ import '/domain/model/operation.dart';
 import '/domain/model/price.dart';
 import '/domain/service/wallet.dart';
 import '/provider/gql/exceptions.dart';
-import '/util/message_popup.dart';
 
 /// Status of [PayPalDepositView].
 enum PayPalDepositStatus { initial, inProgress }
@@ -51,7 +50,7 @@ class PayPalDepositController extends GetxController {
   final Rx<PayPalDepositStatus> status = Rx(PayPalDepositStatus.initial);
 
   /// [OperationDeposit] being deposited.
-  final Rx<OperationDeposit?> operation = Rx(null);
+  final Rx<Rx<Operation>?> operation = Rx(null);
 
   final RxnString error = RxnString();
 
@@ -63,7 +62,7 @@ class PayPalDepositController extends GetxController {
   OperationDepositSecret? _secret;
 
   /// Creates a [OperationDeposit].
-  Future<OperationDeposit?> createDeposit() async {
+  Future<Operation?> createDeposit() async {
     try {
       operation.value = await _walletService.createOperationDeposit(
         methodId: method.id,
@@ -72,10 +71,9 @@ class PayPalDepositController extends GetxController {
         paypal: _secret ??= OperationDepositSecret.generate(),
       );
 
-      return operation.value;
+      return operation.value?.value;
     } catch (e) {
-      status.value = PayPalDepositStatus.initial;
-      MessagePopup.error(e);
+      error.value = e.toString();
       rethrow;
     }
   }
@@ -84,7 +82,7 @@ class PayPalDepositController extends GetxController {
   Future<void> completeDeposit() async {
     status.value = PayPalDepositStatus.inProgress;
 
-    final OperationDeposit? operation = this.operation.value;
+    final Operation? operation = this.operation.value?.value;
     if (operation != null) {
       try {
         this.operation.value = await _walletService.completeOperationDeposit(
@@ -101,7 +99,7 @@ class PayPalDepositController extends GetxController {
           case CompleteOperationDepositErrorCode.unknownOperation:
           case CompleteOperationDepositErrorCode.unprocessable:
           case CompleteOperationDepositErrorCode.artemisUnknown:
-            MessagePopup.error(e);
+            error.value = e.toString();
             rethrow;
         }
       }
@@ -112,7 +110,7 @@ class PayPalDepositController extends GetxController {
   Future<void> declineDeposit() async {
     status.value = PayPalDepositStatus.inProgress;
 
-    final OperationDeposit? operation = this.operation.value;
+    final Operation? operation = this.operation.value?.value;
     if (operation != null) {
       try {
         this.operation.value = await _walletService.declineOperationDeposit(
@@ -120,7 +118,7 @@ class PayPalDepositController extends GetxController {
           secret: _secret,
         );
       } catch (e) {
-        MessagePopup.error(e);
+        error.value = e.toString();
         rethrow;
       }
     }

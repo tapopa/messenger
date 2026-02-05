@@ -38,7 +38,7 @@ class WalletService extends Dependency {
   Rx<Balance> get balance => _walletRepository.balance;
 
   /// Returns the [Operation]s happening in [MyUser]'s wallet.
-  Paginated<OperationId, Operation> get operations =>
+  Paginated<OperationId, Rx<Operation>> get operations =>
       _walletRepository.operations;
 
   /// Returns the [OperationDepositMethod]s available for the [MyUser].
@@ -51,7 +51,7 @@ class WalletService extends Dependency {
   }
 
   /// Creates a new [OperationDeposit].
-  Future<OperationDeposit?> createOperationDeposit({
+  Future<Rx<Operation>?> createOperationDeposit({
     required OperationDepositMethodId methodId,
     required Price nominal,
     OperationDepositSecret? paypal,
@@ -71,7 +71,7 @@ class WalletService extends Dependency {
   }
 
   /// Completes an [OperationDeposit].
-  Future<OperationDeposit?> completeOperationDeposit({
+  Future<Rx<Operation>?> completeOperationDeposit({
     required OperationId id,
     OperationDepositSecret? secret,
   }) {
@@ -84,7 +84,7 @@ class WalletService extends Dependency {
   }
 
   /// Declines an [OperationDeposit].
-  Future<OperationDeposit?> declineOperationDeposit({
+  Future<Rx<Operation>?> declineOperationDeposit({
     required OperationId id,
     OperationDepositSecret? secret,
   }) {

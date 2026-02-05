@@ -171,7 +171,7 @@ class Config {
   static bool redirectStdOut = true;
 
   /// [UserId] of the [User]-support.
-  static String supportId = '5TnWvlDyfr1pYagapHpInO';
+  static String supportId = '4sHij2YwubJ5PY9J2jLQpw';
 
   /// [UserId]s of the [User]s that should be considered as supports.
   static List<String> supportIds = [];

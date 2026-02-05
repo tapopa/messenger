@@ -330,13 +330,21 @@ mixin WalletGraphQlMixin {
         ).document,
         variables: variables.toJson(),
       ),
-      onException: (data) => CompleteOperationDepositException(
-        (CompleteOperationDeposit$Mutation.fromJson(
-                  data,
-                ).completeOperationDeposit
-                as CompleteOperationDeposit$Mutation$CompleteOperationDeposit$CompleteOperationDepositError)
-            .code,
-      ),
+      onException: (data) {
+        final fromJson = CompleteOperationDeposit$Mutation.fromJson(
+          data,
+        ).completeOperationDeposit;
+
+        if (fromJson == null) {
+          return null;
+        }
+
+        return CompleteOperationDepositException(
+          (fromJson
+                  as CompleteOperationDeposit$Mutation$CompleteOperationDeposit$CompleteOperationDepositError)
+              .code,
+        );
+      },
     );
 
     return CompleteOperationDeposit$Mutation.fromJson(

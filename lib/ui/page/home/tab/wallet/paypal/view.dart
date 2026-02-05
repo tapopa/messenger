@@ -112,7 +112,7 @@ class PayPalDepositView extends StatelessWidget {
                           Log.debug('onCreateOrder()', '$runtimeType');
 
                           final operation = await c.createDeposit();
-                          if (operation != null) {
+                          if (operation is OperationDeposit) {
                             final String? url = operation.processingUrl?.val;
                             if (url != null) {
                               return url.split('?order_id=').last;
@@ -130,6 +130,13 @@ class PayPalDepositView extends StatelessWidget {
                           await c.declineDeposit();
                         },
                         onError: (e) async {
+                          if (e.toString().contains(
+                            'Document is ready and element #paypal-btn does not exist',
+                          )) {
+                            // No-op.
+                            return;
+                          }
+
                           Log.error('onError() -> $e', '$runtimeType');
                           c.error.value = e.toString();
                           await c.declineDeposit();
@@ -186,7 +193,7 @@ class PayPalDepositView extends StatelessWidget {
                       LineDivider('label_transaction'.l10n),
                       const SizedBox(height: 16),
                       Obx(() {
-                        final OperationDeposit? operation = c.operation.value;
+                        final Operation? operation = c.operation.value?.value;
 
                         final Widget child;
 

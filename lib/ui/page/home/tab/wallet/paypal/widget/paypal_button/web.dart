@@ -89,8 +89,9 @@ class _PayPalButtonWebState extends State<PayPalButton> {
       }) {
         _element = web.HTMLDivElement()
           ..id = _viewId
+          ..style.overflow = 'auto'
           ..style.width = '100%'
-          ..style.height = '45px';
+          ..style.height = '100%';
 
         return _element!;
       });
@@ -108,7 +109,7 @@ class _PayPalButtonWebState extends State<PayPalButton> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 45,
+      height: 50,
       child: HtmlElementView(
         viewType: _viewId,
         onPlatformViewCreated: (id) {

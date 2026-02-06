@@ -78,19 +78,16 @@ class WalletRepository extends IdentityDependency
           return page;
         },
       ),
-      compare: (a, b) {
-        final int at = b.value.createdAt.compareTo(a.value.createdAt);
-        if (at == 0) {
-          return a.id.val.compareTo(b.id.val);
-        }
-
-        return at;
-      },
+      compare: (a, b) => a.compareTo(b),
     ),
     transform: ({required DtoOperation data, Rx<Operation>? previous}) {
-      previous?.value = data.value;
-      return previous ?? Rx(data.value);
+      if (previous != null) {
+        return previous..value = data.value;
+      }
+
+      return Rx(data.value);
     },
+    compare: (a, b) => a.value.compareTo(b.value),
   );
 
   @override
@@ -119,6 +116,8 @@ class WalletRepository extends IdentityDependency
 
   /// [CancelToken] to cancel [_queryMethods].
   CancelToken? _queryToken;
+
+  OperationVersion? _ver;
 
   @override
   void onInit() {
@@ -247,7 +246,7 @@ class WalletRepository extends IdentityDependency
       ),
     );
 
-    await _operationsEvent(events);
+    await _operationsEvent(events, updateVersion: false);
 
     return operations.items[id];
   }
@@ -568,7 +567,10 @@ class WalletRepository extends IdentityDependency
   }
 
   /// Handles [OperationsEvents] from the [_operationsEvents] subscription.
-  Future<void> _operationsEvent(OperationsEvents events) async {
+  Future<void> _operationsEvent(
+    OperationsEvents events, {
+    bool updateVersion = true,
+  }) async {
     switch (events.kind) {
       case OperationsEventsKind.initialized:
         events as OperationsEventsInitialized;
@@ -584,6 +586,18 @@ class WalletRepository extends IdentityDependency
         events as OperationsEventsEvent;
 
         final OperationsEventsVersioned versioned = events.event;
+
+        if (versioned.ver >= _ver) {
+          Log.debug(
+            '_operationsEvent(${events.kind}): ignored ${versioned.events.map((e) => e.kind.name).join(', ')}',
+            '$runtimeType',
+          );
+          return;
+        }
+
+        if (updateVersion) {
+          _ver = versioned.ver;
+        }
 
         Log.debug(
           '_operationsEvent(${events.kind}): ${versioned.events.map((e) => e.kind.name).join(', ')}',

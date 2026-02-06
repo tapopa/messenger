@@ -47,7 +47,7 @@ import 'pagination.dart';
 import 'pagination/graphql.dart';
 
 typedef OperationsPaginated =
-    RxPaginatedImpl<OperationId, Operation, DtoOperation, OperationsCursor>;
+    RxPaginatedImpl<OperationId, Rx<Operation>, DtoOperation, OperationsCursor>;
 
 /// [MyUser] wallet repository interface.
 class WalletRepository extends IdentityDependency
@@ -78,18 +78,16 @@ class WalletRepository extends IdentityDependency
           return page;
         },
       ),
-      compare: (a, b) {
-        final int at = b.value.createdAt.compareTo(a.value.createdAt);
-        if (at == 0) {
-          return a.id.val.compareTo(b.id.val);
-        }
-
-        return at;
-      },
+      compare: (a, b) => a.compareTo(b),
     ),
-    transform: ({required DtoOperation data, Operation? previous}) {
-      return data.value;
+    transform: ({required DtoOperation data, Rx<Operation>? previous}) {
+      if (previous != null) {
+        return previous..value = data.value;
+      }
+
+      return Rx(data.value);
     },
+    compare: (a, b) => a.value.compareTo(b.value),
   );
 
   @override
@@ -118,6 +116,8 @@ class WalletRepository extends IdentityDependency
 
   /// [CancelToken] to cancel [_queryMethods].
   CancelToken? _queryToken;
+
+  OperationVersion? _ver;
 
   @override
   void onInit() {
@@ -174,6 +174,115 @@ class WalletRepository extends IdentityDependency
     await _queryMethods();
   }
 
+  @override
+  Future<Rx<Operation>?> createOperationDeposit({
+    required OperationDepositMethodId methodId,
+    required Price nominal,
+    OperationDepositSecret? paypal,
+    required CountryCode country,
+  }) async {
+    Log.debug(
+      'createOperationDeposit(methodId: $methodId, nominal: $nominal, paypal: ${paypal?.obscured}, country: $country)',
+      '$runtimeType',
+    );
+
+    if (paypal == null) {
+      throw Exception('`paypal` shouldn\'t be `null`');
+    }
+
+    final mixin = await _graphQlProvider.createOperationDeposit(
+      methodId: methodId,
+      kind: OperationDepositInput(
+        paypal: OperationDepositPayPalInput(
+          nominal: nominal.sum,
+          secret: paypal,
+        ),
+      ),
+      country: country,
+    );
+
+    final OperationsEventsEvent events = OperationsEventsEvent(
+      OperationsEventsVersioned(
+        mixin.events.map(_operationEvent).toList(),
+        mixin.ver,
+        mixin.listVer,
+      ),
+    );
+
+    await _operationsEvent(events);
+
+    final Operation? operation = events.event.events
+        .firstWhereOrNull((e) => e.operation.value is OperationDeposit)
+        ?.operation
+        .value;
+
+    if (operation is OperationDeposit) {
+      return operations.items[operation.id];
+    }
+
+    return null;
+  }
+
+  @override
+  Future<Rx<Operation>?> completeOperationDeposit({
+    required OperationId id,
+    OperationDepositSecret? secret,
+  }) async {
+    Log.debug(
+      'completeOperationDeposit(id: $id, secret: ${secret?.obscured})',
+      '$runtimeType',
+    );
+
+    final mixin = await _graphQlProvider.completeOperationDeposit(
+      id: id,
+      secret: secret,
+    );
+
+    final OperationsEventsEvent events = OperationsEventsEvent(
+      OperationsEventsVersioned(
+        mixin.events.map(_operationEvent).toList(),
+        mixin.ver,
+        mixin.listVer,
+      ),
+    );
+
+    await _operationsEvent(events, updateVersion: false);
+
+    return operations.items[id];
+  }
+
+  @override
+  Future<Rx<Operation>?> declineOperationDeposit({
+    required OperationId id,
+    OperationDepositSecret? secret,
+  }) async {
+    Log.debug(
+      'declineOperationDeposit(id: $id, secret: ${secret?.obscured})',
+      '$runtimeType',
+    );
+
+    final mixin = await _graphQlProvider.declineOperationDeposit(
+      id: id,
+      secret: secret,
+    );
+
+    if (mixin == null) {
+      return null;
+    }
+
+    final OperationsEventsEvent events = OperationsEventsEvent(
+      OperationsEventsVersioned(
+        mixin.events.map(_operationEvent).toList(),
+        mixin.ver,
+        mixin.listVer,
+      ),
+    );
+
+    await _operationsEvent(events);
+
+    return operations.items[id];
+  }
+
   /// Fetches purse operations with pagination.
   Future<Page<DtoOperation, OperationsCursor>> _operations({
     int? first,
@@ -228,6 +337,7 @@ class WalletRepository extends IdentityDependency
           _country!,
           _currency,
         );
+
         methods.value = list.map((e) => e.toModel()).toList();
       }, cancel: _queryToken);
     } on OperationCanceledException {
@@ -457,7 +567,10 @@ class WalletRepository extends IdentityDependency
   }
 
   /// Handles [OperationsEvents] from the [_operationsEvents] subscription.
-  Future<void> _operationsEvent(OperationsEvents events) async {
+  Future<void> _operationsEvent(
+    OperationsEvents events, {
+    bool updateVersion = true,
+  }) async {
     switch (events.kind) {
       case OperationsEventsKind.initialized:
         events as OperationsEventsInitialized;
@@ -473,6 +586,18 @@ class WalletRepository extends IdentityDependency
         events as OperationsEventsEvent;
 
         final OperationsEventsVersioned versioned = events.event;
+
+        if (versioned.ver >= _ver) {
+          Log.debug(
+            '_operationsEvent(${events.kind}): ignored ${versioned.events.map((e) => e.kind.name).join(', ')}',
+            '$runtimeType',
+          );
+          return;
+        }
+
+        if (updateVersion) {
+          _ver = versioned.ver;
+        }
 
         Log.debug(
           '_operationsEvent(${events.kind}): ${versioned.events.map((e) => e.kind.name).join(', ')}',

@@ -963,3 +963,101 @@ fromDartListNullableUserAffiliatedNumNullableToGraphQLListNullableUserAffiliated
           ),
     )
     .toList();
+
+// OperationDepositSecret
+
+OperationDepositSecret
+fromGraphQLOperationDepositSecretToDartOperationDepositSecret(String v) =>
+    OperationDepositSecret(v);
+String fromDartOperationDepositSecretToGraphQLOperationDepositSecret(
+  OperationDepositSecret v,
+) => v.val;
+List<OperationDepositSecret>
+fromGraphQLListOperationDepositSecretToDartListOperationDepositSecret(
+  List<Object?> v,
+) => v
+    .map(
+      (e) => fromGraphQLOperationDepositSecretToDartOperationDepositSecret(
+        e as String,
+      ),
+    )
+    .toList();
+List<String>
+fromDartListOperationDepositSecretToGraphQLListOperationDepositSecret(
+  List<OperationDepositSecret> v,
+) => v
+    .map(
+      (e) => fromDartOperationDepositSecretToGraphQLOperationDepositSecret(e),
+    )
+    .toList();
+List<OperationDepositSecret>?
+fromGraphQLListNullableOperationDepositSecretToDartListNullableOperationDepositSecret(
+  List<Object?>? v,
+) => v
+    ?.map(
+      (e) => fromGraphQLOperationDepositSecretToDartOperationDepositSecret(
+        e as String,
+      ),
+    )
+    .toList();
+List<String>?
+fromDartListNullableOperationDepositSecretToGraphQLListNullableOperationDepositSecret(
+  List<OperationDepositSecret>? v,
+) => v
+    ?.map(
+      (e) => fromDartOperationDepositSecretToGraphQLOperationDepositSecret(e),
+    )
+    .toList();
+
+OperationDepositSecret?
+fromGraphQLOperationDepositSecretNullableToDartOperationDepositSecretNullable(
+  String? v,
+) => v == null ? null : OperationDepositSecret(v);
+String?
+fromDartOperationDepositSecretNullableToGraphQLOperationDepositSecretNullable(
+  OperationDepositSecret? v,
+) => v?.val;
+List<OperationDepositSecret?>
+fromGraphQLListOperationDepositSecretNullableToDartListOperationDepositSecretNullable(
+  List<Object?> v,
+) => v
+    .map(
+      (e) =>
+          fromGraphQLOperationDepositSecretNullableToDartOperationDepositSecretNullable(
+            e as String?,
+          ),
+    )
+    .toList();
+List<String?>
+fromDartListOperationDepositSecretNullableToGraphQLListOperationDepositSecretNullable(
+  List<OperationDepositSecret?> v,
+) => v
+    .map(
+      (e) =>
+          fromDartOperationDepositSecretNullableToGraphQLOperationDepositSecretNullable(
+            e,
+          ),
+    )
+    .toList();
+List<OperationDepositSecret?>?
+fromGraphQLListNullableOperationDepositSecretNullableToDartListNullableOperationDepositSecretNullable(
+  List<Object?>? v,
+) => v
+    ?.map(
+      (e) =>
+          fromGraphQLOperationDepositSecretNullableToDartOperationDepositSecretNullable(
+            e as String?,
+          ),
+    )
+    .toList();
+List<String?>?
+fromDartListNullableOperationDepositSecretNullableToGraphQLListNullableOperationDepositSecretNullable(
+  List<OperationDepositSecret?>? v,
+) => v
+    ?.map(
+      (e) =>
+          fromDartOperationDepositSecretNullableToGraphQLOperationDepositSecretNullable(
+            e,
+          ),
+    )
+    .toList();

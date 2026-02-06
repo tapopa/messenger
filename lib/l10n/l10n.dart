@@ -431,8 +431,8 @@ extension PriceL10nExtention on Price {
   /// Returns a localized string of this [Price] with [digits] configurable.
   String l10next({int digits = 2}) {
     return switch (currency.val) {
-      'USDT' => '${sum.val.toStringAsDigits(digits)} ${currency.l10n}',
-      (_) => '${currency.l10n}${sum.val.toStringAsDigits(digits)}',
+      'USDT' => '${sum.val.toStringAsFixed(digits)} ${currency.l10n}',
+      (_) => '${currency.l10n}${sum.val.toStringAsFixed(digits)}',
     };
   }
 }

@@ -200,6 +200,10 @@ class OperationDeposit extends Operation {
         invoice == other.invoice &&
         processingUrl == other.processingUrl;
   }
+
+  @override
+  String toString() =>
+      'OperationDeposit($id, createdAt: $createdAt, status: ${status.name})';
 }
 
 /// [Operation] of depositing money to [MyUser]'s purse.

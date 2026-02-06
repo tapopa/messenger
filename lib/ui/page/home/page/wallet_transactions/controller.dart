@@ -45,7 +45,8 @@ class WalletTransactionsController extends GetxController {
   Worker? _queryWorker;
 
   /// Returns the [Operation]s happening in [MyUser]'s wallet.
-  Paginated<OperationId, Operation> get operations => _walletService.operations;
+  Paginated<OperationId, Rx<Operation>> get operations =>
+      _walletService.operations;
 
   @override
   void onInit() {

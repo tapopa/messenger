@@ -27,6 +27,7 @@ import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/price.dart';
 import '/l10n/l10n.dart';
 import '/themes.dart';
+import '/ui/page/home/tab/wallet/paypal/view.dart';
 import '/ui/page/home/tab/wallet/select_country/view.dart';
 import '/ui/page/home/widget/field_button.dart';
 import '/ui/widget/svg/svg.dart';
@@ -313,6 +314,7 @@ class DepositExpandable extends StatelessWidget {
                             context,
                             available: IsoCodeExtension.available(provider),
                           );
+
                           if (result != null) {
                             paypal.country.value = result;
                           }
@@ -320,7 +322,12 @@ class DepositExpandable extends StatelessWidget {
 
                         if (paypal.country.value != null) {
                           if (context.mounted) {
-                            // TODO: Display interface for PayPal.
+                            await PayPalDepositView.show(
+                              context,
+                              nominal: e,
+                              method: provider,
+                              country: CountryCode(paypal.country.value!.name),
+                            );
                           }
                         }
                       },

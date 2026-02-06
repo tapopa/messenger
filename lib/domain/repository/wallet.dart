@@ -21,6 +21,7 @@ import '/domain/model/balance.dart';
 import '/domain/model/country.dart';
 import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
+import '/domain/model/price.dart';
 import 'paginated.dart';
 
 /// [MyUser] wallet repository interface.
@@ -29,11 +30,31 @@ abstract class AbstractWalletRepository {
   Rx<Balance> get balance;
 
   /// Returns the [Operation]s happening in [MyUser]'s wallet.
-  Paginated<OperationId, Operation> get operations;
+  Paginated<OperationId, Rx<Operation>> get operations;
 
   /// Returns the [OperationDepositMethod]s available for the [MyUser].
   RxList<OperationDepositMethod> get methods;
 
   /// Sets the available [methods] to be accounted as the provided [country].
   Future<void> setCountry(CountryCode country);
+
+  /// Creates a new [OperationDeposit].
+  Future<Rx<Operation>?> createOperationDeposit({
+    required OperationDepositMethodId methodId,
+    required Price nominal,
+    OperationDepositSecret? paypal,
+    required CountryCode country,
+  });
+
+  /// Completes an [OperationDeposit].
+  Future<Rx<Operation>?> completeOperationDeposit({
+    required OperationId id,
+    OperationDepositSecret? secret,
+  });
+
+  /// Declines an [OperationDeposit].
+  Future<Rx<Operation>?> declineOperationDeposit({
+    required OperationId id,
+    OperationDepositSecret? secret,
+  });
 }

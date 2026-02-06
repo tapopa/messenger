@@ -27,7 +27,7 @@ import 'sorted_map.dart';
 class RxSortedObsMap<K, V> extends MapMixin<K, V>
     with NotifyManager<SortedObsMap<K, V>>, RxObjectMixin<SortedObsMap<K, V>>
     implements RxInterface<SortedObsMap<K, V>> {
-  RxSortedObsMap() : _value = SortedObsMap<K, V>();
+  RxSortedObsMap(Comparator<V>? compare) : _value = SortedObsMap<K, V>(compare);
 
   /// Internal actual value of the [SortedObsMap] this [RxSortedObsMap] holds.
   late final SortedObsMap<K, V> _value;

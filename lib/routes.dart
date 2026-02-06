@@ -435,7 +435,9 @@ class AppRouteInformationParser
 
     if (route == Routes.contacts ||
         route == Routes.chats ||
-        route == Routes.menu) {
+        route == Routes.menu ||
+        route == Routes.wallet ||
+        route == Routes.partner) {
       route = Routes.home;
     }
 

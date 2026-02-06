@@ -1170,6 +1170,10 @@ label_paypal = PayPal
 label_paypal_account_email = Correo electrónico de la cuenta PayPal
 label_paypal_account_email_example = dummy@example.com
 label_paypal_is_not_available_in_this_country = Paypal no está disponible en este país
+label_paypal_popup_window_instruction =
+    Para realizar el pago, se abrirá una ventana emergente del procesador.
+
+    Si la ventana emergente no se abre, revise la configuración de su navegador. Es posible que su navegador esté bloqueando la apertura de ventanas emergentes.
 label_personal_data_deletion = Eliminar la cuenta
 label_personal_data_deletion_description1 = Este proceso es{" "}
 label_personal_data_deletion_description2 = IRREVERSIBLE
@@ -1270,6 +1274,8 @@ label_tab_chats = Chats
 label_tab_menu = Menú
 label_tab_partner = Partner
 label_tab_wallet = Monedero
+label_tapopa_will_be_grateful_for_reporting_problems_when_paying1 = Tapopa
+label_tapopa_will_be_grateful_for_reporting_problems_when_paying2 = {" "}le agradecerá mucho si informa sobre cualquier inconveniente o problema encontrado al realizar pago.
 label_terminate_sessions = Terminar sesión(es)
 label_terms_and_privacy_policy = Condiciones y Política de Privacidad
 label_text_status = Estatus del texto
@@ -1282,7 +1288,9 @@ label_to_confirm_identity_upload_photo = Para confirmar su identidad, suba una f
 label_to_restore_chats_use_search = Para recuperar los chats, utiliza la búsqueda
 label_ton = TON
 label_top_up_bonus_with_id = Bono de recarga. ID de transacción: {$id}.
+label_top_up_by_paypal = Recargar por PayPal
 label_top_up_paypal = Bono de recarga. PayPal.
+label_transaction = Transacción
 label_transaction_id = Transacción ID
 label_tron_trc20 = TRON (TRC-20)
 label_typing = Escribiendo

@@ -6,6 +6,22 @@ All user visible changes to this project will be documented in this file. This p
 
 
 
+## [0.4.0] · 2026-??-??
+[0.4.0]: /../../tree/v0.4.0
+
+[Diff](/../../compare/v0.3.0...v0.4.0) | [Milestone](/../../milestone/6)
+
+### Added
+
+- UI:
+    - Wallet tab:
+        - PayPal deposit. ([#22])
+
+[#22]: /../../pull/22
+
+
+
+
 ## [0.3.0] · 2026-02-05
 [0.3.0]: /../../tree/v0.3.0
 

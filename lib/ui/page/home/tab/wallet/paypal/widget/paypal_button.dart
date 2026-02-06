@@ -15,20 +15,5 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-import 'package:get/get.dart';
-
-import '/domain/model/balance.dart';
-import '/domain/model/operation.dart';
-import 'paginated.dart';
-
-/// [MyUser] partner repository interface.
-abstract class AbstractPartnerRepository {
-  /// Returns the balance [MyUser] has in their partner available wallet.
-  Rx<Balance> get available;
-
-  /// Returns the balance [MyUser] has in their partner hold wallet.
-  Rx<Balance> get hold;
-
-  /// Returns the [Operation]s happening in [MyUser]'s partner wallet.
-  Paginated<OperationId, Rx<Operation>> get operations;
-}
+export 'paypal_button/io.dart'
+    if (dart.library.js_interop) 'paypal_button/web.dart';

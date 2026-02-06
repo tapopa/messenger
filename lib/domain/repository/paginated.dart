@@ -24,10 +24,11 @@ import '/util/obs/obs.dart';
 
 /// Paginated view of [T] items.
 abstract class Paginated<K, T> {
-  Paginated({this.onDispose});
+  Paginated({this.onDispose, Comparator<T>? compare})
+    : items = RxSortedObsMap<K, T>(compare);
 
   /// Paginated [T] items themselves.
-  final RxSortedObsMap<K, T> items = RxSortedObsMap<K, T>();
+  final RxSortedObsMap<K, T> items;
 
   /// Reactive [RxStatus] of [items] being fetched.
   ///

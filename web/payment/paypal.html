@@ -814,7 +814,6 @@ mutation DeclineOperationDeposit(
       paypal.Buttons({
         createOrder: async (data) => {
           console.log(`createOrder(${data})`);
-          // channel.postMessage({ 'id': id, 'type': 'createOrder' });
 
           let token = urlParams.get('token');
 
@@ -823,6 +822,20 @@ mutation DeclineOperationDeposit(
           }
 
           if (true) {
+            let depositId = urlParams.get('deposit-id');
+            let orderId = urlParams.get('order-id');
+            let orderNum = urlParams.get('order-num');
+
+            if (orderId !== undefined) {
+              transactionId = orderId;
+
+              document.querySelectorAll('[id=transaction-id]').forEach(element => {
+                element.innerHTML = orderNum;
+              });
+
+              return orderId;
+            }
+
             let operation = await createOperationDeposit();
             transactionId = operation['id'];
 

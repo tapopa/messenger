@@ -24,11 +24,12 @@ import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/price.dart';
 import '/domain/service/wallet.dart';
+import '/l10n/l10n.dart';
 import '/provider/gql/exceptions.dart';
 import '/util/web/web_utils.dart';
 
 /// Status of [PayPalDepositView].
-enum PayPalDepositStatus { loading, initial, inProgress }
+enum PayPalDepositStatus { loading, inProgress }
 
 /// Controller of a [PayPalDepositView].
 class PayPalDepositController extends GetxController {
@@ -39,7 +40,6 @@ class PayPalDepositController extends GetxController {
     required this.nominal,
     this.id,
     PayPalDepositStatus status = PayPalDepositStatus.loading,
-    this.pop,
   }) : status = Rx(status);
 
   /// [OperationDepositMethod] to deposit with.
@@ -54,14 +54,14 @@ class PayPalDepositController extends GetxController {
   /// [PayPalDepositStatus] of the [createDeposit] operation.
   final Rx<PayPalDepositStatus> status;
 
+  /// [OperationId] of an [OperationDeposit] already existing, if any.
   final OperationId? id;
 
   /// [OperationDeposit] being deposited.
   final Rx<Rx<Operation>?> operation = Rx(null);
 
+  /// Error happened during [OperationDeposit] creating.
   final RxnString error = RxnString();
-
-  final void Function()? pop;
 
   /// [WalletService] used to create the [OperationDeposit] itself.
   final WalletService _walletService;
@@ -75,10 +75,6 @@ class PayPalDepositController extends GetxController {
     switch (status.value) {
       case PayPalDepositStatus.loading:
         _redirectAndClose();
-        break;
-
-      case PayPalDepositStatus.initial:
-        // No-op.
         break;
 
       case PayPalDepositStatus.inProgress:
@@ -171,13 +167,27 @@ class PayPalDepositController extends GetxController {
   Future<void> _redirectAndClose() async {
     try {
       final Operation? order = await createDeposit();
-      if (order != null) {
+
+      status.value = PayPalDepositStatus.inProgress;
+
+      if (order is OperationDeposit) {
         await WebUtils.openPopup(
-          '${Config.origin}/payment/paypal.html?client-id=${Config.payPalClientId}&amount=${nominal.sum.val}',
+          '${Config.origin}/payment/paypal.html',
+          parameters: {
+            'client-id': Config.payPalClientId,
+            'nominal': nominal.l10next(digits: 0),
+            'price': order.pricing?.total?.l10n,
+            'deposit-id': '${order.id}',
+            'order-num': '${order.num.val}',
+            'order-id': '${order.processingUrl?.val.split('?order_id=').last}',
+            'methodId': method.id.val,
+            'country': country.val,
+          },
         );
       }
-    } finally {
-      pop?.call();
+    } catch (e) {
+      error.value = e.toString();
+      rethrow;
     }
   }
 }

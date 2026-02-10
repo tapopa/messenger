@@ -87,6 +87,7 @@ class DepositExpandable extends StatelessWidget {
   /// Callback, called when country is changed.
   final void Function(IsoCode)? onCountry;
 
+  /// Callback, called when [Price] is selected by the user.
   final void Function(Price, Price?)? onProceed;
 
   @override

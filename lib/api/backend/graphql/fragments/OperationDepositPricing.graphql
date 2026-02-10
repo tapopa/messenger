@@ -15,21 +15,25 @@
 # along with this program. If not, see
 # <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-mutation CompleteOperationDeposit(
-    $id: OperationId!
-    $secret: OperationDepositSecret
-) {
-    completeOperationDeposit(
-        id: $id
-        secret: $secret
-    ) {
+fragment OperationDepositPricing on OperationDepositPricing {
+    nominal {
         __typename
-        ... on OperationEventsVersioned {
-            __typename
-            ...OperationEventsVersioned
-        }
-        ... on CompleteOperationDepositError {
-            code
-        }
+        ...Price
+    }
+    bonus {
+        __typename
+        ...PriceModifier
+    }
+    withoutTax(currency: "USD") {
+        __typename
+        ...Price
+    }
+    tax(currency: "USD") {
+        __typename
+        ...PriceModifier
+    }
+    total(currency: "USD") {
+        __typename
+        ...Price
     }
 }

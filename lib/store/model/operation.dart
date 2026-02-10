@@ -46,6 +46,7 @@ class DtoOperation implements Comparable<DtoOperation> {
 class OperationVersion extends Version {
   OperationVersion(super.val);
 
+  /// Compares whether [OperationVersion] is bigger than [other].
   bool operator >(OperationVersion? other) {
     if (other == null) {
       return false;
@@ -54,6 +55,7 @@ class OperationVersion extends Version {
     return val.compareTo(other.val) == -1;
   }
 
+  /// Compares whether [OperationVersion] is bigger or equals to [other].
   bool operator >=(OperationVersion? other) {
     if (other == null) {
       return false;

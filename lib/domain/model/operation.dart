@@ -151,6 +151,7 @@ class OperationDeposit extends Operation {
     this.kind = OperationDepositKind.paypal,
     this.invoice,
     this.processingUrl,
+    this.pricing,
   });
 
   /// Kind of this [OperationDeposit].
@@ -167,6 +168,9 @@ class OperationDeposit extends Operation {
   /// [Url] to process this [OperationDeposit] on.
   final Url? processingUrl;
 
+  /// Pricing of this [OperationDeposit].
+  final OperationDepositPricing? pricing;
+
   @override
   int get hashCode => Object.hash(
     id,
@@ -182,6 +186,7 @@ class OperationDeposit extends Operation {
     billingCountry,
     invoice,
     processingUrl,
+    pricing,
   );
 
   @override
@@ -198,7 +203,8 @@ class OperationDeposit extends Operation {
         kind == other.kind &&
         billingCountry == other.billingCountry &&
         invoice == other.invoice &&
-        processingUrl == other.processingUrl;
+        processingUrl == other.processingUrl &&
+        pricing == other.pricing;
   }
 
   @override
@@ -614,4 +620,30 @@ class UserAffiliatedNum extends NewType<String> {
       return val;
     }
   }
+}
+
+/// Pricing of an [OperationDeposit].
+class OperationDepositPricing {
+  OperationDepositPricing({
+    required this.nominal,
+    this.bonus,
+    this.withoutTax,
+    this.tax,
+    this.total,
+  });
+
+  /// Nominal [Price] of the [OperationDeposit].
+  final Price nominal;
+
+  /// Bonus of the nominal Price to be granted as a separate OperationDepositBonus once the original OperationDeposit is completed successfully.
+  final PriceModifier? bonus;
+
+  /// Calculated Price of the OperationDeposit to be paid, before the tax being applied, in the provided Currency.
+  final Price? withoutTax;
+
+  /// Tax applied to the [withoutTax] [Price], according to the billing CountryCode of the OperationDeposit, in the provided Currency.
+  final PriceModifier? tax;
+
+  /// Calculated total Price of the OperationDeposit to be paid, after the tax being applied, in the provided Currency.
+  final Price? total;
 }

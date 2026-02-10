@@ -37,4 +37,8 @@ fragment OperationDeposit on OperationDeposit {
     billingCountry
     invoice
     processingUrl
+    price {
+        __typename
+        ...OperationDepositPricing
+    }
 }

@@ -322,7 +322,6 @@ class RxPaginatedImpl<K, T, V, C> extends PaginatedImpl<K, T, V, C> {
         final item = await itemOrFuture;
         if (item != null) {
           items[key] = item;
-          items.refresh();
         }
       });
     }

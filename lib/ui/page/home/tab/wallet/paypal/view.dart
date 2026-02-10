@@ -33,10 +33,8 @@ import '/ui/widget/line_divider.dart';
 import '/ui/widget/modal_popup.dart';
 import '/ui/widget/primary_button.dart';
 import '/ui/widget/progress_indicator.dart';
-import '/util/log.dart';
 import '/util/platform_utils.dart';
 import 'controller.dart';
-import 'widget/paypal_button.dart';
 
 /// View for creating a [OperationDeposit] with PayPal.
 class PayPalDepositView extends StatelessWidget {
@@ -58,7 +56,10 @@ class PayPalDepositView extends StatelessWidget {
   /// [Price] to deposit.
   final Price nominal;
 
+  /// [OperationId] of an [OperationDeposit] already existing, if any.
   final OperationId? id;
+
+  /// Initial [PayPalDepositStatus].
   final PayPalDepositStatus status;
 
   /// Displays an [PayPalDepositView] wrapped in a [ModalPopup].
@@ -94,7 +95,6 @@ class PayPalDepositView extends StatelessWidget {
         nominal: nominal,
         id: id,
         status: status,
-        pop: context.popModal,
       ),
       builder: (PayPalDepositController c) {
         return Column(
@@ -108,89 +108,38 @@ class PayPalDepositView extends StatelessWidget {
 
                 switch (c.status.value) {
                   case PayPalDepositStatus.loading:
-                    children = const [
-                      SizedBox(height: 32),
-                      Center(child: CustomProgressIndicator.primary()),
-                      SizedBox(height: 32),
-                    ];
-                    break;
-
-                  case PayPalDepositStatus.initial:
                     children = [
-                      const SizedBox(height: 16),
-                      Text(
-                        'label_paypal_popup_window_instruction'.l10n,
-                        style: style.fonts.small.regular.secondary,
-                      ),
-                      const SizedBox(height: 16),
-                      LineDivider(''),
-                      const SizedBox(height: 16),
-                      AmountTile(nominal: nominal, pricing: method.pricing),
-                      const SizedBox(height: 16),
-                      PayPalButton(
-                        currency: 'HKD',
-                        onCreateOrder: () async {
-                          Log.debug('onCreateOrder()', '$runtimeType');
+                      const SizedBox(height: 32),
+                      Center(
+                        child: Obx(() {
+                          final Widget child;
 
-                          final operation = await c.createDeposit();
-
-                          if (operation is OperationDeposit) {
-                            final String? url = operation.processingUrl?.val;
-                            if (url != null) {
-                              return url.split('?order_id=').last;
-                            }
+                          if (c.error.value == null) {
+                            child = CustomProgressIndicator.primary();
+                          } else {
+                            child = Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  '${c.error.value}',
+                                  style: style.fonts.small.regular.danger,
+                                ),
+                                const SizedBox(height: 16),
+                                PrimaryButton(
+                                  onPressed: context.popModal,
+                                  title: 'btn_close'.l10n,
+                                ),
+                              ],
+                            );
                           }
 
-                          return '';
-                        },
-                        onSuccess: () async {
-                          Log.debug('onSuccess()', '$runtimeType');
-                          await c.completeDeposit();
-                        },
-                        onCancel: () async {
-                          Log.error('onCancel() ', '$runtimeType');
-                          await c.declineDeposit();
-                        },
-                        onError: (e) async {
-                          if (e.toString().contains(
-                            'Document is ready and element #paypal-btn does not exist',
-                          )) {
-                            // No-op.
-                            return;
-                          }
-
-                          Log.error('onError() -> $e', '$runtimeType');
-                          c.error.value = e.toString();
-                          await c.declineDeposit();
-                        },
+                          return AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 250),
+                            child: child,
+                          );
+                        }),
                       ),
-                      const SizedBox(height: 16),
-                      LineDivider('label_attention'.l10n),
-                      const SizedBox(height: 16),
-                      Text.rich(
-                        TextSpan(
-                          children: [
-                            TextSpan(
-                              text:
-                                  'label_tapopa_will_be_grateful_for_reporting_problems_when_paying1'
-                                      .l10n,
-                              style: style.fonts.small.regular.primary,
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.of(context).pop();
-                                  router.support();
-                                },
-                            ),
-                            TextSpan(
-                              text:
-                                  'label_tapopa_will_be_grateful_for_reporting_problems_when_paying2'
-                                      .l10n,
-                            ),
-                          ],
-                        ),
-                        style: style.fonts.small.regular.secondary,
-                      ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 32),
                     ];
                     break;
 

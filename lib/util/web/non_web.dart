@@ -630,7 +630,7 @@ class WebUtils {
   static Future<void> setupAudioSessionManagement(bool value) =>
       webrtc.setupAudioSessionManagement(false);
 
-  /// Post the [message] to a broadcast channel with [name] identifier.
+  /// Posts the [message] to a broadcast channel with [name] identifier.
   static void postBroadcastMessage(String name, Map<String, dynamic> message) {
     // No-op.
   }

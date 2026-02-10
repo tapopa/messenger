@@ -267,9 +267,13 @@ class _Operation {
   /// [WindowHandle] of a window where [_Operation] is happening.
   final WindowHandle _handle;
 
+  /// [OperationDepositSecret] of the [deposit], if any.
   OperationDepositSecret? _secret;
 
+  /// [StreamSubscription] to [WebUtils.onBroadcastMessage] changes.
   StreamSubscription? _onMessage;
+
+  /// [StreamSubscription] to [OperationStatus] changes.
   StreamSubscription? _onStatus;
 
   /// [OperationDeposit] attached to this [_Operation], if any.
@@ -310,8 +314,10 @@ class _Operation {
     });
   }
 
+  /// Returns an ID of the [WindowHandle].
   String get id => _handle.id;
 
+  /// Disposes this [_Operation].
   void dispose() {
     _onMessage?.cancel();
     _onMessage = null;
@@ -322,11 +328,11 @@ class _Operation {
     close();
   }
 
+  /// Closes the [WindowHandle] this [_Operation] happens.
   void close() => _handle.close();
+
+  /// Posts the [message] to a broadcast channel with [id] identifier.
   void postBroadcast(Map<String, dynamic> message) {
     WebUtils.postBroadcastMessage(id, message);
   }
-
-  void postMessage(Map<String, dynamic> message) =>
-      _handle.postMessage(message);
 }

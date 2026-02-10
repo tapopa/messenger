@@ -635,15 +635,20 @@ class OperationDepositPricing {
   /// Nominal [Price] of the [OperationDeposit].
   final Price nominal;
 
-  /// Bonus of the nominal Price to be granted as a separate OperationDepositBonus once the original OperationDeposit is completed successfully.
+  /// Bonus of the nominal [Price] to be granted as a separate
+  /// [OperationDepositBonus] once the original [OperationDeposit] is completed
+  /// successfully.
   final PriceModifier? bonus;
 
-  /// Calculated Price of the OperationDeposit to be paid, before the tax being applied, in the provided Currency.
+  /// Calculated [Price] of the [OperationDeposit] to be paid, before the tax
+  /// being applied, in the provided [Currency].
   final Price? withoutTax;
 
-  /// Tax applied to the [withoutTax] [Price], according to the billing CountryCode of the OperationDeposit, in the provided Currency.
+  /// Tax applied to the [withoutTax] [Price], according to the billing
+  /// [CountryCode] of the [OperationDeposit], in the provided [Currency].
   final PriceModifier? tax;
 
-  /// Calculated total Price of the OperationDeposit to be paid, after the tax being applied, in the provided Currency.
+  /// Calculated total [Price] of the [OperationDeposit] to be paid, after the
+  /// tax being applied, in the provided [Currency].
   final Price? total;
 }

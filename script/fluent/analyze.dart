@@ -76,6 +76,9 @@ Future<void> main(List<String> argv) async {
 
         // TODO: Remove once desktop apps are shipped.
         'label_desktop_apps',
+
+        // Used on `paypal.html` page.
+        'label_paypal_popup_window_instruction',
       ],
       help: 'Labels to ignore in `.ftl` files (supports regular expressions).',
     )

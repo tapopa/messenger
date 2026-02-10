@@ -34,6 +34,7 @@ import '/ui/widget/modal_popup.dart';
 import '/ui/widget/primary_button.dart';
 import '/ui/widget/progress_indicator.dart';
 import '/util/log.dart';
+import '/util/platform_utils.dart';
 import 'controller.dart';
 import 'widget/paypal_button.dart';
 
@@ -44,6 +45,8 @@ class PayPalDepositView extends StatelessWidget {
     required this.method,
     required this.country,
     required this.nominal,
+    this.id,
+    this.status = PayPalDepositStatus.loading,
   });
 
   /// [OperationDepositMethod] to deposit with.
@@ -55,12 +58,17 @@ class PayPalDepositView extends StatelessWidget {
   /// [Price] to deposit.
   final Price nominal;
 
+  final OperationId? id;
+  final PayPalDepositStatus status;
+
   /// Displays an [PayPalDepositView] wrapped in a [ModalPopup].
   static Future<T?> show<T>(
     BuildContext context, {
     required OperationDepositMethod method,
     required CountryCode country,
     required Price nominal,
+    OperationId? id,
+    PayPalDepositStatus status = PayPalDepositStatus.loading,
   }) {
     return ModalPopup.show(
       context: context,
@@ -68,6 +76,8 @@ class PayPalDepositView extends StatelessWidget {
         country: country,
         method: method,
         nominal: nominal,
+        id: id,
+        status: status,
       ),
     );
   }
@@ -82,6 +92,9 @@ class PayPalDepositView extends StatelessWidget {
         country: country,
         method: method,
         nominal: nominal,
+        id: id,
+        status: status,
+        pop: context.popModal,
       ),
       builder: (PayPalDepositController c) {
         return Column(
@@ -94,6 +107,14 @@ class PayPalDepositView extends StatelessWidget {
                 final List<Widget> children;
 
                 switch (c.status.value) {
+                  case PayPalDepositStatus.loading:
+                    children = const [
+                      SizedBox(height: 32),
+                      Center(child: CustomProgressIndicator.primary()),
+                      SizedBox(height: 32),
+                    ];
+                    break;
+
                   case PayPalDepositStatus.initial:
                     children = [
                       const SizedBox(height: 16),
@@ -112,6 +133,7 @@ class PayPalDepositView extends StatelessWidget {
                           Log.debug('onCreateOrder()', '$runtimeType');
 
                           final operation = await c.createDeposit();
+
                           if (operation is OperationDeposit) {
                             final String? url = operation.processingUrl?.val;
                             if (url != null) {

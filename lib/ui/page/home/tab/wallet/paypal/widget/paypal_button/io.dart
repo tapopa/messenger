@@ -17,8 +17,11 @@
 
 import 'package:flutter/material.dart';
 
-import '/ui/widget/outlined_rounded_button.dart';
+import '/config.dart';
 import '/themes.dart';
+import '/ui/widget/outlined_rounded_button.dart';
+import '/util/log.dart';
+import '/util/web/web_utils.dart';
 
 /// PayPal pay button widget.
 class PayPalButton extends StatelessWidget {
@@ -53,7 +56,20 @@ class PayPalButton extends StatelessWidget {
     return OutlinedRoundedButton(
       color: const Color.fromARGB(255, 255, 196, 58),
       onPressed: () async {
-        await onCreateOrder?.call();
+        final orderId = await onCreateOrder?.call();
+
+        if (orderId != null) {
+          final String url =
+              '${Config.origin}/payment/paypal.html?token=$orderId';
+
+          Log.debug('Navigating to $url', '$runtimeType');
+
+          try {
+            await WebUtils.openPopup(url);
+          } finally {
+            onSuccess?.call();
+          }
+        }
       },
       maxWidth: double.infinity,
       height: 64,

@@ -37,10 +37,9 @@ query Operations(
                 ... on OperationDepositBonus {
                     ...OperationDepositBonus
                 }
-                # TODO: Uncomment when upgrading to 0.9.0.
-                # ... on OperationDividend {
-                #     ...OperationDividend
-                # }
+                ... on OperationDividend {
+                    ...OperationDividend
+                }
                 ... on OperationEarnDonation{
                     ...OperationEarnDonation
                 }

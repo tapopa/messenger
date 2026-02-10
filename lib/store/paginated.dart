@@ -303,6 +303,9 @@ class RxPaginatedImpl<K, T, V, C> extends PaginatedImpl<K, T, V, C> {
     status.value = RxStatus.empty();
   }
 
+  /// Indicates whether [key] is contained within the [items].
+  bool contains(K key) => items.keys.contains(key);
+
   /// Applies [transform] to the [value] item with its [key].
   FutureOr<void> _apply(K key, V value) {
     final FutureOr<T?> itemOrFuture = transform(
@@ -319,6 +322,7 @@ class RxPaginatedImpl<K, T, V, C> extends PaginatedImpl<K, T, V, C> {
         final item = await itemOrFuture;
         if (item != null) {
           items[key] = item;
+          items.refresh();
         }
       });
     }

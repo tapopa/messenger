@@ -21,14 +21,21 @@ import 'package:get/get.dart';
 import '/domain/model/balance.dart';
 import '/domain/model/country.dart';
 import '/domain/model/operation_deposit_method.dart';
+import '/domain/model/price.dart';
 import '/domain/model/session.dart';
 import '/domain/service/session.dart';
 import '/domain/service/wallet.dart';
+import '/ui/worker/wallet.dart';
+import '/util/message_popup.dart';
 import 'widget/deposit_expandable.dart';
 
 /// Controller of the `HomeTab.wallet` tab.
 class WalletTabController extends GetxController {
-  WalletTabController(this._sessionService, this._walletService);
+  WalletTabController(
+    this._sessionService,
+    this._walletService,
+    this._walletWorker,
+  );
 
   /// [ScrollController] to pass to a [Scrollbar].
   final ScrollController scrollController = ScrollController();
@@ -44,6 +51,9 @@ class WalletTabController extends GetxController {
 
   /// [WalletService] used to retrieve available [OperationDepositMethod]s.
   final WalletService _walletService;
+
+  /// [WalletWorker] responsible for creating [OperationDeposit]s.
+  final WalletWorker _walletWorker;
 
   /// Returns the [OperationDepositMethod]s available for the [MyUser].
   RxList<OperationDepositMethod> get methods => _walletService.methods;
@@ -66,6 +76,22 @@ class WalletTabController extends GetxController {
   /// Sets the [country].
   Future<void> setCountry(CountryCode country) async {
     await _walletService.setCountry(country);
+  }
+
+  /// Creates an [OperationDeposit] using the provided [method], [country],
+  /// [nominal] and [pricing].
+  Future<void> createDeposit(
+    OperationDepositMethod method,
+    CountryCode country,
+    Price nominal,
+    Price? pricing,
+  ) async {
+    try {
+      await _walletWorker.create(method, country, nominal, pricing);
+    } catch (e) {
+      MessagePopup.error(e);
+      rethrow;
+    }
   }
 
   /// Fetches the current [IpGeoLocation] to update [IsoCode].

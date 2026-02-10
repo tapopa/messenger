@@ -399,4 +399,23 @@ mixin WalletGraphQlMixin {
         ).declineOperationDeposit
         as DeclineOperationDeposit$Mutation$DeclineOperationDeposit$OperationEventsVersioned?;
   }
+
+  /// Returns an [Operation] by its [OperationId] or [OperationNum].
+  Future<Operation$Query$Operation?> operation(
+    OperationId? id,
+    OperationNum? num,
+  ) async {
+    Log.debug('operation(id: $id, num: $num)', '$runtimeType');
+
+    final variables = OperationArguments(id: id, num: num);
+    final QueryResult result = await client.query(
+      QueryOptions(
+        operationName: 'Operation',
+        document: OperationQuery(variables: variables).document,
+        variables: variables.toJson(),
+      ),
+    );
+
+    return Operation$Query.fromJson(result.data!).operation;
+  }
 }

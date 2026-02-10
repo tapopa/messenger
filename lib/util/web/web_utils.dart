@@ -15,6 +15,8 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'package:uuid/uuid.dart';
+
 import '/domain/model/chat.dart';
 import '/domain/model/chat_call.dart';
 import '/domain/model/ongoing_call.dart';
@@ -127,4 +129,24 @@ class WebNotificationAction {
 
   /// Optional URL to a icon to display.
   final String? icon;
+}
+
+/// Handle of a window.
+abstract class WindowHandle {
+  WindowHandle(this.url, {String? id}) : id = id ?? const Uuid().v4();
+
+  /// Unique identifier of this [WindowHandle].
+  final String id;
+
+  /// URL of this [WindowHandle].
+  final String url;
+
+  /// Indicates whether this window is opened.
+  bool get isOpen;
+
+  /// Closes the [WindowHandle].
+  void close();
+
+  /// Posts messages to this [WindowHandle].
+  void postMessage(Map<String, dynamic> message);
 }

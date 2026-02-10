@@ -15,6 +15,8 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:async';
+
 import 'package:get/get.dart';
 
 import '/domain/model/balance.dart';
@@ -48,6 +50,12 @@ class WalletService extends Dependency {
   Future<void> setCountry(CountryCode country) {
     Log.debug('setCountry($country)', '$runtimeType');
     return _walletRepository.setCountry(country);
+  }
+
+  /// Returns an [Operation] identified by the provided [id] or [num].
+  FutureOr<Rx<Operation>?> get({OperationId? id, OperationNum? num}) {
+    Log.debug('get(id: $id, num: $num)', '$runtimeType');
+    return _walletRepository.get(id: id, num: num);
   }
 
   /// Creates a new [OperationDeposit].

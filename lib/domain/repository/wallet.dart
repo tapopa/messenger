@@ -15,6 +15,8 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:async';
+
 import 'package:get/get.dart';
 
 import '/domain/model/balance.dart';
@@ -37,6 +39,9 @@ abstract class AbstractWalletRepository {
 
   /// Sets the available [methods] to be accounted as the provided [country].
   Future<void> setCountry(CountryCode country);
+
+  /// Returns an [Operation] identified by the provided [id] or [num].
+  FutureOr<Rx<Operation>?> get({OperationId? id, OperationNum? num});
 
   /// Creates a new [OperationDeposit].
   Future<Rx<Operation>?> createOperationDeposit({

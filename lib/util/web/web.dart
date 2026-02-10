@@ -430,6 +430,25 @@ class WebUtils {
     }
   }
 
+  /// Removes [UserId] from the browser's storage.
+  static void removeAccount() {
+    web.window.localStorage.removeItem('account');
+  }
+
+  /// Puts the provided [UserId] to the browser's storage.
+  static void putAccount(UserId userId) {
+    web.window.localStorage.setItem('account', userId.val);
+  }
+
+  /// Puts the provided [String] to the browser's local storage as the origin.
+  static void setEndpoint(String? origin) {
+    if (origin == null) {
+      web.window.localStorage.removeItem('endpoint');
+    } else {
+      web.window.localStorage.setItem('endpoint', origin);
+    }
+  }
+
   /// Guarantees the [callback] is invoked synchronously, only by single tab or
   /// code block at the same time.
   static Future<T> protect<T>(
@@ -726,6 +745,44 @@ class WebUtils {
       Log.debug('openPopupCall($chatId) -> failed due to $e', 'WebUtils');
       return false;
     }
+  }
+
+  /// Opens a new popup window at the [url] page.
+  static Future<WindowHandleImpl> openPopup(
+    String url, {
+    Map<String, dynamic> parameters = const {},
+  }) async {
+    Log.debug('openPopup($url, $parameters)', 'WebUtils');
+
+    final String id = parameters['id'] = const Uuid().v4();
+
+    final StringBuffer arguments = StringBuffer();
+    if (parameters.isNotEmpty) {
+      arguments.write('?');
+      arguments.write(
+        parameters.entries.map((e) => '${e.key}=${e.value}').join('&'),
+      );
+    }
+
+    final WindowHandleImpl handle = WindowHandleImpl(
+      '$url${arguments.toString()}',
+      id: id,
+    );
+
+    try {
+      final int screenW = web.window.screen.width;
+      final int screenH = web.window.screen.height;
+
+      handle._window = web.window.open(
+        '$url${arguments.toString()}',
+        handle.id,
+        'popup=1,width=600,height=600,left=${(screenW / 2 - 300).toInt()},top=${(screenH / 2 - 300).toInt()}',
+      );
+    } catch (e) {
+      Log.debug('openPopup() -> failed due to $e', 'WebUtils');
+    }
+
+    return handle;
   }
 
   /// Closes the current window.
@@ -1155,6 +1212,25 @@ class WebUtils {
   /// iOS `AVAudioSession`.
   static Future<void> setupAudioSessionManagement(bool value) => Future.value();
 
+  /// Posts the [message] to a broadcast channel with [name] identifier.
+  static void postBroadcastMessage(String name, Map<String, dynamic> message) {
+    final web.BroadcastChannel channel = web.BroadcastChannel(name);
+
+    final JSObject object = JSObject();
+
+    for (var e in message.entries) {
+      final dynamic value = e.value;
+
+      if (value is String) {
+        object.setProperty(e.key.toJS, value.toJS);
+      } else if (value == null) {
+        // No-op.
+      }
+    }
+
+    channel.postMessage(object);
+  }
+
   /// Handles the [key] event to invoke [_keyHandlers] related to it.
   static bool _handleBindKeys(KeyEvent key) {
     if (key is KeyUpEvent) {
@@ -1216,4 +1292,46 @@ extension _RectExtension on Rect {
     (data['width'] as num).toDouble(),
     (data['height'] as num).toDouble(),
   );
+}
+
+/// Handle of a window implemented for Web platform.
+class WindowHandleImpl extends WindowHandle {
+  WindowHandleImpl(super.url, {super.id});
+
+  /// Window itself.
+  web.Window? _window;
+
+  @override
+  bool get isOpen {
+    try {
+      final bool opened = _window?.closed == false;
+      Log.debug('bool get isOpen -> $opened, $_window', '$runtimeType');
+      return opened;
+    } catch (e) {
+      Log.debug('bool get isOpen -> failed due to $e', '$runtimeType');
+      return false;
+    }
+  }
+
+  @override
+  void close() {
+    _window?.close();
+  }
+
+  @override
+  void postMessage(Map<String, dynamic> message) {
+    final JSObject object = JSObject();
+
+    for (var e in message.entries) {
+      final dynamic value = e.value;
+
+      if (value is String) {
+        object.setProperty(e.key.toJS, value.toJS);
+      } else if (value == null) {
+        // No-op.
+      }
+    }
+
+    _window?.postMessage(object, Config.origin.toJS);
+  }
 }

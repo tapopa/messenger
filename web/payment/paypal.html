@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<!--
+ Copyright © 2025-2026 Ideas Networks Solutions S.A.,
+                       <https://github.com/tapopa>
+
+ This program is free software: you can redistribute it and/or modify it under
+ the terms of the GNU Affero General Public License v3.0 as published by the
+ Free Software Foundation, either version 3 of the License, or (at your
+ option) any later version.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License v3.0 for
+ more details.
+
+ You should have received a copy of the GNU Affero General Public License v3.0
+ along with this program. If not, see
+ <https://www.gnu.org/licenses/agpl-3.0.html>.
+-->
+
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- Fixes the invalid scaling -->
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+  <title>PayPal Top Up</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --border: #e1e5ee;
+      --text: #3a3f4b;
+      --muted: #8a8f9c;
+      --primary: #63B4FF;
+      --active: #08A521;
+    }
+
+    @font-face {
+      font-family: RobotoGapopa;
+      src: url('/assets/assets/fonts/Roboto-Gapopa-Regular.ttf');
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: RobotoGapopa, Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #111;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Modal */
+    .modal {
+      width: 420px;
+      background: var(--bg);
+      border-radius: 18px;
+      padding: 22px;
+      position: relative;
+    }
+
+    .modal-header {
+      text-align: center;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+
+    .close-btn {
+      position: absolute;
+      right: 16px;
+      top: 16px;
+      font-size: 22px;
+      cursor: pointer;
+      color: #7d8596;
+    }
+
+    .close-btn:hover {
+      color: #000;
+    }
+
+    .description {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 18px 0;
+    }
+
+    .gap-w-3 {
+      margin: 0 3px;
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 18px 0;
+      color: #9aa0ad;
+      font-size: 14px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: #dcdcdc;
+    }
+
+    .break {
+      display: flex;
+      align-items: center;
+      margin: 18px 0;
+      color: #9aa0ad;
+      font-size: 14px;
+    }
+
+    .break::before,
+    .break::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: #dcdcdc;
+    }
+
+    /* Amount card */
+    .amount-card {
+      background: linear-gradient(135deg, #cfe0f5, #b9d2f2);
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .amount-left {
+      font-size: 40px;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+    }
+
+    .amount-right {
+      background: #fff;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #444;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .warning-title {
+      text-align: center;
+      color: #999;
+      font-size: 14px;
+      margin: 18px 0 10px;
+    }
+
+    .warning-text {
+      font-size: 14px;
+      color: #7b7f8a;
+      line-height: 1.45;
+      text-align: left;
+    }
+
+    .warning-text a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    /* Transaction card */
+    .card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 18px;
+      border-style: solid;
+      border-width: 1px;
+      border-color: #DEDEDE;
+    }
+
+    .amount {
+      font-size: 28px;
+      color: #86d293;
+      font-weight: 700;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      margin-top: 8px;
+      font-size: 15px;
+    }
+
+    .label {
+      width: 160px;
+      text-align: right;
+      color: #888;
+      padding-right: 14px;
+      flex-shrink: 0;
+    }
+
+    .value {
+      flex: 1;
+      text-align: left;
+    }
+
+    .copy {
+      cursor: pointer;
+      color: #3b82f6;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Primary button */
+    .primary-btn {
+      width: 100%;
+      height: 54px;
+      border-radius: 10px;
+      border: none;
+      background: var(--primary);
+      font-size: 17px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: #fff;
+    }
+
+    .primary-btn span {
+      color: var(--primary);
+      font-style: italic;
+      font-weight: 700;
+    }
+
+    .primary-btn:hover {
+      filter: brightness(0.95);
+    }
+
+    .space-between {
+      display: flex;
+      align-items: center;
+      font-size: 15px;
+      justify-content: space-between;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .active {
+      color: var(--active);
+    }
+
+    .line-through {
+      text-decoration: line-through;
+    }
+  </style>
+
+
+</head>
+
+<body>
+  <div class="overlay" id="overlay">
+
+    <div class="modal">
+      <div class="close-btn" onclick="closeModal()">×</div>
+
+      <!-- Pay. -->
+      <div id="view-pay">
+        <div class="modal-header" l10n="label_top_up_by_paypal">Top up by PayPal</div>
+
+        <div class="break"></div>
+
+        <div class="description" l10n="label_paypal_popup_window_instruction">
+          To make the payment a pop-up window of the processing service will open.<br><br>
+          If the pop-up window does not open, check your browser settings.
+          It's possible that your browser is blocking pop-up windows from opening.
+        </div>
+
+        <div class="break"></div>
+
+        <div class="amount-card">
+          <div id="nominal" class="amount-left">¤5</div>
+          <div id="price" class="amount-right">$6.25</div>
+        </div>
+
+        <div id="paypal-btn" style="height: 45px"></div>
+
+        <div class="divider" l10n="label_attention">
+          <span>Attention</span>
+        </div>
+
+        <div class="warning-text">
+          <a href="#" l10n="label_tapopa_will_be_grateful_for_reporting_problems_when_paying1">Tapopa</a>
+          <span l10n="label_tapopa_will_be_grateful_for_reporting_problems_when_paying2"> would be very grateful if you
+            reported any inconveniences or problems encountered when making a payment.</span>
+        </div>
+      </div>
+
+      <!-- Transaction. -->
+      <div id="view-transaction" class="hidden">
+        <div class="modal-header" l10n="label_top_up_by_paypal">Top up by PayPal</div>
+
+        <div class="break"></div>
+
+        <div class="amount-card">
+          <div id="nominal" class="amount-left">¤5</div>
+          <div id="price" class="amount-right">$6.25</div>
+        </div>
+
+        <div class="divider">
+          <span l10n="label_transaction">Transaction</span>
+        </div>
+
+        <div class="card">
+          <div class="space-between">
+            <div class="amount">+¤5</div>
+            <div class="description">
+              <span id="at"></span>
+              <span class="gap-w-3"></span>
+              <img src="/assets/assets/icons/operation_sending.svg" />
+            </div>
+          </div>
+
+          <div class="divider">
+            <span l10n="label_information">Information</span>
+          </div>
+
+          <div class="row">
+            <span class="label" l10n="label_status">Status</span>
+            <span class="value" l10n="label_operation_in_progress">In progress...</span>
+          </div>
+
+          <div class="row">
+            <span class="label" l10n="label_transaction_id">Transaction ID</span>
+            <span class="value copy" onclick="copyId()"></span>
+          </div>
+
+          <div class="row">
+            <span class="label" l10n="label_details">Details</span>
+            <span class="value" l10n="label_top_up_paypal">Top up. PayPal.</span>
+          </div>
+        </div>
+
+        <div class="divider" l10n="label_attention">
+          <span>Attention</span>
+        </div>
+
+        <div class="warning-text">
+          <a href="#" l10n="label_tapopa_will_be_grateful_for_reporting_problems_when_paying1">Tapopa</a>
+          <span l10n="label_tapopa_will_be_grateful_for_reporting_problems_when_paying2"> would be very grateful if you
+            reported any inconveniences or problems encountered when making a payment.</span>
+        </div>
+      </div>
+
+      <!-- Failed. -->
+      <div id="view-failed" class="hidden">
+        <div class="modal-header" l10n="label_top_up_by_paypal">Top up by PayPal</div>
+
+        <div class="break"></div>
+
+        <div class="amount-card">
+          <div id="nominal" class="amount-left">¤5</div>
+          <div id="price" class="amount-right">$6.25</div>
+        </div>
+
+        <div class="divider">
+          <span l10n="label_transaction">Transaction</span>
+        </div>
+
+        <div class="card">
+          <div class="space-between">
+            <div class="amount line-through">+¤5</div>
+            <div class="description">
+              <span id="at"></span>
+              <span class="gap-w-3"></span>
+              <img src="/assets/assets/icons/operation_canceled.svg" />
+            </div>
+          </div>
+
+          <div class="divider">
+            <span l10n="label_information">Information</span>
+          </div>
+
+          <div class="row">
+            <span class="label" l10n="label_status">Status</span>
+            <span class="value muted" l10n="label_operation_declined">Interrupted</span>
+          </div>
+
+          <div class="row">
+            <span class="label" l10n="label_transaction_id">Transaction ID</span>
+            <span id="transaction-id" class="value copy" onclick="copyId()">TXN-91F4A2</span>
+          </div>
+
+          <div class="row">
+            <span class="label" l10n="label_details">Details</span>
+            <span class="value" l10n="label_top_up_paypal">Top up. PayPal.</span>
+          </div>
+        </div>
+
+        <div class="divider" l10n="label_attention">
+          <span>Attention</span>
+        </div>
+
+        <div class="warning-text">
+          <a href="#" l10n="label_tapopa_will_be_grateful_for_reporting_problems_when_paying1">Tapopa</a>
+          <span l10n="label_tapopa_will_be_grateful_for_reporting_problems_when_paying2"> would be very grateful if you
+            reported any inconveniences or problems encountered when making a payment.</span>
+        </div>
+
+        <br>
+
+        <button class="primary-btn" onclick="closeModal()">Ок</button>
+      </div>
+
+      <!-- Success. -->
+      <div id="view-success" class="hidden">
+        <div class="modal-header" l10n="label_top_up_by_paypal">Top up by PayPal</div>
+
+        <div class="break"></div>
+
+        <div class="amount-card">
+          <div id="nominal" class="amount-left">¤5</div>
+          <div id="price" class="amount-right">$6.25</div>
+        </div>
+
+        <div class="divider">
+          <span l10n="label_transaction">Transaction</span>
+        </div>
+
+        <div class="card">
+          <div class="space-between">
+            <div class="amount active">+¤5</div>
+            <div class="description">
+              <span id="at"></span>
+              <span class="gap-w-3"></span>
+              <img src="/assets/assets/icons/operation_done.svg" />
+            </div>
+          </div>
+
+          <div class="divider">
+            <span l10n="label_information">Information</span>
+          </div>
+
+          <div class="row">
+            <span class="label" l10n="label_status">Status</span>
+            <span class="value" l10n="label_operation_completed">Completed</span>
+          </div>
+
+          <div class="row">
+            <span class="label" l10n="label_transaction_id">Transaction ID</span>
+            <span id="transaction-id" class="value copy" onclick="copyId()">TXN-91F4A2</span>
+          </div>
+
+          <div class="row">
+            <span class="label" l10n="label_details">Details</span>
+            <span class="value" l10n="label_top_up_paypal">Top up. PayPal.</span>
+          </div>
+        </div>
+
+        <div class="divider" l10n="label_attention">
+          <span>Attention</span>
+        </div>
+
+        <div class="warning-text">
+          <a href="#" l10n="label_tapopa_will_be_grateful_for_reporting_problems_when_paying1">Tapopa</a>
+          <span l10n="label_tapopa_will_be_grateful_for_reporting_problems_when_paying2"> would be very grateful if you
+            reported any inconveniences or problems encountered when making a payment.</span>
+        </div>
+
+        <br>
+
+        <button class="primary-btn" onclick="closeModal()">Ок</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Define the view transition functions -->
+  <script>
+    function closeModal() {
+      window.close();
+    }
+
+    function viewTransaction() {
+      document.getElementById('view-pay').classList.add('hidden');
+      document.getElementById('view-transaction').classList.remove('hidden');
+    }
+
+    function viewFailed() {
+      document.getElementById('view-transaction').classList.add('hidden');
+      document.getElementById('view-failed').classList.remove('hidden');
+    }
+
+    function viewSuccess() {
+      document.getElementById('view-transaction').classList.add('hidden');
+      document.getElementById('view-success').classList.remove('hidden');
+    }
+  </script>
+
+  <!-- Initialize localization and translate the page -->
+  <script src="/script/fluent.js"></script>
+  <script>
+    localizePage({
+      locales: ['en-US', 'ru-RU', 'es-ES']
+    });
+  </script>
+
+  <!-- Display the current date -->
+  <script>
+    function formatLocalDateTime(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+
+    document.querySelectorAll('[id=at]').forEach(element => {
+      element.innerHTML = `${formatLocalDateTime(new Date())}`;
+    });
+  </script>
+
+  <!-- Create and send mutations and queries -->
+  <script>
+    // `OperationDepositSecret` to use.
+    var secret = '';
+    var transactionId = '';
+
+    function delay(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function generateRandom(length) {
+      const arr = new Uint8Array(length);
+      window.crypto.getRandomValues(arr);
+      return arr;
+    }
+
+    async function createOperationDeposit() {
+      try {
+        let account = localStorage.getItem('account');
+        let credentials = JSON.parse(localStorage.getItem(`credentials_${account}`));
+
+        const urlParams = new URLSearchParams(window.location.search);
+        let methodId = urlParams.get('methodId');
+        let country = urlParams.get('country');
+        secret = generateRandom(32).toBase64();
+        let nominal = urlParams.get('nominal').substring(1);
+
+        let endpoint = localStorage.getItem('endpoint');
+
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${credentials['access']['secret']}`
+          },
+          body: JSON.stringify({
+            query: `
+mutation CreateOperationDeposit(
+  $methodId: OperationDepositMethodId!
+  $nominal: Sum!
+  $secret: OperationDepositSecret!
+  $country: CountryCode!
+) {
+  createOperationDeposit(
+    methodId: $methodId
+    kind: { paypal: { secret: $secret, nominal: $nominal } }
+    billingCountry: $country
+  ) {
+    __typename
+    ... on OperationEventsVersioned {
+        __typename
+      events {
+          operation {
+            node {
+              ... on OperationDeposit {
+                id
+                num
+                status
+                processingUrl
+              }
+            }
+          }
+        }
+      }
+    ... on CreateOperationDepositError {
+        code
+    }
+  }
+}
+      `,
+            variables: {
+              methodId: methodId,
+              secret: secret,
+              nominal: nominal,
+              country: country,
+            },
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        console.log(`data['data']['createOperationDeposit']['events'][0]['operation']['node']['processingUrl'].split('?order_id=').last -> ${data['data']['createOperationDeposit']['events'][0]['operation']['node']['processingUrl'].split('?order_id=')[1]}`);
+
+        let operation = data['data']['createOperationDeposit']['events'][0]['operation']['node'];
+        return operation;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        document.getElementById('results').textContent = 'Error fetching data. Check console for details.';
+      }
+    }
+
+    async function completeOperationDeposit() {
+      var continuar = true;
+
+      while (continuar) {
+        continuar = false;
+
+        try {
+          let endpoint = localStorage.getItem('endpoint');
+
+          const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+              query: `
+mutation CompleteOperationDeposit(
+  $id: OperationId!
+  $secret: OperationDepositSecret
+) {
+  completeOperationDeposit(
+    id: $id
+    secret: $secret
+  ) {
+    __typename
+    ... on OperationEventsVersioned {
+        __typename
+      events {
+          operation {
+            node {
+              status
+            }
+          }
+        }
+      }
+    ... on CompleteOperationDepositError {
+        code
+    }
+  }
+}
+      `,
+              variables: {
+                id: transactionId,
+                secret: secret,
+              },
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          console.log(`data.data -> ${data.data}`);
+          console.log(`data.data?.completeOperationDeposit -> ${data.data?.completeOperationDeposit}`);
+          console.log(`data.data?.completeOperationDeposit?.code -> ${data.data?.completeOperationDeposit?.code}`);
+
+          if (data.data?.completeOperationDeposit?.code == 'IN_PROGRESS') {
+            await delay(1000);
+            continuar = true;
+            continue;
+          } else if (data.data?.completeOperationDeposit?.events[0]?.operation?.node?.status == 'IN_PROGRESS') {
+            await delay(1000);
+            continuar = true;
+            continue;
+          } else {
+            return data['data']['completeOperationDeposit']['events'][0]['operation']['node']['status'];
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+          // document.getElementById('results').textContent = 'Error fetching data. Check console for details.';
+        }
+      }
+    }
+
+    async function declineOperationDeposit() {
+      try {
+        let endpoint = localStorage.getItem('endpoint');
+
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `
+mutation DeclineOperationDeposit(
+  $id: OperationId!
+  $secret: OperationDepositSecret
+) {
+  declineOperationDeposit(
+    id: $id
+    secret: $secret
+  ) {
+    __typename
+    ... on OperationEventsVersioned {
+        __typename
+      events {
+          operation {
+            node {
+              status
+            }
+          }
+        }
+      }
+    ... on DeclineOperationDepositError {
+        code
+    }
+  }
+}
+      `,
+            variables: {
+              id: transactionId,
+              secret: secret,
+            },
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        return data['data']['declineOperationDeposit']['events'][0]['operation']['node']['status'];
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        document.getElementById('results').textContent = 'Error fetching data. Check console for details.';
+      }
+    }
+  </script>
+
+  <!-- Append the PayPal SDK script -->
+  <script>
+    // Create a `Promise` for resolving the `order - id`.
+    let resolve, reject;
+    const promise = new Promise((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+
+    // Parse the URL query parameters.
+    const urlParams = new URLSearchParams(window.location.search);
+    let id = urlParams.get('id');
+
+    // Create the script element.
+    const sdk = document.createElement('script');
+    let clientId = urlParams.get('client-id');
+    sdk.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=HKD&disable-funding=credit,card,paylater,venmo&intent=authorize`;
+    sdk.type = 'text/javascript';
+    sdk.async = true; // Makes the script load without blocking HTML parsing.
+
+    let channel = new BroadcastChannel(id);
+
+    sdk.addEventListener('load', () => {
+      console.log('SDK loaded successfully!');
+
+      // Render the PayPal buttons.
+      paypal.Buttons({
+        createOrder: async (data) => {
+          console.log(`createOrder(${data})`);
+          // channel.postMessage({ 'id': id, 'type': 'createOrder' });
+
+          let token = urlParams.get('token');
+
+          if (token != null) {
+            return token;
+          }
+
+          if (true) {
+            let operation = await createOperationDeposit();
+            transactionId = operation['id'];
+
+            document.querySelectorAll('[id=transaction-id]').forEach(element => {
+              element.innerHTML = operation['num'];
+            });
+
+            return operation['processingUrl'].split('?order_id=')[1];
+          }
+
+          return await promise;
+        },
+        onApprove: (data, actions) => {
+          console.log(`onApprove(${data})`);
+          channel.postMessage({ 'id': id, 'type': 'onApprove', 'transactionId': transactionId });
+          window.close();
+          viewTransaction();
+
+          completeOperationDeposit().then((status) => {
+            switch (status) {
+              case 'COMPLETED':
+                viewSuccess();
+                break;
+
+              case 'IN_PROGRESS':
+                viewTransaction();
+                break;
+
+              default:
+                viewFailed();
+                break;
+            }
+          });
+        },
+        onCancel: (data) => {
+          console.log(`onCancel(${data})`);
+          channel.postMessage({ 'id': id, 'type': 'onCancel', 'transactionId': transactionId });
+          window.close();
+          viewTransaction();
+
+          declineOperationDeposit().then((status) => {
+            switch (status) {
+              case 'COMPLETED':
+                viewSuccess();
+                break;
+
+              case 'IN_PROGRESS':
+                viewTransaction();
+                break;
+
+              default:
+                viewFailed();
+                break;
+            }
+          });
+        },
+        onError: (err) => {
+          console.log(`onError(${err})`);
+          channel.postMessage({ 'id': id, 'type': 'onError' });
+        },
+      }).render("#paypal-btn");
+    });
+
+    sdk.addEventListener('error', (event) => {
+      console.error('Error loading sdk:', event);
+    });
+
+    document.head.appendChild(sdk);
+
+    channel.onmessage = (event) => {
+      console.log(`received: ${event.data}`);
+
+      let data = event.data;
+
+      let id = data['id'];
+      let type = data['type'];
+
+      switch (type) {
+        case 'orderCreated':
+          let orderId = data['orderId'];
+          console.log(`orderId -> ${orderId}`);
+          resolve(orderId);
+          break;
+
+        case 'inProgress':
+          viewTransaction();
+
+          document.querySelectorAll('[id=transaction-id]').forEach(element => {
+            element.innerHTML = data['transactionId'];
+          });
+          break;
+
+        case 'success':
+          viewSuccess();
+          break;
+
+        case 'failed':
+          viewFailed();
+          break;
+      };
+    };
+
+    document.querySelectorAll('[id=nominal]').forEach(element => {
+      element.innerHTML = urlParams.get('nominal');
+    });
+
+    document.querySelectorAll('[id=price]').forEach(element => {
+      element.innerHTML = urlParams.get('price');
+    });
+  </script>
+</body>
+
+</html>

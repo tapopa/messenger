@@ -18,15 +18,17 @@
 import 'package:get/get.dart';
 
 import '/api/backend/schema.dart';
+import '/config.dart';
 import '/domain/model/country.dart';
 import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/price.dart';
 import '/domain/service/wallet.dart';
 import '/provider/gql/exceptions.dart';
+import '/util/web/web_utils.dart';
 
 /// Status of [PayPalDepositView].
-enum PayPalDepositStatus { initial, inProgress }
+enum PayPalDepositStatus { loading, initial, inProgress }
 
 /// Controller of a [PayPalDepositView].
 class PayPalDepositController extends GetxController {
@@ -35,7 +37,10 @@ class PayPalDepositController extends GetxController {
     required this.method,
     required this.country,
     required this.nominal,
-  });
+    this.id,
+    PayPalDepositStatus status = PayPalDepositStatus.loading,
+    this.pop,
+  }) : status = Rx(status);
 
   /// [OperationDepositMethod] to deposit with.
   final OperationDepositMethod method;
@@ -47,12 +52,16 @@ class PayPalDepositController extends GetxController {
   final Price nominal;
 
   /// [PayPalDepositStatus] of the [createDeposit] operation.
-  final Rx<PayPalDepositStatus> status = Rx(PayPalDepositStatus.initial);
+  final Rx<PayPalDepositStatus> status;
+
+  final OperationId? id;
 
   /// [OperationDeposit] being deposited.
   final Rx<Rx<Operation>?> operation = Rx(null);
 
   final RxnString error = RxnString();
+
+  final void Function()? pop;
 
   /// [WalletService] used to create the [OperationDeposit] itself.
   final WalletService _walletService;
@@ -60,6 +69,36 @@ class PayPalDepositController extends GetxController {
   /// [OperationDepositSecret] to use with [OperationDeposit] related
   /// management.
   OperationDepositSecret? _secret;
+
+  @override
+  void onInit() {
+    switch (status.value) {
+      case PayPalDepositStatus.loading:
+        _redirectAndClose();
+        break;
+
+      case PayPalDepositStatus.initial:
+        // No-op.
+        break;
+
+      case PayPalDepositStatus.inProgress:
+        if (id != null) {
+          final operationOrFuture = _walletService.get(id: id);
+          if (operationOrFuture is Future<Rx<Operation>?>) {
+            operationOrFuture.then((e) {
+              operation.value = e;
+              completeDeposit();
+            });
+          } else {
+            operation.value = operationOrFuture;
+            completeDeposit();
+          }
+        }
+        break;
+    }
+
+    super.onInit();
+  }
 
   /// Creates a [OperationDeposit].
   Future<Operation?> createDeposit() async {
@@ -125,6 +164,20 @@ class PayPalDepositController extends GetxController {
         error.value = e.toString();
         rethrow;
       }
+    }
+  }
+
+  /// Creates an [OperationDeposit] and opens a PayPal in a separate Web page.
+  Future<void> _redirectAndClose() async {
+    try {
+      final Operation? order = await createDeposit();
+      if (order != null) {
+        await WebUtils.openPopup(
+          '${Config.origin}/payment/paypal.html?client-id=${Config.payPalClientId}&amount=${nominal.sum.val}',
+        );
+      }
+    } finally {
+      pop?.call();
     }
   }
 }

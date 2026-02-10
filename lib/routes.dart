@@ -93,6 +93,7 @@ import 'ui/worker/call.dart';
 import 'ui/worker/chat.dart';
 import 'ui/worker/my_user.dart';
 import 'ui/worker/settings.dart';
+import 'ui/worker/wallet.dart';
 import 'util/get.dart';
 import 'util/log.dart';
 import 'util/platform_utils.dart';
@@ -1129,7 +1130,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
               .put<AbstractWalletRepository>(
                 WalletRepository(Get.find(), sessionRepository, me: me),
               );
-          deps.put(WalletService(walletRepository));
+          final walletService = deps.put(WalletService(walletRepository));
 
           final AbstractPartnerRepository partnerRepository = deps
               .put<AbstractPartnerRepository>(
@@ -1152,8 +1153,8 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
           );
 
           deps.put(ChatWorker(chatService, myUserService, notificationService));
-
           deps.put(MyUserWorker(myUserService));
+          deps.put(WalletWorker(walletService));
 
           return deps;
         }, link: router.arguments?['link'] as ChatDirectLinkSlug?),

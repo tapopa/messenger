@@ -15,10 +15,13 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:async';
+
 import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:graphql/client.dart' show QueryResult;
+import 'package:mutex/mutex.dart';
 
 import '/api/backend/extension/page_info.dart';
 import '/api/backend/extension/wallet.dart';
@@ -117,7 +120,11 @@ class WalletRepository extends IdentityDependency
   /// [CancelToken] to cancel [_queryMethods].
   CancelToken? _queryToken;
 
+  /// Latest [OperationVersion] of the [operations] list events.
   OperationVersion? _ver;
+
+  /// [Mutex]ex guarding access to [get].
+  final Map<_OperationIdentifier, Mutex> _locks = {};
 
   @override
   void onInit() {
@@ -175,6 +182,44 @@ class WalletRepository extends IdentityDependency
   }
 
   @override
+  FutureOr<Rx<Operation>?> get({OperationId? id, OperationNum? num}) {
+    Log.debug('get($id: id, num: $num)', '$runtimeType');
+
+    final Rx<Operation>? operation = operations.items[id];
+    if (operation != null) {
+      return operation;
+    }
+
+    final identifier = _OperationIdentifier(id: id, num: num);
+
+    // If [operation] doesn't exist, we should lock the [mutex] to avoid remote
+    // double invoking.
+    Mutex? mutex = _locks[identifier];
+    if (mutex == null) {
+      mutex = Mutex();
+      _locks[identifier] = mutex;
+    }
+
+    return mutex.protect(() async {
+      Rx<Operation>? operation = operations.items[id];
+
+      if (operation == null) {
+        final response = await _graphQlProvider.operation(id, num);
+        if (response != null) {
+          final DtoOperation dto = response.node.toDto(cursor: response.cursor);
+
+          final rxOperation = operations.items[dto.id] = Rx(dto.value);
+          operations.put(dto);
+
+          return rxOperation;
+        }
+      }
+
+      return operation;
+    });
+  }
+
+  @override
   Future<Rx<Operation>?> createOperationDeposit({
     required OperationDepositMethodId methodId,
     required Price nominal,
@@ -209,7 +254,10 @@ class WalletRepository extends IdentityDependency
       ),
     );
 
-    await _operationsEvent(events);
+    await _operationsEvent(events, updateVersion: false);
+
+    // Await for `transform` callback in [operations] to happen.
+    await Future.delayed(Duration.zero);
 
     final Operation? operation = events.event.events
         .firstWhereOrNull((e) => e.operation.value is OperationDeposit)
@@ -217,7 +265,18 @@ class WalletRepository extends IdentityDependency
         .value;
 
     if (operation is OperationDeposit) {
-      return operations.items[operation.id];
+      final Rx<Operation>? existing = operations.items[operation.id];
+
+      if (existing == null) {
+        Log.debug(
+          'createOperationDeposit() -> existing(`${operation.id}`) is `null`, thus creating new `Rx`',
+          '$runtimeType',
+        );
+
+        operations.items[operation.id] = Rx(operation);
+      }
+
+      return existing ?? operations.items[operation.id];
     }
 
     return null;
@@ -278,7 +337,7 @@ class WalletRepository extends IdentityDependency
       ),
     );
 
-    await _operationsEvent(events);
+    await _operationsEvent(events, updateVersion: false);
 
     return operations.items[id];
   }
@@ -608,66 +667,121 @@ class WalletRepository extends IdentityDependency
           switch (event.kind) {
             case OperationEventKind.canceled:
               event as EventOperationCanceled;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.chargeCreated:
               event as EventOperationChargeCreated;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.depositBonusCreated:
               event as EventOperationDepositBonusCreated;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.depositCompleted:
               event as EventOperationDepositCompleted;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.depositCreated:
               event as EventOperationDepositCreated;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.depositDeclined:
               event as EventOperationDepositDeclined;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.depositFailed:
               event as EventOperationDepositFailed;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.dividendCreated:
               event as EventOperationDividendCreated;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.earnDonationCreated:
               event as EventOperationEarnDonationCreated;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.grantCreated:
               event as EventOperationGrantCreated;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.purchaseDonationCreated:
               event as EventOperationPurchaseDonationCreated;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.rewardCreated:
               event as EventOperationRewardCreated;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
           }
         }
         break;
     }
+  }
+}
+
+/// [OperationId] or [OperationNum] identifying an [Operation].
+class _OperationIdentifier {
+  const _OperationIdentifier({this.id, this.num});
+
+  /// [OperationId] of the identifier.
+  final OperationId? id;
+
+  /// [OperationNum] of the identifier.
+  final OperationNum? num;
+
+  @override
+  int get hashCode => Object.hash(id, num);
+
+  @override
+  bool operator ==(Object other) {
+    return other is _OperationIdentifier && other.id == id && other.num == num;
   }
 }

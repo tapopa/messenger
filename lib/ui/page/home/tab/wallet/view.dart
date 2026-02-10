@@ -37,7 +37,7 @@ class WalletTabView extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder(
       key: const Key('WalletTab'),
-      init: WalletTabController(Get.find(), Get.find()),
+      init: WalletTabController(Get.find(), Get.find(), Get.find()),
       builder: (WalletTabController c) {
         final style = Theme.of(context).style;
 
@@ -119,6 +119,20 @@ class WalletTabView extends StatelessWidget {
                         onCountry: (country) {
                           c.fields.value.applyCountry(country);
                           c.setCountry(CountryCode(country.name));
+                        },
+                        onProceed: (nominal, pricing) async {
+                          final country = c.fields.value
+                              .getCountry(e.kind)
+                              .value;
+
+                          if (country != null) {
+                            await c.createDeposit(
+                              e,
+                              CountryCode(country.name),
+                              nominal,
+                              pricing,
+                            );
+                          }
                         },
                       );
                     });

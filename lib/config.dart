@@ -30,6 +30,7 @@ import 'domain/model/user.dart';
 import 'pubspec.g.dart';
 import 'routes.dart';
 import 'util/ios_utils.dart';
+import 'util/web/web_utils.dart';
 
 /// Configuration of this application.
 class Config {
@@ -475,6 +476,8 @@ class Config {
       } else {
         origin = '${Uri.base.scheme}://${Uri.base.host}';
       }
+
+      WebUtils.setEndpoint('$url$graphql');
     }
 
     if (link.isEmpty) {

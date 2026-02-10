@@ -27,7 +27,6 @@ import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/price.dart';
 import '/l10n/l10n.dart';
 import '/themes.dart';
-import '/ui/page/home/tab/wallet/paypal/view.dart';
 import '/ui/page/home/tab/wallet/select_country/view.dart';
 import '/ui/page/home/widget/field_button.dart';
 import '/ui/widget/svg/svg.dart';
@@ -70,6 +69,7 @@ class DepositExpandable extends StatelessWidget {
     this.onPressed,
     required this.fields,
     this.onCountry,
+    this.onProceed,
   });
 
   /// [OperationDepositMethod] to display.
@@ -86,6 +86,8 @@ class DepositExpandable extends StatelessWidget {
 
   /// Callback, called when country is changed.
   final void Function(IsoCode)? onCountry;
+
+  final void Function(Price, Price?)? onProceed;
 
   @override
   Widget build(BuildContext context) {
@@ -308,7 +310,7 @@ class DepositExpandable extends StatelessWidget {
                     child: _responsive(
                       provider.nominals ?? [],
                       pricing: provider.pricing,
-                      onPressed: (e) async {
+                      onPressed: (nominal, pricing) async {
                         if (paypal.country.value == null) {
                           final result = await SelectCountryView.show(
                             context,
@@ -320,16 +322,7 @@ class DepositExpandable extends StatelessWidget {
                           }
                         }
 
-                        if (paypal.country.value != null) {
-                          if (context.mounted) {
-                            await PayPalDepositView.show(
-                              context,
-                              nominal: e,
-                              method: provider,
-                              country: CountryCode(paypal.country.value!.name),
-                            );
-                          }
-                        }
+                        onProceed?.call(nominal, pricing);
                       },
                     ),
                   ),
@@ -348,12 +341,15 @@ class DepositExpandable extends StatelessWidget {
 /// Builds the provided [nominals] in a responsive grid.
 Widget _responsive(
   List<Price> nominals, {
-  void Function(Price)? onPressed,
+  void Function(Price, Price?)? onPressed,
   OperationDepositMethodPricing? pricing,
 }) {
   Widget tile(int i) {
     return WidgetButton(
-      onPressed: () => onPressed?.call(nominals[i]),
+      onPressed: () => onPressed?.call(
+        nominals[i],
+        pricing?.total == null ? null : (nominals[i] * pricing!.total!),
+      ),
       child: AmountTile(nominal: nominals[i], pricing: pricing),
     );
   }

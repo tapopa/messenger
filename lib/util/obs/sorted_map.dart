@@ -19,25 +19,6 @@ import 'dart:collection';
 
 import 'map.dart';
 
-class _Keyed<K, V> implements Comparable<_Keyed<K, V>> {
-  _Keyed(this.key, this.value);
-
-  final K key;
-  V value;
-
-  @override
-  String toString() => '_Keyed($key: $value)';
-
-  @override
-  int compareTo(_Keyed<K, V> other) {
-    if (value is Comparable) {
-      return (value as Comparable).compareTo(other.value);
-    }
-
-    return key.toString().compareTo(other.key.toString());
-  }
-}
-
 /// Self-sorting observable [Map].
 ///
 /// Please note that [V] values must implement [Comparable], otherwise adding or
@@ -127,5 +108,28 @@ class SortedObsMap<K, V> extends MapMixin<K, V> {
     }
 
     return (_, _) => -1;
+  }
+}
+
+/// Key with a value.
+class _Keyed<K, V> implements Comparable<_Keyed<K, V>> {
+  _Keyed(this.key, this.value);
+
+  /// [K] key itself.
+  final K key;
+
+  /// [V] value itself.
+  V value;
+
+  @override
+  String toString() => '_Keyed($key: $value)';
+
+  @override
+  int compareTo(_Keyed<K, V> other) {
+    if (value is Comparable) {
+      return (value as Comparable).compareTo(other.value);
+    }
+
+    return key.toString().compareTo(other.key.toString());
   }
 }

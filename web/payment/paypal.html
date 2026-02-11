@@ -639,9 +639,6 @@ mutation CreateOperationDeposit(
         }
 
         const data = await response.json();
-
-        console.log(`data['data']['createOperationDeposit']['events'][0]['operation']['node']['processingUrl'].split('?order_id=').last -> ${data['data']['createOperationDeposit']['events'][0]['operation']['node']['processingUrl'].split('?order_id=')[1]}`);
-
         let operation = data['data']['createOperationDeposit']['events'][0]['operation']['node'];
         return operation;
       } catch (error) {

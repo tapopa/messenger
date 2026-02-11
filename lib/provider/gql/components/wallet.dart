@@ -65,6 +65,7 @@ mixin WalletGraphQlMixin {
   /// filtered entries is nonsense and will produce an invalid result (usually
   /// returning nothing).
   Future<Operations$Query$Operations> operations({
+    OperationOrigin origin = OperationOrigin.purse,
     int? first,
     OperationsCursor? after,
     int? last,
@@ -73,7 +74,7 @@ mixin WalletGraphQlMixin {
     Log.debug('operations($first, $after, $last, $before)', '$runtimeType');
 
     final variables = OperationsArguments(
-      origin: OperationOrigin.purse,
+      origin: origin,
       pagination: OperationsPagination(
         first: first,
         after: after,

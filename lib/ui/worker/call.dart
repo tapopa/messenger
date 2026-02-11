@@ -745,6 +745,7 @@ class CallWorker extends Dependency {
       _outgoingAudio = AudioUtils.play(
         AudioSource.asset('audio/$asset'),
         fade: fade ? 1.seconds : Duration.zero,
+        mode: AudioMode.call,
       );
       previous?.cancel();
     } else if (asset == _endCall) {

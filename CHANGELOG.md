@@ -6,6 +6,23 @@ All user visible changes to this project will be documented in this file. This p
 
 
 
+## [0.4.0] · 2026-??-??
+[0.4.0]: /../../tree/v0.4.0
+
+[Diff](/../../compare/v0.3.0...v0.4.0) | [Milestone](/../../milestone/6)
+
+### Fixed
+
+- UI:
+    - Media panel:
+        - Enabled video sometimes not being seen by participants. ([team113/messenger#1602])
+        - Call buttons dragged from dock to panel are being left hanging on screen. ([team113/messenger#1602])
+
+[team113/messenger#1602]: /../../pull/1602
+
+
+
+
 ## [0.3.0] · 2026-02-05
 [0.3.0]: /../../tree/v0.3.0
 

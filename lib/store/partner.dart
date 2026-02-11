@@ -67,8 +67,9 @@ class PartnerRepository extends IdentityDependency
         fetch: ({after, before, first, last}) async => Page([], PageInfo()),
       ),
     ),
-    transform: ({required DtoOperation data, Operation? previous}) {
-      return data.value;
+    transform: ({required DtoOperation data, Rx<Operation>? previous}) {
+      previous?.value = data.value;
+      return previous ?? Rx(data.value);
     },
   );
 

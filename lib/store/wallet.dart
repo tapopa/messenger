@@ -15,10 +15,13 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:async';
+
 import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:graphql/client.dart' show QueryResult;
+import 'package:mutex/mutex.dart';
 
 import '/api/backend/extension/page_info.dart';
 import '/api/backend/extension/wallet.dart';
@@ -47,7 +50,7 @@ import 'pagination.dart';
 import 'pagination/graphql.dart';
 
 typedef OperationsPaginated =
-    RxPaginatedImpl<OperationId, Operation, DtoOperation, OperationsCursor>;
+    RxPaginatedImpl<OperationId, Rx<Operation>, DtoOperation, OperationsCursor>;
 
 /// [MyUser] wallet repository interface.
 class WalletRepository extends IdentityDependency
@@ -78,18 +81,16 @@ class WalletRepository extends IdentityDependency
           return page;
         },
       ),
-      compare: (a, b) {
-        final int at = b.value.createdAt.compareTo(a.value.createdAt);
-        if (at == 0) {
-          return a.id.val.compareTo(b.id.val);
-        }
-
-        return at;
-      },
+      compare: (a, b) => a.compareTo(b),
     ),
-    transform: ({required DtoOperation data, Operation? previous}) {
-      return data.value;
+    transform: ({required DtoOperation data, Rx<Operation>? previous}) {
+      if (previous != null) {
+        return previous..value = data.value;
+      }
+
+      return Rx(data.value);
     },
+    compare: (a, b) => a.value.compareTo(b.value),
   );
 
   @override
@@ -118,6 +119,12 @@ class WalletRepository extends IdentityDependency
 
   /// [CancelToken] to cancel [_queryMethods].
   CancelToken? _queryToken;
+
+  /// Latest [OperationVersion] of the [operations] list events.
+  OperationVersion? _ver;
+
+  /// [Mutex]ex guarding access to [get].
+  final Map<_OperationIdentifier, Mutex> _locks = {};
 
   @override
   void onInit() {
@@ -174,6 +181,44 @@ class WalletRepository extends IdentityDependency
     await _queryMethods();
   }
 
+  @override
+  FutureOr<Rx<Operation>?> get({OperationId? id, OperationNum? num}) {
+    Log.debug('get($id: id, num: $num)', '$runtimeType');
+
+    final Rx<Operation>? operation = operations.items[id];
+    if (operation != null) {
+      return operation;
+    }
+
+    final identifier = _OperationIdentifier(id: id, num: num);
+
+    // If [operation] doesn't exist, we should lock the [mutex] to avoid remote
+    // double invoking.
+    Mutex? mutex = _locks[identifier];
+    if (mutex == null) {
+      mutex = Mutex();
+      _locks[identifier] = mutex;
+    }
+
+    return mutex.protect(() async {
+      Rx<Operation>? operation = operations.items[id];
+
+      if (operation == null) {
+        final response = await _graphQlProvider.operation(id, num);
+        if (response != null) {
+          final DtoOperation dto = response.node.toDto(cursor: response.cursor);
+
+          final rxOperation = operations.items[dto.id] = Rx(dto.value);
+          operations.put(dto);
+
+          return rxOperation;
+        }
+      }
+
+      return operation;
+    });
+  }
+
   /// Fetches purse operations with pagination.
   Future<Page<DtoOperation, OperationsCursor>> _operations({
     int? first,
@@ -228,6 +273,7 @@ class WalletRepository extends IdentityDependency
           _country!,
           _currency,
         );
+
         methods.value = list.map((e) => e.toModel()).toList();
       }, cancel: _queryToken);
     } on OperationCanceledException {
@@ -457,7 +503,10 @@ class WalletRepository extends IdentityDependency
   }
 
   /// Handles [OperationsEvents] from the [_operationsEvents] subscription.
-  Future<void> _operationsEvent(OperationsEvents events) async {
+  Future<void> _operationsEvent(
+    OperationsEvents events, {
+    bool updateVersion = true,
+  }) async {
     switch (events.kind) {
       case OperationsEventsKind.initialized:
         events as OperationsEventsInitialized;
@@ -474,6 +523,18 @@ class WalletRepository extends IdentityDependency
 
         final OperationsEventsVersioned versioned = events.event;
 
+        if (versioned.ver >= _ver) {
+          Log.debug(
+            '_operationsEvent(${events.kind}): ignored ${versioned.events.map((e) => e.kind.name).join(', ')}',
+            '$runtimeType',
+          );
+          return;
+        }
+
+        if (updateVersion) {
+          _ver = versioned.ver;
+        }
+
         Log.debug(
           '_operationsEvent(${events.kind}): ${versioned.events.map((e) => e.kind.name).join(', ')}',
           '$runtimeType',
@@ -483,66 +544,121 @@ class WalletRepository extends IdentityDependency
           switch (event.kind) {
             case OperationEventKind.canceled:
               event as EventOperationCanceled;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.chargeCreated:
               event as EventOperationChargeCreated;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.depositBonusCreated:
               event as EventOperationDepositBonusCreated;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.depositCompleted:
               event as EventOperationDepositCompleted;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.depositCreated:
               event as EventOperationDepositCreated;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.depositDeclined:
               event as EventOperationDepositDeclined;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.depositFailed:
               event as EventOperationDepositFailed;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.dividendCreated:
               event as EventOperationDividendCreated;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.earnDonationCreated:
               event as EventOperationEarnDonationCreated;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.grantCreated:
               event as EventOperationGrantCreated;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.purchaseDonationCreated:
               event as EventOperationPurchaseDonationCreated;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
 
             case OperationEventKind.rewardCreated:
               event as EventOperationRewardCreated;
-              await operations.put(event.operation);
+              await operations.put(
+                event.operation,
+                ignoreBounds: operations.contains(event.id),
+              );
               break;
           }
         }
         break;
     }
+  }
+}
+
+/// [OperationId] or [OperationNum] identifying an [Operation].
+class _OperationIdentifier {
+  const _OperationIdentifier({this.id, this.num});
+
+  /// [OperationId] of the identifier.
+  final OperationId? id;
+
+  /// [OperationNum] of the identifier.
+  final OperationNum? num;
+
+  @override
+  int get hashCode => Object.hash(id, num);
+
+  @override
+  bool operator ==(Object other) {
+    return other is _OperationIdentifier && other.id == id && other.num == num;
   }
 }

@@ -34,14 +34,20 @@ class SortedObsMap<K, V> extends MapMixin<K, V> {
   final ObsMap<K, V> _keys = ObsMap();
 
   /// [SplayTreeSet] of the sorted [V] values.
-  late final SplayTreeSet<V> _values = SplayTreeSet(_compare);
+  late final SplayTreeSet<_Keyed<K, V>> _values = SplayTreeSet((a, b) {
+    if (a.key == b.key) {
+      return 0;
+    }
+
+    return _compare(a.value, b.value);
+  });
 
   /// Unsorted [K] keys.
   @override
   Iterable<K> get keys => _keys.keys;
 
   @override
-  Iterable<V> get values => _values;
+  Iterable<V> get values => _values.map((e) => e.value);
 
   @override
   bool get isEmpty => _values.isEmpty;
@@ -53,18 +59,26 @@ class SortedObsMap<K, V> extends MapMixin<K, V> {
   int get length => _values.length;
 
   /// First [V] item.
-  V get first => _values.first;
+  V get first => _values.first.value;
 
   /// Last [V] item.
-  V get last => _values.last;
+  V get last => _values.last.value;
 
   /// Returns stream of record of changes of this [SortedObsMap].
   Stream<MapChangeNotification<K, V>> get changes => _keys.changes;
 
   @override
   operator []=(K key, V value) {
-    _values.remove(_keys[key]);
-    _values.add(value);
+    final Iterable<_Keyed<K, V>> existing = _values.where((e) => e.key == key);
+
+    for (var e in existing) {
+      e.value = value;
+    }
+
+    if (existing.isEmpty) {
+      _values.add(_Keyed(key, value));
+    }
+
     _keys[key] = value;
   }
 
@@ -74,7 +88,7 @@ class SortedObsMap<K, V> extends MapMixin<K, V> {
   @override
   V? remove(Object? key) {
     V? removed = _keys.remove(key);
-    _values.remove(removed);
+    _values.removeWhere((e) => e.key == key);
 
     return removed;
   }
@@ -87,12 +101,35 @@ class SortedObsMap<K, V> extends MapMixin<K, V> {
 
   /// Returns a [Comparator] for the provided [V].
   static Comparator<V> _defaultCompare<V>() {
-    // If [V] is [Comparable], then just return it.
-    Object compare = Comparable.compare;
-    if (compare is Comparator<V>) {
-      return compare;
+    if (V is Comparable<V>) {
+      return (a, b) {
+        return (a as Comparable).compareTo(b);
+      };
     }
 
     return (_, _) => -1;
+  }
+}
+
+/// Key with a value.
+class _Keyed<K, V> implements Comparable<_Keyed<K, V>> {
+  _Keyed(this.key, this.value);
+
+  /// [K] key itself.
+  final K key;
+
+  /// [V] value itself.
+  V value;
+
+  @override
+  String toString() => '_Keyed($key: $value)';
+
+  @override
+  int compareTo(_Keyed<K, V> other) {
+    if (value is Comparable) {
+      return (value as Comparable).compareTo(other.value);
+    }
+
+    return key.toString().compareTo(other.key.toString());
   }
 }

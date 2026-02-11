@@ -34,6 +34,7 @@ class PaginatedImpl<K, T, V, C> extends Paginated<K, T> {
     this.initialKey,
     this.initialCursor,
     super.onDispose,
+    super.compare,
   });
 
   /// Pagination fetching [items].
@@ -189,6 +190,7 @@ class RxPaginatedImpl<K, T, V, C> extends PaginatedImpl<K, T, V, C> {
     super.initialKey,
     super.initialCursor,
     super.onDispose,
+    super.compare,
   }) {
     // TODO: Replace completely with bug-free [_apply]ing of items right away.
     _paginationSubscription = pagination!.changes.listen((event) async {
@@ -300,6 +302,9 @@ class RxPaginatedImpl<K, T, V, C> extends PaginatedImpl<K, T, V, C> {
     await pagination?.clear();
     status.value = RxStatus.empty();
   }
+
+  /// Indicates whether [key] is contained within the [items].
+  bool contains(K key) => items.keys.contains(key);
 
   /// Applies [transform] to the [value] item with its [key].
   FutureOr<void> _apply(K key, V value) {

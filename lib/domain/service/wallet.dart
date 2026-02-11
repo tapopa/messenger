@@ -15,6 +15,8 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:async';
+
 import 'package:get/get.dart';
 
 import '/domain/model/balance.dart';
@@ -23,6 +25,7 @@ import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
 import '/domain/repository/paginated.dart';
 import '/domain/repository/wallet.dart';
+import '/util/log.dart';
 import 'disposable_service.dart';
 
 /// Service responsible for [MyUser] wallet functionality.
@@ -36,13 +39,21 @@ class WalletService extends Dependency {
   Rx<Balance> get balance => _walletRepository.balance;
 
   /// Returns the [Operation]s happening in [MyUser]'s wallet.
-  Paginated<OperationId, Operation> get operations =>
+  Paginated<OperationId, Rx<Operation>> get operations =>
       _walletRepository.operations;
 
   /// Returns the [OperationDepositMethod]s available for the [MyUser].
   RxList<OperationDepositMethod> get methods => _walletRepository.methods;
 
   /// Sets the available [methods] to be accounted as the provided [country].
-  Future<void> setCountry(CountryCode country) =>
-      _walletRepository.setCountry(country);
+  Future<void> setCountry(CountryCode country) {
+    Log.debug('setCountry($country)', '$runtimeType');
+    return _walletRepository.setCountry(country);
+  }
+
+  /// Returns an [Operation] identified by the provided [id] or [num].
+  FutureOr<Rx<Operation>?> get({OperationId? id, OperationNum? num}) {
+    Log.debug('get(id: $id, num: $num)', '$runtimeType');
+    return _walletRepository.get(id: id, num: num);
+  }
 }

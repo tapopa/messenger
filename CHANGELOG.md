@@ -11,11 +11,13 @@ All user visible changes to this project will be documented in this file. This p
 
 [Diff](/../../compare/v0.3.1...v0.4.0) | [Milestone](/../../milestone/7)
 
-### Added
+### Changed
 
 - UI:
     - Monetization tab:
-        - Transactions. ([#26])
+        - Operations with pagination on transaction page. ([#26])
+    - Wallet tab:
+        - Operations with pagination on transaction page. ([#26])
 
 [#26]: /../../pull/26
 

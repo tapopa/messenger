@@ -15,6 +15,7 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 import '/domain/model/operation.dart';
@@ -38,6 +39,9 @@ class PartnerTransactionsController extends GetxController {
   /// Query of the [search].
   final RxnString query = RxnString();
 
+  /// [ScrollController] to pass to a [ListView] of [Operation]s to fetch more.
+  final ScrollController scrollController = ScrollController();
+
   /// [PartnerService] maintaining the [Operation]s.
   final PartnerService _partnerService;
 
@@ -48,11 +52,25 @@ class PartnerTransactionsController extends GetxController {
   Paginated<OperationId, Rx<Operation>> get operations =>
       _partnerService.operations;
 
+  /// Indicator whether [operations] have next page.
+  RxBool get hasNext => _partnerService.operations.hasNext;
+
+  /// Indicator whether [operations] have next page loading.
+  RxBool get nextLoading => _partnerService.operations.nextLoading;
+
+  /// Indicator whether [operations] have previous page.
+  RxBool get hasPrevious => _partnerService.operations.hasPrevious;
+
+  /// Indicator whether [operations] have previous page loading.
+  RxBool get previousLoading => _partnerService.operations.previousLoading;
+
   @override
   void onInit() {
     _queryWorker = debounce(query, (String? query) {
       // TODO: Searching.
     });
+
+    scrollController.addListener(_scrollListener);
 
     super.onInit();
   }
@@ -60,6 +78,22 @@ class PartnerTransactionsController extends GetxController {
   @override
   void onClose() {
     _queryWorker?.dispose();
+    scrollController.removeListener(_scrollListener);
+    scrollController.dispose();
     super.onClose();
+  }
+
+  /// Requests the next page of [Operation]s based on the
+  /// [ScrollController.position] value.
+  Future<void> _scrollListener() async {
+    if (scrollController.hasClients && hasNext.value && !nextLoading.value) {
+      final bool isAtTop =
+          scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 60;
+
+      if (isAtTop) {
+        await operations.next();
+      }
+    }
   }
 }

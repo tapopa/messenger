@@ -18,6 +18,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '/domain/model/operation.dart';
 import '/l10n/l10n.dart';
 import '/themes.dart';
 import '/ui/page/home/page/chat/message_field/view.dart';
@@ -25,6 +26,7 @@ import '/ui/page/home/page/chat/widget/back_button.dart';
 import '/ui/page/home/widget/app_bar.dart';
 import '/ui/page/home/widget/operation.dart';
 import '/ui/widget/animated_button.dart';
+import '/ui/widget/progress_indicator.dart';
 import '/ui/widget/svg/svg.dart';
 import '/ui/widget/text_field.dart';
 import '/ui/widget/widget_button.dart';
@@ -64,58 +66,67 @@ class PartnerTransactionsView extends StatelessWidget {
               ),
             ],
           ),
-          body: Builder(
-            builder: (_) {
-              return Obx(() {
-                final List<Widget> children = [
-                  ...c.operations.values.map((e) {
-                    return Center(
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: 400),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 3, 10, 3),
-                          child: WidgetButton(
-                            onPressed: () {
-                              if (c.ids.contains(e.value.id)) {
-                                c.ids.remove(e.value.id);
-                              } else {
-                                c.ids.add(e.value.id);
-                              }
-                            },
-                            child: Obx(() {
-                              final bool expanded = c.expanded.value;
+          body: Column(
+            children: [
+              Expanded(
+                child: Obx(() {
+                  return ListView.builder(
+                    controller: c.scrollController,
+                    reverse: true,
+                    padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                    itemCount: c.operations.length,
+                    itemBuilder: (context, i) {
+                      final Rx<Operation> e = c.operations.values.elementAt(i);
 
-                              return OperationWidget(
-                                e.value,
-                                expanded:
-                                    (expanded && !c.ids.contains(e.value.id)) ||
-                                    (!expanded && c.ids.contains(e.value.id)),
-                              );
-                            }),
+                      final Widget child = Center(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: 400),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(10, 3, 10, 3),
+                            child: WidgetButton(
+                              onPressed: () {
+                                if (c.ids.contains(e.value.id)) {
+                                  c.ids.remove(e.value.id);
+                                } else {
+                                  c.ids.add(e.value.id);
+                                }
+                              },
+                              child: Obx(() {
+                                final bool expanded = c.expanded.value;
+
+                                return OperationWidget(
+                                  e.value,
+                                  expanded:
+                                      (expanded &&
+                                          !c.ids.contains(e.value.id)) ||
+                                      (!expanded && c.ids.contains(e.value.id)),
+                                );
+                              }),
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  }),
-                ];
+                      );
 
-                return Column(
-                  children: [
-                    Expanded(
-                      child: ListView(
-                        reverse: true,
-                        children: [
-                          const SizedBox(height: 8),
-                          ...children,
-                          const SizedBox(height: 8),
-                        ],
-                      ),
-                    ),
-                    _search(context, c),
-                  ],
-                );
-              });
-            },
+                      if (i == c.operations.length - 1) {
+                        return Column(
+                          children: [
+                            if (c.hasNext.value) ...[
+                              const SizedBox(height: 8),
+                              const CustomProgressIndicator.small(),
+                              const SizedBox(height: 8),
+                            ],
+                            child,
+                          ],
+                        );
+                      }
+
+                      return child;
+                    },
+                  );
+                }),
+              ),
+              _search(context, c),
+            ],
           ),
         );
       },

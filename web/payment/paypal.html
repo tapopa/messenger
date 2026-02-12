@@ -169,17 +169,23 @@
     .split {
       display: flex;
       flex-direction: column;
-      justify-content: space-evenly;
       width: 100%;
     }
 
     .split-top,
     .split-bottom {
       width: 100vw;
-      height: 50vh;
       display: flex;
       flex-direction: column;
       align-items: center;
+    }
+
+    .split-top {
+      height: 50vh;
+    }
+
+    .split-bottom {
+      height: 50vh;
     }
 
     .scrollable {
@@ -201,6 +207,15 @@
 
     .cover {
       object-fit: cover;
+      color: #fff;
+      font-size: 128px;
+      font-weight: bold;
+      text-align: center;
+      vertical-align: middle;
+      width: 100vw;
+      height: 50vh;
+      line-height: 50vh;
+      object-position: center;
     }
 
     .cancel-btn {
@@ -226,7 +241,7 @@
     }
 
     .paypal-btn {
-      width: 400px;
+      width: min(400px, 90vw);
     }
 
     .error {
@@ -240,7 +255,9 @@
   <div class="close-btn" onclick="closeModal()">×</div>
 
   <div class="split">
-    <img class="split-top cover" src="https://m.media-amazon.com/images/I/71dAIiXhTQL._AC_UF1000,1000_QL80_.jpg" />
+    <div class="split-top cover" id="avatar">
+      <img class="cover" />
+    </div>
 
     <!-- Pay. -->
     <div id="view-pay">
@@ -369,6 +386,13 @@
       document.getElementById('view-unfinished').classList.add('hidden');
       document.getElementById('view-error').classList.remove('hidden');
     }
+
+    // Source - https://stackoverflow.com/a/57401891
+    // Posted by supersan
+    // Retrieved 2026-02-12, License - CC BY-SA 4.0
+    function adjustColor(color, amount) {
+      return '#' + color.replace(/^#/, '').replace(/../g, color => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
+    }
   </script>
 
   <!-- Initialize localization and translate the page -->
@@ -377,6 +401,213 @@
     localizePage({
       locales: ['en-US', 'ru-RU', 'es-ES']
     });
+  </script>
+
+  <!-- Create and send mutations and queries -->
+  <script>
+    // `OperationDepositSecret` to use.
+    var secret = '';
+
+    // ID of the transaction used for `completeOperationDeposit()` and
+    // `declineOperationDeposit()` methods.
+    var transactionId = '';
+
+    function delay(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function generateRandom(length) {
+      const arr = new Uint8Array(length);
+      window.crypto.getRandomValues(arr);
+      return arr;
+    }
+
+    async function createOperationDeposit() {
+      try {
+        let account = localStorage.getItem('account');
+        let credentials = JSON.parse(localStorage.getItem(`credentials_${account}`));
+
+        const urlParams = new URLSearchParams(window.location.search);
+        let methodId = urlParams.get('method-id');
+        let country = urlParams.get('country');
+        let nominal = urlParams.get('nominal').substring(1);
+        let id = urlParams.get('id');
+        let channel = new BroadcastChannel(id ?? 'channel');
+
+        secret = generateRandom(32).toBase64();
+
+        let endpoint = localStorage.getItem('endpoint');
+
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${credentials['access']['secret']}`
+          },
+          body: JSON.stringify({
+            query: `
+mutation CreateOperationDeposit(
+  $methodId: OperationDepositMethodId!
+  $nominal: Sum!
+  $secret: OperationDepositSecret!
+  $country: CountryCode!
+) {
+  createOperationDeposit(
+    methodId: $methodId
+    kind: { paypal: { secret: $secret, nominal: $nominal } }
+    billingCountry: $country
+  ) {
+    __typename
+    ... on OperationEventsVersioned {
+        __typename
+      events {
+          operation {
+            node {
+              ... on OperationDeposit {
+                id
+                num
+                status
+                processingUrl
+              }
+            }
+          }
+        }
+      }
+    ... on CreateOperationDepositError {
+        code
+    }
+  }
+}
+      `,
+            variables: {
+              methodId: methodId,
+              secret: secret,
+              nominal: nominal,
+              country: country,
+            },
+          })
+        });
+
+        if (!response.ok) {
+          viewError(`HTTP error. Status is ${response.status}. Data: ${response.data}`);
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        let operation = data['data']['createOperationDeposit']['events'][0]['operation']['node'];
+
+        transactionId = operation.id;
+        channel.postMessage({
+          'type': 'createOperationDeposit',
+          'operationId': transactionId
+        });
+
+        console.log(`op -> ${operation}`);
+
+        return operation;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        viewError(`Unable to fetch data: ${error}`);
+      }
+    }
+
+    async function completeOperationDeposit() {
+
+      try {
+        let endpoint = localStorage.getItem('endpoint');
+
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `
+mutation CompleteOperationDeposit(
+  $id: OperationId!
+  $secret: OperationDepositSecret
+) {
+  completeOperationDeposit(
+    id: $id
+    secret: $secret
+  ) {
+    __typename
+    ... on OperationEventsVersioned {
+        __typename
+      events {
+          operation {
+            node {
+              status
+            }
+          }
+        }
+      }
+    ... on CompleteOperationDepositError {
+        code
+    }
+  }
+}
+      `,
+            variables: {
+              id: transactionId,
+              secret: secret,
+            },
+          })
+        });
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    async function declineOperationDeposit() {
+      try {
+        let endpoint = localStorage.getItem('endpoint');
+
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `
+mutation DeclineOperationDeposit(
+  $id: OperationId!
+  $secret: OperationDepositSecret
+) {
+  declineOperationDeposit(
+    id: $id
+    secret: $secret
+  ) {
+    __typename
+    ... on OperationEventsVersioned {
+        __typename
+      events {
+          operation {
+            node {
+              status
+            }
+          }
+        }
+      }
+    ... on DeclineOperationDepositError {
+        code
+    }
+  }
+}
+      `,
+            variables: {
+              id: transactionId,
+              secret: secret,
+            },
+          })
+        });
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
   </script>
 
   <!-- Append the PayPal SDK script -->
@@ -405,15 +636,24 @@
       paypal.Buttons({
         createOrder: async (data) => {
           console.log(`createOrder(${data})`);
-          return urlParams.get('order-id');
+
+          let orderId = urlParams.get('order-id');
+          if (orderId != null) {
+            return orderId;
+          }
+
+          let operation = await createOperationDeposit();
+          return operation.processingUrl.split('?order_id=')[1];
         },
         onApprove: (data, actions) => {
           console.log(`onApprove(${data})`);
           viewProcessing();
+          completeOperationDeposit();
         },
         onCancel: (data) => {
           console.log(`onCancel(${data})`);
           viewUnfinished();
+          declineOperationDeposit();
         },
         onError: (err) => {
           console.log(`onError(${err})`);
@@ -439,6 +679,50 @@
 
     document.querySelectorAll('[id=account]').forEach(element => {
       element.innerHTML = urlParams.get('account');
+    });
+
+    document.querySelectorAll('[id=avatar]').forEach(element => {
+      let avatarUrl = localStorage.getItem('avatar');
+      if (avatarUrl != null) {
+        element.innerHTML = `<img class="cover" src="${avatarUrl}" />`;
+      } else {
+
+        let account = urlParams.get('account');
+
+        let sum = 0;
+        for (let i = 0; i < account.length; i++) {
+          if (account.charAt(i) != '-') {
+            sum += account.charCodeAt(i);
+          }
+        }
+
+        const colors = [
+          '#D2B334',
+          '#2192FF',
+          '#9C27B0',
+          '#FF9800',
+          '#0094A7',
+          '#7F81FF',
+          '#FF5722',
+          '#C70100',
+          '#8BC34A',
+          '#16712D',
+          '#FF5B89',
+          '#332FD0',
+          '#B96215',
+          '#00BF79',
+          '#00ACCF',
+          '#ED36FF',
+          '#00CC25',
+          '#FF1008',
+          '#CB9F7A',
+        ];
+
+        let color = colors.at(sum % colors.length);
+        let lighter = adjustColor(color, 20);
+
+        element.innerHTML = `<div style="background: linear-gradient(${lighter}, ${color}); width: 100%; height: 100%;">${account.substring(0, 2)}</div>`;
+      }
     });
   </script>
 </body>

@@ -18,6 +18,7 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '/config.dart';
 import '/domain/model/country.dart';
@@ -28,6 +29,10 @@ import '/domain/model/price.dart';
 import '/domain/service/my_user.dart';
 import '/domain/service/wallet.dart';
 import '/l10n/l10n.dart';
+import '/ui/widget/primary_button.dart';
+import '/util/log.dart';
+import '/util/message_popup.dart';
+import '/util/platform_utils.dart';
 import '/util/web/web_utils.dart';
 
 /// Status of [PayPalDepositView].
@@ -85,12 +90,16 @@ class PayPalDepositController extends GetxController {
   /// [Timer] counting down the [responseSeconds].
   Timer? _responseTimer;
 
+  /// [StreamSubscription] to messages from the PayPal popup window.
+  StreamSubscription? _messagesSubscription;
+
   /// Returns the currently authenticated [MyUser].
   Rx<MyUser?> get myUser => _myUserService.myUser;
 
   @override
   void onClose() {
     _responseTimer?.cancel();
+    _messagesSubscription?.cancel();
     super.onClose();
   }
 
@@ -99,26 +108,137 @@ class PayPalDepositController extends GetxController {
     operationStatus.value = RxStatus.loading();
 
     try {
-      operation.value = await _walletService.createOperationDeposit(
-        methodId: method.id,
-        nominal: nominal,
-        country: country,
-        paypal: _secret ??= OperationDepositSecret.generate(),
-      );
+      // Under Web platforms, it's better to open the popup as fast as possible
+      // due to browser usual policies to block unexpected popups.
+      //
+      // Thus the mutation itself is happening within the popup afterwards
+      //
+      // Message passing cannot be reliable due to iOS Safari, for example,
+      // freezing the execution when tab is not in focus.
+      if (PlatformUtils.isDesktop && !PlatformUtils.isWeb) {
+        operation.value = await _walletService.createOperationDeposit(
+          methodId: method.id,
+          nominal: nominal,
+          country: country,
+          paypal: _secret ??= OperationDepositSecret.generate(),
+        );
+      }
 
       operationStatus.value = RxStatus.success();
 
+      String? orderId;
+      Price? total;
+
+      final OperationDepositMethodPricing? pricing = method.pricing;
+      final Price? perNominal = pricing?.total;
+      if (perNominal != null) {
+        total = nominal * perNominal;
+      }
+
       final Operation? order = operation.value?.value;
       if (order is OperationDeposit) {
-        await WebUtils.openPopup(
-          '${Config.origin}/payment/paypal.html',
-          parameters: {
-            'price': order.pricing?.total?.l10n ?? nominal.l10next(digits: 0),
-            'account': myUser.value?.num.toString(),
-            'order-id': '${order.processingUrl?.val.split('?order_id=').last}',
-            'client-id': Config.payPalClientId,
-          },
+        orderId = order.processingUrl?.val.split('?order_id=').last;
+
+        if (total == null) {
+          final OperationDepositPricing? pricing = order.pricing;
+          final Price? perNominal = pricing?.total;
+          if (perNominal != null) {
+            total = nominal * perNominal;
+          }
+        }
+      }
+
+      // Ensure parameters used by PayPal HTML page are up to date.
+      final MyUser? myUser = this.myUser.value;
+      if (myUser != null) {
+        WebUtils.putAccount(myUser.id);
+        WebUtils.putAvatar(myUser.avatar);
+      }
+
+      final String url = '${Config.origin}/payment/paypal.html';
+      final Map<String, dynamic> parameters = {
+        'price': total?.l10n ?? nominal.l10next(digits: 0),
+        'account': myUser?.num.toString(),
+        'client-id': Config.payPalClientId,
+        if (orderId != null) 'order-id': orderId,
+        if (orderId == null) ...{
+          'method-id': method.id,
+          'nominal': nominal.l10next(digits: 0),
+          'country': country.val,
+        },
+      };
+
+      final WindowHandle handle = await WebUtils.openPopup(
+        url,
+        parameters: parameters,
+      );
+
+      _messagesSubscription?.cancel();
+      _messagesSubscription = handle.messages.listen((e) async {
+        Log.debug('Message received from `WindowHandle` -> $e', '$runtimeType');
+
+        if (e is Map) {
+          final type = e['type'];
+
+          if (type is String) {
+            switch (type) {
+              case 'createOperationDeposit':
+                final operationId = e['operationId'];
+
+                if (operationId is String) {
+                  operation.value = await _walletService.get(
+                    id: OperationId(operationId),
+                  );
+
+                  _startResponseTimer();
+                }
+                break;
+            }
+          }
+        }
+      });
+
+      if (!handle.isOpen) {
+        Log.warning(
+          'createDeposit() -> Popup didn\'t open, trying `launchUrlString()`...',
+          '$runtimeType',
         );
+
+        try {
+          final bool isOpen = await launchUrlString(
+            '$url?${parameters.entries.map((e) => '${e.key}=${e.value}').join('&')}',
+          );
+
+          Log.warning(
+            'createDeposit() -> `launchUrlString()` is open: $isOpen',
+            '$runtimeType',
+          );
+
+          if (!isOpen) {
+            await MessagePopup.alert(
+              'Window cannot be opened automatically',
+              button: (context) {
+                return PrimaryButton(
+                  onPressed: () async {
+                    await launchUrlString(
+                      '$url?${parameters.entries.map((e) => '${e.key}=${e.value}').join('&')}',
+                    );
+                  },
+                  title: 'btn_proceed'.l10n,
+                );
+              },
+            );
+          }
+        } catch (e) {
+          Log.error(
+            'createDeposit() -> unable to do `launchUrlString()` due to $e',
+            '$runtimeType',
+          );
+
+          MessagePopup.error(e);
+
+          rethrow;
+        }
 
         _startResponseTimer();
       }

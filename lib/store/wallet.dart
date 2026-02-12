@@ -392,9 +392,7 @@ class WalletRepository extends IdentityDependency
 
     if (_country == null) {
       Log.warning('_queryMethods() -> country is `null`', '$runtimeType');
-      _country ??= CountryCode(
-        L10n.chosen.value?.locale.languageCode.toUpperCase() ?? 'us',
-      );
+      _country ??= CountryCode(L10n.chosen.value?.locale.countryCode ?? 'us');
     }
 
     try {

@@ -42,6 +42,7 @@ import 'package:win32/win32.dart';
 import 'package:win32_registry/win32_registry.dart';
 
 import '/config.dart';
+import '/domain/model/avatar.dart';
 import '/domain/model/chat.dart';
 import '/domain/model/session.dart';
 import '/domain/model/user.dart';
@@ -158,13 +159,13 @@ class WebUtils {
   /// provided [UserId], if any.
   static Credentials? getCredentials(UserId userId) => null;
 
-  /// Removes [UserId] from the browser's storage.
-  static void removeAccount() {
+  /// Puts the provided [UserId] to the browser's storage.
+  static void putAccount(UserId? userId) {
     // No-op.
   }
 
-  /// Puts the provided [UserId] to the browser's storage.
-  static void putAccount(UserId userId) {
+  /// Puts the provided [UserAvatar] to the browser's storage.
+  static void putAvatar(UserAvatar? avatar) {
     // No-op.
   }
 
@@ -642,6 +643,9 @@ class WindowHandleImpl extends WindowHandle {
 
   @override
   final bool isOpen;
+
+  @override
+  Stream<dynamic> get messages => const Stream.empty();
 
   @override
   void close() {

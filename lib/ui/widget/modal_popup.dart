@@ -49,6 +49,7 @@ abstract class ModalPopup {
     EdgeInsets mobilePadding = const EdgeInsets.fromLTRB(10, 0, 10, 16),
     EdgeInsets desktopPadding = const EdgeInsets.fromLTRB(0, 0, 0, 10),
     bool isDismissible = true,
+    bool appendHandle = true,
     Color? background,
   }) async {
     final style = Theme.of(context).style;
@@ -87,8 +88,8 @@ abstract class ModalPopup {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const SizedBox(height: 12),
-                if (isDismissible) ...[
+                if (isDismissible && appendHandle) ...[
+                  const SizedBox(height: 12),
                   Center(
                     child: Container(
                       width: 60,

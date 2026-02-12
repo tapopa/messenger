@@ -70,6 +70,7 @@ class PayPalDepositView extends StatelessWidget {
       context: context,
       mobilePadding: EdgeInsets.zero,
       desktopPadding: EdgeInsets.zero,
+      appendHandle: false,
       child: PayPalDepositView(
         country: country,
         method: method,
@@ -133,6 +134,20 @@ class PayPalDepositView extends StatelessWidget {
                   ),
                 ),
               ),
+
+              if (context.isMobile)
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Container(
+                    margin: EdgeInsets.only(top: 12),
+                    width: 60,
+                    height: 3,
+                    decoration: BoxDecoration(
+                      color: style.colors.background,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
 
               if (!context.isMobile)
                 Align(
@@ -236,7 +251,8 @@ class PayPalDepositView extends StatelessWidget {
                                 text =
                                     'label_operation_label_cannot_processed_automatically'
                                         .l10n;
-                              } else if (c.responseSeconds.value != 0) {
+                              } else if (c.responseSeconds.value != null &&
+                                  c.responseSeconds.value != 0) {
                                 text =
                                     'label_operation_label_waiting_for_paypal'
                                         .l10nfmt({
@@ -249,7 +265,7 @@ class PayPalDepositView extends StatelessWidget {
                               break;
 
                             case OperationStatus.artemisUnknown || null:
-                              text = 'label_unknown'.l10n;
+                              text = 'label_operation_label_in_progress'.l10n;
                               break;
                           }
                         }

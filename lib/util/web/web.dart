@@ -42,6 +42,7 @@ import 'package:video_player_web/video_player_web.dart';
 import 'package:web/web.dart' as web;
 
 import '/config.dart';
+import '/domain/model/avatar.dart';
 import '/domain/model/chat.dart';
 import '/domain/model/session.dart';
 import '/domain/model/user.dart';
@@ -430,14 +431,22 @@ class WebUtils {
     }
   }
 
-  /// Removes [UserId] from the browser's storage.
-  static void removeAccount() {
-    web.window.localStorage.removeItem('account');
+  /// Puts the provided [UserId] to the browser's storage.
+  static void putAccount(UserId? userId) {
+    if (userId == null) {
+      web.window.localStorage.removeItem('account');
+    } else {
+      web.window.localStorage.setItem('account', userId.val);
+    }
   }
 
-  /// Puts the provided [UserId] to the browser's storage.
-  static void putAccount(UserId userId) {
-    web.window.localStorage.setItem('account', userId.val);
+  /// Puts the provided [UserAvatar] to the browser's storage.
+  static void putAvatar(UserAvatar? avatar) {
+    if (avatar == null) {
+      web.window.localStorage.removeItem('avatar');
+    } else {
+      web.window.localStorage.setItem('avatar', avatar.original.url);
+    }
   }
 
   /// Puts the provided [String] to the browser's local storage as the origin.
@@ -773,11 +782,16 @@ class WebUtils {
       final int screenW = web.window.screen.width;
       final int screenH = web.window.screen.height;
 
+      final int sizeW = 500;
+      final int sizeH = 800;
+
       handle._window = web.window.open(
         '$url${arguments.toString()}',
         handle.id,
-        'popup=1,width=600,height=600,left=${(screenW / 2 - 300).toInt()},top=${(screenH / 2 - 300).toInt()}',
+        'popup=1,width=$sizeW,height=$sizeH,left=${(screenW / 2 - sizeW / 2).toInt()},top=${(screenH / 2 - sizeH / 2).toInt()}',
       );
+
+      Log.debug('openPopup() -> isOpen: ${handle.isOpen}', 'WebUtils');
     } catch (e) {
       Log.debug('openPopup() -> failed due to $e', 'WebUtils');
     }
@@ -1311,6 +1325,11 @@ class WindowHandleImpl extends WindowHandle {
       Log.debug('bool get isOpen -> failed due to $e', '$runtimeType');
       return false;
     }
+  }
+
+  @override
+  Stream<dynamic> get messages {
+    return WebUtils.onBroadcastMessage(name: id);
   }
 
   @override

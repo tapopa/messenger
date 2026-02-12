@@ -144,6 +144,9 @@ abstract class WindowHandle {
   /// Indicates whether this window is opened.
   bool get isOpen;
 
+  /// Returns a [Stream] of messages from this window.
+  Stream<dynamic> get messages;
+
   /// Closes the [WindowHandle].
   void close();
 

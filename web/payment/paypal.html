@@ -313,7 +313,7 @@
           <div id="price" class="amount-right">$6.25</div>
         </div>
 
-        <div id="paypal-btn" style="height: 45px"></div>
+        <div id="paypal-btn" style="min-height: 45px"></div>
 
         <div class="divider" l10n="label_attention">
           <span>Attention</span>
@@ -798,7 +798,7 @@ mutation DeclineOperationDeposit(
     // Create the script element.
     const sdk = document.createElement('script');
     let clientId = urlParams.get('client-id');
-    sdk.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=HKD&disable-funding=credit,card,paylater,venmo&intent=authorize`;
+    sdk.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=HKD&intent=authorize`;
     sdk.type = 'text/javascript';
     sdk.async = true; // Makes the script load without blocking HTML parsing.
 

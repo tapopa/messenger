@@ -16,24 +16,24 @@
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../../../util/platform_utils.dart';
+import '/api/backend/schema.dart';
 import '/domain/model/country.dart';
 import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
+import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/price.dart';
 import '/l10n/l10n.dart';
-import '/routes.dart';
 import '/themes.dart';
-import '/ui/page/home/tab/wallet/widget/amount_tile.dart';
 import '/ui/page/home/widget/operation.dart';
 import '/ui/widget/line_divider.dart';
 import '/ui/widget/modal_popup.dart';
 import '/ui/widget/primary_button.dart';
-import '/ui/widget/progress_indicator.dart';
-import '/util/platform_utils.dart';
+import '/ui/widget/svg/svg.dart';
+import '/ui/widget/widget_button.dart';
 import 'controller.dart';
 
 /// View for creating a [OperationDeposit] with PayPal.
@@ -44,7 +44,6 @@ class PayPalDepositView extends StatelessWidget {
     required this.country,
     required this.nominal,
     this.id,
-    this.status = PayPalDepositStatus.loading,
   });
 
   /// [OperationDepositMethod] to deposit with.
@@ -59,9 +58,6 @@ class PayPalDepositView extends StatelessWidget {
   /// [OperationId] of an [OperationDeposit] already existing, if any.
   final OperationId? id;
 
-  /// Initial [PayPalDepositStatus].
-  final PayPalDepositStatus status;
-
   /// Displays an [PayPalDepositView] wrapped in a [ModalPopup].
   static Future<T?> show<T>(
     BuildContext context, {
@@ -69,16 +65,16 @@ class PayPalDepositView extends StatelessWidget {
     required CountryCode country,
     required Price nominal,
     OperationId? id,
-    PayPalDepositStatus status = PayPalDepositStatus.loading,
   }) {
     return ModalPopup.show(
       context: context,
+      mobilePadding: EdgeInsets.zero,
+      desktopPadding: EdgeInsets.zero,
       child: PayPalDepositView(
         country: country,
         method: method,
         nominal: nominal,
         id: id,
-        status: status,
       ),
     );
   }
@@ -94,146 +90,208 @@ class PayPalDepositView extends StatelessWidget {
         method: method,
         nominal: nominal,
         id: id,
-        status: status,
       ),
       builder: (PayPalDepositController c) {
+        final String currency = switch (nominal.sum.val) {
+          <= 5 => '5',
+          <= 10 => '10',
+          <= 25 => '25',
+          <= 50 => '50',
+          <= 75 => '75',
+          (_) => '100',
+        };
+
+        final Widget header = SizedBox(
+          height: 150,
+          child: Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(14),
+                  topRight: Radius.circular(14),
+                ),
+                child: SvgImage.asset(
+                  'assets/images/currency/$currency.svg',
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Center(
+                child: Text(
+                  nominal.l10next(digits: 0),
+                  style: style.fonts.largest.bold.onPrimary.copyWith(
+                    fontSize: 64,
+                    shadows: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha((255 * 0.4).round()),
+                        offset: Offset(3.5, 1.75),
+                        blurRadius: 0,
+                        blurStyle: BlurStyle.outer,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              if (!context.isMobile)
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                    child: WidgetButton(
+                      onPressed: Navigator.of(context).pop,
+                      child: SvgIcon(SvgIcons.closeSmallPrimary),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ModalPopupHeader(text: 'label_top_up_by_paypal'.l10n),
-            LineDivider(''),
+            header,
             Flexible(
-              child: Obx(() {
-                final List<Widget> children;
+              child: ListView(
+                shrinkWrap: true,
+                padding: ModalPopup.padding(context),
+                children: [
+                  const SizedBox(height: 16),
+                  Text(
+                    'label_top_up_by_paypal'.l10n,
+                    style: style.fonts.big.regular.onBackground,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+                  LineDivider('label_transaction'.l10n),
+                  const SizedBox(height: 20),
+                  Obx(() {
+                    final Operation? operation = c.operation.value?.value;
 
-                switch (c.status.value) {
-                  case PayPalDepositStatus.loading:
-                    children = [
-                      const SizedBox(height: 32),
-                      Center(
-                        child: Obx(() {
-                          final Widget child;
+                    if (operation != null) {
+                      return OperationWidget(operation);
+                    }
 
-                          if (c.error.value == null) {
-                            child = CustomProgressIndicator.primary();
-                          } else {
-                            child = Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  '${c.error.value}',
-                                  style: style.fonts.small.regular.danger,
-                                ),
-                                const SizedBox(height: 16),
-                                PrimaryButton(
-                                  onPressed: context.popModal,
-                                  title: 'btn_close'.l10n,
-                                ),
-                              ],
-                            );
-                          }
-
-                          return AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 250),
-                            child: child,
-                          );
-                        }),
+                    return OperationWidget(
+                      OperationDeposit(
+                        amount: nominal,
+                        id: OperationId.local(),
+                        num: OperationNum(BigInt.zero),
+                        createdAt: PreciseDateTime.now(),
+                        billingCountry: CountryCode(''),
+                        origin: OperationOrigin.purse,
+                        direction: OperationDirection.incoming,
+                        status: OperationStatus.inProgress,
                       ),
-                      const SizedBox(height: 32),
-                    ];
-                    break;
+                    );
+                  }),
+                  const SizedBox(height: 20),
+                  Obx(() {
+                    final List<Widget> children;
 
-                  case PayPalDepositStatus.inProgress:
-                    children = [
-                      const SizedBox(height: 16),
-                      Obx(() {
-                        if (c.error.value == null) {
-                          return const SizedBox();
-                        }
-
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: 16),
-                          child: Text(
-                            'err_data_transfer'.l10n,
-                            style: style.fonts.small.regular.onBackground,
+                    switch (c.status.value) {
+                      case PayPalDepositStatus.initial:
+                        children = [
+                          Text(
+                            'label_paypal_popup_window_instruction'.l10n,
+                            style: style.fonts.small.regular.secondary,
                           ),
-                        );
-                      }),
-                      AmountTile(nominal: nominal, pricing: method.pricing),
-                      const SizedBox(height: 16),
-                      LineDivider('label_transaction'.l10n),
-                      const SizedBox(height: 16),
-                      Obx(() {
-                        final Operation? operation = c.operation.value?.value;
+                          const SizedBox(height: 20),
+                          PrimaryButton(
+                            title: 'btn_proceed'.l10n,
+                            onPressed: c.operationStatus.value.isLoading
+                                ? null
+                                : c.createDeposit,
+                          ),
+                        ];
+                        break;
 
-                        final Widget child;
+                      case PayPalDepositStatus.inProgress:
+                        final String text;
 
-                        if (operation == null) {
-                          child = const SizedBox(
-                            key: Key('None'),
-                            width: 100,
-                            height: 125,
-                            child: Center(
-                              child: CustomProgressIndicator.primary(),
-                            ),
-                          );
+                        if (c.error.value != null) {
+                          text = c.error.value!;
                         } else {
-                          child = OperationWidget(operation);
+                          switch (c.operation.value?.value.status) {
+                            case OperationStatus.canceled:
+                              text = 'label_operation_canceled'.l10n;
+                              break;
+
+                            case OperationStatus.completed:
+                              text = 'label_operation_completed'.l10n;
+                              break;
+
+                            case OperationStatus.declined:
+                              text = 'label_operation_label_interrupted'.l10n;
+                              break;
+
+                            case OperationStatus.failed:
+                              text = 'label_data_transfer_error'.l10n;
+                              break;
+
+                            case OperationStatus.inProgress:
+                              if (c.responseSeconds.value == 0) {
+                                text =
+                                    'label_operation_label_cannot_processed_automatically'
+                                        .l10n;
+                              } else if (c.responseSeconds.value != 0) {
+                                text =
+                                    'label_operation_label_waiting_for_paypal'
+                                        .l10nfmt({
+                                          'seconds': c.responseSeconds.value,
+                                        });
+                              } else {
+                                text = 'label_operation_label_in_progress'.l10n;
+                              }
+
+                              break;
+
+                            case OperationStatus.artemisUnknown || null:
+                              text = 'label_unknown'.l10n;
+                              break;
+                          }
                         }
 
-                        return AnimatedSizeAndFade(
-                          fadeDuration: const Duration(milliseconds: 250),
-                          sizeDuration: const Duration(milliseconds: 250),
-                          child: child,
-                        );
-                      }),
-                      const SizedBox(height: 16),
-                      LineDivider('label_attention'.l10n),
-                      const SizedBox(height: 16),
-                      Text.rich(
-                        TextSpan(
-                          children: [
-                            TextSpan(
-                              text:
-                                  'label_tapopa_will_be_grateful_for_reporting_problems_when_paying1'
-                                      .l10n,
-                              style: style.fonts.small.regular.primary,
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.of(context).pop();
-                                  router.support();
-                                },
+                        children = [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              text,
+                              style: style.fonts.small.regular.onBackground,
                             ),
-                            TextSpan(
-                              text:
-                                  'label_tapopa_will_be_grateful_for_reporting_problems_when_paying2'
-                                      .l10n,
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            'label_paypal_in_progress_bottom_description'.l10n,
+                            style: style.fonts.small.regular.secondary,
+                          ),
+                          if (c.error.value != null ||
+                              c.operation.value?.value.status !=
+                                  OperationStatus.inProgress) ...[
+                            const SizedBox(height: 20),
+                            PrimaryButton(
+                              title: 'btn_ok'.l10n,
+                              onPressed: Navigator.of(context).pop,
                             ),
                           ],
-                        ),
-                        style: style.fonts.small.regular.secondary,
-                      ),
-                      const SizedBox(height: 16),
-                      PrimaryButton(
-                        onPressed: Navigator.of(context).pop,
-                        title: 'btn_ok'.l10n,
-                      ),
-                      const SizedBox(height: 16),
-                    ];
-                    break;
-                }
+                        ];
+                        break;
+                    }
 
-                return AnimatedSizeAndFade(
-                  fadeDuration: const Duration(milliseconds: 250),
-                  sizeDuration: const Duration(milliseconds: 250),
-                  child: ListView(
-                    key: Key(c.status.value.name),
-                    shrinkWrap: true,
-                    padding: ModalPopup.padding(context),
-                    children: children,
-                  ),
-                );
-              }),
+                    return AnimatedSizeAndFade(
+                      fadeDuration: const Duration(milliseconds: 250),
+                      sizeDuration: const Duration(milliseconds: 250),
+                      child: Column(
+                        key: Key(c.status.value.name),
+                        mainAxisSize: MainAxisSize.min,
+                        children: children,
+                      ),
+                    );
+                  }),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ],
         );

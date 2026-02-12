@@ -545,6 +545,12 @@ class OperationReward extends Operation {
 /// ID of an [Operation].
 class OperationId extends NewType<String> {
   const OperationId(super.val);
+
+  /// Creates a local [OperationId].
+  const OperationId.local() : super('0');
+
+  /// Indicates whether this [OperationId] is a local.
+  bool get isLocal => val == '0';
 }
 
 /// Sequential number of an [Operation].

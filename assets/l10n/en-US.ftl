@@ -1081,9 +1081,16 @@ label_open_calls_in_app = In the same window
 label_open_calls_in_window = In a separate window
 label_operation_canceled = Canceled
 label_operation_completed = Completed
-label_operation_declined = Declined
+label_operation_declined = Unfinished
 label_operation_failed = Failed
-label_operation_in_progress = In progress
+label_operation_in_progress = In progress...
+label_operation_label_cannot_processed_automatically = Unfortunately, the transaction cannot be processed automatically. The transaction will be checked and processed manually within 24 hours.
+label_operation_label_in_progress = Operation in progress...
+label_operation_label_interrupted = Operation interrupted
+label_operation_label_waiting_for_paypal = Waiting response from the PayPal. {$seconds} {$seconds ->
+        [one] second
+        *[other] seconds
+    }.
 label_optimism_op_mainnet = Optimism (OP Mainnet)
 label_order_payment = Order your withdrawal
 label_outgoing_call = Calling
@@ -1164,6 +1171,7 @@ label_payouts_and_information = Withdraws & Information
 label_paypal = PayPal
 label_paypal_account_email = PayPal account e-mail
 label_paypal_account_email_example = dummy@example.com
+label_paypal_in_progress_bottom_description = To report any problems contact Support Service and provide your PayPal account e-mail, Tapopa ID, Transaction ID.
 label_paypal_is_not_available_in_this_country = PayPal is not available in this country
 label_paypal_popup_window_instruction =
     To make the payment a pop-up window of the processing service will open.
@@ -1336,6 +1344,7 @@ label_videos_semicolon_amount = Videos: {$amount}
 label_visits_count = Clicks: {$count}
 label_voice_processing = Voice processing
 label_wait_seconds = Wait {$for} s
+label_waiting_dots = Waiting...
 label_waiting_for_connection = Waiting for connection...
 label_wallet = Wallet
 label_wallet_history = Wallet history

@@ -15,21 +15,23 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:async';
+
 import 'package:get/get.dart';
 
+import '../../../../../../config.dart';
+import '../../../../../../l10n/l10n.dart';
+import '../../../../../../util/web/web_utils.dart';
 import '/api/backend/schema.dart';
-import '/config.dart';
 import '/domain/model/country.dart';
 import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/price.dart';
 import '/domain/service/wallet.dart';
-import '/l10n/l10n.dart';
 import '/provider/gql/exceptions.dart';
-import '/util/web/web_utils.dart';
 
 /// Status of [PayPalDepositView].
-enum PayPalDepositStatus { loading, inProgress }
+enum PayPalDepositStatus { initial, inProgress }
 
 /// Controller of a [PayPalDepositView].
 class PayPalDepositController extends GetxController {
@@ -39,8 +41,7 @@ class PayPalDepositController extends GetxController {
     required this.country,
     required this.nominal,
     this.id,
-    PayPalDepositStatus status = PayPalDepositStatus.loading,
-  }) : status = Rx(status);
+  });
 
   /// [OperationDepositMethod] to deposit with.
   final OperationDepositMethod method;
@@ -52,7 +53,7 @@ class PayPalDepositController extends GetxController {
   final Price nominal;
 
   /// [PayPalDepositStatus] of the [createDeposit] operation.
-  final Rx<PayPalDepositStatus> status;
+  final Rx<PayPalDepositStatus> status = Rx(PayPalDepositStatus.initial);
 
   /// [OperationId] of an [OperationDeposit] already existing, if any.
   final OperationId? id;
@@ -63,6 +64,13 @@ class PayPalDepositController extends GetxController {
   /// Error happened during [OperationDeposit] creating.
   final RxnString error = RxnString();
 
+  /// [RxStatus] of the [operation] creating.
+  final Rx<RxStatus> operationStatus = Rx(RxStatus.empty());
+
+  /// Seconds until displaying inability to process the [operation]
+  /// automatically.
+  final RxnInt responseSeconds = RxnInt(null);
+
   /// [WalletService] used to create the [OperationDeposit] itself.
   final WalletService _walletService;
 
@@ -70,34 +78,19 @@ class PayPalDepositController extends GetxController {
   /// management.
   OperationDepositSecret? _secret;
 
+  /// [Timer] counting down the [responseSeconds].
+  Timer? _responseTimer;
+
   @override
-  void onInit() {
-    switch (status.value) {
-      case PayPalDepositStatus.loading:
-        _redirectAndClose();
-        break;
-
-      case PayPalDepositStatus.inProgress:
-        if (id != null) {
-          final operationOrFuture = _walletService.get(id: id);
-          if (operationOrFuture is Future<Rx<Operation>?>) {
-            operationOrFuture.then((e) {
-              operation.value = e;
-              completeDeposit();
-            });
-          } else {
-            operation.value = operationOrFuture;
-            completeDeposit();
-          }
-        }
-        break;
-    }
-
-    super.onInit();
+  void onClose() {
+    _responseTimer?.cancel();
+    super.onClose();
   }
 
   /// Creates a [OperationDeposit].
   Future<Operation?> createDeposit() async {
+    operationStatus.value = RxStatus.loading();
+
     try {
       operation.value = await _walletService.createOperationDeposit(
         methodId: method.id,
@@ -106,10 +99,34 @@ class PayPalDepositController extends GetxController {
         paypal: _secret ??= OperationDepositSecret.generate(),
       );
 
+      operationStatus.value = RxStatus.success();
+
+      final Operation? order = operation.value?.value;
+      if (order is OperationDeposit) {
+        await WebUtils.openPopup(
+          '${Config.origin}/payment/paypal.html',
+          parameters: {
+            'client-id': Config.payPalClientId,
+            'nominal': nominal.l10next(digits: 0),
+            'price': order.pricing?.total?.l10n,
+            'deposit-id': '${order.id}',
+            'order-num': '${order.num.val}',
+            'order-id': '${order.processingUrl?.val.split('?order_id=').last}',
+            'methodId': method.id.val,
+            'country': country.val,
+          },
+        );
+
+        _startResponseTimer();
+      }
+
       return operation.value?.value;
     } catch (e) {
+      operationStatus.value = RxStatus.error('err_data_transfer'.l10n);
       error.value = e.toString();
       rethrow;
+    } finally {
+      status.value = PayPalDepositStatus.inProgress;
     }
   }
 
@@ -163,31 +180,16 @@ class PayPalDepositController extends GetxController {
     }
   }
 
-  /// Creates an [OperationDeposit] and opens a PayPal in a separate Web page.
-  Future<void> _redirectAndClose() async {
-    try {
-      final Operation? order = await createDeposit();
+  /// Starts the [_responseTimer] counting down the [responseSeconds].
+  void _startResponseTimer() {
+    responseSeconds.value = 600;
 
-      status.value = PayPalDepositStatus.inProgress;
-
-      if (order is OperationDeposit) {
-        await WebUtils.openPopup(
-          '${Config.origin}/payment/paypal.html',
-          parameters: {
-            'client-id': Config.payPalClientId,
-            'nominal': nominal.l10next(digits: 0),
-            'price': order.pricing?.total?.l10n,
-            'deposit-id': '${order.id}',
-            'order-num': '${order.num.val}',
-            'order-id': '${order.processingUrl?.val.split('?order_id=').last}',
-            'methodId': method.id.val,
-            'country': country.val,
-          },
-        );
+    _responseTimer?.cancel();
+    _responseTimer = Timer.periodic(Duration(seconds: 1), (_) {
+      responseSeconds.value = (responseSeconds.value ?? 1) - 1;
+      if ((responseSeconds.value ?? 0) <= 0) {
+        _responseTimer?.cancel();
       }
-    } catch (e) {
-      error.value = e.toString();
-      rethrow;
-    }
+    });
   }
 }

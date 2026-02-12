@@ -82,133 +82,131 @@ class WalletWorker extends Dependency with IdentityAware {
     Price nominal,
     Price? pricing,
   ) async {
-    // Display a [PayPalDepositView] for desktop platforms.
-    if (!PlatformUtils.isWeb) {
-      return await PayPalDepositView.show(
-        router.context!,
-        nominal: nominal,
-        method: method,
-        country: country,
-      );
-    }
-
-    final _Operation operation = await _Operation.create(
+    // Display a [PayPalDepositView].
+    return await PayPalDepositView.show(
+      router.context!,
+      nominal: nominal,
       method: method,
       country: country,
-      nominal: nominal,
-      pricing: pricing,
-      onMessage: (e) async {
-        Log.debug('onMessage -> $e', '$runtimeType');
-
-        if (e is Map) {
-          final id = e['id'];
-          final type = e['type'];
-
-          if (id is String && type is String) {
-            final _Operation? operation = _operations[id];
-            if (operation == null) {
-              Log.debug(
-                'onMessage -> ignoring `$type` event, as `$id` is not found',
-                '$runtimeType',
-              );
-              return;
-            }
-
-            switch (type) {
-              case 'createOrder':
-                operation._secret = OperationDepositSecret.generate();
-                final Rx<Operation>? deposit = await _walletService
-                    .createOperationDeposit(
-                      methodId: operation.method.id,
-                      nominal: operation.nominal,
-                      country: operation.country,
-                      paypal: operation._secret,
-                    );
-
-                operation.deposit = deposit;
-
-                final Operation? operationDeposit = deposit?.value;
-                if (operationDeposit is OperationDeposit) {
-                  final String? url = operationDeposit.processingUrl?.val;
-                  if (url != null) {
-                    operation.postBroadcast({
-                      'id': id,
-                      'type': 'orderCreated',
-                      'orderId': url.split('?order_id=').last,
-                    });
-                  }
-                }
-                break;
-
-              case 'onApprove':
-                final operationId = e['transactionId'];
-                if (operationId is String) {
-                  await PayPalDepositView.show(
-                    router.context!,
-                    nominal: nominal,
-                    method: method,
-                    country: country,
-                    id: OperationId(operationId),
-                    status: PayPalDepositStatus.inProgress,
-                  );
-                }
-
-                final OperationId? id = operation.deposit?.value?.id;
-                if (id != null) {
-                  await _walletService.completeOperationDeposit(
-                    id: id,
-                    secret: operation._secret,
-                  );
-                }
-
-                final OperationNum? num = operation.deposit?.value?.num;
-                if (num != null) {
-                  operation.postBroadcast({
-                    'id': id,
-                    'type': 'inProgress',
-                    'transactionId': '${num.val}',
-                  });
-                }
-                break;
-
-              case 'onCancel':
-                final operationId = e['transactionId'];
-                if (operationId is String) {
-                  await PayPalDepositView.show(
-                    router.context!,
-                    nominal: nominal,
-                    method: method,
-                    country: country,
-                    id: OperationId(operationId),
-                    status: PayPalDepositStatus.inProgress,
-                  );
-                }
-
-                final OperationId? id = operation.deposit?.value?.id;
-                if (id != null) {
-                  await _walletService.declineOperationDeposit(
-                    id: id,
-                    secret: operation._secret,
-                  );
-                }
-                break;
-
-              case 'onError':
-                // No-op.
-                break;
-            }
-          }
-        }
-      },
     );
 
-    if (!operation._handle.isOpen) {
-      await launchUrlString(operation._handle.url);
-      operation.dispose();
-      return;
-    }
+    // final _Operation operation = await _Operation.create(
+    //   method: method,
+    //   country: country,
+    //   nominal: nominal,
+    //   pricing: pricing,
+    //   onMessage: (e) async {
+    //     Log.debug('onMessage -> $e', '$runtimeType');
 
-    _operations[operation.id] = operation;
+    //     if (e is Map) {
+    //       final id = e['id'];
+    //       final type = e['type'];
+
+    //       if (id is String && type is String) {
+    //         final _Operation? operation = _operations[id];
+    //         if (operation == null) {
+    //           Log.debug(
+    //             'onMessage -> ignoring `$type` event, as `$id` is not found',
+    //             '$runtimeType',
+    //           );
+    //           return;
+    //         }
+
+    //         switch (type) {
+    //           case 'createOrder':
+    //             operation._secret = OperationDepositSecret.generate();
+    //             final Rx<Operation>? deposit = await _walletService
+    //                 .createOperationDeposit(
+    //                   methodId: operation.method.id,
+    //                   nominal: operation.nominal,
+    //                   country: operation.country,
+    //                   paypal: operation._secret,
+    //                 );
+
+    //             operation.deposit = deposit;
+
+    //             final Operation? operationDeposit = deposit?.value;
+    //             if (operationDeposit is OperationDeposit) {
+    //               final String? url = operationDeposit.processingUrl?.val;
+    //               if (url != null) {
+    //                 operation.postBroadcast({
+    //                   'id': id,
+    //                   'type': 'orderCreated',
+    //                   'orderId': url.split('?order_id=').last,
+    //                 });
+    //               }
+    //             }
+    //             break;
+
+    //           case 'onApprove':
+    //             final operationId = e['transactionId'];
+    //             if (operationId is String) {
+    //               await PayPalDepositView.show(
+    //                 router.context!,
+    //                 nominal: nominal,
+    //                 method: method,
+    //                 country: country,
+    //                 id: OperationId(operationId),
+    //                 status: PayPalDepositStatus.inProgress,
+    //               );
+    //             }
+
+    //             final OperationId? id = operation.deposit?.value?.id;
+    //             if (id != null) {
+    //               await _walletService.completeOperationDeposit(
+    //                 id: id,
+    //                 secret: operation._secret,
+    //               );
+    //             }
+
+    //             final OperationNum? num = operation.deposit?.value?.num;
+    //             if (num != null) {
+    //               operation.postBroadcast({
+    //                 'id': id,
+    //                 'type': 'inProgress',
+    //                 'transactionId': '${num.val}',
+    //               });
+    //             }
+    //             break;
+
+    //           case 'onCancel':
+    //             final operationId = e['transactionId'];
+    //             if (operationId is String) {
+    //               await PayPalDepositView.show(
+    //                 router.context!,
+    //                 nominal: nominal,
+    //                 method: method,
+    //                 country: country,
+    //                 id: OperationId(operationId),
+    //                 status: PayPalDepositStatus.inProgress,
+    //               );
+    //             }
+
+    //             final OperationId? id = operation.deposit?.value?.id;
+    //             if (id != null) {
+    //               await _walletService.declineOperationDeposit(
+    //                 id: id,
+    //                 secret: operation._secret,
+    //               );
+    //             }
+    //             break;
+
+    //           case 'onError':
+    //             // No-op.
+    //             break;
+    //         }
+    //       }
+    //     }
+    //   },
+    // );
+
+    // if (!operation._handle.isOpen) {
+    //   await launchUrlString(operation._handle.url);
+    //   operation.dispose();
+    //   return;
+    // }
+
+    // _operations[operation.id] = operation;
   }
 }
 

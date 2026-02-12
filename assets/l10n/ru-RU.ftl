@@ -1098,9 +1098,17 @@ label_open_calls_in_app = В том же окне
 label_open_calls_in_window = В отдельном окне
 label_operation_canceled = Отменено
 label_operation_completed = Завершено
-label_operation_declined = Отклонено
+label_operation_declined = Не завершено
 label_operation_failed = Неуспешно
-label_operation_in_progress = В процессе
+label_operation_in_progress = В процессе...
+label_operation_label_cannot_processed_automatically = К сожалению, транзакция не может быть обработана автоматически. Транзакция будет проверена и обработана вручную в течение 24 часов.
+label_operation_label_in_progress = Операция в процессе...
+label_operation_label_interrupted = Операция прервана
+label_operation_label_waiting_for_paypal = Ждём ответа от PayPal. {$seconds} {$seconds ->
+        [one] секунда
+        [few] секунды
+        *[other] секунд
+    }.
 label_optimism_op_mainnet = Optimism (OP Mainnet)
 label_order_payment = Закажите свою выплату
 label_outgoing_call = Звоним
@@ -1181,6 +1189,7 @@ label_payouts_and_information = Вывод средств и информаци�
 label_paypal = PayPal
 label_paypal_account_email = E-mail аккаунта PayPal
 label_paypal_account_email_example = dummy@example.com
+label_paypal_in_progress_bottom_description = TЧтобы сообщить о любых проблемах, свяжитесь со службой поддержки и укажите адрес электронной почты Вашей учётной записи PayPal, Tapopa ID и ID транзакции.
 label_paypal_is_not_available_in_this_country = PayPal недоступен в этой стране
 label_paypal_popup_window_instruction =
     Для совершения платежа будет открыто всплывающее окно процессора.
@@ -1356,6 +1365,7 @@ label_videos_semicolon_amount = Видео: {$amount}
 label_visits_count = Кликов: {$count}
 label_voice_processing = Обработка голоса
 label_wait_seconds = Подождите {$for} с
+label_waiting_dots = Ожидание...
 label_waiting_for_connection = Ожидание подключения...
 label_wallet = Кошелёк
 label_wallet_history = История кошелька

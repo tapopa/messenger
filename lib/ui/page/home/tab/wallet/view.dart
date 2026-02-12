@@ -37,7 +37,7 @@ class WalletTabView extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder(
       key: const Key('WalletTab'),
-      init: WalletTabController(Get.find(), Get.find(), Get.find()),
+      init: WalletTabController(Get.find(), Get.find()),
       builder: (WalletTabController c) {
         final style = Theme.of(context).style;
 

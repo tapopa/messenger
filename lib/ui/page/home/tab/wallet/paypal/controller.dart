@@ -19,16 +19,16 @@ import 'dart:async';
 
 import 'package:get/get.dart';
 
-import '../../../../../../config.dart';
-import '../../../../../../l10n/l10n.dart';
-import '../../../../../../util/web/web_utils.dart';
-import '/api/backend/schema.dart';
+import '/config.dart';
 import '/domain/model/country.dart';
+import '/domain/model/my_user.dart';
 import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/price.dart';
+import '/domain/service/my_user.dart';
 import '/domain/service/wallet.dart';
-import '/provider/gql/exceptions.dart';
+import '/l10n/l10n.dart';
+import '/util/web/web_utils.dart';
 
 /// Status of [PayPalDepositView].
 enum PayPalDepositStatus { initial, inProgress }
@@ -36,7 +36,8 @@ enum PayPalDepositStatus { initial, inProgress }
 /// Controller of a [PayPalDepositView].
 class PayPalDepositController extends GetxController {
   PayPalDepositController(
-    this._walletService, {
+    this._walletService,
+    this._myUserService, {
     required this.method,
     required this.country,
     required this.nominal,
@@ -74,12 +75,18 @@ class PayPalDepositController extends GetxController {
   /// [WalletService] used to create the [OperationDeposit] itself.
   final WalletService _walletService;
 
+  /// [MyUserService] used for retrieving the current [MyUser].
+  final MyUserService _myUserService;
+
   /// [OperationDepositSecret] to use with [OperationDeposit] related
   /// management.
   OperationDepositSecret? _secret;
 
   /// [Timer] counting down the [responseSeconds].
   Timer? _responseTimer;
+
+  /// Returns the currently authenticated [MyUser].
+  Rx<MyUser?> get myUser => _myUserService.myUser;
 
   @override
   void onClose() {
@@ -106,14 +113,10 @@ class PayPalDepositController extends GetxController {
         await WebUtils.openPopup(
           '${Config.origin}/payment/paypal.html',
           parameters: {
-            'client-id': Config.payPalClientId,
-            'nominal': nominal.l10next(digits: 0),
-            'price': order.pricing?.total?.l10n,
-            'deposit-id': '${order.id}',
-            'order-num': '${order.num.val}',
+            'price': order.pricing?.total?.l10n ?? nominal.l10next(digits: 0),
+            'account': myUser.value?.num.toString(),
             'order-id': '${order.processingUrl?.val.split('?order_id=').last}',
-            'methodId': method.id.val,
-            'country': country.val,
+            'client-id': Config.payPalClientId,
           },
         );
 
@@ -127,56 +130,6 @@ class PayPalDepositController extends GetxController {
       rethrow;
     } finally {
       status.value = PayPalDepositStatus.inProgress;
-    }
-  }
-
-  /// Completes the [OperationDeposit].
-  Future<void> completeDeposit() async {
-    status.value = PayPalDepositStatus.inProgress;
-
-    final Operation? operation = this.operation.value?.value;
-    if (operation != null) {
-      // Wait for ~5 seconds, since PayPal might take some time to validate the
-      // transaction.
-      await Future.delayed(Duration(seconds: 5));
-
-      try {
-        this.operation.value = await _walletService.completeOperationDeposit(
-          id: operation.id,
-          secret: _secret,
-        );
-      } on CompleteOperationDepositException catch (e) {
-        switch (e.code) {
-          case CompleteOperationDepositErrorCode.inProgress:
-            // No-op.
-            break;
-
-          case CompleteOperationDepositErrorCode.unavailable:
-          case CompleteOperationDepositErrorCode.unknownOperation:
-          case CompleteOperationDepositErrorCode.unprocessable:
-          case CompleteOperationDepositErrorCode.artemisUnknown:
-            error.value = e.toString();
-            rethrow;
-        }
-      }
-    }
-  }
-
-  /// Declines the [OperationDeposit].
-  Future<void> declineDeposit() async {
-    status.value = PayPalDepositStatus.inProgress;
-
-    final Operation? operation = this.operation.value?.value;
-    if (operation != null) {
-      try {
-        this.operation.value = await _walletService.declineOperationDeposit(
-          id: operation.id,
-          secret: _secret,
-        );
-      } catch (e) {
-        error.value = e.toString();
-        rethrow;
-      }
     }
   }
 

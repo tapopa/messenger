@@ -19,7 +19,6 @@ import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../../util/platform_utils.dart';
 import '/api/backend/schema.dart';
 import '/domain/model/country.dart';
 import '/domain/model/operation_deposit_method.dart';
@@ -34,6 +33,7 @@ import '/ui/widget/modal_popup.dart';
 import '/ui/widget/primary_button.dart';
 import '/ui/widget/svg/svg.dart';
 import '/ui/widget/widget_button.dart';
+import '/util/platform_utils.dart';
 import 'controller.dart';
 
 /// View for creating a [OperationDeposit] with PayPal.
@@ -85,6 +85,7 @@ class PayPalDepositView extends StatelessWidget {
 
     return GetBuilder(
       init: PayPalDepositController(
+        Get.find(),
         Get.find(),
         country: country,
         method: method,
@@ -219,7 +220,7 @@ class PayPalDepositView extends StatelessWidget {
                               break;
 
                             case OperationStatus.completed:
-                              text = 'label_operation_completed'.l10n;
+                              text = 'label_operation_label_completed'.l10n;
                               break;
 
                             case OperationStatus.declined:
@@ -227,7 +228,7 @@ class PayPalDepositView extends StatelessWidget {
                               break;
 
                             case OperationStatus.failed:
-                              text = 'label_data_transfer_error'.l10n;
+                              text = 'label_operation_label_failed'.l10n;
                               break;
 
                             case OperationStatus.inProgress:

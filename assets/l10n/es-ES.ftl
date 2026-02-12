@@ -1090,8 +1090,10 @@ label_operation_declined = Inconclusa
 label_operation_failed = Falló
 label_operation_in_progress = En progreso...
 label_operation_label_cannot_processed_automatically = Lamentablemente, la transacción no se puede procesar automáticamente. Se revisará y procesará manualmente en 24 horas.
+label_operation_label_completed = Recarga de billetera completada.
+label_operation_label_failed = Ocurrió un error al procesar la transacción.
 label_operation_label_in_progress = Operación en curso...
-label_operation_label_interrupted = Operación interrumpida
+label_operation_label_interrupted = Transacción fallida. Los fondos se han devuelto a la cuenta del remitente.
 label_operation_label_waiting_for_paypal = Esperando respuesta de PayPal. {$seconds} {$seconds ->
         [one] segundo
         *[other] segundos

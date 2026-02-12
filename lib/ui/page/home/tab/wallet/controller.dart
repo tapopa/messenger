@@ -18,6 +18,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '/api/backend/schema.dart';
 import '/domain/model/balance.dart';
 import '/domain/model/country.dart';
 import '/domain/model/operation_deposit_method.dart';
@@ -25,17 +26,14 @@ import '/domain/model/price.dart';
 import '/domain/model/session.dart';
 import '/domain/service/session.dart';
 import '/domain/service/wallet.dart';
-import '/ui/worker/wallet.dart';
+import '/routes.dart';
 import '/util/message_popup.dart';
+import 'paypal/view.dart';
 import 'widget/deposit_expandable.dart';
 
 /// Controller of the `HomeTab.wallet` tab.
 class WalletTabController extends GetxController {
-  WalletTabController(
-    this._sessionService,
-    this._walletService,
-    this._walletWorker,
-  );
+  WalletTabController(this._sessionService, this._walletService);
 
   /// [ScrollController] to pass to a [Scrollbar].
   final ScrollController scrollController = ScrollController();
@@ -51,9 +49,6 @@ class WalletTabController extends GetxController {
 
   /// [WalletService] used to retrieve available [OperationDepositMethod]s.
   final WalletService _walletService;
-
-  /// [WalletWorker] responsible for creating [OperationDeposit]s.
-  final WalletWorker _walletWorker;
 
   /// Returns the [OperationDepositMethod]s available for the [MyUser].
   RxList<OperationDepositMethod> get methods => _walletService.methods;
@@ -87,7 +82,19 @@ class WalletTabController extends GetxController {
     Price? pricing,
   ) async {
     try {
-      await _walletWorker.create(method, country, nominal, pricing);
+      switch (method.kind) {
+        case OperationDepositKind.paypal:
+          await PayPalDepositView.show(
+            router.context!,
+            method: method,
+            country: country,
+            nominal: nominal,
+          );
+          break;
+
+        case OperationDepositKind.artemisUnknown:
+          throw Exception('Unsupported');
+      }
     } catch (e) {
       MessagePopup.error(e);
       rethrow;

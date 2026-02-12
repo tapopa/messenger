@@ -36,6 +36,7 @@ import '/domain/model/user.dart';
 import '/domain/repository/session.dart';
 import '/domain/repository/wallet.dart';
 import '/domain/service/disposable_service.dart';
+import '/l10n/l10n.dart';
 import '/provider/gql/graphql.dart';
 import '/util/backoff.dart';
 import '/util/log.dart';
@@ -375,7 +376,12 @@ class WalletRepository extends IdentityDependency
     _queryToken?.cancel();
     _queryToken = CancelToken();
 
-    _ip ??= await _sessionRepository.fetch();
+    try {
+      _ip ??= await _sessionRepository.fetch();
+    } catch (e) {
+      Log.warning('_queryMethods() -> unable to fetch IP -> $e');
+    }
+
     if (_ip != null) {
       _country ??= CountryCode(_ip?.countryCode ?? 'us');
     }
@@ -386,8 +392,9 @@ class WalletRepository extends IdentityDependency
 
     if (_country == null) {
       Log.warning('_queryMethods() -> country is `null`', '$runtimeType');
-      methods.value = [];
-      return;
+      _country ??= CountryCode(
+        L10n.chosen.value?.locale.languageCode.toUpperCase() ?? 'us',
+      );
     }
 
     try {

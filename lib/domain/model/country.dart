@@ -26,7 +26,7 @@ import 'operation_deposit_method.dart';
 ///
 /// [ISO 3166-1 alpha-2]: https://www.iso.org/iso-3166-country-codes.html
 class CountryCode extends NewType<String> {
-  const CountryCode(super.val);
+  CountryCode(String val) : super(val.toUpperCase());
 }
 
 /// All known country codes in [ISO 3166-1 alpha-2] format.

@@ -18,32 +18,23 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 import '/api/backend/schema.dart';
-import '/config.dart';
 import '/domain/model/country.dart';
 import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/price.dart';
 import '/domain/model/user.dart';
 import '/domain/service/disposable_service.dart';
-import '/domain/service/wallet.dart';
-import '/l10n/l10n.dart';
 import '/routes.dart';
-import '/ui/page/home/tab/wallet/paypal/controller.dart';
 import '/ui/page/home/tab/wallet/paypal/view.dart';
 import '/util/log.dart';
-import '/util/platform_utils.dart';
 import '/util/web/web_utils.dart';
 
 /// Worker responsible for creating [OperationDeposit]s and maintaining
 /// communication with deposit popups.
 class WalletWorker extends Dependency with IdentityAware {
-  WalletWorker(this._walletService);
-
-  /// [WalletService] used for creating [OperationDeposit]s.
-  final WalletService _walletService;
+  WalletWorker();
 
   /// List of ongoing [_Operation]s happening currently.
   final Map<String, _Operation> _operations = {};
@@ -89,124 +80,6 @@ class WalletWorker extends Dependency with IdentityAware {
       method: method,
       country: country,
     );
-
-    // final _Operation operation = await _Operation.create(
-    //   method: method,
-    //   country: country,
-    //   nominal: nominal,
-    //   pricing: pricing,
-    //   onMessage: (e) async {
-    //     Log.debug('onMessage -> $e', '$runtimeType');
-
-    //     if (e is Map) {
-    //       final id = e['id'];
-    //       final type = e['type'];
-
-    //       if (id is String && type is String) {
-    //         final _Operation? operation = _operations[id];
-    //         if (operation == null) {
-    //           Log.debug(
-    //             'onMessage -> ignoring `$type` event, as `$id` is not found',
-    //             '$runtimeType',
-    //           );
-    //           return;
-    //         }
-
-    //         switch (type) {
-    //           case 'createOrder':
-    //             operation._secret = OperationDepositSecret.generate();
-    //             final Rx<Operation>? deposit = await _walletService
-    //                 .createOperationDeposit(
-    //                   methodId: operation.method.id,
-    //                   nominal: operation.nominal,
-    //                   country: operation.country,
-    //                   paypal: operation._secret,
-    //                 );
-
-    //             operation.deposit = deposit;
-
-    //             final Operation? operationDeposit = deposit?.value;
-    //             if (operationDeposit is OperationDeposit) {
-    //               final String? url = operationDeposit.processingUrl?.val;
-    //               if (url != null) {
-    //                 operation.postBroadcast({
-    //                   'id': id,
-    //                   'type': 'orderCreated',
-    //                   'orderId': url.split('?order_id=').last,
-    //                 });
-    //               }
-    //             }
-    //             break;
-
-    //           case 'onApprove':
-    //             final operationId = e['transactionId'];
-    //             if (operationId is String) {
-    //               await PayPalDepositView.show(
-    //                 router.context!,
-    //                 nominal: nominal,
-    //                 method: method,
-    //                 country: country,
-    //                 id: OperationId(operationId),
-    //                 status: PayPalDepositStatus.inProgress,
-    //               );
-    //             }
-
-    //             final OperationId? id = operation.deposit?.value?.id;
-    //             if (id != null) {
-    //               await _walletService.completeOperationDeposit(
-    //                 id: id,
-    //                 secret: operation._secret,
-    //               );
-    //             }
-
-    //             final OperationNum? num = operation.deposit?.value?.num;
-    //             if (num != null) {
-    //               operation.postBroadcast({
-    //                 'id': id,
-    //                 'type': 'inProgress',
-    //                 'transactionId': '${num.val}',
-    //               });
-    //             }
-    //             break;
-
-    //           case 'onCancel':
-    //             final operationId = e['transactionId'];
-    //             if (operationId is String) {
-    //               await PayPalDepositView.show(
-    //                 router.context!,
-    //                 nominal: nominal,
-    //                 method: method,
-    //                 country: country,
-    //                 id: OperationId(operationId),
-    //                 status: PayPalDepositStatus.inProgress,
-    //               );
-    //             }
-
-    //             final OperationId? id = operation.deposit?.value?.id;
-    //             if (id != null) {
-    //               await _walletService.declineOperationDeposit(
-    //                 id: id,
-    //                 secret: operation._secret,
-    //               );
-    //             }
-    //             break;
-
-    //           case 'onError':
-    //             // No-op.
-    //             break;
-    //         }
-    //       }
-    //     }
-    //   },
-    // );
-
-    // if (!operation._handle.isOpen) {
-    //   await launchUrlString(operation._handle.url);
-    //   operation.dispose();
-    //   return;
-    // }
-
-    // _operations[operation.id] = operation;
   }
 }
 
@@ -217,37 +90,10 @@ class _Operation {
     required this.method,
     required this.country,
     required this.nominal,
-    this.pricing,
+
     void Function(dynamic e)? onMessage,
   }) {
     _onMessage = WebUtils.onBroadcastMessage(name: id).listen(onMessage);
-  }
-
-  /// Creates an [_Operation] with a [WindowHandle] set up.
-  static Future<_Operation> create({
-    required OperationDepositMethod method,
-    required CountryCode country,
-    required Price nominal,
-    required Price? pricing,
-    void Function(dynamic e)? onMessage,
-  }) async {
-    return _Operation(
-      await WebUtils.openPopup(
-        '${Config.origin}/payment/paypal.html',
-        parameters: {
-          'client-id': Config.payPalClientId,
-          'nominal': nominal.l10next(digits: 0),
-          'price': '${pricing?.l10n}',
-          'methodId': method.id.val,
-          'country': country.val,
-        },
-      ),
-      method: method,
-      country: country,
-      nominal: nominal,
-      pricing: pricing,
-      onMessage: onMessage,
-    );
   }
 
   /// [OperationDepositMethod] of this [_Operation].
@@ -259,14 +105,8 @@ class _Operation {
   /// [Price] of the [OperationDeposit].
   final Price nominal;
 
-  /// Total calculated pricing of this [OperationDeposit].
-  final Price? pricing;
-
   /// [WindowHandle] of a window where [_Operation] is happening.
   final WindowHandle _handle;
-
-  /// [OperationDepositSecret] of the [deposit], if any.
-  OperationDepositSecret? _secret;
 
   /// [StreamSubscription] to [WebUtils.onBroadcastMessage] changes.
   StreamSubscription? _onMessage;

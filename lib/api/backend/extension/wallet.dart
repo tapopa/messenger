@@ -286,6 +286,13 @@ extension OperationEventsVersionedMixinConversion
   DtoOperation toDto({OperationsCursor? cursor}) => _operation(this, cursor);
 }
 
+/// Extension adding models construction from [Operation$Query$Operation$Node].
+extension OperationQueryConversion on Operation$Query$Operation$Node {
+  /// Constructs the new [DtoOperation] from this
+  /// [Operation$Query$Operation$Node].
+  DtoOperation toDto({OperationsCursor? cursor}) => _operation(this, cursor);
+}
+
 /// Constructs a new [DtoOperation]s based on the [node] and [cursor].
 DtoOperation _operation(dynamic node, OperationsCursor? cursor) {
   if (node is OperationDepositMixin) {

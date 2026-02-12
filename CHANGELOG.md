@@ -6,6 +6,24 @@ All user visible changes to this project will be documented in this file. This p
 
 
 
+## [0.4.0] · 2026-??-??
+[0.4.0]: /../../tree/v0.4.0
+
+[Diff](/../../compare/v0.3.1...v0.4.0) | [Milestone](/../../milestone/7)
+
+### Changed
+
+- UI:
+    - Monetization tab:
+        - Operations with pagination on transaction page. ([#26])
+    - Wallet tab:
+        - Operations with pagination on transaction page. ([#26])
+
+[#26]: /../../pull/26
+
+
+
+
 ## [0.3.1] · 2026-02-11
 [0.3.1]: /../../tree/v0.3.1
 
@@ -18,7 +36,7 @@ All user visible changes to this project will be documented in this file. This p
         - Enabled video sometimes not being seen by participants. ([team113/messenger#1602])
         - Call buttons dragged from dock to panel are being left hanging on screen. ([team113/messenger#1602])
 
-[team113/messenger#1602]: /../../pull/1602
+[team113/messenger#1602]: https://github.com/team113/messenger/pull/1602
 
 
 

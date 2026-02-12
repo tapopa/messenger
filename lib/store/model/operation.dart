@@ -36,19 +36,33 @@ class DtoOperation implements Comparable<DtoOperation> {
   OperationId get id => value.id;
 
   @override
-  int compareTo(DtoOperation other) {
-    final result = value.createdAt.compareTo(other.value.createdAt);
-    if (result == 0) {
-      return id.val.compareTo(other.id.val);
-    }
+  int compareTo(DtoOperation other) => other.value.compareTo(value);
 
-    return result;
-  }
+  @override
+  String toString() => 'DtoOperation($value)';
 }
 
 /// Version of the [Operation]'s state.
 class OperationVersion extends Version {
   OperationVersion(super.val);
+
+  /// Compares whether [OperationVersion] is bigger than [other].
+  bool operator >(OperationVersion? other) {
+    if (other == null) {
+      return false;
+    }
+
+    return val.compareTo(other.val) == -1;
+  }
+
+  /// Compares whether [OperationVersion] is bigger or equals to [other].
+  bool operator >=(OperationVersion? other) {
+    if (other == null) {
+      return false;
+    }
+
+    return val.compareTo(other.val) <= 0;
+  }
 }
 
 /// Cursor of [Operation]s.

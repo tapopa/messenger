@@ -15,6 +15,7 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 import '/domain/model/operation.dart';
@@ -38,6 +39,9 @@ class WalletTransactionsController extends GetxController {
   /// Query of the [search].
   final RxnString query = RxnString();
 
+  /// [ScrollController] to pass to a [ListView] of [Operation]s to fetch more.
+  final ScrollController scrollController = ScrollController();
+
   /// [WalletService] maintaining the [Operation]s.
   final WalletService _walletService;
 
@@ -45,7 +49,20 @@ class WalletTransactionsController extends GetxController {
   Worker? _queryWorker;
 
   /// Returns the [Operation]s happening in [MyUser]'s wallet.
-  Paginated<OperationId, Operation> get operations => _walletService.operations;
+  Paginated<OperationId, Rx<Operation>> get operations =>
+      _walletService.operations;
+
+  /// Indicator whether [operations] have next page.
+  RxBool get hasNext => _walletService.operations.hasNext;
+
+  /// Indicator whether [operations] have next page loading.
+  RxBool get nextLoading => _walletService.operations.nextLoading;
+
+  /// Indicator whether [operations] have previous page.
+  RxBool get hasPrevious => _walletService.operations.hasPrevious;
+
+  /// Indicator whether [operations] have previous page loading.
+  RxBool get previousLoading => _walletService.operations.previousLoading;
 
   @override
   void onInit() {
@@ -53,12 +70,30 @@ class WalletTransactionsController extends GetxController {
       // TODO: Searching.
     });
 
+    scrollController.addListener(_scrollListener);
+
     super.onInit();
   }
 
   @override
   void onClose() {
     _queryWorker?.dispose();
+    scrollController.removeListener(_scrollListener);
+    scrollController.dispose();
     super.onClose();
+  }
+
+  /// Requests the next page of [Operation]s based on the
+  /// [ScrollController.position] value.
+  Future<void> _scrollListener() async {
+    if (scrollController.hasClients && hasNext.value && !nextLoading.value) {
+      final bool isAtTop =
+          scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 60;
+
+      if (isAtTop) {
+        await operations.next();
+      }
+    }
   }
 }

@@ -17,12 +17,13 @@
 
 import 'dart:async';
 
-import 'package:graphql/client.dart';
+import 'package:graphql/client.dart' hide Operation;
 
 import '../base.dart';
 import '/api/backend/schema.dart';
 import '/domain/model/country.dart';
 import '/domain/model/my_user.dart';
+import '/domain/model/operation.dart';
 import '/domain/model/price.dart';
 import '/domain/model/session.dart';
 import '/store/model/operation.dart';
@@ -64,6 +65,7 @@ mixin WalletGraphQlMixin {
   /// filtered entries is nonsense and will produce an invalid result (usually
   /// returning nothing).
   Future<Operations$Query$Operations> operations({
+    OperationOrigin origin = OperationOrigin.purse,
     int? first,
     OperationsCursor? after,
     int? last,
@@ -72,7 +74,7 @@ mixin WalletGraphQlMixin {
     Log.debug('operations($first, $after, $last, $before)', '$runtimeType');
 
     final variables = OperationsArguments(
-      origin: OperationOrigin.purse,
+      origin: origin,
       pagination: OperationsPagination(
         first: first,
         after: after,
@@ -245,5 +247,24 @@ mixin WalletGraphQlMixin {
       ),
       ver: onVer,
     );
+  }
+
+  /// Returns an [Operation] by its [OperationId] or [OperationNum].
+  Future<Operation$Query$Operation?> operation(
+    OperationId? id,
+    OperationNum? num,
+  ) async {
+    Log.debug('operation(id: $id, num: $num)', '$runtimeType');
+
+    final variables = OperationArguments(id: id, num: num);
+    final QueryResult result = await client.query(
+      QueryOptions(
+        operationName: 'Operation',
+        document: OperationQuery(variables: variables).document,
+        variables: variables.toJson(),
+      ),
+    );
+
+    return Operation$Query.fromJson(result.data!).operation;
   }
 }

@@ -15,6 +15,8 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:async';
+
 import 'package:get/get.dart';
 
 import '/domain/model/balance.dart';
@@ -29,11 +31,14 @@ abstract class AbstractWalletRepository {
   Rx<Balance> get balance;
 
   /// Returns the [Operation]s happening in [MyUser]'s wallet.
-  Paginated<OperationId, Operation> get operations;
+  Paginated<OperationId, Rx<Operation>> get operations;
 
   /// Returns the [OperationDepositMethod]s available for the [MyUser].
   RxList<OperationDepositMethod> get methods;
 
   /// Sets the available [methods] to be accounted as the provided [country].
   Future<void> setCountry(CountryCode country);
+
+  /// Returns an [Operation] identified by the provided [id] or [num].
+  FutureOr<Rx<Operation>?> get({OperationId? id, OperationNum? num});
 }

@@ -19,6 +19,7 @@ import 'package:async/async.dart';
 import 'package:get/get.dart';
 import 'package:graphql/client.dart' show QueryResult;
 
+import '/api/backend/extension/page_info.dart';
 import '/api/backend/extension/wallet.dart';
 import '/api/backend/schema.dart';
 import '/domain/model/balance.dart';
@@ -64,11 +65,21 @@ class PartnerRepository extends IdentityDependency
       onKey: (e) => e.id,
       perPage: 15,
       provider: GraphQlPageProvider(
-        fetch: ({after, before, first, last}) async => Page([], PageInfo()),
+        fetch: ({after, before, first, last}) async {
+          final Page<DtoOperation, OperationsCursor> page = await _operations(
+            after: after,
+            before: before,
+            first: first,
+            last: last,
+          );
+
+          return page;
+        },
       ),
     ),
-    transform: ({required DtoOperation data, Operation? previous}) {
-      return data.value;
+    transform: ({required DtoOperation data, Rx<Operation>? previous}) {
+      previous?.value = data.value;
+      return previous ?? Rx(data.value);
     },
   );
 
@@ -103,6 +114,33 @@ class PartnerRepository extends IdentityDependency
       _initAvailableSubscription();
       _initHoldSubscription();
     }
+  }
+
+  /// Fetches purse operations with pagination.
+  Future<Page<DtoOperation, OperationsCursor>> _operations({
+    int? first,
+    OperationsCursor? after,
+    int? last,
+    OperationsCursor? before,
+  }) async {
+    Log.debug('_operations($first, $after, $last, $before)', '$runtimeType');
+
+    if (me.isLocal) {
+      return Page([], PageInfo());
+    }
+
+    final query = await _graphQlProvider.operations(
+      origin: OperationOrigin.income,
+      first: first,
+      after: after,
+      last: last,
+      before: before,
+    );
+
+    return Page(
+      query.edges.map((e) => e.node.toDto(cursor: e.cursor)).toList(),
+      query.pageInfo.toModel(OperationsCursor.new),
+    );
   }
 
   /// Initializes [_availableSubscription] subscription.

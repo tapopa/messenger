@@ -16,6 +16,8 @@ All user visible changes to this project will be documented in this file. This p
 - UI:
     - Wallet tab:
         - PayPal deposit. ([#23])
+    - Chat page:
+        - Donations. ([#27])
 
 ### Changed
 
@@ -27,6 +29,7 @@ All user visible changes to this project will be documented in this file. This p
 
 [#23]: /../../pull/23
 [#26]: /../../pull/26
+[#27]: /../../pull/27
 
 
 

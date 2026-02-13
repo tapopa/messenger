@@ -162,6 +162,8 @@ class PayPalDepositController extends GetxController {
         'client-id': Config.payPalClientId,
         if (orderId != null) 'order-id': orderId,
         if (orderId == null) ...{
+          'operation-id': operation.value?.value.id.val,
+          'secret': _secret?.val,
           'method-id': method.id,
           'nominal': nominal.l10next(digits: 0),
           'country': country.val,

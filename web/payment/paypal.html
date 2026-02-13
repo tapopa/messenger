@@ -265,34 +265,35 @@
         <div class="modal-header" l10n="label_top_up_by_paypal">Top up by PayPal</div>
 
         <div class="divider">
-          <span>Details</span>
+          <span l10n="label_details">Details</span>
         </div>
 
         <div class="column">
           <div class="row">
-            <span class="label">Account</span>
+            <span class="label" l10n="label_account">Account</span>
             <span class="value" id="account"">1111-1111-1111-1111</span>
             </div>
 
             <div class=" row">
-              <span class="label">Top up option</span>
+              <span class="label" l10n="label_top_up_option">Top up option</span>
               <span class="value">PayPal</span>
           </div>
 
           <div class="row">
-            <span class="label">To be paid</span>
+            <span class="label" l10n="label_to_be_paid">To be paid</span>
             <span class="value" id="price">$6.49</span>
           </div>
         </div>
 
         <div class="gap-h-12"></div>
-        <div class="subtitle">To make the payment a secure PayPal page will open.</div>
+        <div class="subtitle" l10n="label_to_make_payment_secure_paypal_page_will_open">To make the payment a secure
+          PayPal page will open.</div>
         <div class="gap-h-12"></div>
 
         <div id="paypal-btn" class="paypal-btn"></div>
 
         <div class="gap-h-12"></div>
-        <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+        <button class="cancel-btn" l10n="btn_cancel" onclick="closeModal()">Cancel</button>
       </div>
     </div>
 
@@ -302,13 +303,14 @@
         <div class="modal-header" l10n="label_top_up_by_paypal">Top up by PayPal</div>
 
         <div class="centered">
-          <div>Transaction is being processed</div>
+          <div l10n="label_transaction_is_being_processed">Transaction is being processed</div>
           <div class="gap-h-6"></div>
-          <div class="subtitle">To report any problems contact Support Service and provide your PayPal account e-mail,
+          <div class="subtitle" l10n="label_paypal_in_progress_bottom_description">To report any problems contact
+            Support Service and provide your PayPal account e-mail,
             Tapopa ID, Transaction ID.</div>
         </div>
 
-        <button class="text-btn" onclick="closeModal()">Close window</button>
+        <button class="text-btn" l10n="btn_close_button" onclick="closeModal()">Close window</button>
       </div>
     </div>
 
@@ -318,13 +320,14 @@
         <div class="modal-header" l10n="label_top_up_by_paypal">Top up by PayPal</div>
 
         <div class="centered">
-          <div>Transaction unfinished</div>
+          <div l10n="label_transaction_unfinished">Transaction unfinished</div>
           <div class="gap-h-6"></div>
-          <div class="subtitle">To report any problems contact Support Service and provide your PayPal account e-mail,
+          <div class="subtitle" l10n="label_paypal_in_progress_bottom_description">To report any problems contact
+            Support Service and provide your PayPal account e-mail,
             Tapopa ID, Transaction ID.</div>
         </div>
 
-        <button class="text-btn" onclick="closeModal()">Close window</button>
+        <button class="text-btn" l10n="btn_close_button" onclick="closeModal()">Close window</button>
       </div>
     </div>
 
@@ -334,16 +337,17 @@
         <div class="modal-header" l10n="label_top_up_by_paypal">Top up by PayPal</div>
 
         <div class="centered">
-          <div>An error occurred while processing the transaction</div>
+          <div l10n="label_operation_label_failed">An error occurred while processing the transaction</div>
           <div class="gap-h-6"></div>
-          <div class="error" id="error">Error.</div>
+          <div class="error" id="error" l10n="label_error">Error.</div>
           <div class="gap-h-6"></div>
-          <div class="subtitle">To report any problems contact Support Service and provide your PayPal account
+          <div class="subtitle" l10n="label_paypal_in_progress_bottom_description">To report any problems contact
+            Support Service and provide your PayPal account
             e-mail,
             Tapopa ID, Transaction ID.</div>
         </div>
 
-        <button class="text-btn" onclick="closeModal()">Close window</button>
+        <button class="text-btn" l10n="btn_close_button" onclick="closeModal()">Close window</button>
       </div>
     </div>
 
@@ -513,9 +517,8 @@ mutation CreateOperationDeposit(
     }
 
     async function completeOperationDeposit() {
-
       try {
-        let endpoint = localStorage.getItem('endpoint');
+        let endpoint = localStorage.getItem('endpoint') ?? `/api/graphql/v1`;
 
         const response = await fetch(endpoint, {
           method: 'POST',
@@ -563,7 +566,7 @@ mutation CompleteOperationDeposit(
 
     async function declineOperationDeposit() {
       try {
-        let endpoint = localStorage.getItem('endpoint');
+        let endpoint = localStorage.getItem('endpoint') ?? `/api/graphql/v1`;
 
         const response = await fetch(endpoint, {
           method: 'POST',
@@ -621,6 +624,9 @@ mutation DeclineOperationDeposit(
 
     // Parse the URL query parameters.
     const urlParams = new URLSearchParams(window.location.search);
+
+    secret = urlParams.get('secret') ?? '';
+    transactionId = urlParams.get('operation-id') ?? '';
 
     // Create the script element.
     const sdk = document.createElement('script');

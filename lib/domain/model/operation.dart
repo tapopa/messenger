@@ -549,8 +549,14 @@ class OperationId extends NewType<String> {
   /// Creates a local [OperationId].
   const OperationId.local() : super('0');
 
+  /// Constructs a [OperationId] from the provided [val].
+  factory OperationId.fromJson(String val) = OperationId;
+
   /// Indicates whether this [OperationId] is a local.
   bool get isLocal => val == '0';
+
+  /// Returns a [String] representing this [OperationId].
+  String toJson() => val;
 }
 
 /// Sequential number of an [Operation].

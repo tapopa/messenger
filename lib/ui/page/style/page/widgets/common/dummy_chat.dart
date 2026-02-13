@@ -1,5 +1,7 @@
 // Copyright © 2022-2026 IT ENGINEERING MANAGEMENT INC,
 //                       <https://github.com/team113>
+// Copyright © 2025 Ideas Networks Solutions S.A.,
+//                       <https://github.com/tapopa>
 //
 // This program is free software: you can redistribute it and/or modify it under
 // the terms of the GNU Affero General Public License v3.0 as published by the
@@ -21,6 +23,7 @@ import '/domain/model/attachment.dart';
 import '/domain/model/avatar.dart';
 import '/domain/model/chat.dart';
 import '/domain/model/chat_item.dart';
+import '/domain/model/donation.dart';
 import '/domain/model/user.dart';
 import '/domain/model/user_call_cover.dart';
 import '/domain/repository/chat.dart';
@@ -105,6 +108,7 @@ class DummyRxChat extends RxChat {
     ChatMessageText? text,
     List<Attachment> attachments = const [],
     List<ChatItem> repliesTo = const [],
+    List<Donation> donations = const [],
   }) async {}
 
   @override

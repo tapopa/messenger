@@ -29,20 +29,22 @@ import '/api/backend/schema.dart'
     show
         ChatCallFinishReason,
         ChatKind,
+        DonationInput,
         PostChatMessageErrorCode,
         ReadChatErrorCode;
 import '/domain/model/attachment.dart';
 import '/domain/model/avatar.dart';
-import '/domain/model/chat.dart';
 import '/domain/model/chat_call.dart';
 import '/domain/model/chat_info.dart';
-import '/domain/model/chat_item.dart';
 import '/domain/model/chat_item_quote.dart';
+import '/domain/model/chat_item.dart';
+import '/domain/model/chat.dart';
+import '/domain/model/donation.dart';
 import '/domain/model/ongoing_call.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/sending_status.dart';
-import '/domain/model/user.dart';
 import '/domain/model/user_call_cover.dart';
+import '/domain/model/user.dart';
 import '/domain/repository/chat.dart';
 import '/domain/repository/paginated.dart';
 import '/domain/repository/user.dart';
@@ -451,8 +453,12 @@ class RxChatImpl extends RxChat {
     ChatMessageText? text,
     List<Attachment> attachments = const [],
     List<ChatItem> repliesTo = const [],
+    List<Donation> donations = const [],
   }) async {
-    Log.debug('setDraft($text, $attachments, $repliesTo)', '$runtimeType($id)');
+    Log.debug(
+      'setDraft($text, $attachments, $repliesTo, $donations)',
+      '$runtimeType($id)',
+    );
 
     await _draftGuard.protect(() async {
       ChatMessage? draft;
@@ -468,7 +474,10 @@ class RxChatImpl extends RxChat {
         // No-op?
       }
 
-      if (text == null && attachments.isEmpty && repliesTo.isEmpty) {
+      if (text == null &&
+          attachments.isEmpty &&
+          repliesTo.isEmpty &&
+          donations.isEmpty) {
         if (draft != null) {
           await _draftLocal.delete(id);
         }
@@ -483,7 +492,15 @@ class RxChatImpl extends RxChat {
           attachments.map((e) => [e.id, e.runtimeType]),
         );
 
-        if (draft?.text != text || !repliesEqual || !attachmentsEqual) {
+        final bool donationsEqual = const IterableEquality().equals(
+          (draft?.donations ?? []).map((e) => [e.amount.val, e.id]),
+          donations.map((e) => [e.amount.val, e.id]),
+        );
+
+        if (draft?.text != text ||
+            !repliesEqual ||
+            !attachmentsEqual ||
+            !donationsEqual) {
           draft = ChatMessage(
             ChatItemId.local(),
             id,
@@ -492,6 +509,7 @@ class RxChatImpl extends RxChat {
             text: text,
             repliesTo: repliesTo.map((e) => ChatItemQuote.from(e)).toList(),
             attachments: attachments,
+            donations: donations,
           );
           _draftLocal.upsert(id, draft);
         }
@@ -704,9 +722,10 @@ class RxChatImpl extends RxChat {
     ChatMessageText? text,
     List<Attachment>? attachments,
     List<ChatItem> repliesTo = const [],
+    Donation? donation,
   }) async {
     Log.debug(
-      'postChatMessage($existingId, $existingDateTime, $text, $attachments, $repliesTo)',
+      'postChatMessage($existingId, $existingDateTime, $text, $attachments, $repliesTo, $donation)',
       '$runtimeType($id)',
     );
 
@@ -718,6 +737,7 @@ class RxChatImpl extends RxChat {
       attachments: attachments ?? [],
       existingId: existingId,
       existingDateTime: existingDateTime,
+      donations: [?donation],
     );
 
     bool putFinally = true;
@@ -800,6 +820,9 @@ class RxChatImpl extends RxChat {
           text: text,
           attachments: attachments?.map((e) => e.id).toList(),
           repliesTo: repliesTo.map((e) => e.id).toList(),
+          donation: donation == null
+              ? null
+              : DonationInput(sum: donation.amount),
         );
 
         final event =

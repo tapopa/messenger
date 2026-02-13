@@ -28,6 +28,7 @@ import '/domain/model/chat.dart';
 import '/domain/model/chat_item.dart';
 import '/domain/model/chat_item_quote_input.dart';
 import '/domain/model/chat_message_input.dart';
+import '/domain/model/donation.dart';
 import '/domain/model/mute_duration.dart';
 import '/domain/model/native_file.dart';
 import '/domain/model/sending_status.dart';
@@ -146,14 +147,16 @@ class ChatService extends Dependency {
     ChatMessageText? text,
     List<Attachment>? attachments,
     List<ChatItem> repliesTo = const [],
+    Donation? donation,
   }) {
     Log.debug(
-      'sendChatMessage($chatId, $text, $attachments, $repliesTo)',
+      'sendChatMessage($chatId, $text, $attachments, $repliesTo, $donation)',
       '$runtimeType',
     );
 
     if (text?.val.isNotEmpty != true &&
         attachments?.isNotEmpty != true &&
+        donation == null &&
         repliesTo.isNotEmpty) {
       text ??= const ChatMessageText(' ');
     } else if (text != null) {
@@ -169,6 +172,7 @@ class ChatService extends Dependency {
             chatId,
             text: text,
             attachments: i++ != chunks.length - 1 ? null : attachments,
+            donation: i != chunks.length - 1 ? null : donation,
             repliesTo: repliesTo,
           ),
         );
@@ -180,6 +184,7 @@ class ChatService extends Dependency {
       text: text?.val.isEmpty == true ? null : text,
       attachments: attachments,
       repliesTo: repliesTo,
+      donation: donation,
     );
   }
 

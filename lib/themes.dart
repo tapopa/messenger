@@ -60,6 +60,8 @@ part 'themes.g.dart';
       'primaryHighlightLightest',
       'secondary',
       'danger',
+      'onDonatePrimary',
+      'onDonateSecondary',
     ],
     'bold': ['onPrimary'],
   },
@@ -146,6 +148,8 @@ class Themes {
       warningSecondary: const Color(0xFFEEAE03),
       currencyPrimary: const Color(0xFF08A521),
       currencySecondary: const Color.fromRGBO(8, 165, 34, 0.4),
+      onDonatePrimary: const Color(0xFF844C1C),
+      onDonateSecondary: const Color(0xFFC08335),
       userColors: const [
         Color(0xFFD2B334),
         Color(0xFF2192FF),
@@ -205,6 +209,8 @@ class Themes {
       onPrimary: colors.onPrimary,
       danger: colors.danger,
       currencyPrimary: colors.currencyPrimary,
+      onDonatePrimary: colors.onDonatePrimary,
+      onDonateSecondary: colors.onDonateSecondary,
       bold: FontWeight.w700,
       regular: FontWeight.w400,
       giant: 36,
@@ -782,6 +788,8 @@ class Palette {
     required this.userColors,
     required this.currencyPrimary,
     required this.currencySecondary,
+    required this.onDonatePrimary,
+    required this.onDonateSecondary,
   }) : primaryOpacity20 = primaryOpacity20 ?? primary.withValues(alpha: 0.20),
        primaryDarkOpacity70 =
            primaryDarkOpacity70 ?? primaryDark.withValues(alpha: 0.70),
@@ -1143,6 +1151,9 @@ class Palette {
   /// Secondary [Color] for currency related things.
   final Color currencySecondary;
 
+  final Color onDonatePrimary;
+  final Color onDonateSecondary;
+
   /// Linear interpolation between two [Palette] objects based on a given [t]
   /// value.
   static Palette lerp(Palette color, Palette? other, double t) {
@@ -1418,6 +1429,16 @@ class Palette {
       currencySecondary: Color.lerp(
         color.currencySecondary,
         other.currencySecondary,
+        t,
+      )!,
+      onDonatePrimary: Color.lerp(
+        color.onDonatePrimary,
+        other.onDonatePrimary,
+        t,
+      )!,
+      onDonateSecondary: Color.lerp(
+        color.onDonateSecondary,
+        other.onDonateSecondary,
         t,
       )!,
     );

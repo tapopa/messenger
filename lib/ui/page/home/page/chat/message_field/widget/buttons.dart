@@ -49,6 +49,9 @@ abstract class ChatButton {
   /// Asset offset of this [ChatButton] in mini mode.
   Offset get offsetMini => Offset.zero;
 
+  /// [ChatButton] displayed at the trailing of this [ChatButton].
+  ChatButton? get trailing => null;
+
   @override
   int get hashCode => runtimeType.hashCode;
 
@@ -174,4 +177,25 @@ class LogsButton extends ChatButton {
 
   @override
   SvgData get asset => SvgIcons.chatLogs;
+}
+
+/// [ChatButton] attaching a [Donation].
+class DonateButton extends ChatButton {
+  const DonateButton({void Function()? onPressed, this.trailing})
+    : super(onPressed);
+
+  @override
+  String get hint => 'btn_donate'.l10n;
+
+  @override
+  SvgData get asset => SvgIcons.gift;
+
+  @override
+  SvgData get assetMini => SvgIcons.giftSmall;
+
+  @override
+  SvgData get disabled => SvgIcons.giftGrey;
+
+  @override
+  final ChatButton? trailing;
 }

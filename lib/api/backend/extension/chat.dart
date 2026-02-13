@@ -23,13 +23,14 @@ import '/domain/model/chat_item_quote.dart';
 import '/domain/model/chat_item.dart';
 import '/domain/model/chat.dart';
 import '/domain/model/crop_area.dart';
+import '/domain/model/donation.dart';
 import '/domain/model/mute_duration.dart';
 import '/domain/model/user.dart';
 import '/store/chat.dart';
 import '/store/model/chat_call.dart';
 import '/store/model/chat_item.dart';
-import '/store/model/chat.dart';
 import '/store/model/chat_member.dart';
+import '/store/model/chat.dart';
 import 'call.dart';
 import 'file.dart';
 import 'user.dart';
@@ -155,6 +156,7 @@ extension ChatMessageConversion on ChatMessageMixin {
         text: text,
         editedAt: editedAt,
         attachments: attachments.map((e) => e.toModel()).toList(),
+        donations: donations.map((e) => e.toModel()).toList(),
       ),
       cursor,
       ver,
@@ -467,6 +469,13 @@ extension ChatAvatarConversion on ChatAvatarMixin {
             ),
           ),
   );
+}
+
+/// Extension adding models construction from [DonationMixin].
+extension DonationConversion on DonationMixin {
+  /// Constructs a new [Donation] from this [DonationMixin].
+  Donation toModel() =>
+      Donation(id: id, amount: amount, operation: operation?.node.id);
 }
 
 /// Extension adding models construction from an

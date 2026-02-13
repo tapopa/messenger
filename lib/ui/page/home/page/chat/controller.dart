@@ -50,8 +50,10 @@ import '/domain/model/chat_item.dart';
 import '/domain/model/chat_message_input.dart';
 import '/domain/model/chat.dart';
 import '/domain/model/contact.dart';
+import '/domain/model/donation.dart';
 import '/domain/model/mute_duration.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
+import '/domain/model/price.dart';
 import '/domain/model/sending_status.dart';
 import '/domain/model/user.dart';
 import '/domain/model/welcome_message.dart';
@@ -505,7 +507,8 @@ class ChatController extends GetxController with IdentityAware {
 
         if (send.field.text.trim().isNotEmpty ||
             send.attachments.isNotEmpty ||
-            send.replied.isNotEmpty) {
+            send.replied.isNotEmpty ||
+            send.donation.value != 0) {
           _chatService
               .sendChatMessage(
                 chat?.chat.value.id ?? id,
@@ -514,6 +517,12 @@ class ChatController extends GetxController with IdentityAware {
                     : ChatMessageText(send.field.text.trim()),
                 repliesTo: send.replied.map((e) => e.value).toList(),
                 attachments: send.attachments.map((e) => e.value).toList(),
+                donation: send.donation.value == 0
+                    ? null
+                    : Donation(
+                        id: DonationId.local(),
+                        amount: Sum(send.donation.value),
+                      ),
               )
               .then(
                 (_) => AudioUtils.once(
@@ -949,6 +958,14 @@ class ChatController extends GetxController with IdentityAware {
       text: send.field.text.isEmpty ? null : ChatMessageText(send.field.text),
       attachments: persisted.map((e) => e.value).toList(),
       repliesTo: List.from(send.replied.map((e) => e.value), growable: false),
+      donations: send.donation.value == 0
+          ? []
+          : [
+              Donation(
+                id: DonationId.local(),
+                amount: Sum(send.donation.value),
+              ),
+            ],
     );
   }
 
@@ -1018,6 +1035,7 @@ class ChatController extends GetxController with IdentityAware {
         unreadMessages = chat!.chat.value.unreadCount;
 
         send.toggleLogs(isMonolog || isSupport);
+        send.toggleDonate(isDialog && !isSupport);
 
         await chat!.ensureDraft();
         final ChatMessage? draft = chat!.draft.value;
@@ -1035,6 +1053,9 @@ class ChatController extends GetxController with IdentityAware {
         for (Attachment e in draft?.attachments ?? []) {
           send.attachments.add(MapEntry(GlobalKey(), e));
         }
+
+        send.donation.value =
+            draft?.donations.fold(0, (a, b) => (a ?? 0) + b.amount.val) ?? 0;
 
         listController
             .sliverController

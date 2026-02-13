@@ -682,6 +682,12 @@ class SvgIcons {
     height: 24,
   );
 
+  static const SvgData giftGrey = SvgData(
+    'assets/icons/gift_grey.svg',
+    width: 24.93,
+    height: 24,
+  );
+
   static const SvgData giftSmall = SvgData(
     'assets/icons/gift_small.svg',
     width: 22.84,
@@ -2303,5 +2309,17 @@ class SvgIcons {
     'assets/icons/enter_grey.svg',
     width: 20.21,
     height: 25,
+  );
+
+  static const SvgData attachmentPlus = SvgData(
+    'assets/icons/attachment_plus.svg',
+    width: 30,
+    height: 30,
+  );
+
+  static const SvgData attachmentMinus = SvgData(
+    'assets/icons/attachment_minus.svg',
+    width: 30,
+    height: 30,
   );
 }

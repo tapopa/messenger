@@ -699,9 +699,10 @@ class ChatRepository extends IdentityDependency
     ChatMessageText? text,
     List<AttachmentId>? attachments,
     List<ChatItemId> repliesTo = const [],
+    DonationInput? donation,
   }) async {
     Log.debug(
-      'postChatMessage($chatId, $text, $attachments, $repliesTo)',
+      'postChatMessage($chatId, $text, $attachments, $repliesTo, donation: ${donation?.toJson()})',
       '$runtimeType',
     );
 
@@ -710,6 +711,7 @@ class ChatRepository extends IdentityDependency
       text: text,
       attachments: attachments,
       repliesTo: repliesTo,
+      donation: donation,
     );
   }
 

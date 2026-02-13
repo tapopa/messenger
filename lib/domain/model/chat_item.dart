@@ -26,6 +26,7 @@ import 'chat.dart';
 import 'chat_call.dart';
 import 'chat_info.dart';
 import 'chat_item_quote.dart';
+import 'donation.dart';
 import 'precise_date_time/precise_date_time.dart';
 import 'sending_status.dart';
 import 'user.dart';
@@ -96,6 +97,7 @@ class ChatMessage extends ChatItem {
     this.text,
     this.editedAt,
     this.attachments = const [],
+    this.donations = const [],
   });
 
   /// Constructs a [ChatMessage] from the provided [json].
@@ -114,8 +116,12 @@ class ChatMessage extends ChatItem {
   /// [Attachment]s of this [ChatMessage].
   List<Attachment> attachments;
 
+  /// [Donation]s attached to this [ChatMessage].
+  List<Donation> donations;
+
   @override
-  int get hashCode => Object.hash(id, text, author, chatId, attachments);
+  int get hashCode =>
+      Object.hash(id, text, author, chatId, attachments, donations);
 
   /// Indicates whether the [other] message shares the same [text], [repliesTo],
   /// [author], [chatId] and [attachments] as this [ChatMessage].
@@ -138,6 +144,9 @@ class ChatMessage extends ChatItem {
                 m.original.relativeRef == e.original.relativeRef &&
                 m.filename == e.filename,
           ),
+        ) &&
+        donations.every(
+          (e) => other.donations.any((m) => m.amount == e.amount),
         );
   }
 

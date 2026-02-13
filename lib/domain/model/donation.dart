@@ -15,13 +15,22 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'package:json_annotation/json_annotation.dart';
+
 import '/util/new_type.dart';
 import 'operation.dart';
 import 'price.dart';
 
+part 'donation.g.dart';
+
 /// [Donation] attached to a [ChatMessage].
+@JsonSerializable()
 class Donation {
   const Donation({required this.id, required this.amount, this.operation});
+
+  /// Constructs a [Donation] from the provided [json].
+  factory Donation.fromJson(Map<String, dynamic> json) =>
+      _$DonationFromJson(json);
 
   /// Unique ID of this [Donation].
   final DonationId id;
@@ -29,8 +38,15 @@ class Donation {
   /// [Sum] of this [Donation].
   final Sum amount;
 
-  /// [Operation] representing this [Donation].
-  final Operation? operation;
+  /// [OperationId] representing this [Donation].
+  final OperationId? operation;
+
+  /// Returns a [Map] representing this [Donation].
+  Map<String, dynamic> toJson() => _$DonationToJson(this);
+
+  @override
+  String toString() =>
+      'Donation(id: $id, amount: $amount, operation: $operation)';
 }
 
 /// ID of a `Donation`.

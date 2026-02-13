@@ -535,6 +535,12 @@ class OperationReward extends Operation {
 /// ID of an [Operation].
 class OperationId extends NewType<String> {
   const OperationId(super.val);
+
+  /// Constructs a [OperationId] from the provided [val].
+  factory OperationId.fromJson(String val) = OperationId;
+
+  /// Returns a [String] representing this [OperationId].
+  String toJson() => val;
 }
 
 /// Sequential number of an [Operation].

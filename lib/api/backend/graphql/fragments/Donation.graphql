@@ -1,5 +1,3 @@
-# Copyright © 2022-2026 IT ENGINEERING MANAGEMENT INC,
-#                       <https://github.com/team113>
 # Copyright © 2025-2026 Ideas Networks Solutions S.A.,
 #                       <https://github.com/tapopa>
 #
@@ -17,26 +15,12 @@
 # along with this program. If not, see
 # <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-mutation PostChatMessage(
-    $chatId: ChatId!
-    $text: ChatMessageText
-    $attachments: [AttachmentId!]
-    $repliesTo: [ChatItemId!]!
-    $donation: DonationInput
-) {
-    postChatMessage(
-        chatId: $chatId
-        text: $text
-        attachments: $attachments
-        repliesTo: $repliesTo
-        donation: $donation
-    ) {
-        __typename
-        ... on ChatEventsVersioned {
-            ...ChatEventsVersioned
-        }
-        ... on PostChatMessageError {
-            code
+fragment Donation on Donation {
+    id
+    amount
+    operation {
+        node {
+            id
         }
     }
 }

@@ -36,6 +36,7 @@ import '/domain/model/user.dart';
 import '/domain/repository/session.dart';
 import '/domain/repository/wallet.dart';
 import '/domain/service/disposable_service.dart';
+import '/l10n/l10n.dart';
 import '/provider/gql/graphql.dart';
 import '/util/backoff.dart';
 import '/util/log.dart';
@@ -219,6 +220,129 @@ class WalletRepository extends IdentityDependency
     });
   }
 
+  @override
+  Future<Rx<Operation>?> createOperationDeposit({
+    required OperationDepositMethodId methodId,
+    required Price nominal,
+    OperationDepositSecret? paypal,
+    required CountryCode country,
+  }) async {
+    Log.debug(
+      'createOperationDeposit(methodId: $methodId, nominal: $nominal, paypal: ${paypal?.obscured}, country: $country)',
+      '$runtimeType',
+    );
+
+    if (paypal == null) {
+      throw Exception('`paypal` shouldn\'t be `null`');
+    }
+
+    final mixin = await _graphQlProvider.createOperationDeposit(
+      methodId: methodId,
+      kind: OperationDepositInput(
+        paypal: OperationDepositPayPalInput(
+          nominal: nominal.sum,
+          secret: paypal,
+        ),
+      ),
+      country: country,
+    );
+
+    final OperationsEventsEvent events = OperationsEventsEvent(
+      OperationsEventsVersioned(
+        mixin.events.map(_operationEvent).toList(),
+        mixin.ver,
+        mixin.listVer,
+      ),
+    );
+
+    await _operationsEvent(events, updateVersion: false);
+
+    // Await for `transform` callback in [operations] to happen.
+    await Future.delayed(Duration.zero);
+
+    final Operation? operation = events.event.events
+        .firstWhereOrNull((e) => e.operation.value is OperationDeposit)
+        ?.operation
+        .value;
+
+    if (operation is OperationDeposit) {
+      final Rx<Operation>? existing = operations.items[operation.id];
+
+      if (existing == null) {
+        Log.debug(
+          'createOperationDeposit() -> existing(`${operation.id}`) is `null`, thus creating new `Rx`',
+          '$runtimeType',
+        );
+
+        operations.items[operation.id] = Rx(operation);
+      }
+
+      return existing ?? operations.items[operation.id];
+    }
+
+    return null;
+  }
+
+  @override
+  Future<Rx<Operation>?> completeOperationDeposit({
+    required OperationId id,
+    OperationDepositSecret? secret,
+  }) async {
+    Log.debug(
+      'completeOperationDeposit(id: $id, secret: ${secret?.obscured})',
+      '$runtimeType',
+    );
+
+    final mixin = await _graphQlProvider.completeOperationDeposit(
+      id: id,
+      secret: secret,
+    );
+
+    final OperationsEventsEvent events = OperationsEventsEvent(
+      OperationsEventsVersioned(
+        mixin.events.map(_operationEvent).toList(),
+        mixin.ver,
+        mixin.listVer,
+      ),
+    );
+
+    await _operationsEvent(events, updateVersion: false);
+
+    return operations.items[id];
+  }
+
+  @override
+  Future<Rx<Operation>?> declineOperationDeposit({
+    required OperationId id,
+    OperationDepositSecret? secret,
+  }) async {
+    Log.debug(
+      'declineOperationDeposit(id: $id, secret: ${secret?.obscured})',
+      '$runtimeType',
+    );
+
+    final mixin = await _graphQlProvider.declineOperationDeposit(
+      id: id,
+      secret: secret,
+    );
+
+    if (mixin == null) {
+      return null;
+    }
+
+    final OperationsEventsEvent events = OperationsEventsEvent(
+      OperationsEventsVersioned(
+        mixin.events.map(_operationEvent).toList(),
+        mixin.ver,
+        mixin.listVer,
+      ),
+    );
+
+    await _operationsEvent(events, updateVersion: false);
+
+    return operations.items[id];
+  }
+
   /// Fetches purse operations with pagination.
   Future<Page<DtoOperation, OperationsCursor>> _operations({
     int? first,
@@ -252,7 +376,12 @@ class WalletRepository extends IdentityDependency
     _queryToken?.cancel();
     _queryToken = CancelToken();
 
-    _ip ??= await _sessionRepository.fetch();
+    try {
+      _ip ??= await _sessionRepository.fetch();
+    } catch (e) {
+      Log.warning('_queryMethods() -> unable to fetch IP -> $e');
+    }
+
     if (_ip != null) {
       _country ??= CountryCode(_ip?.countryCode ?? 'us');
     }
@@ -263,8 +392,7 @@ class WalletRepository extends IdentityDependency
 
     if (_country == null) {
       Log.warning('_queryMethods() -> country is `null`', '$runtimeType');
-      methods.value = [];
-      return;
+      _country ??= CountryCode(L10n.chosen.value?.locale.countryCode ?? 'us');
     }
 
     try {

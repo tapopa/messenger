@@ -435,7 +435,9 @@ class AppRouteInformationParser
 
     if (route == Routes.contacts ||
         route == Routes.chats ||
-        route == Routes.menu) {
+        route == Routes.menu ||
+        route == Routes.wallet ||
+        route == Routes.partner) {
       route = Routes.home;
     }
 
@@ -1150,7 +1152,6 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
           );
 
           deps.put(ChatWorker(chatService, myUserService, notificationService));
-
           deps.put(MyUserWorker(myUserService));
 
           return deps;

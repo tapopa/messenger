@@ -11,6 +11,12 @@ All user visible changes to this project will be documented in this file. This p
 
 [Diff](/../../compare/v0.3.1...v0.4.0) | [Milestone](/../../milestone/7)
 
+### Added
+
+- UI:
+    - Wallet tab:
+        - PayPal deposit. ([#23])
+
 ### Changed
 
 - UI:
@@ -19,6 +25,7 @@ All user visible changes to this project will be documented in this file. This p
     - Wallet tab:
         - Operations with pagination on transaction page. ([#26])
 
+[#23]: /../../pull/23
 [#26]: /../../pull/26
 
 

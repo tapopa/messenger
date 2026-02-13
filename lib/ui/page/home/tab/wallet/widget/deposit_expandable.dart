@@ -69,6 +69,7 @@ class DepositExpandable extends StatelessWidget {
     this.onPressed,
     required this.fields,
     this.onCountry,
+    this.onProceed,
   });
 
   /// [OperationDepositMethod] to display.
@@ -85,6 +86,9 @@ class DepositExpandable extends StatelessWidget {
 
   /// Callback, called when country is changed.
   final void Function(IsoCode)? onCountry;
+
+  /// Callback, called when [Price] is selected by the user.
+  final void Function(Price, Price?)? onProceed;
 
   @override
   Widget build(BuildContext context) {
@@ -307,22 +311,19 @@ class DepositExpandable extends StatelessWidget {
                     child: _responsive(
                       provider.nominals ?? [],
                       pricing: provider.pricing,
-                      onPressed: (e) async {
+                      onPressed: (nominal, pricing) async {
                         if (paypal.country.value == null) {
                           final result = await SelectCountryView.show(
                             context,
                             available: IsoCodeExtension.available(provider),
                           );
+
                           if (result != null) {
                             paypal.country.value = result;
                           }
                         }
 
-                        if (paypal.country.value != null) {
-                          if (context.mounted) {
-                            // TODO: Display interface for PayPal.
-                          }
-                        }
+                        onProceed?.call(nominal, pricing);
                       },
                     ),
                   ),
@@ -341,12 +342,15 @@ class DepositExpandable extends StatelessWidget {
 /// Builds the provided [nominals] in a responsive grid.
 Widget _responsive(
   List<Price> nominals, {
-  void Function(Price)? onPressed,
+  void Function(Price, Price?)? onPressed,
   OperationDepositMethodPricing? pricing,
 }) {
   Widget tile(int i) {
     return WidgetButton(
-      onPressed: () => onPressed?.call(nominals[i]),
+      onPressed: () => onPressed?.call(
+        nominals[i],
+        pricing?.total == null ? null : (nominals[i] * pricing!.total!),
+      ),
       child: AmountTile(nominal: nominals[i], pricing: pricing),
     );
   }

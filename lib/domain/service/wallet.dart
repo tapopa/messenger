@@ -23,6 +23,7 @@ import '/domain/model/balance.dart';
 import '/domain/model/country.dart';
 import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
+import '/domain/model/price.dart';
 import '/domain/repository/paginated.dart';
 import '/domain/repository/wallet.dart';
 import '/util/log.dart';
@@ -55,5 +56,51 @@ class WalletService extends Dependency {
   FutureOr<Rx<Operation>?> get({OperationId? id, OperationNum? num}) {
     Log.debug('get(id: $id, num: $num)', '$runtimeType');
     return _walletRepository.get(id: id, num: num);
+  }
+
+  /// Creates a new [OperationDeposit].
+  Future<Rx<Operation>?> createOperationDeposit({
+    required OperationDepositMethodId methodId,
+    required Price nominal,
+    OperationDepositSecret? paypal,
+    required CountryCode country,
+  }) {
+    Log.debug(
+      'createOperationDeposit(methodId: $methodId, nominal: $nominal, paypal: ${paypal?.obscured}, country: $country)',
+      '$runtimeType',
+    );
+
+    return _walletRepository.createOperationDeposit(
+      methodId: methodId,
+      nominal: nominal,
+      paypal: paypal,
+      country: country,
+    );
+  }
+
+  /// Completes an [OperationDeposit].
+  Future<Rx<Operation>?> completeOperationDeposit({
+    required OperationId id,
+    OperationDepositSecret? secret,
+  }) {
+    Log.debug(
+      'completeOperationDeposit(id: $id, secret: ${secret?.obscured})',
+      '$runtimeType',
+    );
+
+    return _walletRepository.completeOperationDeposit(id: id, secret: secret);
+  }
+
+  /// Declines an [OperationDeposit].
+  Future<Rx<Operation>?> declineOperationDeposit({
+    required OperationId id,
+    OperationDepositSecret? secret,
+  }) {
+    Log.debug(
+      'completeOperationDeposit(id: $id, secret: ${secret?.obscured})',
+      '$runtimeType',
+    );
+
+    return _walletRepository.declineOperationDeposit(id: id, secret: secret);
   }
 }

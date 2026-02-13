@@ -15,9 +15,11 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:convert';
+
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '/api/backend/schema.graphql.dart';
 import '/domain/model/operation.dart';
@@ -93,13 +95,15 @@ class OperationWidget extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: WidgetButton(
                 onPressed: () async {
-                  if (PlatformUtils.isWeb) {
-                    await launchUrlString(
-                      operation.invoice!.val,
-                      webOnlyWindowName: '_blank',
+                  final file = await PlatformUtils.createAndDownload(
+                    'invoice_${operation.num.val}.pdf',
+                    base64.decode(operation.invoice!.val),
+                  );
+
+                  if (file != null && PlatformUtils.isMobile) {
+                    await SharePlus.instance.share(
+                      ShareParams(files: [XFile(file.path)]),
                     );
-                  } else {
-                    await PlatformUtils.saveTo(operation.invoice!.val);
                   }
                 },
                 child: Text(
@@ -324,8 +328,11 @@ class OperationWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
+
             Text(
-              '${operation.createdAt.val.yMd} ${operation.createdAt.val.hms}',
+              operation.id.isLocal
+                  ? 'label_waiting_dots'.l10n
+                  : '${operation.createdAt.val.toLocal().yMd} ${operation.createdAt.val.toLocal().hms}',
               style: style.fonts.smaller.regular.secondary,
             ),
             const SizedBox(width: 8),
@@ -393,6 +400,14 @@ class OperationWidget extends StatelessWidget {
   TableRow _status(BuildContext context, Operation operation) {
     final style = Theme.of(context).style;
 
+    if (operation.id.isLocal) {
+      return _row(
+        context,
+        'label_status'.l10n,
+        Text('label_waiting_dots'.l10n),
+      );
+    }
+
     return _row(context, 'label_status'.l10n, switch (operation.status) {
       OperationStatus.completed => Text('label_operation_completed'.l10n),
       OperationStatus.inProgress => Text('label_operation_in_progress'.l10n),
@@ -414,6 +429,14 @@ class OperationWidget extends StatelessWidget {
 
   /// Returns a [TableRow] describing the ID of [operation].
   TableRow _id(BuildContext context, Operation operation) {
+    if (operation.id.isLocal) {
+      return _row(
+        context,
+        'label_transaction_id'.l10n,
+        Text('label_waiting_dots'.l10n),
+      );
+    }
+
     return _row(
       context,
       'label_transaction_id'.l10n,

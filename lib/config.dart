@@ -30,6 +30,7 @@ import 'domain/model/user.dart';
 import 'pubspec.g.dart';
 import 'routes.dart';
 import 'util/ios_utils.dart';
+import 'util/web/web_utils.dart';
 
 /// Configuration of this application.
 class Config {
@@ -175,6 +176,9 @@ class Config {
 
   /// [UserId]s of the [User]s that should be considered as supports.
   static List<String> supportIds = [];
+
+  /// PayPal Client ID that identifies the app.
+  static String payPalClientId = '';
 
   /// Initializes this [Config] by applying values from the following sources
   /// (in the following order):
@@ -348,6 +352,10 @@ class Config {
 
     supportIds = ids == null ? [supportId] : ids.split(',');
 
+    payPalClientId = const bool.hasEnvironment('SOCAPP_PAYPAL_CLIENT_ID')
+        ? const String.fromEnvironment('SOCAPP_PAYPAL_CLIENT_ID')
+        : (document['paypal']?['clientId'] ?? payPalClientId);
+
     // Change default values to browser's location on web platform.
     if (PlatformUtils.isWeb) {
       if (document['server']?['http']?['url'] == null &&
@@ -451,6 +459,8 @@ class Config {
               supportIds = ids.split(',');
             }
 
+            payPalClientId = remote['paypal']?['clientId'] ?? payPalClientId;
+
             origin = url;
           }
         }
@@ -466,6 +476,8 @@ class Config {
       } else {
         origin = '${Uri.base.scheme}://${Uri.base.host}';
       }
+
+      WebUtils.setEndpoint('$url$graphql');
     }
 
     if (link.isEmpty) {

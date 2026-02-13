@@ -42,6 +42,7 @@ import 'package:video_player_web/video_player_web.dart';
 import 'package:web/web.dart' as web;
 
 import '/config.dart';
+import '/domain/model/avatar.dart';
 import '/domain/model/chat.dart';
 import '/domain/model/session.dart';
 import '/domain/model/user.dart';
@@ -430,6 +431,33 @@ class WebUtils {
     }
   }
 
+  /// Puts the provided [UserId] to the browser's storage.
+  static void putAccount(UserId? userId) {
+    if (userId == null) {
+      web.window.localStorage.removeItem('account');
+    } else {
+      web.window.localStorage.setItem('account', userId.val);
+    }
+  }
+
+  /// Puts the provided [UserAvatar] to the browser's storage.
+  static void putAvatar(UserAvatar? avatar) {
+    if (avatar == null) {
+      web.window.localStorage.removeItem('avatar');
+    } else {
+      web.window.localStorage.setItem('avatar', avatar.original.url);
+    }
+  }
+
+  /// Puts the provided [String] to the browser's local storage as the origin.
+  static void setEndpoint(String? origin) {
+    if (origin == null) {
+      web.window.localStorage.removeItem('endpoint');
+    } else {
+      web.window.localStorage.setItem('endpoint', origin);
+    }
+  }
+
   /// Guarantees the [callback] is invoked synchronously, only by single tab or
   /// code block at the same time.
   static Future<T> protect<T>(
@@ -726,6 +754,49 @@ class WebUtils {
       Log.debug('openPopupCall($chatId) -> failed due to $e', 'WebUtils');
       return false;
     }
+  }
+
+  /// Opens a new popup window at the [url] page.
+  static Future<WindowHandleImpl> openPopup(
+    String url, {
+    Map<String, dynamic> parameters = const {},
+  }) async {
+    Log.debug('openPopup($url, $parameters)', 'WebUtils');
+
+    final String id = parameters['id'] = const Uuid().v4();
+
+    final StringBuffer arguments = StringBuffer();
+    if (parameters.isNotEmpty) {
+      arguments.write('?');
+      arguments.write(
+        parameters.entries.map((e) => '${e.key}=${e.value}').join('&'),
+      );
+    }
+
+    final WindowHandleImpl handle = WindowHandleImpl(
+      '$url${arguments.toString()}',
+      id: id,
+    );
+
+    try {
+      final int screenW = web.window.screen.width;
+      final int screenH = web.window.screen.height;
+
+      final int sizeW = 500;
+      final int sizeH = 800;
+
+      handle._window = web.window.open(
+        '$url${arguments.toString()}',
+        handle.id,
+        'popup=1,width=$sizeW,height=$sizeH,left=${(screenW / 2 - sizeW / 2).toInt()},top=${(screenH / 2 - sizeH / 2).toInt()}',
+      );
+
+      Log.debug('openPopup() -> isOpen: ${handle.isOpen}', 'WebUtils');
+    } catch (e) {
+      Log.debug('openPopup() -> failed due to $e', 'WebUtils');
+    }
+
+    return handle;
   }
 
   /// Closes the current window.
@@ -1155,6 +1226,25 @@ class WebUtils {
   /// iOS `AVAudioSession`.
   static Future<void> setupAudioSessionManagement(bool value) => Future.value();
 
+  /// Posts the [message] to a broadcast channel with [name] identifier.
+  static void postBroadcastMessage(String name, Map<String, dynamic> message) {
+    final web.BroadcastChannel channel = web.BroadcastChannel(name);
+
+    final JSObject object = JSObject();
+
+    for (var e in message.entries) {
+      final dynamic value = e.value;
+
+      if (value is String) {
+        object.setProperty(e.key.toJS, value.toJS);
+      } else if (value == null) {
+        // No-op.
+      }
+    }
+
+    channel.postMessage(object);
+  }
+
   /// Handles the [key] event to invoke [_keyHandlers] related to it.
   static bool _handleBindKeys(KeyEvent key) {
     if (key is KeyUpEvent) {
@@ -1216,4 +1306,51 @@ extension _RectExtension on Rect {
     (data['width'] as num).toDouble(),
     (data['height'] as num).toDouble(),
   );
+}
+
+/// Handle of a window implemented for Web platform.
+class WindowHandleImpl extends WindowHandle {
+  WindowHandleImpl(super.url, {super.id});
+
+  /// Window itself.
+  web.Window? _window;
+
+  @override
+  bool get isOpen {
+    try {
+      final bool opened = _window?.closed == false;
+      Log.debug('bool get isOpen -> $opened, $_window', '$runtimeType');
+      return opened;
+    } catch (e) {
+      Log.debug('bool get isOpen -> failed due to $e', '$runtimeType');
+      return false;
+    }
+  }
+
+  @override
+  Stream<dynamic> get messages {
+    return WebUtils.onBroadcastMessage(name: id);
+  }
+
+  @override
+  void close() {
+    _window?.close();
+  }
+
+  @override
+  void postMessage(Map<String, dynamic> message) {
+    final JSObject object = JSObject();
+
+    for (var e in message.entries) {
+      final dynamic value = e.value;
+
+      if (value is String) {
+        object.setProperty(e.key.toJS, value.toJS);
+      } else if (value == null) {
+        // No-op.
+      }
+    }
+
+    _window?.postMessage(object, Config.origin.toJS);
+  }
 }

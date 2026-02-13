@@ -15,30 +15,21 @@
 # along with this program. If not, see
 # <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-fragment OperationDeposit on OperationDeposit {
-    id
-    num
-    status
-    origin
-    direction
-    amount {
+mutation CompleteOperationDeposit(
+    $id: OperationId!
+    $secret: OperationDepositSecret
+) {
+    completeOperationDeposit(
+        id: $id
+        secret: $secret
+    ) {
         __typename
-        ...Price
-    }
-    holdUntil
-    createdAt
-    canceled {
-        __typename
-        ...OperationCancellation
-    }
-    ver
-
-    kind
-    billingCountry
-    invoice
-    processingUrl
-    price {
-        __typename
-        ...OperationDepositPricing
+        ... on OperationEventsVersioned {
+            __typename
+            ...OperationEventsVersioned
+        }
+        ... on CompleteOperationDepositError {
+            code
+        }
     }
 }

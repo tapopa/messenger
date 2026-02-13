@@ -36,6 +36,19 @@ extension OperationCancellationConversion on OperationCancellationMixin {
       OperationCancellation(code: code, reason: reason, at: at);
 }
 
+/// Extension adding models construction from an [OperationDepositPricingMixin].
+extension OperationDepositPricingConversion on OperationDepositPricingMixin {
+  /// Constructs a new [OperationDeposit] from this
+  /// [OperationDepositPricingMixin].
+  OperationDepositPricing toModel() => OperationDepositPricing(
+    nominal: nominal.toModel(),
+    bonus: bonus?.toModel(),
+    withoutTax: withoutTax?.toModel(),
+    tax: tax?.toModel(),
+    total: total?.toModel(),
+  );
+}
+
 /// Extension adding models construction from an [OperationDepositMixin].
 extension OperationDepositConversion on OperationDepositMixin {
   /// Constructs a new [OperationDeposit] from this [OperationDepositMixin].
@@ -53,6 +66,7 @@ extension OperationDepositConversion on OperationDepositMixin {
     billingCountry: billingCountry,
     invoice: invoice,
     processingUrl: processingUrl == null ? null : Url(processingUrl!),
+    pricing: price?.toModel(),
   );
 
   /// Constructs a new [DtoOperation] from this [OperationDepositMixin].

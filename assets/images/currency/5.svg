@@ -1,0 +1,61 @@
+<svg width="360" height="150" viewBox="0 0 360 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_17030_101266)">
+<rect width="360" height="150" fill="#BFD5F0"/>
+<g clip-path="url(#clip1_17030_101266)">
+<path d="M75 800H0V750H50L75 800Z" fill="#F2F6FC"/>
+<path d="M75 700H0V650H50L75 700Z" fill="#F2F6FC"/>
+<path d="M75 600H0V550H50L75 600Z" fill="#F2F6FC"/>
+<path d="M75 500H0V450H50L75 500Z" fill="#F2F6FC"/>
+<path d="M75 400H0V350H50L75 400Z" fill="#F2F6FC"/>
+<path d="M75 300H0V250H50L75 300Z" fill="#F2F6FC"/>
+<path d="M75 200H0V150H50L75 200Z" fill="#F2F6FC"/>
+<path d="M75 100H0V50H50L75 100Z" fill="#F2F6FC"/>
+<path d="M75 700H0V750H50L75 700Z" fill="#D9E5F6"/>
+<path d="M75 600H0V650H50L75 600Z" fill="#D9E5F6"/>
+<path d="M75 500H0V550H50L75 500Z" fill="#D9E5F6"/>
+<path d="M75 400H0V450H50L75 400Z" fill="#D9E5F6"/>
+<path d="M75 300H0V350H50L75 300Z" fill="#D9E5F6"/>
+<path d="M75 200H0V250H50L75 200Z" fill="#D9E5F6"/>
+<path d="M75 100H0V150H50L75 100Z" fill="#D9E5F6"/>
+<path d="M75 0H0V50H50L75 0Z" fill="#D9E5F6"/>
+</g>
+<g clip-path="url(#clip2_17030_101266)">
+<path d="M285 800H360V750H310L285 800Z" fill="#F2F6FC"/>
+<path d="M285 700H360V650H310L285 700Z" fill="#F2F6FC"/>
+<path d="M285 600H360V550H310L285 600Z" fill="#F2F6FC"/>
+<path d="M285 500H360V450H310L285 500Z" fill="#F2F6FC"/>
+<path d="M285 400H360V350H310L285 400Z" fill="#F2F6FC"/>
+<path d="M285 300H360V250H310L285 300Z" fill="#F2F6FC"/>
+<path d="M285 200H360V150H310L285 200Z" fill="#F2F6FC"/>
+<path d="M285 100H360V50H310L285 100Z" fill="#F2F6FC"/>
+<path d="M285 700H360V750H310L285 700Z" fill="#D9E5F6"/>
+<path d="M285 600H360V650H310L285 600Z" fill="#D9E5F6"/>
+<path d="M285 500H360V550H310L285 500Z" fill="#D9E5F6"/>
+<path d="M285 400H360V450H310L285 400Z" fill="#D9E5F6"/>
+<path d="M285 300H360V350H310L285 300Z" fill="#D9E5F6"/>
+<path d="M285 200H360V250H310L285 200Z" fill="#D9E5F6"/>
+<path d="M285 100H360V150H310L285 100Z" fill="#D9E5F6"/>
+<path d="M285 0H360V50H310L285 0Z" fill="#D9E5F6"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_d_17030_101266" x="142.137" y="46.8125" width="77.75" height="53.6406" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="3.5" dy="1.75"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.4 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_17030_101266"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_17030_101266" result="shape"/>
+</filter>
+<clipPath id="clip0_17030_101266">
+<rect width="360" height="150" fill="white"/>
+</clipPath>
+<clipPath id="clip1_17030_101266">
+<rect width="140.5" height="150" fill="white"/>
+</clipPath>
+<clipPath id="clip2_17030_101266">
+<rect width="140.5" height="150" fill="white" transform="translate(219.5)"/>
+</clipPath>
+</defs>
+</svg>

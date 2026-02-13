@@ -15,7 +15,7 @@ All user visible changes to this project will be documented in this file. This p
 
 - UI:
     - Wallet tab:
-        - PayPal deposit. ([#232])
+        - PayPal deposit. ([#23])
 
 ### Changed
 

@@ -15,7 +15,7 @@ All user visible changes to this project will be documented in this file. This p
 
 - UI:
     - Wallet tab:
-        - PayPal deposit. ([#22])
+        - PayPal deposit. ([#232])
 
 ### Changed
 
@@ -25,7 +25,7 @@ All user visible changes to this project will be documented in this file. This p
     - Wallet tab:
         - Operations with pagination on transaction page. ([#26])
 
-[#22]: /../../pull/22
+[#23]: /../../pull/23
 [#26]: /../../pull/26
 
 

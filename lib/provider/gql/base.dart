@@ -258,7 +258,7 @@ class GraphQlClient {
   Future<QueryResult> mutate(
     MutationOptions options, {
     RawClientOptions? raw,
-    Exception Function(Map<String, dynamic>)? onException,
+    Exception? Function(Map<String, dynamic>)? onException,
   }) async {
     final dio.Response posted = await post(
       const RequestSerializer().serializeRequest(options.asRequest),
@@ -309,7 +309,7 @@ class GraphQlClient {
     dynamic data, {
     dio.Options? options,
     String? operationName,
-    Exception Function(Map<String, dynamic>)? onException,
+    Exception? Function(Map<String, dynamic>)? onException,
     void Function(int, int)? onSendProgress,
     RawClientOptions? raw,
     dio.CancelToken? cancelToken,
@@ -343,7 +343,13 @@ class GraphQlClient {
             if (onException != null &&
                 e.response?.data is Map<String, dynamic> &&
                 e.response?.data['data'] != null) {
-              throw onException(e.response!.data['data']);
+              final Exception? exception = onException(
+                e.response!.data['data'],
+              );
+
+              if (exception != null) {
+                throw exception;
+              }
             }
           }
 

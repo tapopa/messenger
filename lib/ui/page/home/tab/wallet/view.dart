@@ -120,6 +120,20 @@ class WalletTabView extends StatelessWidget {
                           c.fields.value.applyCountry(country);
                           c.setCountry(CountryCode(country.name));
                         },
+                        onProceed: (nominal, pricing) async {
+                          final country = c.fields.value
+                              .getCountry(e.kind)
+                              .value;
+
+                          if (country != null) {
+                            await c.createDeposit(
+                              e,
+                              CountryCode(country.name),
+                              nominal,
+                              pricing,
+                            );
+                          }
+                        },
                       );
                     });
                   }),

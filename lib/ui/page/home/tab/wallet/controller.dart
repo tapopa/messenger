@@ -18,12 +18,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '/api/backend/schema.dart';
 import '/domain/model/balance.dart';
 import '/domain/model/country.dart';
 import '/domain/model/operation_deposit_method.dart';
+import '/domain/model/price.dart';
 import '/domain/model/session.dart';
 import '/domain/service/session.dart';
 import '/domain/service/wallet.dart';
+import '/routes.dart';
+import '/util/message_popup.dart';
+import 'paypal/view.dart';
 import 'widget/deposit_expandable.dart';
 
 /// Controller of the `HomeTab.wallet` tab.
@@ -66,6 +71,34 @@ class WalletTabController extends GetxController {
   /// Sets the [country].
   Future<void> setCountry(CountryCode country) async {
     await _walletService.setCountry(country);
+  }
+
+  /// Creates an [OperationDeposit] using the provided [method], [country],
+  /// [nominal] and [pricing].
+  Future<void> createDeposit(
+    OperationDepositMethod method,
+    CountryCode country,
+    Price nominal,
+    Price? pricing,
+  ) async {
+    try {
+      switch (method.kind) {
+        case OperationDepositKind.paypal:
+          await PayPalDepositView.show(
+            router.context!,
+            method: method,
+            country: country,
+            nominal: nominal,
+          );
+          break;
+
+        case OperationDepositKind.artemisUnknown:
+          throw Exception('Unsupported');
+      }
+    } catch (e) {
+      MessagePopup.error(e);
+      rethrow;
+    }
   }
 
   /// Fetches the current [IpGeoLocation] to update [IsoCode].

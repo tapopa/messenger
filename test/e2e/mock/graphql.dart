@@ -230,7 +230,7 @@ class MockGraphQlClient extends GraphQlClient {
   Future<QueryResult> mutate(
     MutationOptions options, {
     RawClientOptions? raw,
-    Exception Function(Map<String, dynamic>)? onException,
+    Exception? Function(Map<String, dynamic>)? onException,
   }) async {
     if (delay != null) {
       await Future.delayed(delay!);
@@ -254,7 +254,7 @@ class MockGraphQlClient extends GraphQlClient {
     dynamic data, {
     dio.Options? options,
     String? operationName,
-    Exception Function(Map<String, dynamic>)? onException,
+    Exception? Function(Map<String, dynamic>)? onException,
     void Function(int, int)? onSendProgress,
     RawClientOptions? raw,
     dio.CancelToken? cancelToken,

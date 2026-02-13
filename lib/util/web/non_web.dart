@@ -37,10 +37,12 @@ import 'package:medea_jason/medea_jason.dart' as jason;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:stdlibc/stdlibc.dart';
 import 'package:synchronized/synchronized.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:win32/win32.dart';
 import 'package:win32_registry/win32_registry.dart';
 
 import '/config.dart';
+import '/domain/model/avatar.dart';
 import '/domain/model/chat.dart';
 import '/domain/model/session.dart';
 import '/domain/model/user.dart';
@@ -157,6 +159,21 @@ class WebUtils {
   /// provided [UserId], if any.
   static Credentials? getCredentials(UserId userId) => null;
 
+  /// Puts the provided [UserId] to the browser's storage.
+  static void putAccount(UserId? userId) {
+    // No-op.
+  }
+
+  /// Puts the provided [UserAvatar] to the browser's storage.
+  static void putAvatar(UserAvatar? avatar) {
+    // No-op.
+  }
+
+  /// Puts the provided [String] to the browser's local storage as the origin.
+  static void setEndpoint(String? origin) {
+    // No-op.
+  }
+
   /// Guarantees the [callback] is invoked synchronously, only by single tab or
   /// code block at the same time.
   static Future<T> protect<T>(
@@ -233,6 +250,33 @@ class WebUtils {
     bool withVideo = false,
     bool withScreen = false,
   }) => false;
+
+  /// Opens a new popup window at the [url] page.
+  static Future<WindowHandle> openPopup(
+    String url, {
+    Map<String, dynamic> parameters = const {},
+  }) async {
+    Log.debug('openPopup($url, $parameters)', 'WebUtils');
+
+    bool isOpen = true;
+
+    final StringBuffer arguments = StringBuffer();
+    if (parameters.isNotEmpty) {
+      arguments.write('?');
+      arguments.write(
+        parameters.entries.map((e) => '${e.key}=${e.value}').join('&'),
+      );
+    }
+
+    try {
+      await launchUrlString('$url${arguments.toString()}');
+    } catch (e) {
+      Log.warning('openPopup($url) failed with $e', 'WebUtils');
+      isOpen = false;
+    }
+
+    return WindowHandleImpl('$url${arguments.toString()}', isOpen: isOpen);
+  }
 
   /// Closes the current window.
   static void closeWindow() {
@@ -586,4 +630,30 @@ class WebUtils {
   /// iOS `AVAudioSession`.
   static Future<void> setupAudioSessionManagement(bool value) =>
       webrtc.setupAudioSessionManagement(false);
+
+  /// Posts the [message] to a broadcast channel with [name] identifier.
+  static void postBroadcastMessage(String name, Map<String, dynamic> message) {
+    // No-op.
+  }
+}
+
+/// Handle of a window for native platforms.
+class WindowHandleImpl extends WindowHandle {
+  WindowHandleImpl(super.url, {this.isOpen = false});
+
+  @override
+  final bool isOpen;
+
+  @override
+  Stream<dynamic> get messages => const Stream.empty();
+
+  @override
+  void close() {
+    // No-op.
+  }
+
+  @override
+  void postMessage(Map<String, dynamic> message) {
+    // No-op.
+  }
 }

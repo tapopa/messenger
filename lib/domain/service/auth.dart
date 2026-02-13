@@ -1118,6 +1118,7 @@ class AuthService extends Dependency {
     credentials.value = creds;
     _putCredentials(creds);
     WebUtils.putCredentials(creds);
+    WebUtils.putAccount(creds.userId);
 
     _initRefreshTimers();
 
@@ -1134,6 +1135,7 @@ class AuthService extends Dependency {
     _refreshTimers.remove(id)?.cancel();
     accounts.remove(id);
     WebUtils.removeCredentials(id);
+    WebUtils.putAccount(null);
 
     if (id == _accountProvider.userId) {
       // This workarounds the situation when another tab on Web has already

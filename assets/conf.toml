@@ -222,3 +222,9 @@
 #
 # Default:
 #   secondary = ""
+
+[paypal]
+# PayPal Client ID that identifies the app.
+#
+# Default:
+#   clientId = ""

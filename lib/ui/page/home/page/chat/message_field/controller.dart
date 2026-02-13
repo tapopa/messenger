@@ -138,6 +138,9 @@ class MessageFieldController extends GetxController {
   /// [Attachment]s to be attached to a message.
   late final RxList<MapEntry<GlobalKey, Attachment>> attachments;
 
+  /// [Donation] sum to attach to a message.
+  final RxDouble donation = RxDouble(0);
+
   /// [ChatItem] being quoted to reply onto.
   final RxList<Rx<ChatItem>> replied = RxList<Rx<ChatItem>>();
 
@@ -152,6 +155,9 @@ class MessageFieldController extends GetxController {
 
   /// Replied [ChatItem] being hovered.
   final Rx<ChatItem?> hoveredReply = Rx(null);
+
+  /// Indicator whether [Donation] is hovered.
+  final RxBool hoveredDonate = RxBool(false);
 
   /// [ScrollController] to pass to a [Scrollbar].
   final ScrollController scrollController = ScrollController();
@@ -392,6 +398,7 @@ class MessageFieldController extends GetxController {
   void clear({bool unfocus = true}) {
     replied.clear();
     attachments.clear();
+    donation.value = 0;
     field.clear(unfocus: unfocus);
     field.unsubmit();
     onChanged?.call();
@@ -526,6 +533,22 @@ class MessageFieldController extends GetxController {
       panel.addIf(panel.none((e) => e is LogsButton), LogsButton(attachLogs));
     } else {
       panel.removeWhere((e) => e is LogsButton);
+    }
+  }
+
+  /// Adds or removes [DonateButton] from the [panel].
+  void toggleDonate(bool enabled) {
+    if (enabled) {
+      panel.addIf(
+        panel.none((e) => e is DonateButton),
+        DonateButton(
+          onPressed: () {
+            donation.value = 1;
+          },
+        ),
+      );
+    } else {
+      panel.removeWhere((e) => e is DonateButton);
     }
   }
 

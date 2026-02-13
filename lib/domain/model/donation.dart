@@ -56,6 +56,12 @@ class DonationId extends NewType<String> {
   /// Constructs a [DonationId] from the provided [val].
   factory DonationId.fromJson(String val) = DonationId;
 
+  /// Creates a local [DonationId].
+  const DonationId.local() : super('0');
+
+  /// Indicates whether this [DonationId] is a local.
+  bool get isLocal => val == '0';
+
   /// Returns a [String] representing this [DonationId].
   String toJson() => val;
 }

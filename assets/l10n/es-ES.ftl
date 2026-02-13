@@ -160,6 +160,7 @@ btn_delete_from_favorites = Eliminar de favoritos
 btn_delete_message = Eliminar el mensaje
 btn_discard = Descartar
 btn_done = Listo
+btn_donate = Donación
 btn_download = Descargar
 btn_download_all = Descargar todo
 btn_download_all_as = Descargar todo como

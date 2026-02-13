@@ -31,12 +31,13 @@ import '../controller.dart' show ChatCallFinishReasonL10n, ChatController;
 import '/api/backend/schema.dart' show ChatCallFinishReason;
 import '/config.dart';
 import '/domain/model/attachment.dart';
-import '/domain/model/chat.dart';
 import '/domain/model/chat_call.dart';
 import '/domain/model/chat_info.dart';
-import '/domain/model/chat_item.dart';
-import '/domain/model/chat_item_quote.dart';
 import '/domain/model/chat_item_quote_input.dart';
+import '/domain/model/chat_item_quote.dart';
+import '/domain/model/chat_item.dart';
+import '/domain/model/chat.dart';
+import '/domain/model/donation.dart';
 import '/domain/model/my_user.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/sending_status.dart';
@@ -67,6 +68,7 @@ import 'animated_offset.dart';
 import 'chat_gallery.dart';
 import 'context_buttons.dart';
 import 'data_attachment.dart';
+import 'donate.dart';
 import 'media_attachment.dart';
 import 'message_info/view.dart';
 import 'message_timestamp.dart';
@@ -777,6 +779,8 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
           (e is LocalAttachment && !e.file.isImage && !e.file.isVideo));
     }).toList();
 
+    final List<Donation> donates = msg.donations.toList();
+
     final Color color = _fromMe
         ? style.colors.primary
         : style.colors.userColors[(widget.user?.user.value.num.val.sum() ?? 3) %
@@ -787,8 +791,21 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
     final bool timeInBubble =
         media.isNotEmpty && files.isEmpty && _text == null;
 
+    // Indicator whether [DonateWidget] should display the timestamp.
+    final bool timeOnDonate =
+        donates.isNotEmpty && media.isEmpty && files.isEmpty && _text == null;
+
     return _rounded(context, (menu, constraints) {
       final List<Widget> children = [
+        ...donates.mapIndexed((i, e) {
+          return DonateWidget(
+            e.amount.val,
+            name: widget.user?.title() ?? '',
+            tag: timeOnDonate && i == donates.length - 1
+                ? _timestamp(msg)
+                : null,
+          );
+        }),
         if (!_fromMe &&
             widget.chat.value?.isGroup == true &&
             widget.withName) ...[

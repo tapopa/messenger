@@ -1,5 +1,7 @@
 // Copyright © 2022-2026 IT ENGINEERING MANAGEMENT INC,
 //                       <https://github.com/team113>
+// Copyright © 2025 Ideas Networks Solutions S.A.,
+//                       <https://github.com/tapopa>
 //
 // This program is free software: you can redistribute it and/or modify it under
 // the terms of the GNU Affero General Public License v3.0 as published by the
@@ -152,7 +154,7 @@ class ChatMessage extends ChatItem {
 
   @override
   String toString() =>
-      '$runtimeType($id, $chatId, text: ${text?.obscured}, attachments: $attachments)';
+      '$runtimeType($id, $chatId, text: ${text?.obscured}, attachments: $attachments, donations: $donations)';
 
   /// Returns a [Map] representing this [ChatMessage].
   @override

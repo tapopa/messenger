@@ -38,6 +38,7 @@ import '/l10n/l10n.dart';
 import '/themes.dart';
 import '/ui/page/home/page/chat/controller.dart';
 import '/ui/page/home/page/chat/widget/chat_gallery.dart';
+import '/ui/page/home/page/chat/widget/donate.dart';
 import '/ui/page/home/page/chat/widget/media_attachment.dart';
 import '/ui/page/home/page/user/controller.dart';
 import '/ui/page/home/widget/avatar.dart';
@@ -380,7 +381,8 @@ class MessageFieldView extends StatelessWidget {
                 padding:
                     c.replied.isNotEmpty ||
                         c.attachments.isNotEmpty ||
-                        c.edited.value != null
+                        c.edited.value != null ||
+                        c.donation.value != 0
                     ? const EdgeInsets.fromLTRB(4, 6, 4, 6)
                     : EdgeInsets.zero,
                 child: Column(
@@ -443,6 +445,10 @@ class MessageFieldView extends StatelessWidget {
                           ),
                         ),
                       ),
+                    ],
+                    if (c.donation.value != 0) ...[
+                      const SizedBox(height: 4),
+                      _buildDonate(context, c),
                     ],
                   ],
                 ),
@@ -533,7 +539,8 @@ class MessageFieldView extends StatelessWidget {
                 final bool sendable =
                     !c.field.isEmpty.value ||
                     c.attachments.isNotEmpty ||
-                    c.replied.isNotEmpty;
+                    c.replied.isNotEmpty ||
+                    c.donation.value != 0;
 
                 final List<Widget> children;
 
@@ -562,6 +569,66 @@ class MessageFieldView extends StatelessWidget {
           ),
         );
       }),
+    );
+  }
+
+  /// Returns a visual representation of [Donation].
+  Widget _buildDonate(BuildContext context, MessageFieldController c) {
+    final style = Theme.of(context).style;
+
+    return Dismissible(
+      key: Key('donation'),
+      direction: DismissDirection.horizontal,
+      onDismissed: (_) => c.donation.value = 0,
+      child: MouseRegion(
+        opaque: false,
+        onEnter: (d) => c.hoveredDonate.value = true,
+        onExit: (d) => c.hoveredDonate.value = false,
+        child: Container(
+          margin: const EdgeInsets.fromLTRB(2, 0, 2, 0),
+          decoration: BoxDecoration(
+            color: style.colors.onPrimary,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          padding: EdgeInsets.fromLTRB(2, 0, 0, 0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: DonateWidget(c.donation.value, name: '${c.me}'),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(1, 1, 1, 1),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CloseButton(onPressed: () => c.donation.value = 0),
+                    SizedBox(height: 12),
+                    CloseButton(
+                      icon: SvgIcons.attachmentPlus,
+                      onPressed: () {
+                        c.donation.value = c.donation.value + 1;
+                      },
+                    ),
+                    CloseButton(
+                      icon: SvgIcons.attachmentMinus,
+                      onPressed: () {
+                        c.donation.value = c.donation.value - 1;
+                        if (c.donation.value < 0) {
+                          c.donation.value = 0;
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

@@ -215,6 +215,27 @@ extension OperationRewardConversion on OperationRewardMixin {
       DtoOperation(toModel(), ver, cursor: cursor);
 }
 
+/// Extension adding models construction from an [OperationDividendMixin].
+extension OperationDividendConversion on OperationDividendMixin {
+  /// Constructs a new [OperationDividend] from this [OperationDividendMixin].
+  OperationDividend toModel() => OperationDividend(
+    id: id,
+    num: this.num,
+    status: status,
+    origin: origin,
+    direction: direction,
+    amount: amount.toModel(),
+    holdUntil: holdUntil,
+    createdAt: createdAt,
+    canceled: canceled?.toModel(),
+    sourceId: sourceId,
+  );
+
+  /// Constructs a new [DtoOperation] from this [OperationDividendMixin].
+  DtoOperation toDto(OperationsCursor? cursor) =>
+      DtoOperation(toModel(), ver, cursor: cursor);
+}
+
 /// Extension adding models construction from an [PriceModifierMixin].
 extension PriceModifierConversion on PriceModifierMixin {
   /// Constructs a new [PriceModifier] from this [PriceModifierMixin].
@@ -322,6 +343,8 @@ DtoOperation _operation(dynamic node, OperationsCursor? cursor) {
   } else if (node is OperationPurchaseDonationMixin) {
     return node.toDto(cursor);
   } else if (node is OperationRewardMixin) {
+    return node.toDto(cursor);
+  } else if (node is OperationDividendMixin) {
     return node.toDto(cursor);
   }
 

@@ -38,6 +38,7 @@ import '/domain/model/chat_item.dart';
 import '/domain/model/chat.dart';
 import '/domain/model/my_user.dart';
 import '/domain/model/native_file.dart';
+import '/domain/model/price.dart';
 import '/domain/model/push_token.dart';
 import '/domain/model/sending_status.dart';
 import '/domain/model/session.dart';
@@ -123,7 +124,7 @@ class MessageFieldController extends GetxController {
   }
 
   /// Callback, called when this [MessageFieldController] is submitted.
-  final void Function()? onSubmit;
+  final void Function({double? donateOnly})? onSubmit;
 
   /// Callback, called on the [field], [attachments], [replied], [edited]
   /// changes.
@@ -184,6 +185,9 @@ class MessageFieldController extends GetxController {
       AttachmentButton(pickFile),
     ],
   ]);
+
+  /// [ChatButton]s displayed in the more panel over the [panel] buttons.
+  late final RxList<ChatButton> overlay = RxList();
 
   /// [ChatButton]s displayed (pinned) in the text field.
   late final RxList<ChatButton> buttons;
@@ -407,6 +411,8 @@ class MessageFieldController extends GetxController {
   /// Toggles the [moreOpened] and populates the [_moreEntry].
   void toggleMore() {
     if (moreOpened.isFalse) {
+      overlay.clear();
+
       _moreEntry = OverlayEntry(
         builder: (_) => MessageFieldMore(
           this,
@@ -539,13 +545,31 @@ class MessageFieldController extends GetxController {
   /// Adds or removes [DonateButton] from the [panel].
   void toggleDonate(bool enabled) {
     if (enabled) {
+      final List<Price> prices = [
+        Price.xxx(1),
+        Price.xxx(2),
+        Price.xxx(5),
+        Price.xxx(10),
+        Price.xxx(25),
+        Price.xxx(50),
+        Price.xxx(100),
+      ];
+
       panel.addIf(
-        panel.none((e) => e is DonateButton),
-        DonateButton(
-          onPressed: () {
-            donation.value = 1;
-          },
-        ),
+        panel.none((e) => e is DonatesButton),
+        DonatesButton(() {
+          overlay.addAll(
+            prices.map((e) {
+              return DonateButton(
+                hint: e.l10n,
+                onPressed: () => donation.value = e.sum.val,
+                trailing: SendDonateButton(
+                  () => onSubmit?.call(donateOnly: e.sum.val),
+                ),
+              );
+            }).toList(),
+          );
+        }),
       );
     } else {
       panel.removeWhere((e) => e is DonateButton);

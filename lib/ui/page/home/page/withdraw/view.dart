@@ -238,7 +238,7 @@ class WithdrawView extends StatelessWidget {
                     ),
                     CenteredRow(
                       Text('label_minimum_amount'.l10n),
-                      Text(Price.g(10).l10n),
+                      Text(Price.xxx(10).l10n),
                     ),
                     CenteredRow(
                       Text('label_processing_time'.l10n),

@@ -597,33 +597,36 @@ class MessageFieldView extends StatelessWidget {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 2),
-                  child: DonateWidget(c.donation.value, name: '${c.me}'),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(1, 1, 1, 1),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CloseButton(onPressed: () => c.donation.value = 0),
-                    SizedBox(height: 12),
-                    CloseButton(
-                      icon: SvgIcons.attachmentPlus,
-                      onPressed: () {
-                        c.donation.value = c.donation.value + 1;
-                      },
-                    ),
-                    CloseButton(
-                      icon: SvgIcons.attachmentMinus,
+                  child: DonateWidget(
+                    c.donation.value,
+                    name: '${c.me}',
+                    leading: WidgetButton(
                       onPressed: () {
                         c.donation.value = c.donation.value - 1;
                         if (c.donation.value < 0) {
                           c.donation.value = 0;
                         }
                       },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: SvgIcon(SvgIcons.attachmentMinus),
+                      ),
                     ),
-                  ],
+                    trailing: WidgetButton(
+                      onPressed: () {
+                        c.donation.value = c.donation.value + 1;
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: SvgIcon(SvgIcons.attachmentPlus),
+                      ),
+                    ),
+                  ),
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(1, 1, 1, 1),
+                child: CloseButton(onPressed: () => c.donation.value = 0),
               ),
             ],
           ),

@@ -52,6 +52,10 @@ abstract class ChatButton {
   /// [ChatButton] displayed at the trailing of this [ChatButton].
   ChatButton? get trailing => null;
 
+  /// Indicator whether this [ChatButton] is considered repeatable, meaning it
+  /// shouldn't close any popup windows after being pressed.
+  bool get repeatable => false;
+
   @override
   int get hashCode => runtimeType.hashCode;
 
@@ -179,10 +183,9 @@ class LogsButton extends ChatButton {
   SvgData get asset => SvgIcons.chatLogs;
 }
 
-/// [ChatButton] attaching a [Donation].
-class DonateButton extends ChatButton {
-  const DonateButton({void Function()? onPressed, this.trailing})
-    : super(onPressed);
+/// [ChatButton] opening a menu of [DonateButton]s.
+class DonatesButton extends ChatButton {
+  const DonatesButton([super.onPressed]);
 
   @override
   String get hint => 'btn_donate'.l10n;
@@ -197,5 +200,49 @@ class DonateButton extends ChatButton {
   SvgData get disabled => SvgIcons.giftGrey;
 
   @override
+  bool get repeatable => true;
+}
+
+/// [ChatButton] attaching a [Donation].
+class DonateButton extends ChatButton {
+  const DonateButton({
+    void Function()? onPressed,
+    required this.hint,
+    this.trailing,
+  }) : super(onPressed);
+
+  @override
+  final String hint;
+
+  @override
+  SvgData get asset => SvgIcons.gift;
+
+  @override
+  SvgData get assetMini => SvgIcons.giftSmall;
+
+  @override
+  SvgData get disabled => SvgIcons.giftGrey;
+
+  @override
   final ChatButton? trailing;
+}
+
+/// [ChatButton] sending a [Donation].
+class SendDonateButton extends ChatButton {
+  const SendDonateButton([super.onPressed]);
+
+  @override
+  String get hint => '';
+
+  @override
+  SvgData get asset => SvgIcons.send;
+
+  @override
+  SvgData get assetMini => SvgIcons.sendSmall;
+
+  @override
+  SvgData get disabled => SvgIcons.sendDisabled;
+
+  @override
+  bool get repeatable => true;
 }

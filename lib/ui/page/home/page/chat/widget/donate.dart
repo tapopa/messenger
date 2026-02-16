@@ -126,31 +126,41 @@ class DonateWidget extends StatelessWidget {
                 ),
               ),
             ),
+
             Center(
-              child: InnerShadow(
-                offset: Offset(-0.5, 0.5) * _ratio,
-                blur: 0.5 * _ratio,
-                color: const Color(0x7F60350B),
-                child: Text(
-                  Price(
-                    sum: Sum(amount.toDouble()),
-                    currency: Currency('XXX'),
-                  ).l10next(digits: 2),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: style.fonts.medium.regular.onDonateSecondary.copyWith(
-                    shadows: [
-                      Shadow(
-                        offset: Offset(-0.5, 0.5) * _ratio,
-                        blurRadius: 0.5 * _ratio,
-                        color: const Color(0x40FFFFFF),
-                      ),
-                    ],
-                    fontSize: 32 * _ratio,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ?leading,
+                  InnerShadow(
+                    offset: Offset(-0.5, 0.5) * _ratio,
+                    blur: 0.5 * _ratio,
+                    color: const Color(0x7F60350B),
+                    child: Text(
+                      Price(
+                        sum: Sum(amount.toDouble()),
+                        currency: Currency('XXX'),
+                      ).l10next(digits: 2),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: style.fonts.medium.regular.onDonateSecondary
+                          .copyWith(
+                            shadows: [
+                              Shadow(
+                                offset: Offset(-0.5, 0.5) * _ratio,
+                                blurRadius: 0.5 * _ratio,
+                                color: const Color(0x40FFFFFF),
+                              ),
+                            ],
+                            fontSize: 32 * _ratio,
+                          ),
+                    ),
                   ),
-                ),
+                  ?trailing,
+                ],
               ),
             ),
+
             Align(
               alignment: Alignment.bottomRight,
               child:

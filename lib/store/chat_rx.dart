@@ -809,7 +809,10 @@ class RxChatImpl extends RxChat {
         );
       }
 
-      if (attachments?.isEmpty == true && text == null && repliesTo.isEmpty) {
+      if (attachments?.isEmpty == true &&
+          text == null &&
+          repliesTo.isEmpty &&
+          donation == null) {
         putFinally = false;
         return message.value;
       }

@@ -498,31 +498,43 @@ class ChatController extends GetxController with IdentityAware {
 
         return false;
       },
-      onSubmit: () async {
+      onSubmit: ({double? donateOnly}) async {
         _stopTyping();
 
         if (chat == null) {
           return;
         }
 
-        if (send.field.text.trim().isNotEmpty ||
-            send.attachments.isNotEmpty ||
-            send.replied.isNotEmpty ||
-            send.donation.value != 0) {
+        final String text;
+        final List<ChatItem> repliesTo;
+        final List<Attachment> attachments;
+        final double donation;
+
+        if (donateOnly != null) {
+          text = '';
+          repliesTo = [];
+          attachments = [];
+          donation = donateOnly;
+        } else {
+          text = send.field.text.trim();
+          repliesTo = send.replied.map((e) => e.value).toList();
+          attachments = send.attachments.map((e) => e.value).toList();
+          donation = send.donation.value;
+        }
+
+        if (text.isNotEmpty ||
+            attachments.isNotEmpty ||
+            repliesTo.isNotEmpty ||
+            donation != 0) {
           _chatService
               .sendChatMessage(
                 chat?.chat.value.id ?? id,
-                text: send.field.text.trim().isEmpty
+                text: text.isEmpty ? null : ChatMessageText(text),
+                repliesTo: repliesTo,
+                attachments: attachments,
+                donation: donation == 0
                     ? null
-                    : ChatMessageText(send.field.text.trim()),
-                repliesTo: send.replied.map((e) => e.value).toList(),
-                attachments: send.attachments.map((e) => e.value).toList(),
-                donation: send.donation.value == 0
-                    ? null
-                    : Donation(
-                        id: DonationId.local(),
-                        amount: Sum(send.donation.value),
-                      ),
+                    : Donation(id: DonationId.local(), amount: Sum(donation)),
               )
               .then(
                 (_) => AudioUtils.once(
@@ -543,7 +555,9 @@ class ChatController extends GetxController with IdentityAware {
               )
               .onError<ConnectionException>((e, _) {});
 
-          send.clear(unfocus: false);
+          if (donateOnly == null) {
+            send.clear(unfocus: false);
+          }
 
           chat?.setDraft();
         }
@@ -853,7 +867,7 @@ class ChatController extends GetxController with IdentityAware {
 
           return false;
         },
-        onSubmit: () async {
+        onSubmit: ({double? donateOnly}) async {
           final ChatMessage item = edit.value?.edited.value as ChatMessage;
 
           Log.debug(

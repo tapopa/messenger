@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controller.dart';
+import '../widget/buttons.dart';
 import '../widget/more_button.dart';
 import '/themes.dart';
 import '/util/global_key.dart';
@@ -96,119 +97,125 @@ class _MessageFieldMoreState extends State<MessageFieldMore>
             ? 0
             : (constraints.maxHeight - rect.bottom + rect.height);
 
-        final List<Widget> widgets = [];
-        for (int i = 0; i < widget.c.panel.length; ++i) {
-          final e = widget.c.panel.elementAt(i);
+        return Obx(() {
+          final List<Widget> children = [];
+          final List<ChatButton> buttons = widget.c.overlay.isEmpty
+              ? widget.c.panel
+              : widget.c.overlay;
 
-          widgets.add(
-            Obx(() {
-              final bool contains = widget.c.buttons.contains(e);
+          for (int i = 0; i < buttons.length; ++i) {
+            final ChatButton e = buttons.elementAt(i);
 
-              return ChatMoreWidget(
-                e,
-                pinned: contains,
-                onPressed: dismiss,
-                onPin:
-                    widget.c.canPin &&
-                        (contains || widget.c.hasSpaceForPins.value)
-                    ? () {
-                        if (widget.c.buttons.contains(e)) {
-                          widget.c.buttons.remove(e);
-                        } else {
-                          widget.c.buttons.add(e);
+            children.add(
+              Obx(() {
+                final bool contains = widget.c.buttons.contains(e);
+
+                return ChatMoreWidget(
+                  e,
+                  pinned: contains,
+                  onPressed: dismiss,
+                  onPin:
+                      widget.c.canPin &&
+                          (contains || widget.c.hasSpaceForPins.value)
+                      ? () {
+                          if (widget.c.buttons.contains(e)) {
+                            widget.c.buttons.remove(e);
+                          } else {
+                            widget.c.buttons.add(e);
+                          }
                         }
-                      }
-                    : null,
-              );
-            }),
+                      : null,
+                );
+              }),
+            );
+          }
+
+          final Widget actions = Column(
+            mainAxisSize: MainAxisSize.min,
+            children: children,
           );
-        }
 
-        final Widget actions = Column(
-          mainAxisSize: MainAxisSize.min,
-          children: widgets,
-        );
-
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: Listener(
-                onPointerDown: (_) => dismiss(),
-                child: Container(
-                  width: rect?.left ?? constraints.maxWidth,
-                  height: constraints.maxHeight,
-                  color: style.colors.transparent,
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Listener(
-                onPointerDown: (_) => dismiss(),
-                child: Container(
-                  margin: EdgeInsets.only(
-                    left: (rect?.left ?? constraints.maxWidth) + 50,
-                  ),
-                  width:
-                      constraints.maxWidth -
-                      (rect?.left ?? constraints.maxWidth) -
-                      50,
-                  height: constraints.maxHeight,
-                  color: style.colors.transparent,
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Listener(
-                onPointerDown: (_) => dismiss(),
-                child: Container(
-                  margin: EdgeInsets.only(
-                    left: (rect?.left ?? constraints.maxWidth),
-                  ),
-                  width: 50,
-                  height: rect?.top ?? 0,
-                  color: style.colors.transparent,
-                ),
-              ),
-            ),
-            Positioned(
-              left: left,
-              right: context.isNarrow ? right : null,
-              bottom: 0,
-              child: SlideTransition(
-                position: Tween(
-                  begin: context.isMobile ? const Offset(0, 1) : Offset.zero,
-                  end: Offset.zero,
-                ).animate(_animation),
-                child: FadeTransition(
-                  opacity: Tween(
-                    begin: context.isMobile ? 1.0 : 0.0,
-                    end: 1.0,
-                  ).animate(_animation),
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              Align(
+                alignment: Alignment.topLeft,
+                child: Listener(
+                  onPointerDown: (_) => dismiss(),
                   child: Container(
-                    margin: EdgeInsets.only(bottom: bottom + 10),
-                    decoration: BoxDecoration(
-                      color: style.colors.onPrimary,
-                      borderRadius: style.cardRadius,
-                      boxShadow: [
-                        CustomBoxShadow(
-                          blurRadius: 8,
-                          color: style.colors.onBackgroundOpacity13,
-                        ),
-                      ],
-                    ),
-                    child: context.isNarrow
-                        ? actions
-                        : IntrinsicWidth(child: actions),
+                    width: rect?.left ?? constraints.maxWidth,
+                    height: constraints.maxHeight,
+                    color: style.colors.transparent,
                   ),
                 ),
               ),
-            ),
-          ],
-        );
+              Align(
+                alignment: Alignment.topLeft,
+                child: Listener(
+                  onPointerDown: (_) => dismiss(),
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      left: (rect?.left ?? constraints.maxWidth) + 50,
+                    ),
+                    width:
+                        constraints.maxWidth -
+                        (rect?.left ?? constraints.maxWidth) -
+                        50,
+                    height: constraints.maxHeight,
+                    color: style.colors.transparent,
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Listener(
+                  onPointerDown: (_) => dismiss(),
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      left: (rect?.left ?? constraints.maxWidth),
+                    ),
+                    width: 50,
+                    height: rect?.top ?? 0,
+                    color: style.colors.transparent,
+                  ),
+                ),
+              ),
+              Positioned(
+                left: left,
+                right: context.isNarrow ? right : null,
+                bottom: 0,
+                child: SlideTransition(
+                  position: Tween(
+                    begin: context.isMobile ? const Offset(0, 1) : Offset.zero,
+                    end: Offset.zero,
+                  ).animate(_animation),
+                  child: FadeTransition(
+                    opacity: Tween(
+                      begin: context.isMobile ? 1.0 : 0.0,
+                      end: 1.0,
+                    ).animate(_animation),
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: bottom + 10),
+                      decoration: BoxDecoration(
+                        color: style.colors.onPrimary,
+                        borderRadius: style.cardRadius,
+                        boxShadow: [
+                          CustomBoxShadow(
+                            blurRadius: 8,
+                            color: style.colors.onBackgroundOpacity13,
+                          ),
+                        ],
+                      ),
+                      child: context.isNarrow
+                          ? actions
+                          : IntrinsicWidth(child: actions),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
       },
     );
   }

@@ -23,12 +23,12 @@ import 'package:collection/collection.dart';
 import 'package:get/get.dart';
 import 'package:windows_taskbar/windows_taskbar.dart';
 
-import '../../domain/model/donation.dart';
 import '/domain/model/attachment.dart';
 import '/domain/model/chat.dart';
 import '/domain/model/chat_info.dart';
 import '/domain/model/chat_item.dart';
 import '/domain/model/chat_item_quote.dart';
+import '/domain/model/donation.dart';
 import '/domain/model/my_user.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/user.dart';

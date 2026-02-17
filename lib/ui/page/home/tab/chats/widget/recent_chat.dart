@@ -41,9 +41,10 @@ import '/routes.dart';
 import '/themes.dart';
 import '/ui/page/call/widget/animated_dots.dart';
 import '/ui/page/home/page/chat/controller.dart';
-import '/ui/page/home/page/user/controller.dart';
 import '/ui/page/home/page/chat/widget/custom_drop_target.dart';
+import '/ui/page/home/page/chat/widget/donate.dart';
 import '/ui/page/home/page/chat/widget/video_thumbnail/video_thumbnail.dart';
+import '/ui/page/home/page/user/controller.dart';
 import '/ui/page/home/widget/animated_typing.dart';
 import '/ui/page/home/widget/avatar.dart';
 import '/ui/page/home/widget/chat_tile.dart';
@@ -548,6 +549,21 @@ class RecentChatTile extends StatelessWidget {
           }
 
           final List<Widget> images = [];
+
+          if (item.donations.isNotEmpty) {
+            images.addAll(
+              item.donations.map((e) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 2),
+                  child: DonateRectangle(
+                    height: 32,
+                    width: null,
+                    amount: e.amount.val,
+                  ),
+                );
+              }),
+            );
+          }
 
           if (item.attachments.isNotEmpty) {
             if (item.text == null) {

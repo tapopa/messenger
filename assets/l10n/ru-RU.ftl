@@ -256,6 +256,7 @@ btn_unmute_chats = Включить звук
 btn_upload = Загрузить
 btn_upload_photo = Загрузить фото
 btn_video_call = Видеозвонок
+btn_view_donation = Просмотреть донат
 colon_space = :{" "}
 comma_space = ,{" "}
 country_ac = Остров Вознесения
@@ -801,6 +802,7 @@ label_audio_call = Аудиозвонок{$by ->
         [x]{""}
         *[other] {" "}от {$by}
     }
+label_author = Author
 label_auto_gain_control = Авторегулировка громкости
 label_available_balance_amount = Доступный баланс: {$amount}
 label_available_semicolon_amount = Доступно: {$amount}
@@ -1399,6 +1401,7 @@ label_you_were_added_to_group = Вы добавлены в группу
 label_your_author_partner_program_tapopa_author =
     Ваша авторская партнёрская программа
     Tapopa-Author
+label_your_balance_amount = Ваш баланс: {$balance}
 label_your_direct_link = Прямая ссылка на чат с Вами
 label_your_name = Ваше имя
 label_your_num = Ваш Gapopa ID

@@ -1,5 +1,7 @@
 // Copyright © 2022-2026 IT ENGINEERING MANAGEMENT INC,
 //                       <https://github.com/team113>
+// Copyright © 2025-2026 Ideas Networks Solutions S.A.,
+//                       <https://github.com/tapopa>
 //
 // This program is free software: you can redistribute it and/or modify it under
 // the terms of the GNU Affero General Public License v3.0 as published by the
@@ -227,6 +229,7 @@ extension NestedChatForwardItemConversion on NestedChatForwardMixin$Quote {
         ChatMessageQuote(
           text: q.text,
           attachments: q.attachments.map((e) => e.toModel()).toList(),
+          donations: q.donations.map((e) => e.toModel()).toList(),
           author: author.id,
           at: at,
         ),
@@ -362,6 +365,7 @@ extension ChatMessageQuoteConversion on ChatMessageQuoteMixin {
     at: at,
     text: text,
     attachments: attachments.map((e) => e.toModel()).toList(),
+    donations: donations.map((e) => e.toModel()).toList(),
   );
 
   /// Constructs a new [DtoChatItemQuote] from this [ChatMessageQuoteMixin].

@@ -353,6 +353,9 @@ abstract class RxChat implements Comparable<RxChat> {
   /// Intended to be used to update the [StorageFile.relativeRef] links.
   Future<void> updateAttachments(ChatItem item);
 
+  /// Updates the specified [item] to be up-to-date.
+  Future<void> updateItem(ChatItem item);
+
   /// Updates the [avatar] of the [chat].
   ///
   /// Intended to be used to update the [StorageFile.relativeRef] links.

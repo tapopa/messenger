@@ -256,6 +256,7 @@ btn_unmute_chats = Unmute chats
 btn_upload = Upload
 btn_upload_photo = Upload photo
 btn_video_call = Video call
+btn_view_donation = View donation
 colon_space = :{" "}
 comma_space = ,{" "}
 country_ac = Ascension Island
@@ -785,6 +786,7 @@ label_audio_call = Audio call{$by ->
         [x]{""}
         *[other] {" "}by {$by}
     }
+label_author = Author
 label_auto_gain_control = Auto gain control
 label_available_balance_amount = Available balance: {$amount}
 label_available_semicolon_amount = Available: {$amount}
@@ -1378,6 +1380,7 @@ label_you_were_added_to_group = You have been added to the group
 label_your_author_partner_program_tapopa_author =
     Your author partner program
     Tapopa-Author
+label_your_balance_amount = Your balance: {$balance}
 label_your_direct_link = Direct link to chat with you
 label_your_name = Your name
 label_your_num = Your Gapopa ID

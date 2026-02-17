@@ -15,31 +15,49 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '/api/backend/schema.graphql.dart';
 import '/domain/model/operation.dart';
+import '/domain/model/user.dart';
+import '/domain/repository/user.dart';
 import '/l10n/l10n.dart';
+import '/routes.dart';
 import '/themes.dart';
+import '/ui/page/home/page/chat/widget/message_info/view.dart';
+import '/ui/page/home/page/user/controller.dart';
+import '/ui/widget/future_or_builder.dart';
 import '/ui/widget/line_divider.dart';
 import '/ui/widget/svg/svgs.dart';
 import '/ui/widget/widget_button.dart';
 import '/util/message_popup.dart';
 import '/util/platform_utils.dart';
+import 'avatar.dart';
 
 /// Widget displaying the provided [Operation] visually.
 class OperationWidget extends StatelessWidget {
-  const OperationWidget(this.operation, {super.key, this.expanded = true});
+  const OperationWidget(
+    this.operation, {
+    super.key,
+    this.expanded = true,
+    this.getUser,
+  });
 
   /// [Operation] itself.
   final Operation operation;
 
   /// Indicator whether the details of [operation] should be displayed.
   final bool expanded;
+
+  /// Callback, called when a [RxUser] identified by the provided [UserId] is
+  /// required.
+  final FutureOr<RxUser?> Function(UserId userId)? getUser;
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +96,7 @@ class OperationWidget extends StatelessWidget {
 
         more = [
           Table(
+            columnWidths: {0: FlexColumnWidth(11), 1: FlexColumnWidth(20)},
             children: [
               _status(context, operation),
               _id(context, operation),
@@ -122,6 +141,7 @@ class OperationWidget extends StatelessWidget {
 
         more = [
           Table(
+            columnWidths: {0: FlexColumnWidth(11), 1: FlexColumnWidth(20)},
             children: [
               _status(context, operation),
               _id(context, operation),
@@ -145,6 +165,7 @@ class OperationWidget extends StatelessWidget {
 
         more = [
           Table(
+            columnWidths: {0: FlexColumnWidth(11), 1: FlexColumnWidth(20)},
             children: [
               _status(context, operation),
               _id(context, operation),
@@ -160,6 +181,7 @@ class OperationWidget extends StatelessWidget {
 
         more = [
           Table(
+            columnWidths: {0: FlexColumnWidth(11), 1: FlexColumnWidth(20)},
             children: [
               _status(context, operation),
               _id(context, operation),
@@ -175,6 +197,7 @@ class OperationWidget extends StatelessWidget {
 
         more = [
           Table(
+            columnWidths: {0: FlexColumnWidth(11), 1: FlexColumnWidth(20)},
             children: [
               _status(context, operation),
               _id(context, operation),
@@ -194,12 +217,13 @@ class OperationWidget extends StatelessWidget {
 
         more = [
           Table(
+            columnWidths: {0: FlexColumnWidth(11), 1: FlexColumnWidth(20)},
             children: [
               _status(context, operation),
               _id(context, operation),
               _row(
                 context,
-                'label_search_category_contacts'.l10n,
+                'label_author'.l10n,
                 Text('${operation.affiliatedNum}'),
               ),
               _row(context, 'label_details'.l10n, Text(operation.cause.name)),
@@ -214,18 +238,74 @@ class OperationWidget extends StatelessWidget {
 
         more = [
           Table(
+            columnWidths: {0: FlexColumnWidth(11), 1: FlexColumnWidth(20)},
             children: [
               _status(context, operation),
               _id(context, operation),
               _row(
                 context,
-                'label_search_category_contacts'.l10n,
-                Text('${operation.customerId}'),
+                'label_author'.l10n,
+                FutureOrBuilder<RxUser?>(
+                  key: Key('${operation.id}_${operation.customerId}'),
+                  futureOr: () => getUser?.call(operation.customerId),
+                  builder: (context, user) {
+                    if (user == null) {
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AvatarWidget(radius: AvatarRadius.smaller),
+                          const SizedBox(width: 3),
+                          Flexible(child: Text('dot'.l10n * 3)),
+                        ],
+                      );
+                    }
+
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AvatarWidget.fromRxUser(
+                          user,
+                          radius: AvatarRadius.smaller,
+                        ),
+                        const SizedBox(width: 3),
+                        Flexible(
+                          child: WidgetButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              router.user(user.id, push: true);
+                            },
+                            child: Text(
+                              user.title(),
+                              style: style.fonts.normal.regular.primary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
               _row(
                 context,
                 'label_details'.l10n,
-                Text(operation.donationId.val),
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(text: 'Donation. '),
+                      TextSpan(
+                        text: 'ID_${operation.chatItemId}',
+                        style: style.fonts.normal.regular.primary,
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            final chatItemId = operation.chatItemId;
+                            if (chatItemId != null) {
+                              MessageInfo.show(context, chatItemId);
+                            }
+                          },
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
@@ -238,18 +318,74 @@ class OperationWidget extends StatelessWidget {
 
         more = [
           Table(
+            columnWidths: {0: FlexColumnWidth(11), 1: FlexColumnWidth(20)},
             children: [
               _status(context, operation),
               _id(context, operation),
               _row(
                 context,
-                'label_search_category_contacts'.l10n,
-                Text('${operation.vendorId}'),
+                'label_author'.l10n,
+                FutureOrBuilder<RxUser?>(
+                  key: Key('${operation.id}_${operation.vendorId}'),
+                  futureOr: () => getUser?.call(operation.vendorId),
+                  builder: (context, user) {
+                    if (user == null) {
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AvatarWidget(radius: AvatarRadius.smaller),
+                          const SizedBox(width: 3),
+                          Flexible(child: Text('dot'.l10n * 3)),
+                        ],
+                      );
+                    }
+
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AvatarWidget.fromRxUser(
+                          user,
+                          radius: AvatarRadius.smaller,
+                        ),
+                        const SizedBox(width: 3),
+                        Flexible(
+                          child: WidgetButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              router.user(user.id, push: true);
+                            },
+                            child: Text(
+                              user.title(),
+                              style: style.fonts.normal.regular.primary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
               _row(
                 context,
                 'label_details'.l10n,
-                Text(operation.donationId.val),
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(text: 'Donation. '),
+                      TextSpan(
+                        text: 'ID_${operation.chatItemId}',
+                        style: style.fonts.normal.regular.primary,
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            final chatItemId = operation.chatItemId;
+                            if (chatItemId != null) {
+                              MessageInfo.show(context, chatItemId);
+                            }
+                          },
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
@@ -295,6 +431,7 @@ class OperationWidget extends StatelessWidget {
     )..layout(minWidth: 0, maxWidth: double.infinity);
 
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(height: 16),
         Row(
@@ -351,6 +488,7 @@ class OperationWidget extends StatelessWidget {
           sizeDuration: const Duration(milliseconds: 250),
           child: expanded
               ? Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     const SizedBox(height: 8),
                     LineDivider('label_information'.l10n),

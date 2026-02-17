@@ -256,6 +256,7 @@ btn_unmute_chats = Desactivar silencio de los chats
 btn_upload = Subir
 btn_upload_photo = Subir una foto
 btn_video_call = Videollamada
+btn_view_donation = Ver donación
 colon_space = :{" "}
 comma_space = ,{" "}
 country_ac = Isla Ascencion
@@ -788,6 +789,7 @@ label_audio_call =
         [x]{""}
         *[other] {" "}de {$by}
     }
+label_author = Autor
 label_auto_gain_control = Auto gain control
 label_available_balance_amount = Saldo disponible: {$amount}
 label_available_semicolon_amount = Disponible: {$amount}
@@ -1386,6 +1388,7 @@ label_you_were_added_to_group = Usted ha sido agregado(a) al grupo
 label_your_author_partner_program_tapopa_author =
     Su programa de partner de autor
     Tapopa-Author
+label_your_balance_amount = Su saldo: {$balance}
 label_your_direct_link = Enlace directo para chatear con Usted
 label_your_name = Su nombre
 label_your_num = Su Gapopa ID

@@ -625,6 +625,36 @@ class RxChatImpl extends RxChat {
     });
   }
 
+  @override
+  Future<void> updateItem(ChatItem item) async {
+    Log.debug('updateItem($item)', '$runtimeType($id)');
+
+    if (item.id.isLocal) {
+      return;
+    }
+
+    Mutex? mutex = _attachmentGuards[item.id];
+    if (mutex == null) {
+      mutex = Mutex();
+      _attachmentGuards[item.id] = mutex;
+    }
+
+    final bool isLocked = mutex.isLocked;
+    await mutex.protect(() async {
+      if (isLocked) {
+        // Mutex has been already locked when tried to obtain it, thus the
+        // [Attachment]s of the [item] were already updated, so no action is
+        // required.
+        return;
+      }
+
+      final message = await _chatRepository.message(item.id);
+      if (message != null) {
+        put(message);
+      }
+    });
+  }
+
   /// Marks this [RxChat] as read until the provided [ChatItem] for the
   /// authenticated [MyUser],
   Future<void> read(ChatItemId untilId) async {

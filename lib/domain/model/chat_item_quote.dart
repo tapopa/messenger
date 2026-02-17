@@ -1,5 +1,7 @@
 // Copyright © 2022-2026 IT ENGINEERING MANAGEMENT INC,
 //                       <https://github.com/team113>
+// Copyright © 2025-2026 Ideas Networks Solutions S.A.,
+//                       <https://github.com/tapopa>
 //
 // This program is free software: you can redistribute it and/or modify it under
 // the terms of the GNU Affero General Public License v3.0 as published by the
@@ -21,6 +23,7 @@ import 'attachment.dart';
 import 'chat_call.dart';
 import 'chat_info.dart';
 import 'chat_item.dart';
+import 'donation.dart';
 import 'precise_date_time/precise_date_time.dart';
 import 'user.dart';
 
@@ -95,6 +98,7 @@ class ChatMessageQuote extends ChatItemQuote {
     required super.at,
     this.text,
     this.attachments = const [],
+    this.donations = const [],
   });
 
   /// Constructs a [ChatMessageQuote] from the provided [json].
@@ -108,6 +112,10 @@ class ChatMessageQuote extends ChatItemQuote {
   /// [Attachment]s the quoted [ChatMessage] had when this [ChatItemQuote] was
   /// made.
   final List<Attachment> attachments;
+
+  /// [Donation]s the quoted [ChatMessage] had when this [ChatItemQuote] was
+  /// made.
+  final List<Donation> donations;
 
   /// Returns a [Map] representing this [ChatMessageQuote].
   @override

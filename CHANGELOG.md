@@ -23,7 +23,7 @@ All user visible changes to this project will be documented in this file. This p
 
 - UI:
     - Monetization tab:
-        - Operations with pagination on transaction page. ([#26])
+        - Operations with pagination on transaction page. ([#27], [#26])
     - Wallet tab:
         - Operations with pagination on transaction page. ([#26])
 

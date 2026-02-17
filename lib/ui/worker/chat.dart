@@ -23,6 +23,7 @@ import 'package:collection/collection.dart';
 import 'package:get/get.dart';
 import 'package:windows_taskbar/windows_taskbar.dart';
 
+import '../../domain/model/donation.dart';
 import '/domain/model/attachment.dart';
 import '/domain/model/chat.dart';
 import '/domain/model/chat_info.dart';
@@ -301,6 +302,7 @@ class _ChatWatchData {
               author: msg.author,
               text: msg.text,
               attachments: msg.attachments,
+              donations: msg.donations,
             );
 
             image = msg.attachments
@@ -320,6 +322,7 @@ class _ChatWatchData {
                 author: msg.author,
                 text: quote.text,
                 attachments: quote.attachments,
+                donations: quote.donations,
               );
 
               image = quote.attachments
@@ -390,6 +393,7 @@ class _ChatWatchData {
     User? author,
     ChatMessageText? text,
     List<Attachment> attachments = const [],
+    List<Donation> donations = const [],
   }) {
     final String name = author?.title() ?? 'x';
     final String num = author?.num.toString() ?? ('dot'.l10n * 3);
@@ -410,7 +414,9 @@ class _ChatWatchData {
       'userNum': num,
       'attachmentsCount': attachments.length,
       'attachmentsType': attachmentsType,
-      'donation': 'x',
+      'donation': donations.isEmpty
+          ? 'x'
+          : donations.fold(0.0, (a, b) => a + b.amount.val).toStringAsFixed(0),
     });
   }
 

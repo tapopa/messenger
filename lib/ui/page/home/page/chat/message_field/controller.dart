@@ -99,28 +99,6 @@ class MessageFieldController extends GetxController {
     );
 
     field.focus.addListener(_focusListener);
-
-    _repliesWorker ??= ever(replied, (_) => onChanged?.call());
-    _attachmentsWorker ??= ever(this.attachments, (_) => onChanged?.call());
-    _editedWorker ??= ever(edited, (item) {
-      if (item != null) {
-        field.text = item.text?.val ?? '';
-        this.attachments.value = item.attachments
-            .map((e) => MapEntry(GlobalKey(), e))
-            .toList();
-        replied.value = item.repliesTo
-            .map((e) => e.original)
-            .nonNulls
-            .map((e) => Rx(e))
-            .toList();
-      } else {
-        field.text = '';
-        this.attachments.clear();
-        replied.clear();
-      }
-
-      onChanged?.call();
-    });
   }
 
   /// Callback, called when this [MessageFieldController] is submitted.
@@ -187,10 +165,10 @@ class MessageFieldController extends GetxController {
   ]);
 
   /// [ChatButton]s displayed in the more panel over the [panel] buttons.
-  late final RxList<ChatButton> overlay = RxList();
+  final RxList<ChatButton> overlay = RxList();
 
   /// [ChatButton]s displayed (pinned) in the text field.
-  late final RxList<ChatButton> buttons;
+  final RxList<ChatButton> buttons = RxList();
 
   /// Indicator whether there is space for more [ChatButton]s to be pinned.
   final RxBool hasSpaceForPins = RxBool(true);
@@ -222,14 +200,17 @@ class MessageFieldController extends GetxController {
   /// [NotificationService] having the [DeviceToken] information.
   final NotificationService? _notificationService;
 
-  /// [Worker] reacting on the [replied] changes.
-  Worker? _repliesWorker;
+  /// [StreamSubscription] reacting on the [replied] changes.
+  StreamSubscription? _repliesSubscription;
 
-  /// [Worker] reacting on the [attachments] changes.
-  Worker? _attachmentsWorker;
+  /// [StreamSubscription] reacting on the [attachments] changes.
+  StreamSubscription? _attachmentsSubscription;
 
-  /// [Worker] reacting on the [edited] changes.
-  Worker? _editedWorker;
+  /// [StreamSubscription] reacting on the [edited] changes.
+  StreamSubscription? _editedSubscription;
+
+  /// [StreamSubscription] reacting on the [donation] changes.
+  StreamSubscription? _donationSubscription;
 
   /// [Worker] capturing any [buttons] changes to update the
   /// [ApplicationSettings.pinnedActions] value.
@@ -337,14 +318,17 @@ class MessageFieldController extends GetxController {
 
   @override
   void onInit() {
+    Log.debug('onInit', '$runtimeType');
+
     if (PlatformUtils.isMobile && !PlatformUtils.isWeb) {
       BackButtonInterceptor.add(_onBack, ifNotYetIntercepted: true);
     }
 
-    buttons = RxList(
-      _toButtons(_settingsRepository?.applicationSettings.value?.pinnedActions),
+    buttons.value = _toButtons(
+      _settingsRepository?.applicationSettings.value?.pinnedActions,
     );
 
+    _buttonsWorker?.dispose();
     _buttonsWorker = ever(buttons, (List<ChatButton> list) {
       _settingsRepository?.setPinnedActions(
         list.map((e) => e.runtimeType.toString()).toList(),
@@ -352,11 +336,42 @@ class MessageFieldController extends GetxController {
     });
 
     String route = router.route;
+    _routesWorker?.dispose();
     _routesWorker = ever(router.routes, (routes) {
       if (router.route != route) {
         _moreEntry?.remove();
         _moreEntry = null;
       }
+    });
+
+    _repliesSubscription?.cancel();
+    _repliesSubscription = replied.listen((_) => onChanged?.call());
+
+    _attachmentsSubscription?.cancel();
+    _attachmentsSubscription = attachments.listen((_) => onChanged?.call());
+
+    _donationSubscription?.cancel();
+    _donationSubscription = donation.listen((_) => onChanged?.call());
+
+    _editedSubscription?.cancel();
+    _editedSubscription = edited.listen((item) {
+      if (item != null) {
+        field.text = item.text?.val ?? '';
+        attachments.value = item.attachments
+            .map((e) => MapEntry(GlobalKey(), e))
+            .toList();
+        replied.value = item.repliesTo
+            .map((e) => e.original)
+            .nonNulls
+            .map((e) => Rx(e))
+            .toList();
+      } else {
+        field.text = '';
+        attachments.clear();
+        replied.clear();
+      }
+
+      onChanged?.call();
     });
 
     super.onInit();
@@ -370,12 +385,15 @@ class MessageFieldController extends GetxController {
 
   @override
   void onClose() {
+    Log.debug('onClose', '$runtimeType');
+
     _moreEntry?.remove();
-    _repliesWorker?.dispose();
-    _attachmentsWorker?.dispose();
-    _editedWorker?.dispose();
+    _repliesSubscription?.cancel();
+    _attachmentsSubscription?.cancel();
+    _editedSubscription?.cancel();
     _buttonsWorker?.dispose();
     _routesWorker?.dispose();
+    _donationSubscription?.cancel();
 
     if (!isClosed) {
       scrollController.dispose();

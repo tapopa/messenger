@@ -166,7 +166,15 @@ class ChatMessage extends ChatItem {
     return other is ChatMessage &&
         id == other.id &&
         isEquals(other) &&
-        status.value == other.status.value;
+        status.value == other.status.value &&
+        donations.every(
+          (e) => other.donations.any(
+            (m) =>
+                m.id == e.id &&
+                m.amount == e.amount &&
+                m.operation == e.operation,
+          ),
+        );
   }
 }
 

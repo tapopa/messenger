@@ -70,6 +70,7 @@ import '/domain/service/my_user.dart';
 import '/domain/service/notification.dart';
 import '/domain/service/session.dart';
 import '/domain/service/user.dart';
+import '/domain/service/wallet.dart';
 import '/l10n/l10n.dart';
 import '/provider/gql/exceptions.dart'
     show
@@ -94,6 +95,7 @@ import '/provider/gql/exceptions.dart'
 import '/routes.dart';
 import '/ui/page/home/page/user/controller.dart';
 import '/ui/widget/text_field.dart';
+import '/ui/widget/primary_button.dart';
 import '/ui/worker/cache.dart';
 import '/util/audio_utils.dart';
 import '/util/data_reader.dart';
@@ -118,7 +120,8 @@ class ChatController extends GetxController with IdentityAware {
     this._contactService,
     this._notificationService,
     this._myUserService,
-    this._sessionService, {
+    this._sessionService,
+    this._walletService, {
     this.itemId,
     this.onContext,
   });
@@ -339,6 +342,9 @@ class ChatController extends GetxController with IdentityAware {
   /// [ContactService] maintaining [ChatContact]s of this [me].
   final ContactService _contactService;
 
+  /// [WalletService] for retrieving the [Balance] of [MyUser].
+  final WalletService _walletService;
+
   /// Worker performing a [readChat] on [_lastSeenItem] changes.
   Worker? _readWorker;
 
@@ -522,6 +528,12 @@ class ChatController extends GetxController with IdentityAware {
           donation = send.donation.value;
         }
 
+        if (donation != 0) {
+          if (_walletService.balance.value.sum.val < donation) {
+            return _showBalanceExceeded();
+          }
+        }
+
         if (text.isNotEmpty ||
             attachments.isNotEmpty ||
             repliesTo.isNotEmpty ||
@@ -550,6 +562,10 @@ class ChatController extends GetxController with IdentityAware {
                 (_, _) => _showBlockedPopup(),
                 test: (e) => e.code == PostChatMessageErrorCode.blocked,
               )
+              .onError<PostChatMessageException>(
+                (_, _) => _showBalanceExceeded(),
+                test: (e) => e.code == PostChatMessageErrorCode.notEnoughFunds,
+              )
               .onError<UploadAttachmentException>(
                 (e, _) => MessagePopup.error(e),
               )
@@ -563,6 +579,8 @@ class ChatController extends GetxController with IdentityAware {
         }
       },
     );
+
+    send.onInit();
 
     PlatformUtils.isActive.then((value) => active.value = value);
     _onActivityChanged = PlatformUtils.onActivityChanged.listen((v) {
@@ -657,6 +675,7 @@ class ChatController extends GetxController with IdentityAware {
     AudioUtils.ensureInitialized();
     _fetchChat();
 
+    send.onReady();
     if (!PlatformUtils.isMobile && router.obscuring.isEmpty) {
       send.field.focus.requestFocus();
     }
@@ -803,6 +822,19 @@ class ChatController extends GetxController with IdentityAware {
   /// Resends the specified [ChatItem].
   Future<void> resendItem(ChatItem item) async {
     if (item.status.value == SendingStatus.error) {
+      if (item is ChatMessage) {
+        final double donation = item.donations.fold(
+          0,
+          (a, b) => a + b.amount.val,
+        );
+
+        if (donation != 0) {
+          if (_walletService.balance.value.sum.val < donation) {
+            return _showBalanceExceeded();
+          }
+        }
+      }
+
       await _chatService
           .resendChatItem(item)
           .then(
@@ -811,6 +843,10 @@ class ChatController extends GetxController with IdentityAware {
           .onError<PostChatMessageException>(
             (_, _) => _showBlockedPopup(),
             test: (e) => e.code == PostChatMessageErrorCode.blocked,
+          )
+          .onError<PostChatMessageException>(
+            (_, _) => _showBalanceExceeded(),
+            test: (e) => e.code == PostChatMessageErrorCode.notEnoughFunds,
           )
           .onError<UploadAttachmentException>((e, _) => MessagePopup.error(e))
           .onError<ConnectionException>((_, _) {});
@@ -828,6 +864,8 @@ class ChatController extends GetxController with IdentityAware {
     }
 
     if (item is ChatMessage) {
+      final bool wasNull = edit.value == null;
+
       edit.value ??= MessageFieldController(
         _chatService,
         _userService,
@@ -932,6 +970,11 @@ class ChatController extends GetxController with IdentityAware {
         },
       );
 
+      if (wasNull) {
+        edit.value?.onInit();
+        edit.value?.onReady();
+      }
+
       edit.value?.toggleLogs(isMonolog || isSupport);
       edit.value?.edited.value = item;
       edit.value?.field.focus.requestFocus();
@@ -956,6 +999,8 @@ class ChatController extends GetxController with IdentityAware {
 
   /// Updates [RxChat.draft] with the current values of the [send] field.
   void _updateDraft() {
+    Log.debug('_updateDraft()', '$runtimeType');
+
     // [Attachment]s to persist in a [RxChat.draft].
     final Iterable<MapEntry<GlobalKey, Attachment>> persisted;
 
@@ -2568,6 +2613,30 @@ class ChatController extends GetxController with IdentityAware {
         // No-op.
         break;
     }
+  }
+
+  /// Displays a [MessagePopup.error] visually representing a balance being
+  /// exceeded message.
+  void _showBalanceExceeded() {
+    MessagePopup.alert(
+      'label_balance_exceeded'.l10n,
+      description: [
+        TextSpan(
+          text: 'label_your_balance_amount'.l10nfmt({
+            'balance': _walletService.balance.value.l10n,
+          }),
+        ),
+      ],
+      button: (context) {
+        return PrimaryButton(
+          onPressed: () {
+            Navigator.of(context).pop(true);
+            router.tab = HomeTab.wallet;
+          },
+          title: 'btn_add_funds'.l10n,
+        );
+      },
+    );
   }
 
   /// Disables the [search], if its focus is lost or its query is empty.

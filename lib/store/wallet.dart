@@ -44,6 +44,7 @@ import '/util/stream_utils.dart';
 import '/util/web/web_utils.dart';
 import 'event/balance.dart';
 import 'event/operation.dart';
+import 'event/wallet.dart' show operationEvent, operationsEvents;
 import 'model/operation.dart';
 import 'model/page_info.dart';
 import 'paginated.dart';
@@ -249,7 +250,7 @@ class WalletRepository extends IdentityDependency
 
     final OperationsEventsEvent events = OperationsEventsEvent(
       OperationsEventsVersioned(
-        mixin.events.map(_operationEvent).toList(),
+        mixin.events.map(operationEvent).toList(),
         mixin.ver,
         mixin.listVer,
       ),
@@ -300,7 +301,7 @@ class WalletRepository extends IdentityDependency
 
     final OperationsEventsEvent events = OperationsEventsEvent(
       OperationsEventsVersioned(
-        mixin.events.map(_operationEvent).toList(),
+        mixin.events.map(operationEvent).toList(),
         mixin.ver,
         mixin.listVer,
       ),
@@ -332,7 +333,7 @@ class WalletRepository extends IdentityDependency
 
     final OperationsEventsEvent events = OperationsEventsEvent(
       OperationsEventsVersioned(
-        mixin.events.map(_operationEvent).toList(),
+        mixin.events.map(operationEvent).toList(),
         mixin.ver,
         mixin.listVer,
       ),
@@ -490,147 +491,20 @@ class WalletRepository extends IdentityDependency
         return;
       }
 
-      _operationsSubscription = StreamQueue(await _operationsEvents());
-      await _operationsSubscription!.execute(_operationsEvent);
-    }, tag: 'operationsEvents()');
-  }
-
-  /// Returns a [Stream] of [Balance]s of the specified [MyUser]'s purse.
-  Future<Stream<OperationsEvents>> _operationsEvents() async {
-    Log.debug('_operationsEvents()', '$runtimeType');
-
-    final Stream<QueryResult> events = await _graphQlProvider.operationsEvents(
-      OperationOrigin.purse,
-      null,
-      () => null,
-    );
-
-    return events.asyncExpand((event) async* {
-      Log.debug('_operationsEvents() -> ${event.data}', '$runtimeType');
-
-      final events = OperationsEvents$Subscription.fromJson(
-        event.data!,
-      ).operationsEvents;
-
-      if (events.$$typename == 'SubscriptionInitialized') {
-        events
-            as OperationsEvents$Subscription$OperationsEvents$SubscriptionInitialized;
-        yield const OperationsEventsInitialized();
-      } else if (events.$$typename == 'OperationsList') {
-        events as OperationsEvents$Subscription$OperationsEvents$OperationsList;
-        yield OperationsEventsList();
-      } else if (events.$$typename == 'OperationEventsVersioned') {
-        final mixin =
-            events
-                as OperationsEvents$Subscription$OperationsEvents$OperationEventsVersioned;
-        yield OperationsEventsEvent(
-          OperationsEventsVersioned(
-            mixin.events.map(_operationEvent).toList(),
-            mixin.ver,
-            mixin.listVer,
+      _operationsSubscription = StreamQueue(
+        await operationsEvents(
+          await _graphQlProvider.operationsEvents(
+            OperationOrigin.purse,
+            null,
+            () => null,
           ),
-        );
-      }
-    });
+        ),
+      );
+      await _operationsSubscription!.execute(_operationsEvent);
+    }, tag: 'wallet.operationsEvents()');
   }
 
-  /// Constructs a [OperationEvent] from the
-  /// [OperationEventsVersionedMixin$Events].
-  OperationEvent _operationEvent(OperationEventsVersionedMixin$Events e) {
-    Log.trace('_operationEvent($e)', '$runtimeType');
-
-    if (e.$$typename == 'EventOperationCanceled') {
-      e as OperationEventsVersionedMixin$Events$EventOperationCanceled;
-      return EventOperationCanceled(
-        e.id,
-        e.origin,
-        e.at,
-        e.operation.node.toDto(cursor: e.operation.cursor),
-        e.canceled.toModel(),
-      );
-    } else if (e.$$typename == 'EventOperationChargeCreated') {
-      return EventOperationChargeCreated(
-        e.id,
-        e.origin,
-        e.at,
-        e.operation.node.toDto(cursor: e.operation.cursor),
-      );
-    } else if (e.$$typename == 'EventOperationDepositBonusCreated') {
-      return EventOperationDepositBonusCreated(
-        e.id,
-        e.origin,
-        e.at,
-        e.operation.node.toDto(cursor: e.operation.cursor),
-      );
-    } else if (e.$$typename == 'EventOperationDepositCompleted') {
-      return EventOperationDepositCompleted(
-        e.id,
-        e.origin,
-        e.at,
-        e.operation.node.toDto(cursor: e.operation.cursor),
-      );
-    } else if (e.$$typename == 'EventOperationDepositCreated') {
-      return EventOperationDepositCreated(
-        e.id,
-        e.origin,
-        e.at,
-        e.operation.node.toDto(cursor: e.operation.cursor),
-      );
-    } else if (e.$$typename == 'EventOperationDepositDeclined') {
-      return EventOperationDepositDeclined(
-        e.id,
-        e.origin,
-        e.at,
-        e.operation.node.toDto(cursor: e.operation.cursor),
-      );
-    } else if (e.$$typename == 'EventOperationDepositFailed') {
-      return EventOperationDepositFailed(
-        e.id,
-        e.origin,
-        e.at,
-        e.operation.node.toDto(cursor: e.operation.cursor),
-      );
-    } else if (e.$$typename == 'EventOperationDividendCreated') {
-      return EventOperationDividendCreated(
-        e.id,
-        e.origin,
-        e.at,
-        e.operation.node.toDto(cursor: e.operation.cursor),
-      );
-    } else if (e.$$typename == 'EventOperationEarnDonationCreated') {
-      return EventOperationEarnDonationCreated(
-        e.id,
-        e.origin,
-        e.at,
-        e.operation.node.toDto(cursor: e.operation.cursor),
-      );
-    } else if (e.$$typename == 'EventOperationGrantCreated') {
-      return EventOperationGrantCreated(
-        e.id,
-        e.origin,
-        e.at,
-        e.operation.node.toDto(cursor: e.operation.cursor),
-      );
-    } else if (e.$$typename == 'EventOperationPurchaseDonationCreated') {
-      return EventOperationPurchaseDonationCreated(
-        e.id,
-        e.origin,
-        e.at,
-        e.operation.node.toDto(cursor: e.operation.cursor),
-      );
-    } else if (e.$$typename == 'EventOperationRewardCreated') {
-      return EventOperationRewardCreated(
-        e.id,
-        e.origin,
-        e.at,
-        e.operation.node.toDto(cursor: e.operation.cursor),
-      );
-    } else {
-      throw UnimplementedError('Unknown OperationEvent: ${e.$$typename}');
-    }
-  }
-
-  /// Handles [OperationsEvents] from the [_operationsEvents] subscription.
+  /// Handles [OperationsEvents] from the [operationsEvents] subscription.
   Future<void> _operationsEvent(
     OperationsEvents events, {
     bool updateVersion = true,

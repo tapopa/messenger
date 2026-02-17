@@ -98,6 +98,9 @@ class DummyRxChat extends RxChat {
   Future<void> updateAttachments(ChatItem item) async {}
 
   @override
+  Future<void> updateItem(ChatItem item) async {}
+
+  @override
   Future<void> updateAvatar() async {}
 
   @override

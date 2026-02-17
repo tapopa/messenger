@@ -747,6 +747,7 @@ class ChatRepository extends IdentityDependency
         text: item.text?.nullIfEmpty,
         attachments: item.attachments,
         repliesTo: item.repliesTo.map((e) => e.original).nonNulls.toList(),
+        donation: item.donations.firstOrNull,
       );
     }
   }

@@ -39,6 +39,7 @@ import '/domain/model/chat_item.dart';
 import '/domain/model/chat.dart';
 import '/domain/model/donation.dart';
 import '/domain/model/my_user.dart';
+import '/domain/model/operation.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/sending_status.dart';
 import '/domain/model/user.dart';
@@ -49,6 +50,7 @@ import '/routes.dart';
 import '/themes.dart';
 import '/ui/page/call/widget/fit_view.dart';
 import '/ui/page/home/page/chat/forward/view.dart';
+import '/ui/page/home/page/chat/single_transaction/view.dart';
 import '/ui/page/home/page/user/controller.dart';
 import '/ui/page/home/widget/avatar.dart';
 import '/ui/page/home/widget/retry_image.dart';
@@ -99,6 +101,7 @@ class ChatItemWidget extends StatefulWidget {
     this.onResend,
     this.onFileTap,
     this.onAttachmentError,
+    this.onDonationError,
     this.onDownload,
     this.onDownloadAs,
     this.onSave,
@@ -186,6 +189,9 @@ class ChatItemWidget extends StatefulWidget {
 
   /// Callback, called on the [Attachment] fetching errors.
   final Future<void> Function(ChatItem?)? onAttachmentError;
+
+  /// Callback, called on the [Donation] fetching [Operation] errors.
+  final Future<void> Function()? onDonationError;
 
   /// Callback, called when a download action of this [ChatItem] is triggered.
   final void Function(List<Attachment>)? onDownload;
@@ -792,20 +798,11 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
         media.isNotEmpty && files.isEmpty && _text == null;
 
     // Indicator whether [DonateWidget] should display the timestamp.
-    final bool timeOnDonate =
-        donates.isNotEmpty && media.isEmpty && files.isEmpty && _text == null;
+    final bool timeInDonate =
+        donates.isNotEmpty && media.isEmpty && files.isEmpty;
 
     return _rounded(context, (menu, constraints) {
       final List<Widget> children = [
-        ...donates.mapIndexed((i, e) {
-          return DonateWidget(
-            e.amount.val,
-            name: widget.user?.title() ?? '',
-            tag: timeOnDonate && i == donates.length - 1
-                ? _timestamp(msg)
-                : null,
-          );
-        }),
         if (!_fromMe &&
             widget.chat.value?.isGroup == true &&
             widget.withName) ...[
@@ -833,7 +830,7 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
             ],
           ),
           const SizedBox(height: 4),
-        ] else
+        ] else if (donates.isEmpty)
           SizedBox(height: msg.repliesTo.isNotEmpty || media.isEmpty ? 6 : 0),
         if (msg.repliesTo.isNotEmpty) ...[
           ...msg.repliesTo.expand((e) {
@@ -869,20 +866,74 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
           }),
           const SizedBox(height: 6),
         ],
+
+        if (donates.isNotEmpty) ...[
+          ...donates.mapIndexed((i, e) {
+            final Widget bottom;
+
+            switch (msg.status.value) {
+              case SendingStatus.error:
+              case SendingStatus.sending:
+                bottom = DiamondButton(
+                  text: 'btn_view_donation'.l10n,
+                  color: style.colors.secondary,
+                );
+                break;
+
+              case SendingStatus.sent:
+                final OperationId? operation = e.operation;
+
+                bottom = DiamondButton(
+                  onPressed: operation == null
+                      ? () async {
+                          await widget.onDonationError?.call();
+                        }
+                      : () async {
+                          await SingleTransactionView.show(
+                            context,
+                            id: operation,
+                            wallet: _fromMe,
+                          );
+                        },
+                  text: 'btn_view_donation'.l10n,
+                  color: _fromMe
+                      ? style.colors.primary
+                      : style.colors.currencyPrimary,
+                );
+                break;
+            }
+
+            return SelectionContainer.disabled(
+              child: DonateWidget(
+                e.amount.val,
+                name: widget.user?.title() ?? '',
+                tag: timeInDonate && i == donates.length - 1
+                    ? _timestamp(msg)
+                    : null,
+                bottom: bottom,
+              ),
+            );
+          }),
+          if (media.isNotEmpty || files.isNotEmpty || _text != null)
+            const SizedBox(height: 6),
+        ],
+
         if (media.isNotEmpty) ...[
           // TODO: Replace `ClipRRect` with rounded `DecoratedBox`s when
           //       `ImageAttachment` sizes are known.
           ClipRRect(
             borderRadius: BorderRadius.only(
               topLeft:
-                  msg.repliesTo.isNotEmpty ||
+                  donates.isNotEmpty ||
+                      msg.repliesTo.isNotEmpty ||
                       (!_fromMe &&
                           widget.chat.value?.isGroup == true &&
                           widget.withAvatar)
                   ? Radius.zero
                   : const Radius.circular(15),
               topRight:
-                  msg.repliesTo.isNotEmpty ||
+                  donates.isNotEmpty ||
+                      msg.repliesTo.isNotEmpty ||
                       (!_fromMe &&
                           widget.chat.value?.isGroup == true &&
                           widget.withAvatar)
@@ -945,7 +996,7 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
           ),
           const SizedBox(height: 6),
         ],
-        if (_text != null || msg.attachments.isEmpty) ...[
+        if (_text != null || (msg.attachments.isEmpty && donates.isEmpty)) ...[
           Row(
             children: [
               Flexible(
@@ -1008,20 +1059,22 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
                 ),
               ),
             ),
-            Positioned(
-              right: timeInBubble ? 6 : 8,
-              bottom: 4,
-              child: timeInBubble
-                  ? Container(
-                      padding: const EdgeInsets.only(left: 4, right: 4),
-                      decoration: BoxDecoration(
-                        color: style.colors.onBackgroundOpacity50,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: _timestamp(msg, true),
-                    )
-                  : _timestamp(msg),
-            ),
+
+            if (!timeInDonate)
+              Positioned(
+                right: timeInBubble ? 6 : 8,
+                bottom: 4,
+                child: timeInBubble
+                    ? Container(
+                        padding: const EdgeInsets.only(left: 4, right: 4),
+                        decoration: BoxDecoration(
+                          color: style.colors.onBackgroundOpacity50,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: _timestamp(msg, true),
+                      )
+                    : _timestamp(msg),
+              ),
           ],
         ),
       );
@@ -1153,47 +1206,53 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
         final List<Widget> widgets = [];
 
         widgets.addAll(
-          item.attachments
-              .map((a) {
-                ImageAttachment? image;
+          [
+            ...item.donations.map((e) {
+              return Padding(
+                padding: const EdgeInsets.only(right: 2),
+                child: DonateRectangle(),
+              );
+            }),
+            ...item.attachments.map((a) {
+              ImageAttachment? image;
 
-                if (a is ImageAttachment) {
-                  image = a;
-                }
+              if (a is ImageAttachment) {
+                image = a;
+              }
 
-                return Container(
-                  margin: const EdgeInsets.only(right: 2),
-                  decoration: BoxDecoration(
-                    color: fromMe
-                        ? style.colors.onPrimaryOpacity25
-                        : style.colors.onBackgroundOpacity2,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  width: 50,
-                  height: 50,
-                  child: image == null
-                      ? Icon(
-                          Icons.file_copy,
-                          color: fromMe
-                              ? style.colors.onPrimary
-                              : style.colors.secondaryHighlightDarkest,
-                          size: 28,
-                        )
-                      : RetryImage(
-                          image.medium.url,
-                          checksum: image.medium.checksum,
-                          thumbhash: image.medium.thumbhash,
-                          onForbidden: () async =>
-                              await widget.onAttachmentError?.call(null),
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: double.infinity,
-                          borderRadius: BorderRadius.circular(10.0),
-                          cancelable: true,
-                        ),
-                );
-              })
-              .take(take),
+              return Container(
+                margin: const EdgeInsets.only(right: 2),
+                decoration: BoxDecoration(
+                  color: fromMe
+                      ? style.colors.onPrimaryOpacity25
+                      : style.colors.onBackgroundOpacity2,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                width: 50,
+                height: 50,
+                child: image == null
+                    ? Icon(
+                        Icons.file_copy,
+                        color: fromMe
+                            ? style.colors.onPrimary
+                            : style.colors.secondaryHighlightDarkest,
+                        size: 28,
+                      )
+                    : RetryImage(
+                        image.medium.url,
+                        checksum: image.medium.checksum,
+                        thumbhash: image.medium.thumbhash,
+                        onForbidden: () async =>
+                            await widget.onAttachmentError?.call(null),
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                        borderRadius: BorderRadius.circular(10.0),
+                        cancelable: true,
+                      ),
+              );
+            }),
+          ].take(take),
         );
 
         if (item.attachments.length > take) {

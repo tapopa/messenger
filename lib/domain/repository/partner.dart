@@ -15,6 +15,8 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:async';
+
 import 'package:get/get.dart';
 
 import '/domain/model/balance.dart';
@@ -31,4 +33,7 @@ abstract class AbstractPartnerRepository {
 
   /// Returns the [Operation]s happening in [MyUser]'s partner wallet.
   Paginated<OperationId, Rx<Operation>> get operations;
+
+  /// Returns an [Operation] identified by the provided [id] or [num].
+  FutureOr<Rx<Operation>?> get({OperationId? id, OperationNum? num});
 }

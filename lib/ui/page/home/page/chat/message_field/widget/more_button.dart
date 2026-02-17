@@ -25,7 +25,7 @@ import '/ui/widget/svg/svg.dart';
 import '/ui/widget/widget_button.dart';
 import 'buttons.dart';
 
-/// [AnimatedButton] with an [icon].
+/// [AnimatedButton] built from a [button].
 class ChatMoreWidget extends StatefulWidget {
   /// Constructs a [ChatMoreWidget] from the provided [ChatButton].
   const ChatMoreWidget(

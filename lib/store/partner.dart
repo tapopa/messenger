@@ -109,9 +109,12 @@ class PartnerRepository extends IdentityDependency
 
   @override
   void onClose() {
+    Log.debug('onClose()', '$runtimeType');
+
     _availableSubscription?.close(immediate: true);
     _holdSubscription?.close(immediate: true);
     _operationsSubscription?.close(immediate: true);
+    operations.dispose();
     super.onClose();
   }
 

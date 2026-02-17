@@ -136,8 +136,12 @@ class WalletRepository extends IdentityDependency
 
   @override
   void onClose() {
+    Log.debug('onClose()', '$runtimeType');
+
     _balanceSubscription?.close(immediate: true);
     _operationsSubscription?.close(immediate: true);
+    _queryToken?.cancel();
+    operations.dispose();
     super.onClose();
   }
 

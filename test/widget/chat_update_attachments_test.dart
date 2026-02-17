@@ -38,6 +38,7 @@ import 'package:messenger/domain/repository/auth.dart';
 import 'package:messenger/domain/repository/chat.dart';
 import 'package:messenger/domain/repository/session.dart';
 import 'package:messenger/domain/repository/settings.dart';
+import 'package:messenger/domain/repository/wallet.dart';
 import 'package:messenger/domain/service/auth.dart';
 import 'package:messenger/domain/service/call.dart';
 import 'package:messenger/domain/service/chat.dart';
@@ -46,6 +47,7 @@ import 'package:messenger/domain/service/my_user.dart';
 import 'package:messenger/domain/service/notification.dart';
 import 'package:messenger/domain/service/session.dart';
 import 'package:messenger/domain/service/user.dart';
+import 'package:messenger/domain/service/wallet.dart';
 import 'package:messenger/provider/drift/account.dart';
 import 'package:messenger/provider/drift/background.dart';
 import 'package:messenger/provider/drift/blocklist.dart';
@@ -80,6 +82,7 @@ import 'package:messenger/store/my_user.dart';
 import 'package:messenger/store/session.dart';
 import 'package:messenger/store/settings.dart';
 import 'package:messenger/store/user.dart';
+import 'package:messenger/store/wallet.dart';
 import 'package:messenger/themes.dart';
 import 'package:messenger/ui/page/home/page/chat/controller.dart';
 import 'package:messenger/ui/worker/cache.dart';
@@ -141,6 +144,31 @@ void main() async {
     graphQlProvider.onDelete,
   ).thenReturn(InternalFinalCallback(callback: () {}));
   when(graphQlProvider.keepOnline()).thenAnswer((_) => const Stream.empty());
+
+  when(
+    graphQlProvider.operations(
+      origin: anyNamed('origin'),
+      first: anyNamed('first'),
+      after: anyNamed('after'),
+      last: anyNamed('last'),
+      before: anyNamed('before'),
+    ),
+  ).thenAnswer(
+    (_) => Future.value(
+      Operations$Query$Operations.fromJson({
+        'edges': [],
+        'pageInfo': {
+          'endCursor': 'endCursor',
+          'hasNextPage': false,
+          'startCursor': 'startCursor',
+          'hasPreviousPage': false,
+        },
+        'totalCount': 0,
+        'ver': 'ver',
+      }),
+    ),
+  );
+
   Get.put<GraphQlProvider>(graphQlProvider);
 
   when(graphQlProvider.recentChatsTopEvents(3)).thenAnswer(
@@ -236,6 +264,7 @@ void main() async {
                       },
                     },
                   ],
+                  'donations': [],
                 },
                 'cursor': '123',
               },
@@ -466,7 +495,7 @@ void main() async {
     router = RouterState(authService);
     router.provider = MockPlatformRouteInformationProvider();
 
-    authService.init();
+    await authService.init();
 
     UserRepository userRepository = Get.put(
       UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
@@ -556,6 +585,15 @@ void main() async {
     Get.put(UserService(userRepository));
     ChatService chatService = Get.put(ChatService(chatRepository, authService));
     Get.put(CallService(authService, chatService, callRepository));
+
+    final walletRepository = Get.put<AbstractWalletRepository>(
+      WalletRepository(
+        graphQlProvider,
+        sessionRepository,
+        me: const UserId('me'),
+      ),
+    );
+    Get.put(WalletService(walletRepository));
 
     Get.put(CacheWorker(cacheProvider, null));
 

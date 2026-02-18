@@ -42,9 +42,9 @@ final StepDefinitionGeneric seesAs =
               context.world.sessions[user2.name]!.userId,
             );
 
-            Log.debug('seesAs -> `response` is: $response', 'E2E');
-
             final user = response?.toModel();
+
+            Log.debug('seesAs -> `response` is: ${user?.toJson()}', 'E2E');
 
             return (status == OnlineStatus.online && user?.online == true) ||
                 (status == OnlineStatus.offline && user?.online == false);

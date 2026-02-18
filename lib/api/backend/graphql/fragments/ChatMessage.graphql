@@ -47,4 +47,8 @@ fragment ChatMessage on ChatMessage {
             ...FileAttachment
         }
     }
+    donations {
+        __typename
+        ...Donation
+    }
 }

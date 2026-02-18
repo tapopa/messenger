@@ -105,6 +105,7 @@ class ChatView extends StatelessWidget {
         Get.find(),
         Get.find(),
         Get.find(),
+        Get.find(),
         itemId: itemId,
         onContext: () => context,
       ),
@@ -845,6 +846,10 @@ class ChatView extends StatelessWidget {
                   onFileTap: (a) => c.downloadFile(e.value, a),
                   onAttachmentError: (item) async {
                     await c.chat?.updateAttachments(item ?? e.value);
+                    await Future.delayed(Duration.zero);
+                  },
+                  onDonationError: () async {
+                    await c.chat?.updateItem(e.value);
                     await Future.delayed(Duration.zero);
                   },
                   onDownload: c.downloadMedia,

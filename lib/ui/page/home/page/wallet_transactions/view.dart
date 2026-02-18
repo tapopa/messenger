@@ -39,7 +39,7 @@ class WalletTransactionsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: WalletTransactionsController(Get.find()),
+      init: WalletTransactionsController(Get.find(), Get.find()),
       builder: (WalletTransactionsController c) {
         return Scaffold(
           appBar: CustomAppBar(
@@ -100,6 +100,7 @@ class WalletTransactionsView extends StatelessWidget {
                                       (expanded &&
                                           !c.ids.contains(e.value.id)) ||
                                       (!expanded && c.ids.contains(e.value.id)),
+                                  getUser: c.getUser,
                                 );
                               }),
                             ),

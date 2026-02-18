@@ -149,7 +149,7 @@ class ChatForwardController extends GetxController {
   }
 
   /// Forms and sends the forwarded message.
-  Future<void> _send() async {
+  Future<void> _send({double? donateOnly}) async {
     if (selected.value?.isEmpty != false) {
       send.field.unsubmit();
       return;

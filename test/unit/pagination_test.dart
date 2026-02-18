@@ -126,6 +126,7 @@ void main() async {
             'text': text,
             'editedAt': null,
             'attachments': [],
+            'donations': [],
           },
           'cursor': text,
         };

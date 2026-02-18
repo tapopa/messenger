@@ -27,12 +27,12 @@ import 'package:get/get.dart';
 import 'package:mutex/mutex.dart';
 import 'package:synchronized/synchronized.dart';
 
-import '../config.dart';
 import '/api/backend/extension/call.dart';
 import '/api/backend/extension/chat.dart';
 import '/api/backend/extension/page_info.dart';
 import '/api/backend/extension/user.dart';
 import '/api/backend/schema.dart';
+import '/config.dart';
 import '/domain/model/attachment.dart';
 import '/domain/model/avatar.dart';
 import '/domain/model/chat_call.dart';
@@ -41,6 +41,7 @@ import '/domain/model/chat_item_quote.dart';
 import '/domain/model/chat_item.dart';
 import '/domain/model/chat_message_input.dart' as model;
 import '/domain/model/chat.dart';
+import '/domain/model/donation.dart';
 import '/domain/model/mute_duration.dart';
 import '/domain/model/native_file.dart';
 import '/domain/model/ongoing_call.dart';
@@ -649,9 +650,10 @@ class ChatRepository extends IdentityDependency
     ChatMessageText? text,
     List<Attachment>? attachments,
     List<ChatItem> repliesTo = const [],
+    Donation? donation,
   }) async {
     Log.debug(
-      'sendChatMessage($chatId, $text, $attachments, $repliesTo)',
+      'sendChatMessage($chatId, $text, $attachments, $repliesTo, $donation)',
       '$runtimeType',
     );
 
@@ -664,6 +666,7 @@ class ChatRepository extends IdentityDependency
         text: text,
         attachments: attachments,
         repliesTo: repliesTo,
+        donation: donation,
       );
 
       try {
@@ -679,6 +682,7 @@ class ChatRepository extends IdentityDependency
       text: text,
       attachments: attachments,
       repliesTo: repliesTo,
+      donation: donation,
     );
   }
 
@@ -699,9 +703,10 @@ class ChatRepository extends IdentityDependency
     ChatMessageText? text,
     List<AttachmentId>? attachments,
     List<ChatItemId> repliesTo = const [],
+    DonationInput? donation,
   }) async {
     Log.debug(
-      'postChatMessage($chatId, $text, $attachments, $repliesTo)',
+      'postChatMessage($chatId, $text, $attachments, $repliesTo, donation: ${donation?.toJson()})',
       '$runtimeType',
     );
 
@@ -710,6 +715,7 @@ class ChatRepository extends IdentityDependency
       text: text,
       attachments: attachments,
       repliesTo: repliesTo,
+      donation: donation,
     );
   }
 
@@ -741,6 +747,7 @@ class ChatRepository extends IdentityDependency
         text: item.text?.nullIfEmpty,
         attachments: item.attachments,
         repliesTo: item.repliesTo.map((e) => e.original).nonNulls.toList(),
+        donation: item.donations.firstOrNull,
       );
     }
   }

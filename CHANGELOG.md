@@ -16,17 +16,20 @@ All user visible changes to this project will be documented in this file. This p
 - UI:
     - Wallet tab:
         - PayPal deposit. ([#23])
+    - Chat page:
+        - Donations. ([#27])
 
 ### Changed
 
 - UI:
     - Monetization tab:
-        - Operations with pagination on transaction page. ([#26])
+        - Operations with pagination on transaction page. ([#27], [#26])
     - Wallet tab:
         - Operations with pagination on transaction page. ([#26])
 
 [#23]: /../../pull/23
 [#26]: /../../pull/26
+[#27]: /../../pull/27
 
 
 

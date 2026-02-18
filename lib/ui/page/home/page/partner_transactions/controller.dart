@@ -15,17 +15,22 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 import '/domain/model/operation.dart';
+import '/domain/model/user.dart';
 import '/domain/repository/paginated.dart';
+import '/domain/repository/user.dart';
 import '/domain/service/partner.dart';
+import '/domain/service/user.dart';
 import '/ui/widget/text_field.dart';
 
 /// Controller of the [Routes.partnerTransactions] page.
 class PartnerTransactionsController extends GetxController {
-  PartnerTransactionsController(this._partnerService);
+  PartnerTransactionsController(this._partnerService, this._userService);
 
   /// Indicator whether the [operations] should be all expanded or not.
   final RxBool expanded = RxBool(false);
@@ -44,6 +49,9 @@ class PartnerTransactionsController extends GetxController {
 
   /// [PartnerService] maintaining the [Operation]s.
   final PartnerService _partnerService;
+
+  /// [User]s service fetching the [User]s in [getUser] method.
+  final UserService _userService;
 
   /// [Worker] executing the filtering of the [operations] on [query] changes.
   Worker? _queryWorker;
@@ -82,6 +90,9 @@ class PartnerTransactionsController extends GetxController {
     scrollController.dispose();
     super.onClose();
   }
+
+  /// Returns a reactive [User] from [UserService] by the provided [id].
+  FutureOr<RxUser?> getUser(UserId id) => _userService.get(id);
 
   /// Requests the next page of [Operation]s based on the
   /// [ScrollController.position] value.

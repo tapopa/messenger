@@ -1,5 +1,7 @@
 // Copyright © 2022-2026 IT ENGINEERING MANAGEMENT INC,
 //                       <https://github.com/team113>
+// Copyright © 2025-2026 Ideas Networks Solutions S.A.,
+//                       <https://github.com/tapopa>
 //
 // This program is free software: you can redistribute it and/or modify it under
 // the terms of the GNU Affero General Public License v3.0 as published by the
@@ -23,13 +25,14 @@ import '/domain/model/chat_item_quote.dart';
 import '/domain/model/chat_item.dart';
 import '/domain/model/chat.dart';
 import '/domain/model/crop_area.dart';
+import '/domain/model/donation.dart';
 import '/domain/model/mute_duration.dart';
 import '/domain/model/user.dart';
 import '/store/chat.dart';
 import '/store/model/chat_call.dart';
 import '/store/model/chat_item.dart';
-import '/store/model/chat.dart';
 import '/store/model/chat_member.dart';
+import '/store/model/chat.dart';
 import 'call.dart';
 import 'file.dart';
 import 'user.dart';
@@ -155,6 +158,7 @@ extension ChatMessageConversion on ChatMessageMixin {
         text: text,
         editedAt: editedAt,
         attachments: attachments.map((e) => e.toModel()).toList(),
+        donations: donations.map((e) => e.toModel()).toList(),
       ),
       cursor,
       ver,
@@ -225,6 +229,7 @@ extension NestedChatForwardItemConversion on NestedChatForwardMixin$Quote {
         ChatMessageQuote(
           text: q.text,
           attachments: q.attachments.map((e) => e.toModel()).toList(),
+          donations: q.donations.map((e) => e.toModel()).toList(),
           author: author.id,
           at: at,
         ),
@@ -360,6 +365,7 @@ extension ChatMessageQuoteConversion on ChatMessageQuoteMixin {
     at: at,
     text: text,
     attachments: attachments.map((e) => e.toModel()).toList(),
+    donations: donations.map((e) => e.toModel()).toList(),
   );
 
   /// Constructs a new [DtoChatItemQuote] from this [ChatMessageQuoteMixin].
@@ -467,6 +473,13 @@ extension ChatAvatarConversion on ChatAvatarMixin {
             ),
           ),
   );
+}
+
+/// Extension adding models construction from [DonationMixin].
+extension DonationConversion on DonationMixin {
+  /// Constructs a new [Donation] from this [DonationMixin].
+  Donation toModel() =>
+      Donation(id: id, amount: amount, operation: operation?.node.id);
 }
 
 /// Extension adding models construction from an

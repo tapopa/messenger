@@ -39,7 +39,7 @@ class PartnerTransactionsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: PartnerTransactionsController(Get.find()),
+      init: PartnerTransactionsController(Get.find(), Get.find()),
       builder: (PartnerTransactionsController c) {
         return Scaffold(
           appBar: CustomAppBar(
@@ -100,6 +100,7 @@ class PartnerTransactionsView extends StatelessWidget {
                                       (expanded &&
                                           !c.ids.contains(e.value.id)) ||
                                       (!expanded && c.ids.contains(e.value.id)),
+                                  getUser: c.getUser,
                                 );
                               }),
                             ),

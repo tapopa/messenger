@@ -34,6 +34,7 @@ import 'package:messenger/domain/model/user.dart';
 import 'package:messenger/domain/repository/chat.dart';
 import 'package:messenger/domain/repository/session.dart';
 import 'package:messenger/domain/repository/settings.dart';
+import 'package:messenger/domain/repository/wallet.dart';
 import 'package:messenger/domain/service/auth.dart';
 import 'package:messenger/domain/service/call.dart';
 import 'package:messenger/domain/service/chat.dart';
@@ -42,6 +43,7 @@ import 'package:messenger/domain/service/my_user.dart';
 import 'package:messenger/domain/service/notification.dart';
 import 'package:messenger/domain/service/session.dart';
 import 'package:messenger/domain/service/user.dart';
+import 'package:messenger/domain/service/wallet.dart';
 import 'package:messenger/provider/drift/account.dart';
 import 'package:messenger/provider/drift/background.dart';
 import 'package:messenger/provider/drift/blocklist.dart';
@@ -75,6 +77,7 @@ import 'package:messenger/store/my_user.dart';
 import 'package:messenger/store/session.dart';
 import 'package:messenger/store/settings.dart';
 import 'package:messenger/store/user.dart';
+import 'package:messenger/store/wallet.dart';
 import 'package:messenger/themes.dart';
 import 'package:messenger/ui/page/home/page/chat/view.dart';
 import 'package:messenger/util/audio_utils.dart';
@@ -183,6 +186,30 @@ void main() async {
   when(graphQlProvider.keepOnline()).thenAnswer((_) => const Stream.empty());
 
   when(
+    graphQlProvider.operations(
+      origin: anyNamed('origin'),
+      first: anyNamed('first'),
+      after: anyNamed('after'),
+      last: anyNamed('last'),
+      before: anyNamed('before'),
+    ),
+  ).thenAnswer(
+    (_) => Future.value(
+      Operations$Query$Operations.fromJson({
+        'edges': [],
+        'pageInfo': {
+          'endCursor': 'endCursor',
+          'hasNextPage': false,
+          'startCursor': 'startCursor',
+          'hasPreviousPage': false,
+        },
+        'totalCount': 0,
+        'ver': 'ver',
+      }),
+    ),
+  );
+
+  when(
     graphQlProvider.chatItems(
       const ChatId('0d72d245-8425-467a-9ebd-082d4f47850b'),
       last: 50,
@@ -214,6 +241,7 @@ void main() async {
                   'text': 'text message',
                   'editedAt': null,
                   'attachments': [],
+                  'donations': [],
                 },
                 'cursor':
                     'IjkxZTZlNTk3LWU2Y2EtNGIxZi1hZDcwLTgzZGQ2MjFlNGNiNCI=',
@@ -264,6 +292,7 @@ void main() async {
       text: const ChatMessageText('reply message'),
       attachments: anyNamed('attachments'),
       repliesTo: [],
+      donation: null,
     ),
   ).thenAnswer((_) {
     var event = {
@@ -305,11 +334,13 @@ void main() async {
                   'at': '2022-01-27T10:53:21.405546+00:00',
                   'text': '123',
                   'attachments': [],
+                  'donations': [],
                 },
               ],
               'text': 'reply message',
               'editedAt': null,
               'attachments': [],
+              'donations': [],
             },
             'cursor': '123',
           },
@@ -459,7 +490,7 @@ void main() async {
   router = RouterState(authService);
   router.provider = MockPlatformRouteInformationProvider();
 
-  authService.init();
+  await authService.init();
 
   Widget createWidgetForTesting({required Widget child}) {
     return MaterialApp(
@@ -476,7 +507,7 @@ void main() async {
   testWidgets('ChatView successfully replies to a message', (
     WidgetTester tester,
   ) async {
-    authService.init();
+    await authService.init();
 
     final UserRepository userRepository = Get.put(
       UserRepository(graphQlProvider, userProvider, me: const UserId('me')),
@@ -561,6 +592,15 @@ void main() async {
     Get.put(UserService(userRepository));
     ChatService chatService = Get.put(ChatService(chatRepository, authService));
     Get.put(CallService(authService, chatService, callRepository));
+
+    final walletRepository = Get.put<AbstractWalletRepository>(
+      WalletRepository(
+        graphQlProvider,
+        sessionRepository,
+        me: const UserId('me'),
+      ),
+    );
+    Get.put(WalletService(walletRepository));
 
     await tester.pumpWidget(
       createWidgetForTesting(

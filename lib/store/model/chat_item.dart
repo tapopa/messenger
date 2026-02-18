@@ -21,6 +21,7 @@ import '/domain/model/attachment.dart';
 import '/domain/model/chat_item_quote.dart';
 import '/domain/model/chat_item.dart';
 import '/domain/model/chat.dart';
+import '/domain/model/donation.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/sending_status.dart';
 import '/domain/model/user.dart';
@@ -120,6 +121,7 @@ class DtoChatMessage extends DtoChatItem {
     List<Attachment> attachments = const [],
     ChatItemId? existingId,
     PreciseDateTime? existingDateTime,
+    List<Donation> donations = const [],
   }) => DtoChatMessage(
     ChatMessage(
       existingId ?? ChatItemId.local(),
@@ -130,6 +132,7 @@ class DtoChatMessage extends DtoChatItem {
       repliesTo: repliesTo,
       attachments: attachments,
       status: SendingStatus.sending,
+      donations: donations,
     ),
     null,
     ChatItemVersion('0'),

@@ -389,9 +389,10 @@ mixin ChatGraphQlMixin {
     ChatMessageText? text,
     List<AttachmentId>? attachments,
     List<ChatItemId> repliesTo = const [],
+    DonationInput? donation,
   }) async {
     Log.debug(
-      'postChatMessage($chatId, $text, $attachments, $repliesTo)',
+      'postChatMessage($chatId, $text, $attachments, $repliesTo, $donation)',
       '$runtimeType',
     );
 
@@ -400,6 +401,7 @@ mixin ChatGraphQlMixin {
       text: text,
       attachments: attachments,
       repliesTo: repliesTo,
+      donation: donation,
     );
     final QueryResult result = await client.mutate(
       MutationOptions(

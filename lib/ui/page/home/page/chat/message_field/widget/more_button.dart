@@ -25,43 +25,28 @@ import '/ui/widget/svg/svg.dart';
 import '/ui/widget/widget_button.dart';
 import 'buttons.dart';
 
-/// [AnimatedButton] with an [icon].
+/// [AnimatedButton] built from a [button].
 class ChatMoreWidget extends StatefulWidget {
   /// Constructs a [ChatMoreWidget] from the provided [ChatButton].
-  ChatMoreWidget(
-    ChatButton button, {
+  const ChatMoreWidget(
+    this.button, {
     super.key,
     this.pinned = false,
     this.onPin,
-    void Function()? onPressed,
-  }) : label = button.hint,
-       offset = button.offsetMini,
-       icon = SvgIcon(button.assetMini ?? button.asset) {
-    this.onPressed = button.onPressed == null
-        ? null
-        : () {
-            onPressed?.call();
-            button.onPressed?.call();
-          };
-  }
+    this.onPressed,
+  });
+
+  /// [ChatButton] to render.
+  final ChatButton button;
 
   /// Callback, called when this [ChatMoreWidget] is pressed.
-  late final void Function()? onPressed;
+  final void Function()? onPressed;
 
   /// Indicator whether this [ChatMoreWidget] is pinned.
   final bool pinned;
 
   /// Callback, called when this [ChatMoreWidget] is pinned.
   final void Function()? onPin;
-
-  /// Label to display.
-  final String label;
-
-  /// [Offset] for the [icon].
-  final Offset offset;
-
-  /// Icon to display.
-  final Widget icon;
 
   @override
   State<ChatMoreWidget> createState() => _ChatMoreWidgetState();
@@ -78,11 +63,15 @@ class _ChatMoreWidgetState extends State<ChatMoreWidget> {
   /// [GlobalKey] to prevent pin widget from rebuilding.
   final GlobalKey _pinKey = GlobalKey();
 
+  /// Returns the [ChatButton] this widget is about.
+  ChatButton get _button => widget.button;
+
   @override
   Widget build(BuildContext context) {
     final style = Theme.of(context).style;
 
     final bool disabled = widget.onPressed == null;
+    final ChatButton? trailing = _button.trailing;
 
     return IgnorePointer(
       ignoring: disabled,
@@ -91,7 +80,15 @@ class _ChatMoreWidgetState extends State<ChatMoreWidget> {
         onExit: (_) => setState(() => _hovered = false),
         opaque: false,
         child: WidgetButton(
-          onPressed: widget.onPressed,
+          onPressed: _button.onPressed == null
+              ? null
+              : () {
+                  if (!_button.repeatable) {
+                    widget.onPressed?.call();
+                  }
+
+                  _button.onPressed?.call();
+                },
           child: Container(
             width: double.infinity,
             color: (_hovered && !disabled)
@@ -108,25 +105,39 @@ class _ChatMoreWidgetState extends State<ChatMoreWidget> {
                     duration: const Duration(milliseconds: 100),
                     scale: (_hovered && !disabled) ? 1.05 : 1,
                     child: Transform.translate(
-                      offset: widget.offset,
+                      offset: _button.offsetMini,
                       child: Opacity(
                         key: _iconKey,
                         opacity: disabled ? 0.6 : 1,
-                        child: widget.icon,
+                        child: SvgIcon(_button.assetMini ?? _button.asset),
                       ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Text(
-                  widget.label,
+                  _button.hint,
                   style: disabled
                       ? style.fonts.medium.regular.primaryHighlightLightest
                       : style.fonts.medium.regular.primary,
                 ),
                 const Spacer(),
                 const SizedBox(width: 16),
-                if (widget.onPin != null) ...[
+                if (trailing != null) ...[
+                  WidgetButton(
+                    onPressed: trailing.onPressed,
+                    child: SizedBox(
+                      height: 40,
+                      width: 40,
+                      key: _pinKey,
+                      child: Center(
+                        child: AnimatedButton(
+                          child: SvgIcon(trailing.assetMini ?? trailing.asset),
+                        ),
+                      ),
+                    ),
+                  ),
+                ] else if (widget.onPin != null) ...[
                   WidgetButton(
                     onPressed: widget.onPin ?? () {},
                     child: SizedBox(

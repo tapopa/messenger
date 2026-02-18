@@ -26,9 +26,13 @@ import 'package:messenger/domain/model/precise_date_time/precise_date_time.dart'
 import 'package:messenger/domain/model/user.dart';
 import 'package:messenger/domain/repository/auth.dart';
 import 'package:messenger/domain/repository/chat.dart';
+import 'package:messenger/domain/repository/session.dart';
 import 'package:messenger/domain/repository/settings.dart';
+import 'package:messenger/domain/repository/wallet.dart';
 import 'package:messenger/domain/service/auth.dart';
 import 'package:messenger/domain/service/chat.dart';
+import 'package:messenger/domain/service/session.dart';
+import 'package:messenger/domain/service/wallet.dart';
 import 'package:messenger/provider/drift/account.dart';
 import 'package:messenger/provider/drift/background.dart';
 import 'package:messenger/provider/drift/call_credentials.dart';
@@ -40,10 +44,12 @@ import 'package:messenger/provider/drift/chat_member.dart';
 import 'package:messenger/provider/drift/credentials.dart';
 import 'package:messenger/provider/drift/draft.dart';
 import 'package:messenger/provider/drift/drift.dart';
+import 'package:messenger/provider/drift/geolocation.dart';
 import 'package:messenger/provider/drift/locks.dart';
 import 'package:messenger/provider/drift/monolog.dart';
 import 'package:messenger/provider/drift/my_user.dart';
 import 'package:messenger/provider/drift/secret.dart';
+import 'package:messenger/provider/drift/session.dart';
 import 'package:messenger/provider/drift/settings.dart';
 import 'package:messenger/provider/drift/slugs.dart';
 import 'package:messenger/provider/drift/user.dart';
@@ -54,11 +60,14 @@ import 'package:messenger/routes.dart';
 import 'package:messenger/store/auth.dart';
 import 'package:messenger/store/call.dart';
 import 'package:messenger/store/chat.dart';
+import 'package:messenger/store/session.dart';
 import 'package:messenger/store/settings.dart';
 import 'package:messenger/store/user.dart';
+import 'package:messenger/store/wallet.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
+import '../mock/geo_provider.dart';
 import 'chat_reply_message_test.mocks.dart';
 
 @GenerateNiceMocks([MockSpec<GraphQlProvider>()])
@@ -69,6 +78,7 @@ void main() async {
   final ScopedDriftProvider scoped = ScopedDriftProvider.memory();
 
   final graphQlProvider = MockGraphQlProvider();
+  when(graphQlProvider.connected).thenReturn(RxBool(true));
   when(graphQlProvider.disconnect()).thenAnswer((_) => () {});
   when(
     graphQlProvider.onStart,
@@ -83,10 +93,12 @@ void main() async {
   final callRectProvider = Get.put(CallRectDriftProvider(common, scoped));
   final draftProvider = Get.put(DraftDriftProvider(common, scoped));
   final monologProvider = Get.put(MonologDriftProvider(common, scoped));
-  final sessionProvider = Get.put(VersionDriftProvider(common));
+  final versionProvider = Get.put(VersionDriftProvider(common));
   final locksProvider = Get.put(LockDriftProvider(common));
   final secretsProvider = Get.put(RefreshSecretDriftProvider(common));
   final slugProvider = Get.put(SlugDriftProvider(common));
+  final sessionProvider = Get.put(SessionDriftProvider(common, scoped));
+  final geoProvider = Get.put(GeoLocationDriftProvider(common));
 
   var chatData = {
     'id': '0d72d245-8425-467a-9ebd-082d4f47850b',
@@ -147,6 +159,30 @@ void main() async {
     graphQlProvider.incomingCallsTopEvents(3),
   ).thenAnswer((_) => const Stream.empty());
   when(graphQlProvider.keepOnline()).thenAnswer((_) => const Stream.empty());
+
+  when(
+    graphQlProvider.operations(
+      origin: anyNamed('origin'),
+      first: anyNamed('first'),
+      after: anyNamed('after'),
+      last: anyNamed('last'),
+      before: anyNamed('before'),
+    ),
+  ).thenAnswer(
+    (_) => Future.value(
+      Operations$Query$Operations.fromJson({
+        'edges': [],
+        'pageInfo': {
+          'endCursor': 'endCursor',
+          'hasNextPage': false,
+          'startCursor': 'startCursor',
+          'hasPreviousPage': false,
+        },
+        'totalCount': 0,
+        'ver': 'ver',
+      }),
+    ),
+  );
 
   when(
     graphQlProvider.chatEvents(
@@ -265,11 +301,13 @@ void main() async {
                             },
                             'text': '123',
                             'attachments': [],
+                            'donations': [],
                           },
                         ],
                         'text': '1',
                         'editedAt': null,
                         'attachments': [],
+                        'donations': [],
                       },
                       'cursor': '123',
                     },
@@ -323,13 +361,36 @@ void main() async {
         callRepository,
         draftProvider,
         userRepository,
-        sessionProvider,
+        versionProvider,
         monologProvider,
         slugProvider,
         me: const UserId('08164fb1-ff60-49f6-8ff2-7fede51c3aed'),
       ),
     );
     ChatService chatService = Get.put(ChatService(chatRepository, authService));
+
+    final AbstractSessionRepository sessionRepository =
+        Get.put<AbstractSessionRepository>(
+          SessionRepository(
+            graphQlProvider,
+            accountProvider,
+            versionProvider,
+            sessionProvider,
+            geoProvider,
+            MockedGeoLocationProvider(),
+            me: const UserId('me'),
+          ),
+        );
+    Get.put(SessionService(sessionRepository));
+
+    final walletRepository = Get.put<AbstractWalletRepository>(
+      WalletRepository(
+        graphQlProvider,
+        sessionRepository,
+        me: const UserId('me'),
+      ),
+    );
+    Get.put(WalletService(walletRepository));
 
     await Future.delayed(Duration.zero);
 
@@ -447,7 +508,7 @@ void main() async {
           callRepository,
           draftProvider,
           userRepository,
-          sessionProvider,
+          versionProvider,
           monologProvider,
           slugProvider,
           me: const UserId('08164fb1-ff60-49f6-8ff2-7fede51c3aed'),

@@ -29,6 +29,7 @@ import '/domain/model/chat.dart';
 import '/domain/model/chat_item.dart';
 import '/domain/model/chat_item_quote_input.dart';
 import '/domain/model/chat_message_input.dart';
+import '/domain/model/donation.dart';
 import '/domain/model/mute_duration.dart';
 import '/domain/model/my_user.dart';
 import '/domain/model/native_file.dart';
@@ -115,6 +116,7 @@ abstract class AbstractChatRepository {
     ChatMessageText? text,
     List<Attachment>? attachments,
     List<ChatItem> repliesTo = const [],
+    Donation? donation,
   });
 
   /// Resends the specified [item].
@@ -351,6 +353,9 @@ abstract class RxChat implements Comparable<RxChat> {
   /// Intended to be used to update the [StorageFile.relativeRef] links.
   Future<void> updateAttachments(ChatItem item);
 
+  /// Updates the specified [item] to be up-to-date.
+  Future<void> updateItem(ChatItem item);
+
   /// Updates the [avatar] of the [chat].
   ///
   /// Intended to be used to update the [StorageFile.relativeRef] links.
@@ -367,6 +372,7 @@ abstract class RxChat implements Comparable<RxChat> {
     ChatMessageText? text,
     List<Attachment> attachments = const [],
     List<ChatItem> repliesTo = const [],
+    List<Donation> donations = const [],
   });
 
   /// Ensures the [draft] is initialized.

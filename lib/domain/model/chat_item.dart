@@ -1,5 +1,7 @@
 // Copyright © 2022-2026 IT ENGINEERING MANAGEMENT INC,
 //                       <https://github.com/team113>
+// Copyright © 2025 Ideas Networks Solutions S.A.,
+//                       <https://github.com/tapopa>
 //
 // This program is free software: you can redistribute it and/or modify it under
 // the terms of the GNU Affero General Public License v3.0 as published by the
@@ -26,6 +28,7 @@ import 'chat.dart';
 import 'chat_call.dart';
 import 'chat_info.dart';
 import 'chat_item_quote.dart';
+import 'donation.dart';
 import 'precise_date_time/precise_date_time.dart';
 import 'sending_status.dart';
 import 'user.dart';
@@ -96,6 +99,7 @@ class ChatMessage extends ChatItem {
     this.text,
     this.editedAt,
     this.attachments = const [],
+    this.donations = const [],
   });
 
   /// Constructs a [ChatMessage] from the provided [json].
@@ -114,8 +118,12 @@ class ChatMessage extends ChatItem {
   /// [Attachment]s of this [ChatMessage].
   List<Attachment> attachments;
 
+  /// [Donation]s attached to this [ChatMessage].
+  List<Donation> donations;
+
   @override
-  int get hashCode => Object.hash(id, text, author, chatId, attachments);
+  int get hashCode =>
+      Object.hash(id, text, author, chatId, attachments, donations);
 
   /// Indicates whether the [other] message shares the same [text], [repliesTo],
   /// [author], [chatId] and [attachments] as this [ChatMessage].
@@ -138,12 +146,15 @@ class ChatMessage extends ChatItem {
                 m.original.relativeRef == e.original.relativeRef &&
                 m.filename == e.filename,
           ),
+        ) &&
+        donations.every(
+          (e) => other.donations.any((m) => m.amount == e.amount),
         );
   }
 
   @override
   String toString() =>
-      '$runtimeType($id, $chatId, text: ${text?.obscured}, attachments: $attachments)';
+      '$runtimeType($id, $chatId, text: ${text?.obscured}, attachments: $attachments, donations: $donations)';
 
   /// Returns a [Map] representing this [ChatMessage].
   @override
@@ -155,7 +166,15 @@ class ChatMessage extends ChatItem {
     return other is ChatMessage &&
         id == other.id &&
         isEquals(other) &&
-        status.value == other.status.value;
+        status.value == other.status.value &&
+        donations.every(
+          (e) => other.donations.any(
+            (m) =>
+                m.id == e.id &&
+                m.amount == e.amount &&
+                m.operation == e.operation,
+          ),
+        );
   }
 }
 

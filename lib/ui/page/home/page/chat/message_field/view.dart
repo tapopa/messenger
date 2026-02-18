@@ -33,11 +33,19 @@ import '/domain/model/chat_call.dart';
 import '/domain/model/chat_info.dart';
 import '/domain/model/chat_item.dart';
 import '/domain/model/sending_status.dart';
+import '/domain/repository/settings.dart';
 import '/domain/repository/user.dart';
+import '/domain/service/auth.dart';
+import '/domain/service/chat.dart';
+import '/domain/service/my_user.dart';
+import '/domain/service/notification.dart';
+import '/domain/service/session.dart';
+import '/domain/service/user.dart';
 import '/l10n/l10n.dart';
 import '/themes.dart';
 import '/ui/page/home/page/chat/controller.dart';
 import '/ui/page/home/page/chat/widget/chat_gallery.dart';
+import '/ui/page/home/page/chat/widget/donate.dart';
 import '/ui/page/home/page/chat/widget/media_attachment.dart';
 import '/ui/page/home/page/user/controller.dart';
 import '/ui/page/home/widget/avatar.dart';
@@ -52,12 +60,16 @@ import '/ui/widget/future_or_builder.dart';
 import '/ui/widget/svg/svg.dart';
 import '/ui/widget/text_field.dart';
 import '/ui/widget/widget_button.dart';
+import '/util/get.dart';
 import '/util/platform_utils.dart';
 import 'controller.dart';
 import 'widget/chat_button.dart';
 import 'widget/close_button.dart';
 
 /// View for writing and editing a [ChatMessage] or a [ChatForward].
+///
+/// If [controller] is provided, then its lifecycle should be managed externally
+/// as well.
 class MessageFieldView extends StatelessWidget {
   const MessageFieldView({
     super.key,
@@ -147,51 +159,55 @@ class MessageFieldView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = Theme.of(context).style;
+    if (controller != null) {
+      return _builder(context, controller!);
+    }
 
     return GetBuilder(
-      init:
-          controller ??
-          MessageFieldController(
-            Get.find(),
-            Get.find(),
-            Get.find(),
-            Get.find(),
-            Get.find(),
-            Get.find(),
-            Get.find(),
-          ),
+      init: MessageFieldController(
+        Get.findOrNull<ChatService>(),
+        Get.findOrNull<UserService>(),
+        Get.findOrNull<AbstractSettingsRepository>(),
+        Get.findOrNull<AuthService>(),
+        Get.findOrNull<MyUserService>(),
+        Get.findOrNull<SessionService>(),
+        Get.findOrNull<NotificationService>(),
+      ),
       global: false,
-      builder: (MessageFieldController c) {
-        return CallbackShortcuts(
-          bindings: {
-            if (!PlatformUtils.isWeb)
-              SingleActivator(LogicalKeyboardKey.keyV, control: true):
-                  c.handlePaste,
-            if (!PlatformUtils.isWeb)
-              SingleActivator(LogicalKeyboardKey.keyV, meta: true):
-                  c.handlePaste,
-          },
-          child: Theme(
-            data: theme(context),
-            child: Container(
-              key: const Key('SendField'),
-              decoration: BoxDecoration(
-                boxShadow: [
-                  CustomBoxShadow(
-                    blurRadius: 8,
-                    color: style.colors.onBackgroundOpacity13,
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [_buildHeader(c, context), _buildField(c, context)],
-              ),
-            ),
-          ),
-        );
+      builder: (MessageFieldController c) => _builder(context, c),
+    );
+  }
+
+  /// Builds the message field body.
+  Widget _builder(BuildContext context, MessageFieldController c) {
+    final style = Theme.of(context).style;
+
+    return CallbackShortcuts(
+      bindings: {
+        if (!PlatformUtils.isWeb)
+          SingleActivator(LogicalKeyboardKey.keyV, control: true):
+              c.handlePaste,
+        if (!PlatformUtils.isWeb)
+          SingleActivator(LogicalKeyboardKey.keyV, meta: true): c.handlePaste,
       },
+      child: Theme(
+        data: theme(context),
+        child: Container(
+          key: const Key('SendField'),
+          decoration: BoxDecoration(
+            boxShadow: [
+              CustomBoxShadow(
+                blurRadius: 8,
+                color: style.colors.onBackgroundOpacity13,
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [_buildHeader(c, context), _buildField(c, context)],
+          ),
+        ),
+      ),
     );
   }
 
@@ -380,7 +396,8 @@ class MessageFieldView extends StatelessWidget {
                 padding:
                     c.replied.isNotEmpty ||
                         c.attachments.isNotEmpty ||
-                        c.edited.value != null
+                        c.edited.value != null ||
+                        c.donation.value != 0
                     ? const EdgeInsets.fromLTRB(4, 6, 4, 6)
                     : EdgeInsets.zero,
                 child: Column(
@@ -443,6 +460,10 @@ class MessageFieldView extends StatelessWidget {
                           ),
                         ),
                       ),
+                    ],
+                    if (c.donation.value != 0) ...[
+                      const SizedBox(height: 4),
+                      _buildDonate(context, c),
                     ],
                   ],
                 ),
@@ -533,7 +554,8 @@ class MessageFieldView extends StatelessWidget {
                 final bool sendable =
                     !c.field.isEmpty.value ||
                     c.attachments.isNotEmpty ||
-                    c.replied.isNotEmpty;
+                    c.replied.isNotEmpty ||
+                    c.donation.value != 0;
 
                 final List<Widget> children;
 
@@ -562,6 +584,69 @@ class MessageFieldView extends StatelessWidget {
           ),
         );
       }),
+    );
+  }
+
+  /// Returns a visual representation of [Donation].
+  Widget _buildDonate(BuildContext context, MessageFieldController c) {
+    final style = Theme.of(context).style;
+
+    return Dismissible(
+      key: Key('donation'),
+      direction: DismissDirection.horizontal,
+      onDismissed: (_) => c.donation.value = 0,
+      child: MouseRegion(
+        opaque: false,
+        onEnter: (d) => c.hoveredDonate.value = true,
+        onExit: (d) => c.hoveredDonate.value = false,
+        child: Container(
+          margin: const EdgeInsets.fromLTRB(2, 0, 2, 0),
+          decoration: BoxDecoration(
+            color: style.colors.onPrimary,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          padding: EdgeInsets.fromLTRB(2, 0, 0, 0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: DonateWidget(
+                    c.donation.value,
+                    name: '${c.me}',
+                    leading: WidgetButton(
+                      onPressed: () {
+                        c.donation.value = c.donation.value - 1;
+                        if (c.donation.value < 0) {
+                          c.donation.value = 0;
+                        }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: SvgIcon(SvgIcons.attachmentMinus),
+                      ),
+                    ),
+                    trailing: WidgetButton(
+                      onPressed: () {
+                        c.donation.value = c.donation.value + 1;
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: SvgIcon(SvgIcons.attachmentPlus),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(1, 1, 1, 1),
+                child: CloseButton(onPressed: () => c.donation.value = 0),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 

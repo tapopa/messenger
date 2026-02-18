@@ -25,8 +25,8 @@ class Price {
   /// [Price] with value of zero with a `G` currency.
   static const zero = Price(sum: Sum(0), currency: Currency('XXX'));
 
-  /// Constructs a [Price] with `G` currency of the provided [amount].
-  Price.g(double amount) : sum = Sum(amount), currency = Currency('XXX');
+  /// Constructs a [Price] with `XXX` currency of the provided [amount].
+  Price.xxx(double amount) : sum = Sum(amount), currency = Currency('XXX');
 
   /// Constructs a [Price] with `USDT` currency of the provided [amount].
   Price.usdt(double amount) : sum = Sum(amount), currency = Currency('USDT');
@@ -59,6 +59,9 @@ class Sum extends NewType<double> implements Comparable<Sum> {
   /// Parses the provided [val] as a [Sum].
   static Sum parse(String val) => Sum(double.parse(val));
 
+  /// Constructs a [Sum] from the provided [val].
+  factory Sum.fromJson(String val) => Sum.parse(val);
+
   @override
   int compareTo(Sum other) => val.compareTo(other.val);
 
@@ -69,6 +72,9 @@ class Sum extends NewType<double> implements Comparable<Sum> {
 
   @override
   int get hashCode => val.hashCode;
+
+  /// Returns a [String] representing this [Sum].
+  String toJson() => val.toString();
 }
 
 /// Currency as alphabetic code in [ISO 4217] format.

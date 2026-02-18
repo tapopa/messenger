@@ -759,8 +759,13 @@ class SubscriptionConnection {
   }
 
   /// Sends or enqueues an error event to the [stream].
-  void addError(Object error, [StackTrace? stackTrace]) =>
-      _addonController.addError(error, stackTrace);
+  void addError(Object error, [StackTrace? stackTrace]) {
+    if (_addonController.isClosed) {
+      return;
+    }
+
+    _addonController.addError(error, stackTrace);
+  }
 }
 
 /// Steady [StreamController] listening to the provided GraphQL subscription

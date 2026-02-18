@@ -20,6 +20,7 @@
 import 'package:gherkin/gherkin.dart';
 import 'package:messenger/provider/gql/graphql.dart';
 import 'package:messenger/api/backend/extension/user.dart';
+import 'package:messenger/util/log.dart';
 
 import '../parameters/online_status.dart';
 import '../parameters/users.dart';
@@ -40,6 +41,9 @@ final StepDefinitionGeneric seesAs =
             final response = await provider.getUser(
               context.world.sessions[user2.name]!.userId,
             );
+
+            Log.debug('seesAs -> `response` is: $response', 'E2E');
+
             final user = response?.toModel();
 
             return (status == OnlineStatus.online && user?.online == true) ||

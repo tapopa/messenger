@@ -1046,7 +1046,6 @@ label_minimum_amount_cannot_be_less_than = The minimum amount of donations you a
 label_minimum_amount_cannot_be_more_than = The minimum amount of donations you accept cannot be more than {$amount}
 label_mobile_apps = Mobile apps
 label_monetization_history = Monetization history
-label_monetization_settings = Monetization settings
 label_monetization_settings_by_default = Your default monetization settings
 label_monetization_settings_description =
     You can set a minimum donation amount, as well as the price of incoming messages and calls.

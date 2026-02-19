@@ -1051,14 +1051,17 @@ label_minimum_amount_cannot_be_less_than = El monto mínimo de donaciones que ac
 label_minimum_amount_cannot_be_more_than = El monto mínimo de donaciones que acepta no puede ser mayor a {$amount}
 label_mobile_apps = Aplicación móvil
 label_monetization_history = Historial de monetización
-label_monetization_settings = Configuración de monetización
 label_monetization_settings_by_default = Su configuración de monetización predeterminada
-label_monetization_settings_description1 =
+label_monetization_settings_description =
+    Puedes establecer un importe mínimo de donación, así como el precio de los mensajes y las llamadas entrantes.
+
+    Tus contactos tendrán que pagarte por el privilegio de enviarte mensajes y realizar llamadas.
+label_monetization_settings_subtitle_description1 =
     Monto mínimo de donaciones.
 
     Estas configuraciones no aplican para usuarios con{" "}
-label_monetization_settings_description2 = configuración de monetización individual
-label_monetization_settings_description3 = .
+label_monetization_settings_subtitle_description2 = configuración de monetización individual
+label_monetization_settings_subtitle_description3 = .
 label_monobank = Monobank
 label_monolog_created = Chat creado
 label_mute_or_unmute_chats = Silenciar y desilenciar chats

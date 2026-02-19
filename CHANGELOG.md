@@ -20,7 +20,7 @@ All user visible changes to this project will be documented in this file. This p
         - Donations. ([#27])
     - Set your prices page:
         - Incoming donations minimum price settings. ([#28])
-        - Incoming donations enabled and disabled. ([#28])
+        - Incoming donations enabling and disabling. ([#28])
 
 ### Changed
 

@@ -1063,14 +1063,17 @@ label_minimum_amount_cannot_be_less_than = Минимальная сумма д�
 label_minimum_amount_cannot_be_more_than = Минимальная сумма донатов Вы принимаете не может быть больше чем {$amount}
 label_mobile_apps = Мобильные приложения
 label_monetization_history = История монетизации
-label_monetization_settings = Настройки монетизации
 label_monetization_settings_by_default = Ваши настройки монетизации по умолчанию
-label_monetization_settings_description1 =
+label_monetization_settings_description =
+ Вы можете установить минимальную сумму пожертвования, а также стоимость входящих сообщений и звонков.
+
+ Ваши контакты должны будут платить Вам за возможность отправлять Вам сообщения и совершать звонки.
+label_monetization_settings_subtitle_description1 =
     Минимальная сумма донатов.
 
     Эти настройки не распространяются на пользователей, для которых установлены{" "}
-label_monetization_settings_description2 = индивидуальные настройки монетизации
-label_monetization_settings_description3 = .
+label_monetization_settings_subtitle_description2 = индивидуальные настройки монетизации
+label_monetization_settings_subtitle_description3 = .
 label_monobank = Monobank
 label_monolog_created = Чат создан
 label_mute_or_unmute_chats = Включить или выключить уведомления

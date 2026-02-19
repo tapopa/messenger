@@ -18,6 +18,9 @@ All user visible changes to this project will be documented in this file. This p
         - PayPal deposit. ([#23])
     - Chat page:
         - Donations. ([#27])
+    - Set your prices page:
+        - Incoming donations minimum price settings. ([#28])
+        - Incoming donations enabling and disabling. ([#28])
 
 ### Changed
 
@@ -30,6 +33,7 @@ All user visible changes to this project will be documented in this file. This p
 [#23]: /../../pull/23
 [#26]: /../../pull/26
 [#27]: /../../pull/27
+[#28]: /../../pull/28
 
 
 

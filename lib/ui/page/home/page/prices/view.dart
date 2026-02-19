@@ -19,6 +19,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '/domain/model/monetization_settings.dart';
+import '/domain/model/price.dart';
 import '/l10n/l10n.dart';
 import '/themes.dart';
 import '/ui/page/home/page/chat/widget/back_button.dart';
@@ -27,6 +29,8 @@ import '/ui/page/home/widget/block.dart';
 import '/ui/widget/line_divider.dart';
 import '/ui/widget/svg/svg.dart';
 import 'controller.dart';
+import 'set_donations/view.dart';
+import 'widget/price_row.dart';
 
 /// View for [Routes.prices] page.
 class PricesView extends StatelessWidget {
@@ -37,7 +41,7 @@ class PricesView extends StatelessWidget {
     final style = Theme.of(context).style;
 
     return GetBuilder(
-      init: PricesController(),
+      init: PricesController(Get.find()),
       builder: (PricesController c) {
         return Scaffold(
           appBar: CustomAppBar(
@@ -72,27 +76,61 @@ class PricesView extends StatelessWidget {
                 ],
               ),
               Block(
-                title: 'label_monetization_settings'.l10n,
+                title: 'label_monetization_settings_by_default'.l10n,
                 folded: true,
                 foldedColor: style.colors.currencyPrimary,
                 children: [
+                  Text(
+                    'label_monetization_settings_description'.l10n,
+                    style: style.fonts.small.regular.secondary,
+                    textAlign: TextAlign.left,
+                  ),
+                  const SizedBox(height: 24),
+                  LineDivider('label_default_price_settings'.l10n),
+                  const SizedBox(height: 20),
+                  Obx(() {
+                    final MonetizationSettings settings = c.settings.value;
+                    final bool enabled = settings.donation?.enabled == true;
+
+                    return PriceRow(
+                      label: 'label_donations'.l10n,
+                      subtitle: enabled
+                          ? 'label_donations_described_subtitle'.l10n
+                          : 'label_you_have_disabled_incoming_donations'.l10n,
+                      enabled: enabled,
+                      price: settings.donation?.min ?? Price.zero,
+                      onChange: () async {
+                        await SetDonationsView.show(context);
+                      },
+                    );
+                  }),
+                  const SizedBox(height: 24),
+                  LineDivider(''),
+                  const SizedBox(height: 20),
                   Text.rich(
                     TextSpan(
                       children: [
                         TextSpan(
-                          text: 'label_monetization_settings_description1'.l10n,
+                          text:
+                              'label_monetization_settings_subtitle_description1'
+                                  .l10n,
                         ),
                         TextSpan(
-                          text: 'label_monetization_settings_description2'.l10n,
+                          text:
+                              'label_monetization_settings_subtitle_description2'
+                                  .l10n,
                           style: style.fonts.small.regular.primary,
                           recognizer: TapGestureRecognizer()..onTap = () {},
                         ),
                         TextSpan(
-                          text: 'label_monetization_settings_description3'.l10n,
+                          text:
+                              'label_monetization_settings_subtitle_description3'
+                                  .l10n,
                         ),
                       ],
                     ),
                     style: style.fonts.small.regular.secondary,
+                    textAlign: TextAlign.left,
                   ),
                   const SizedBox(height: 8),
                 ],

@@ -62,6 +62,7 @@ part 'themes.g.dart';
       'danger',
       'onDonatePrimary',
       'onDonateSecondary',
+      'currencyPrimary',
     ],
     'bold': ['onPrimary'],
   },

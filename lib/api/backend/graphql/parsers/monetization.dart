@@ -21,6 +21,7 @@ import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/price.dart';
 import '/domain/model/promo_share.dart';
+import '/store/model/monetization_settings.dart';
 import '/store/model/operation.dart';
 
 // ignore: todo
@@ -1057,6 +1058,113 @@ fromDartListNullableOperationDepositSecretNullableToGraphQLListNullableOperation
     ?.map(
       (e) =>
           fromDartOperationDepositSecretNullableToGraphQLOperationDepositSecretNullable(
+            e,
+          ),
+    )
+    .toList();
+
+// MonetizationSettingsVersion
+
+MonetizationSettingsVersion
+fromGraphQLMonetizationSettingsVersionToDartMonetizationSettingsVersion(
+  String v,
+) => MonetizationSettingsVersion(v);
+String fromDartMonetizationSettingsVersionToGraphQLMonetizationSettingsVersion(
+  MonetizationSettingsVersion v,
+) => v.toString();
+List<MonetizationSettingsVersion>
+fromGraphQLListMonetizationSettingsVersionToDartListMonetizationSettingsVersion(
+  List<Object?> v,
+) => v
+    .map(
+      (e) =>
+          fromGraphQLMonetizationSettingsVersionToDartMonetizationSettingsVersion(
+            e as String,
+          ),
+    )
+    .toList();
+List<String>
+fromDartListMonetizationSettingsVersionToGraphQLListMonetizationSettingsVersion(
+  List<MonetizationSettingsVersion> v,
+) => v
+    .map(
+      (e) =>
+          fromDartMonetizationSettingsVersionToGraphQLMonetizationSettingsVersion(
+            e,
+          ),
+    )
+    .toList();
+List<MonetizationSettingsVersion>?
+fromGraphQLListNullableMonetizationSettingsVersionToDartListNullableMonetizationSettingsVersion(
+  List<Object?>? v,
+) => v
+    ?.map(
+      (e) =>
+          fromGraphQLMonetizationSettingsVersionToDartMonetizationSettingsVersion(
+            e as String,
+          ),
+    )
+    .toList();
+List<String>?
+fromDartListNullableMonetizationSettingsVersionToGraphQLListNullableMonetizationSettingsVersion(
+  List<MonetizationSettingsVersion>? v,
+) => v
+    ?.map(
+      (e) =>
+          fromDartMonetizationSettingsVersionToGraphQLMonetizationSettingsVersion(
+            e,
+          ),
+    )
+    .toList();
+
+MonetizationSettingsVersion?
+fromGraphQLMonetizationSettingsVersionNullableToDartMonetizationSettingsVersionNullable(
+  String? v,
+) => v == null ? null : MonetizationSettingsVersion(v);
+String?
+fromDartMonetizationSettingsVersionNullableToGraphQLMonetizationSettingsVersionNullable(
+  MonetizationSettingsVersion? v,
+) => v?.toString();
+List<MonetizationSettingsVersion?>
+fromGraphQLListMonetizationSettingsVersionNullableToDartListMonetizationSettingsVersionNullable(
+  List<Object?> v,
+) => v
+    .map(
+      (e) =>
+          fromGraphQLMonetizationSettingsVersionNullableToDartMonetizationSettingsVersionNullable(
+            e as String?,
+          ),
+    )
+    .toList();
+List<String?>
+fromDartListMonetizationSettingsVersionNullableToGraphQLListMonetizationSettingsVersionNullable(
+  List<MonetizationSettingsVersion?> v,
+) => v
+    .map(
+      (e) =>
+          fromDartMonetizationSettingsVersionNullableToGraphQLMonetizationSettingsVersionNullable(
+            e,
+          ),
+    )
+    .toList();
+List<MonetizationSettingsVersion?>?
+fromGraphQLListNullableMonetizationSettingsVersionNullableToDartListNullableMonetizationSettingsVersionNullable(
+  List<Object?>? v,
+) => v
+    ?.map(
+      (e) =>
+          fromGraphQLMonetizationSettingsVersionNullableToDartMonetizationSettingsVersionNullable(
+            e as String?,
+          ),
+    )
+    .toList();
+List<String?>?
+fromDartListNullableMonetizationSettingsVersionNullableToGraphQLListNullableMonetizationSettingsVersionNullable(
+  List<MonetizationSettingsVersion?>? v,
+) => v
+    ?.map(
+      (e) =>
+          fromDartMonetizationSettingsVersionNullableToGraphQLMonetizationSettingsVersionNullable(
             e,
           ),
     )

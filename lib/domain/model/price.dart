@@ -43,6 +43,9 @@ class Price {
   /// [Currency] of this [Price].
   final Currency currency;
 
+  /// Indicates whether this [Price] is zero.
+  bool get isZero => sum.val == 0;
+
   @override
   String toString() => 'Price(${currency.val} -> ${sum.val})';
 

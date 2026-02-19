@@ -20,7 +20,10 @@ import 'dart:async';
 import 'package:get/get.dart';
 
 import '/domain/model/balance.dart';
+import '/domain/model/monetization_settings.dart';
 import '/domain/model/operation.dart';
+import '/domain/model/price.dart';
+import '/domain/model/user.dart';
 import '/domain/repository/paginated.dart';
 import '/domain/repository/partner.dart';
 import '/util/log.dart';
@@ -43,9 +46,36 @@ class PartnerService extends Dependency {
   Paginated<OperationId, Rx<Operation>> get operations =>
       _partnerRepository.operations;
 
+  /// Returns the [MonetizationSettings] of the authenticated [MyUser].
+  Rx<MonetizationSettings> get settings => _partnerRepository.settings;
+
   /// Returns an [Operation] identified by the provided [id] or [num].
   FutureOr<Rx<Operation>?> get({OperationId? id, OperationNum? num}) {
     Log.debug('get(id: $id, num: $num)', '$runtimeType');
     return _partnerRepository.get(id: id, num: num);
+  }
+
+  /// Updates [MonetizationSettings] of the authenticated [MyUser].
+  ///
+  /// If the [userId] argument is specified, then [MonetizationSettings] will be
+  /// updated individually for that [User]. Otherwise, common
+  /// [MonetizationSettings] are updated, affecting all [User]s. Naturally,
+  /// individual [MonetizationSettings] take precedence over common
+  /// [MonetizationSettings].
+  Future<void> updateMonetizationSettings({
+    UserId? userId,
+    bool? donationsEnabled,
+    Sum? donationsMinimum,
+  }) async {
+    Log.debug(
+      'updateMonetizationSettings(userId: $userId, donationsEnabled: $donationsEnabled, donationsMinimum: $donationsMinimum)',
+      '$runtimeType',
+    );
+
+    return _partnerRepository.updateMonetizationSettings(
+      userId: userId,
+      donationsEnabled: donationsEnabled,
+      donationsMinimum: donationsMinimum,
+    );
   }
 }

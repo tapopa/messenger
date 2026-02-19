@@ -34,6 +34,7 @@ alert_user_will_be_reported1 = User{" "}
 alert_user_will_be_reported2 = {" "}will be reported
 alert_you_will_leave_group = You will leave the group
 btn_accept = Accept
+btn_accept_donations = Accept donations
 btn_add = Add
 btn_add_account = Add account
 btn_add_account_with_desc =
@@ -698,6 +699,7 @@ fcm_user_removed_you =
     } removed you from group
 fcm_webpush_link = /chats/{$chatId}
 hyphen = -
+label_a_hyphen_b = {$a} - {$b}
 label_a_of_b = {$a} of {$b}
 label_a_slash_b = {$a} / {$b}
 label_about_you = About you
@@ -891,6 +893,7 @@ label_date_of_expiry_in_format3 = . If your identification document doesn’t ha
 label_date_of_expiry_in_format4 = N/A
 label_date_of_expiry_in_format5 = .
 label_days_short = {$days} d
+label_default_price_settings = Default price settings
 label_delete_account = Delete account
 label_delete_chat = Delete chat(s)
 label_delete_chats = Delete chat(s)
@@ -907,7 +910,10 @@ label_dialog_created = Dialog created
 label_dialog_created_by_link = Dialog created via direct link
 label_direct_chat_link = Invite to the group
 label_direct_chat_link_in_chat_description = Users, who follow the group link, become full members of the group automatically.
+label_disabled = Disabled
 label_discard_changes_question = Discard changes
+label_donations = Donations
+label_donations_described_subtitle = This is the minimum donation amount that your contacts will be able to send you
 label_download = Download
 label_download_and_update = Download and update
 label_download_path = Download path
@@ -943,6 +949,7 @@ label_forwarded_messages = {$count ->
     [1] Forwarded message
   *[other] Forwarded messages
 }
+label_free = Free
 label_from_earnings_lowercase = from earnings
 label_from_purchases_lowercase = from purchases
 label_from_sales_lowercase = from sales
@@ -1035,15 +1042,18 @@ label_messenger1 = Messenger
 label_messenger2 = by Tapopa
 label_microphone_changed = Microphone has been changed to {$microphone}
 label_minimum_amount = Minimum amount
+label_minimum_amount_cannot_be_less_than = The minimum amount of donations you accept cannot be less than {$amount}
+label_minimum_amount_cannot_be_more_than = The minimum amount of donations you accept cannot be more than {$amount}
 label_mobile_apps = Mobile apps
 label_monetization_history = Monetization history
-label_monetization_settings = Monetization settings
-label_monetization_settings_description1 =
-    Minimum amount of donations.
+label_monetization_settings_by_default = Your default monetization settings
+label_monetization_settings_description =
+    You can set a minimum donation amount, as well as the price of incoming messages and calls.
 
-    These settings do not apply to the users with{" "}
-label_monetization_settings_description2 = individual monetization
-label_monetization_settings_description3 = {" "}settings.
+    Your contacts will have to pay you for the privilege of sending you messages and making calls.
+label_monetization_settings_subtitle_description1 = These settings apply to all users, except for those for whom you have set{" "}
+label_monetization_settings_subtitle_description2 = individual monetization settings
+label_monetization_settings_subtitle_description3 = {" "}.
 label_monobank = Monobank
 label_monolog_created = Chat created
 label_mute_or_unmute_chats = Mute or unmute chats
@@ -1376,6 +1386,7 @@ label_withdrawal_option = Withdrawal option
 label_you = You
 label_you_can_set_individual_monetization_in_profile = You can set individual monetization in the each user's profile.
 label_you_can_use_randomly_generated_link = You can use a generated link or create your own.
+label_you_have_disabled_incoming_donations = You have disabled incoming donations
 label_you_were_added_to_group = You have been added to the group
 label_your_author_partner_program_tapopa_author =
     Your author partner program

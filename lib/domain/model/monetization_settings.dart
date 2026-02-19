@@ -15,27 +15,47 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'package:json_annotation/json_annotation.dart';
+
 import 'precise_date_time/precise_date_time.dart';
 import 'price.dart';
 
+part 'monetization_settings.g.dart';
+
 /// Monetization settings of an [User].
+@JsonSerializable()
 class MonetizationSettings {
   MonetizationSettings({this.donation, required this.createdAt});
+
+  /// Constructs a [MonetizationSettings] from the provided [json].
+  factory MonetizationSettings.fromJson(Map<String, dynamic> json) =>
+      _$MonetizationSettingsFromJson(json);
 
   /// Monetization settings of [Donation]s.
   final MonetizationSettingsDonation? donation;
 
   /// [PreciseDateTime] when these [MonetizationSettings] were created.
   final PreciseDateTime createdAt;
+
+  /// Returns a [Map] representing this [MonetizationSettings].
+  Map<String, dynamic> toJson() => _$MonetizationSettingsToJson(this);
 }
 
 /// Monetization settings of [Donation]s.
+@JsonSerializable()
 class MonetizationSettingsDonation {
   MonetizationSettingsDonation({this.enabled = true, required this.min});
+
+  /// Constructs a [MonetizationSettingsDonation] from the provided [json].
+  factory MonetizationSettingsDonation.fromJson(Map<String, dynamic> json) =>
+      _$MonetizationSettingsDonationFromJson(json);
 
   /// Indicator whether the [User] accepts [Donation]s or not.
   final bool enabled;
 
   /// Minimal [Price] of [Donation]s allowed in the [Chat] with the [User].
   final Price min;
+
+  /// Returns a [Map] representing this [MonetizationSettingsDonation].
+  Map<String, dynamic> toJson() => _$MonetizationSettingsDonationToJson(this);
 }

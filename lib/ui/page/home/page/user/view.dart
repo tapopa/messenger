@@ -91,6 +91,7 @@ class UserView extends StatelessWidget {
               ),
             _name(c, context, index: c.isBlocked != null ? 2 : 1),
             _identifier(c, context),
+            _monetization(c, context),
             SelectionContainer.disabled(
               child: Block(children: [_actions(c, context)]),
             ),
@@ -355,6 +356,21 @@ class UserView extends StatelessWidget {
 
   /// Returns the [Block] to display as an identifier of the [User].
   Widget _identifier(UserController c, BuildContext context) {
+    return Block(
+      children: [
+        const SizedBox(height: 8),
+        ReactiveTextField.copyable(
+          key: const Key('NumCopyable'),
+          text: '${c.user?.user.value.num}',
+          label: 'label_num'.l10n,
+        ),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+
+  /// Returns the [Block] to display as an identifier of the [User].
+  Widget _monetization(UserController c, BuildContext context) {
     return Block(
       children: [
         const SizedBox(height: 8),

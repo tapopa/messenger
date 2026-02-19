@@ -17,9 +17,11 @@
 
 import '/api/backend/schema.dart';
 import '/domain/model/balance.dart';
+import '/domain/model/monetization_settings.dart';
 import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/price.dart';
+import '/store/model/monetization_settings.dart';
 import '/store/model/operation.dart';
 
 /// Extension adding models construction from an [PriceMixin].
@@ -355,4 +357,23 @@ DtoOperation _operation(dynamic node, OperationsCursor? cursor) {
 extension BalanceConversion on BalanceMixin {
   /// Constructs a new [Balance] from this [BalanceMixin].
   Balance toModel() => Balance(sum: sum, currency: currency);
+}
+
+/// Extension adding models construction from an [MonetizationSettingsMixin].
+extension MonetizationSettingsConversion on MonetizationSettingsMixin {
+  /// Constructs the new [MonetizationSettings] from this
+  /// [MonetizationSettingsMixin].
+  MonetizationSettings toModel() => MonetizationSettings(
+    donation: donation == null
+        ? null
+        : MonetizationSettingsDonation(
+            min: donation!.min.toModel(),
+            enabled: donation!.enabled,
+          ),
+    createdAt: createdAt,
+  );
+
+  /// Constructs a new [DtoMonetizationSettings] from this
+  /// [MonetizationSettingsMixin].
+  DtoMonetizationSettings toDto() => DtoMonetizationSettings(toModel(), ver);
 }

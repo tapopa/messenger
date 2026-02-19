@@ -20,7 +20,10 @@ import 'dart:async';
 import 'package:get/get.dart';
 
 import '/domain/model/balance.dart';
+import '/domain/model/monetization_settings.dart';
 import '/domain/model/operation.dart';
+import '/domain/model/price.dart';
+import '/domain/model/user.dart';
 import 'paginated.dart';
 
 /// [MyUser] partner repository interface.
@@ -34,6 +37,22 @@ abstract class AbstractPartnerRepository {
   /// Returns the [Operation]s happening in [MyUser]'s partner wallet.
   Paginated<OperationId, Rx<Operation>> get operations;
 
+  /// Returns [MonetizationSettings] of the authenticated [MyUser].
+  Rx<MonetizationSettings> get settings;
+
   /// Returns an [Operation] identified by the provided [id] or [num].
   FutureOr<Rx<Operation>?> get({OperationId? id, OperationNum? num});
+
+  /// Updates [MonetizationSettings] of the authenticated [MyUser].
+  ///
+  /// If the [userId] argument is specified, then [MonetizationSettings] will be
+  /// updated individually for that [User]. Otherwise, common
+  /// [MonetizationSettings] are updated, affecting all [User]s. Naturally,
+  /// individual [MonetizationSettings] take precedence over common
+  /// [MonetizationSettings].
+  Future<void> updateMonetizationSettings({
+    UserId? userId,
+    bool? donationsEnabled,
+    Sum? donationsMinimum,
+  });
 }

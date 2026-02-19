@@ -34,6 +34,7 @@ alert_user_will_be_reported1 = На пользователя{" "}
 alert_user_will_be_reported2 = {" "}будет отправлена жалоба
 alert_you_will_leave_group = Вы покинете группу
 btn_accept = Принять
+btn_accept_donations = Принимать донаты
 btn_add = Добавить
 btn_add_account = Добавить аккаунт
 btn_add_account_with_desc =
@@ -702,6 +703,7 @@ fcm_user_removed_you =
     } исключил Вас из группы
 fcm_webpush_link = /chats/{$chatId}
 hyphen = -
+label_a_hyphen_b = {$a} - {$b}
 label_a_of_b = {$a} из {$b}
 label_a_slash_b = {$a} / {$b}
 label_about_you = О Вас
@@ -908,6 +910,7 @@ label_date_of_expiry_in_format3 = . Если в вашем удостовере�
 label_date_of_expiry_in_format4 = N/A
 label_date_of_expiry_in_format5 = .
 label_days_short = {$days} д
+label_default_price_settings = Настройки прайсов по умолчанию
 label_delete_account = Удалить аккаунт
 label_delete_chat = Удалить чат(ы)
 label_delete_chats = Удалить чат(ы)
@@ -924,7 +927,10 @@ label_dialog_created = Диалог создан
 label_dialog_created_by_link = Диалог создан по прямой ссылке
 label_direct_chat_link = Пригласить в группу
 label_direct_chat_link_in_chat_description = Пользователи, перешедшие по ссылке на группу, автоматически становятся полноправными участниками группы.
+label_disabled = Отключено
 label_discard_changes_question = Отменить изменения
+label_donations = Донаты
+label_donations_described_subtitle = Минимальная сумма доната, которую Ваши контакты смогут Вам отправить
 label_download = Скачать
 label_download_and_update = Скачать и обновить
 label_download_path = Путь для загрузок
@@ -960,6 +966,7 @@ label_forwarded_messages = {$count ->
     [1] Пересланное сообщение
     *[other] Пересланные сообщения
 }
+label_free = Бесплатно
 label_from_earnings_lowercase = от заработка
 label_from_purchases_lowercase = от покупок
 label_from_sales_lowercase = от продаж
@@ -1052,9 +1059,12 @@ label_messenger1 = Мессенджер
 label_messenger2 = от Tapopa
 label_microphone_changed = Микрофон был изменён на {$microphone}
 label_minimum_amount = Минимальная сумма
+label_minimum_amount_cannot_be_less_than = Минимальная сумма донатов Вы принимаете не может быть меньше чем {$amount}
+label_minimum_amount_cannot_be_more_than = Минимальная сумма донатов Вы принимаете не может быть больше чем {$amount}
 label_mobile_apps = Мобильные приложения
 label_monetization_history = История монетизации
 label_monetization_settings = Настройки монетизации
+label_monetization_settings_by_default = Ваши настройки монетизации по умолчанию
 label_monetization_settings_description1 =
     Минимальная сумма донатов.
 
@@ -1397,6 +1407,7 @@ label_withdrawal_option = Способ вывода
 label_you = Вы
 label_you_can_set_individual_monetization_in_profile = Вы можете настроить индивидуальную монетизацию в профиле каждого пользователя.
 label_you_can_use_randomly_generated_link = Вы можете использовать сгенерированную ссылку или создать собственную.
+label_you_have_disabled_incoming_donations = Вы отключили входящие донаты
 label_you_were_added_to_group = Вы добавлены в группу
 label_your_author_partner_program_tapopa_author =
     Ваша авторская партнёрская программа

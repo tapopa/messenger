@@ -1724,3 +1724,29 @@ class DeclineOperationDepositException
     }
   }
 }
+
+/// Exception of `Mutation.updateMonetizationSettings` described in the [code].
+class UpdateMonetizationSettingsException
+    with LocalizedExceptionMixin
+    implements Exception {
+  const UpdateMonetizationSettingsException(this.code);
+
+  /// Reason of why the mutation has failed.
+  final UpdateMonetizationSettingsErrorCode code;
+
+  @override
+  String toString() => 'UpdateMonetizationSettingsException($code)';
+
+  @override
+  String toMessage() {
+    switch (code) {
+      case UpdateMonetizationSettingsErrorCode.sameUser:
+      case UpdateMonetizationSettingsErrorCode.unknownUser:
+      case UpdateMonetizationSettingsErrorCode.undeletable:
+        return toString();
+
+      case UpdateMonetizationSettingsErrorCode.artemisUnknown:
+        return 'err_unknown'.l10n;
+    }
+  }
+}

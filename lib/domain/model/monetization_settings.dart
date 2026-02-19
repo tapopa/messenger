@@ -15,19 +15,27 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-import 'package:get/get.dart';
+import 'precise_date_time/precise_date_time.dart';
+import 'price.dart';
 
-import '/domain/model/monetization_settings.dart';
-import '/domain/service/partner.dart';
+/// Monetization settings of an [User].
+class MonetizationSettings {
+  MonetizationSettings({this.donation, required this.createdAt});
 
-/// Controller for [Routes.prices] page.
-class PricesController extends GetxController {
-  PricesController(this._partnerService);
+  /// Monetization settings of [Donation]s.
+  final MonetizationSettingsDonation? donation;
 
-  /// [PartnerService] used for retrieving and modifying the
-  /// [MonetizationSettings].
-  final PartnerService _partnerService;
+  /// [PreciseDateTime] when these [MonetizationSettings] were created.
+  final PreciseDateTime createdAt;
+}
 
-  /// Returns the [MonetizationSettings] of the authenticated [MyUser].
-  Rx<MonetizationSettings> get settings => _partnerService.settings;
+/// Monetization settings of [Donation]s.
+class MonetizationSettingsDonation {
+  MonetizationSettingsDonation({this.enabled = true, required this.min});
+
+  /// Indicator whether the [User] accepts [Donation]s or not.
+  final bool enabled;
+
+  /// Minimal [Price] of [Donation]s allowed in the [Chat] with the [User].
+  final Price min;
 }

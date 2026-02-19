@@ -26,7 +26,10 @@ import '/api/backend/extension/page_info.dart';
 import '/api/backend/extension/wallet.dart';
 import '/api/backend/schema.dart';
 import '/domain/model/balance.dart';
+import '/domain/model/monetization_settings.dart';
 import '/domain/model/operation.dart';
+import '/domain/model/precise_date_time/precise_date_time.dart';
+import '/domain/model/price.dart';
 import '/domain/model/user.dart';
 import '/domain/repository/partner.dart';
 import '/domain/service/disposable_service.dart';
@@ -35,8 +38,10 @@ import '/util/log.dart';
 import '/util/stream_utils.dart';
 import '/util/web/web_utils.dart';
 import 'event/balance.dart';
+import 'event/monetization_settings.dart';
 import 'event/operation.dart';
 import 'event/wallet.dart' show operationsEvents;
+import 'model/monetization_settings.dart';
 import 'model/operation.dart';
 import 'model/page_info.dart';
 import 'pagination.dart';
@@ -54,6 +59,11 @@ class PartnerRepository extends IdentityDependency
   @override
   final Rx<Balance> hold = Rx(Balance.zero);
 
+  @override
+  final Rx<MonetizationSettings> settings = Rx(
+    MonetizationSettings(createdAt: PreciseDateTime.now()),
+  );
+
   /// [GraphQlProvider] for fetching the [Balance]s.
   final GraphQlProvider _graphQlProvider;
 
@@ -66,8 +76,14 @@ class PartnerRepository extends IdentityDependency
   /// [Operation]s subscription.
   StreamQueue<OperationsEvents>? _operationsSubscription;
 
+  /// [MonetizationSettings] subscription.
+  StreamQueue<MonetizationSettingsEvents>? _myMonetizationSettingsSubscription;
+
   /// Latest [OperationVersion] of the [operations] list events.
   OperationVersion? _ver;
+
+  /// [MonetizationSettingsVersion] of the [settings] currently applied, if any.
+  MonetizationSettingsVersion? _monetizationSettingsVer;
 
   /// [Mutex]ex guarding access to [get].
   final Map<_OperationIdentifier, Mutex> _locks = {};
@@ -114,6 +130,7 @@ class PartnerRepository extends IdentityDependency
     _availableSubscription?.close(immediate: true);
     _holdSubscription?.close(immediate: true);
     _operationsSubscription?.close(immediate: true);
+    _myMonetizationSettingsSubscription?.close(immediate: true);
     operations.dispose();
     super.onClose();
   }
@@ -129,6 +146,8 @@ class PartnerRepository extends IdentityDependency
     hold.value = Balance.zero;
     _availableSubscription?.close(immediate: true);
     _holdSubscription?.close(immediate: true);
+    _operationsSubscription?.close(immediate: true);
+    _myMonetizationSettingsSubscription?.close(immediate: true);
 
     if (!me.isLocal) {
       operations.around();
@@ -136,6 +155,7 @@ class PartnerRepository extends IdentityDependency
       _initAvailableSubscription();
       _initHoldSubscription();
       _initOperationsSubscription();
+      _initMyMonetizationSettingsSubscription();
     }
   }
 
@@ -175,6 +195,50 @@ class PartnerRepository extends IdentityDependency
 
       return operation;
     });
+  }
+
+  @override
+  Future<void> updateMonetizationSettings({
+    UserId? userId,
+    bool? donationsEnabled,
+    Sum? donationsMinimum,
+  }) async {
+    Log.debug(
+      'updateMonetizationSettings(userId: $userId, donationsEnabled: $donationsEnabled, donationsMinimum: $donationsMinimum)',
+      '$runtimeType',
+    );
+
+    final mixin = await _graphQlProvider.updateMonetizationSettings(
+      userId: userId,
+      settings: MonetizationSettingsInput(
+        donation: donationsEnabled == null && donationsMinimum == null
+            ? null
+            : MonetizationSettingsDonationInput(
+                kw$new: MonetizationSettingsDonationSettingsInput(
+                  enabled:
+                      donationsEnabled ??
+                      settings.value.donation?.enabled ??
+                      true,
+                  min:
+                      donationsMinimum ??
+                      settings.value.donation?.min.sum ??
+                      Sum(1),
+                ),
+              ),
+      ),
+    );
+
+    if (mixin != null) {
+      _myMonetizationSettingsEvent(
+        MonetizationSettingsEventsEvent(
+          MonetizationSettingsEventsVersioned(
+            mixin.events.map(_monetizationSettingsEvent).toList(),
+            mixin.ver,
+            mixin.listVer,
+          ),
+        ),
+      );
+    }
   }
 
   /// Fetches purse operations with pagination.
@@ -482,6 +546,181 @@ class PartnerRepository extends IdentityDependency
           }
         }
         break;
+    }
+  }
+
+  /// Initializes [operations] subscription.
+  Future<void> _initMyMonetizationSettingsSubscription() async {
+    Log.debug('_initMyMonetizationSettingsSubscription()', '$runtimeType');
+
+    _myMonetizationSettingsSubscription?.close(immediate: true);
+
+    if (me.isLocal || isClosed) {
+      return;
+    }
+
+    await WebUtils.protect(() async {
+      if (me.isLocal || isClosed) {
+        return;
+      }
+
+      _myMonetizationSettingsSubscription = StreamQueue(
+        await _myMonetizationSettingsEvents(),
+      );
+
+      await _myMonetizationSettingsSubscription!.execute(
+        _myMonetizationSettingsEvent,
+      );
+    }, tag: 'myMonetizationSettingsEvents()');
+  }
+
+  /// Handles [MonetizationSettingsEvents] from the
+  /// [_myMonetizationSettingsEvents] subscription.
+  void _myMonetizationSettingsEvent(
+    MonetizationSettingsEvents events, {
+    bool updateVersion = true,
+  }) {
+    switch (events.kind) {
+      case MonetizationSettingsEventsKind.initialized:
+        events as MonetizationSettingsEventsInitialized;
+        Log.debug(
+          '_myMonetizationSettingsEvent(${events.kind})',
+          '$runtimeType',
+        );
+        break;
+
+      case MonetizationSettingsEventsKind.list:
+        events as MonetizationSettingsEventsList;
+        Log.debug(
+          '_myMonetizationSettingsEvent(${events.kind})',
+          '$runtimeType',
+        );
+
+        settings.value = events.myMonetizationSettings?.value ?? settings.value;
+        _monetizationSettingsVer = events.myMonetizationSettingsVer;
+        break;
+
+      case MonetizationSettingsEventsKind.event:
+        events as MonetizationSettingsEventsEvent;
+
+        final MonetizationSettingsEventsVersioned versioned = events.event;
+
+        if (versioned.ver >= _monetizationSettingsVer) {
+          Log.debug(
+            '_myMonetizationSettingsEvent(${events.kind}): ignored ${versioned.events.map((e) => e.kind.name).join(', ')}',
+            '$runtimeType',
+          );
+          return;
+        }
+
+        if (updateVersion) {
+          _monetizationSettingsVer = versioned.ver;
+        }
+
+        Log.debug(
+          '_operationsEvent(${events.kind}): ${versioned.events.map((e) => e.kind.name).join(', ')}',
+          '$runtimeType',
+        );
+
+        for (var event in versioned.events) {
+          switch (event.kind) {
+            case MonetizationSettingsEventKind.donationDeleted:
+              event as MonetizationSettingsDonation;
+              settings.value =
+                  event.monetizationSettings?.value ?? settings.value;
+              break;
+
+            case MonetizationSettingsEventKind.donationMinPriceUpdated:
+              event as EventMonetizationSettingsDonationMinPriceUpdated;
+              settings.value =
+                  event.monetizationSettings?.value ?? settings.value;
+              break;
+
+            case MonetizationSettingsEventKind.donationToggled:
+              event as EventMonetizationSettingsDonationToggled;
+              settings.value =
+                  event.monetizationSettings?.value ?? settings.value;
+              break;
+          }
+        }
+        break;
+    }
+  }
+
+  /// Returns a [Stream] of [MonetizationSettings] of the currently
+  /// authenticated [MyUser].
+  Future<Stream<MonetizationSettingsEvents>>
+  _myMonetizationSettingsEvents() async {
+    Log.debug('_myMonetizationSettingsEvents()');
+
+    final Stream<QueryResult> events = await _graphQlProvider
+        .myMonetizationSettingsEvents();
+
+    return events.asyncExpand((event) async* {
+      Log.debug(
+        '_myMonetizationSettingsEvents() -> ${event.data}',
+        '$runtimeType',
+      );
+
+      final events = MyMonetizationSettingsEvents$Subscription.fromJson(
+        event.data!,
+      ).myMonetizationSettingsEvents;
+
+      if (events.$$typename == 'SubscriptionInitialized') {
+        events
+            as MyMonetizationSettingsEvents$Subscription$MyMonetizationSettingsEvents$SubscriptionInitialized;
+        yield const MonetizationSettingsEventsInitialized();
+      } else if (events.$$typename == 'MonetizationSettingsList') {
+        final mixin =
+            events
+                as MyMonetizationSettingsEvents$Subscription$MyMonetizationSettingsEvents$MonetizationSettingsList;
+        yield MonetizationSettingsEventsList(
+          myMonetizationSettings: mixin.myMonetizationSettings.nodes.firstOrNull
+              ?.toDto(),
+          myMonetizationSettingsVer: mixin.myMonetizationSettings.ver,
+        );
+      } else if (events.$$typename == 'MonetizationSettingsEventsVersioned') {
+        final mixin =
+            events
+                as MyMonetizationSettingsEvents$Subscription$MyMonetizationSettingsEvents$MonetizationSettingsEventsVersioned;
+        yield MonetizationSettingsEventsEvent(
+          MonetizationSettingsEventsVersioned(
+            mixin.events.map(_monetizationSettingsEvent).toList(),
+            mixin.ver,
+            mixin.listVer,
+          ),
+        );
+      }
+    });
+  }
+
+  /// Constructs a [MonetizationSettingsEvent] from the
+  /// [MonetizationSettingsEventsVersionedMixin$Events].
+  MonetizationSettingsEvent _monetizationSettingsEvent(
+    MonetizationSettingsEventsVersionedMixin$Events e,
+  ) {
+    Log.trace('_monetizationSettingsEvent($e)', '$runtimeType');
+
+    if (e.$$typename == 'EventMonetizationSettingsDonationDeleted') {
+      return EventMonetizationSettingsDonationDeleted(
+        e.monetizationSettings?.node.toDto(),
+        e.at,
+      );
+    } else if (e.$$typename ==
+        'EventMonetizationSettingsDonationMinPriceUpdated') {
+      return EventMonetizationSettingsDonationMinPriceUpdated(
+        e.monetizationSettings?.node.toDto(),
+        e.at,
+      );
+    } else if (e.$$typename == 'EventMonetizationSettingsDonationToggled') {
+      return EventMonetizationSettingsDonationToggled(
+        e.monetizationSettings?.node.toDto(),
+        e.at,
+      );
+    } else {
+      throw UnimplementedError(
+        'Unknown MonetizationSettingsEvent: ${e.$$typename}',
+      );
     }
   }
 }

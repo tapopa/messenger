@@ -28,6 +28,7 @@ import '/domain/model/operation_deposit_method.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/price.dart';
 import '/domain/model/session.dart';
+import '/domain/model/user.dart';
 import '/store/model/operation.dart';
 import '/util/log.dart';
 
@@ -418,5 +419,119 @@ mixin WalletGraphQlMixin {
     );
 
     return Operation$Query.fromJson(result.data!).operation;
+  }
+
+  /// Subscribes to [MonetizationSettingsEvents] of the [MonetizationSettings]
+  /// set by the authenticated [MyUser] (both common and individual ones).
+  ///
+  /// ### Authentication
+  ///
+  /// Mandatory.
+  ///
+  /// ### Initialization
+  ///
+  /// Once this subscription is initialized completely, it immediately emits
+  /// `SubscriptionInitialized`.
+  ///
+  /// If nothing has been emitted for a long period of time after establishing
+  /// this subscription (while not being completed), it should be considered as
+  /// an unexpected server error. This fact can be used on a client side to
+  /// decide whether this subscription has been initialized successfully.
+  ///
+  /// ### Result
+  ///
+  /// An initial state of the `MonetizationSettingsList` will be emitted after
+  /// `SubscriptionInitialized` and before any other
+  /// [MonetizationSettingsEvents] (and won't be emitted ever again until this
+  /// subscription completes). This allows to skip calling
+  /// `Query.myMonetizationSettings` before establishing this subscription.
+  ///
+  /// ### Completion
+  ///
+  /// Infinite.
+  ///
+  /// Completes requiring a re-subscription when:
+  /// - Authenticated [Session] expires (`SESSION_EXPIRED` error is emitted).
+  /// - An error occurs on the server (error is emitted).
+  /// - The server is shutting down or becoming unreachable (unexpectedly
+  ///   completes after initialization).
+  ///
+  /// ### Idempotency
+  ///
+  /// It's possible that in rare scenarios this subscription could emit an event
+  /// which have already been applied to the state of some
+  /// [MonetizationSettings], so a client side is expected to handle all the
+  /// events idempotently considering the [DtoMonetizationSettings.ver].
+  Future<Stream<QueryResult>> myMonetizationSettingsEvents() async {
+    Log.debug('myMonetizationSettingsEvents()', '$runtimeType');
+
+    return client.subscribe(
+      SubscriptionOptions(
+        operationName: 'MyMonetizationSettingsEvents',
+        document: MyMonetizationSettingsEventsSubscription().document,
+      ),
+    );
+  }
+
+  /// Updates [MonetizationSettings] of the authenticated [MyUser].
+  ///
+  /// If the [userId] argument is specified, then [MonetizationSettings] will be
+  /// updated individually for that [User]. Otherwise, common
+  /// [MonetizationSettings] are updated, affecting all [User]s. Naturally,
+  /// individual [MonetizationSettings] take precedence over common
+  /// [MonetizationSettings].
+  ///
+  /// ### Authentication
+  ///
+  /// Mandatory.
+  ///
+  /// Result
+  ///
+  /// One of the following [MonetizationSettingsEvents] may be produced on
+  /// success:
+  /// - [EventMonetizationSettingsDonationDeleted];
+  /// - [EventMonetizationSettingsDonationMinPriceUpdated];
+  /// - [EventMonetizationSettingsDonationToggled].
+  ///
+  /// ### Idempotent
+  ///
+  /// Succeeds as no-op (and returns no [MonetizationSettingsEvent]) if the
+  /// specified [MonetizationSettings]' fields are set already to the provided
+  /// values.
+  Future<MonetizationSettingsEventsVersionedMixin?> updateMonetizationSettings({
+    UserId? userId,
+    required MonetizationSettingsInput settings,
+  }) async {
+    Log.debug(
+      'updateMonetizationSettings(userId: $userId, settings: $settings)',
+      '$runtimeType',
+    );
+
+    final variables = UpdateMonetizationSettingsArguments(
+      userId: userId,
+      settings: settings,
+    );
+
+    final QueryResult res = await client.mutate(
+      MutationOptions(
+        operationName: 'UpdateMonetizationSettings',
+        document: UpdateMonetizationSettingsMutation(
+          variables: variables,
+        ).document,
+        variables: variables.toJson(),
+      ),
+      onException: (data) => UpdateMonetizationSettingsException(
+        (UpdateMonetizationSettings$Mutation.fromJson(
+                  data,
+                ).updateMonetizationSettings
+                as UpdateMonetizationSettings$Mutation$UpdateMonetizationSettings$UpdateMonetizationSettingsError)
+            .code,
+      ),
+    );
+
+    return UpdateMonetizationSettings$Mutation.fromJson(
+          res.data!,
+        ).updateMonetizationSettings
+        as UpdateMonetizationSettings$Mutation$UpdateMonetizationSettings$MonetizationSettingsEventsVersioned?;
   }
 }

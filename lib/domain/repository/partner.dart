@@ -40,8 +40,15 @@ abstract class AbstractPartnerRepository {
   /// Returns [MonetizationSettings] of the authenticated [MyUser].
   Rx<MonetizationSettings> get settings;
 
+  /// Returns the individual [MonetizationSettings] for separate [UserId]s.
+  RxMap<UserId, Rx<MonetizationSettings>> get individual;
+
   /// Returns an [Operation] identified by the provided [id] or [num].
   FutureOr<Rx<Operation>?> get({OperationId? id, OperationNum? num});
+
+  /// Listens to the updates of [MonetizationSettings] for the provided [UserId]
+  /// while the returned [Stream] is listened to.
+  Stream<void> updatesFor(UserId id);
 
   /// Updates [MonetizationSettings] of the authenticated [MyUser].
   ///

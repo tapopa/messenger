@@ -21,6 +21,8 @@ All user visible changes to this project will be documented in this file. This p
     - Set your prices page:
         - Incoming donations minimum price settings. ([#28])
         - Incoming donations enabling and disabling. ([#28])
+    - User page:
+        - Individual donation monetization settings setting. ([#29])
 
 ### Changed
 
@@ -34,6 +36,7 @@ All user visible changes to this project will be documented in this file. This p
 [#26]: /../../pull/26
 [#27]: /../../pull/27
 [#28]: /../../pull/28
+[#29]: /../../pull/29
 
 
 

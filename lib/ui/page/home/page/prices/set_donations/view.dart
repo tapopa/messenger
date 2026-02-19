@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '/domain/model/price.dart';
+import '/domain/model/user.dart';
 import '/l10n/l10n.dart';
 import '/themes.dart';
 import '/ui/page/home/page/my_profile/widget/switch_field.dart';
@@ -31,11 +32,18 @@ import 'controller.dart';
 
 /// View for setting the incoming [Donation]s settings.
 class SetDonationsView extends StatelessWidget {
-  const SetDonationsView({super.key});
+  const SetDonationsView({super.key, this.userId});
+
+  /// [UserId] of a [User] for whom the [MonetizationSettings] are being
+  /// changed.
+  final UserId? userId;
 
   /// Displays a [SetDonationsView] wrapped in a [ModalPopup].
-  static Future<T?> show<T>(BuildContext context) {
-    return ModalPopup.show(context: context, child: const SetDonationsView());
+  static Future<T?> show<T>(BuildContext context, {UserId? userId}) {
+    return ModalPopup.show(
+      context: context,
+      child: SetDonationsView(userId: userId),
+    );
   }
 
   @override
@@ -43,7 +51,7 @@ class SetDonationsView extends StatelessWidget {
     final style = Theme.of(context).style;
 
     return GetBuilder(
-      init: SetDonationsController(Get.find()),
+      init: SetDonationsController(Get.find(), userId: userId),
       builder: (SetDonationsController c) {
         return Column(
           mainAxisSize: MainAxisSize.min,

@@ -94,14 +94,16 @@ class PriceRow extends StatelessWidget {
               )
             else
               const Spacer(),
-            const SizedBox(width: 8),
-            WidgetButton(
-              onPressed: onChange,
-              child: Text(
-                'btn_change'.l10n,
-                style: style.fonts.small.regular.primary,
+            if (onChange != null) ...[
+              const SizedBox(width: 8),
+              WidgetButton(
+                onPressed: onChange,
+                child: Text(
+                  'btn_change'.l10n,
+                  style: style.fonts.small.regular.primary,
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ],

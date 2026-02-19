@@ -64,6 +64,9 @@ class PartnerRepository extends IdentityDependency
     MonetizationSettings(createdAt: PreciseDateTime.now()),
   );
 
+  @override
+  final RxMap<UserId, Rx<MonetizationSettings>> individual = RxMap();
+
   /// [GraphQlProvider] for fetching the [Balance]s.
   final GraphQlProvider _graphQlProvider;
 
@@ -87,6 +90,10 @@ class PartnerRepository extends IdentityDependency
 
   /// [Mutex]ex guarding access to [get].
   final Map<_OperationIdentifier, Mutex> _locks = {};
+
+  final Map<UserId, StreamController> _updates = {};
+  final Map<UserId, StreamQueue<MonetizationSettingsEvents>> _subscriptions =
+      {};
 
   @override
   late final OperationsPaginated operations = OperationsPaginated(
@@ -149,6 +156,16 @@ class PartnerRepository extends IdentityDependency
     _operationsSubscription?.close(immediate: true);
     _myMonetizationSettingsSubscription?.close(immediate: true);
 
+    for (var e in _updates.values) {
+      e.close();
+    }
+    _updates.clear();
+
+    for (var e in _subscriptions.values) {
+      e.cancel();
+    }
+    _subscriptions.clear();
+
     if (!me.isLocal) {
       operations.around();
 
@@ -198,6 +215,22 @@ class PartnerRepository extends IdentityDependency
   }
 
   @override
+  Stream<void> updatesFor(UserId id) {
+    final controller = _updates[id] ??= StreamController.broadcast(
+      onListen: () async {
+        Log.debug('updates($id) -> onListen()', '$runtimeType($id)');
+        await _initMonetizationSubscription(id);
+      },
+      onCancel: () {
+        Log.debug('updates($id) -> onCancel()', '$runtimeType($id)');
+        _subscriptions.remove(id)?.close(immediate: true);
+      },
+    );
+
+    return controller.stream;
+  }
+
+  @override
   Future<void> updateMonetizationSettings({
     UserId? userId,
     bool? donationsEnabled,
@@ -207,6 +240,30 @@ class PartnerRepository extends IdentityDependency
       'updateMonetizationSettings(userId: $userId, donationsEnabled: $donationsEnabled, donationsMinimum: $donationsMinimum)',
       '$runtimeType',
     );
+
+    final bool hasAny = donationsEnabled != null || donationsMinimum != null;
+
+    if (userId != null) {
+      final Rx<MonetizationSettings>? existing = individual[userId];
+
+      if (hasAny) {
+        final settings = MonetizationSettings(
+          createdAt: PreciseDateTime.now(),
+          donation: MonetizationSettingsDonation(
+            enabled: donationsEnabled ?? true,
+            min: Price.xxx(donationsMinimum?.val ?? 1),
+          ),
+        );
+
+        if (existing != null) {
+          existing.value = settings;
+        } else {
+          individual[userId] = Rx(settings);
+        }
+      } else {
+        individual.remove(userId);
+      }
+    }
 
     final mixin = await _graphQlProvider.updateMonetizationSettings(
       userId: userId,
@@ -626,21 +683,32 @@ class PartnerRepository extends IdentityDependency
           switch (event.kind) {
             case MonetizationSettingsEventKind.donationDeleted:
               event as MonetizationSettingsDonation;
-              settings.value =
-                  event.monetizationSettings?.value ?? settings.value;
               break;
 
             case MonetizationSettingsEventKind.donationMinPriceUpdated:
               event as EventMonetizationSettingsDonationMinPriceUpdated;
-              settings.value =
-                  event.monetizationSettings?.value ?? settings.value;
               break;
 
             case MonetizationSettingsEventKind.donationToggled:
               event as EventMonetizationSettingsDonationToggled;
-              settings.value =
-                  event.monetizationSettings?.value ?? settings.value;
               break;
+          }
+
+          final UserId? userId = event.userId;
+          final MonetizationSettings? monetization =
+              event.monetizationSettings?.value;
+
+          if (monetization != null) {
+            if (userId != null && userId != me) {
+              final Rx<MonetizationSettings>? existing = individual[userId];
+              if (existing != null) {
+                existing.value = monetization;
+              } else {
+                individual[userId] = Rx(monetization);
+              }
+            } else {
+              settings.value = monetization;
+            }
           }
         }
         break;
@@ -704,17 +772,20 @@ class PartnerRepository extends IdentityDependency
     if (e.$$typename == 'EventMonetizationSettingsDonationDeleted') {
       return EventMonetizationSettingsDonationDeleted(
         e.monetizationSettings?.node.toDto(),
+        e.user?.id,
         e.at,
       );
     } else if (e.$$typename ==
         'EventMonetizationSettingsDonationMinPriceUpdated') {
       return EventMonetizationSettingsDonationMinPriceUpdated(
         e.monetizationSettings?.node.toDto(),
+        e.user?.id,
         e.at,
       );
     } else if (e.$$typename == 'EventMonetizationSettingsDonationToggled') {
       return EventMonetizationSettingsDonationToggled(
         e.monetizationSettings?.node.toDto(),
+        e.user?.id,
         e.at,
       );
     } else {
@@ -722,6 +793,74 @@ class PartnerRepository extends IdentityDependency
         'Unknown MonetizationSettingsEvent: ${e.$$typename}',
       );
     }
+  }
+
+  /// Initializes [operations] subscription.
+  Future<void> _initMonetizationSubscription(UserId id) async {
+    Log.debug('_initMonetizationSubscription(UserId id)', '$runtimeType');
+
+    _subscriptions.remove(id)?.close(immediate: true);
+
+    if (me.isLocal || isClosed) {
+      return;
+    }
+
+    await WebUtils.protect(() async {
+      if (me.isLocal || isClosed) {
+        return;
+      }
+
+      _subscriptions[id] = StreamQueue(await _monetizationSettingsEvents(id));
+      await _subscriptions[id]?.execute(_myMonetizationSettingsEvent);
+    }, tag: 'monetizationSettingsEvents($id)');
+  }
+
+  /// Returns a [Stream] of [MonetizationSettings] of the currently
+  /// authenticated [MyUser].
+  Future<Stream<MonetizationSettingsEvents>> _monetizationSettingsEvents(
+    UserId id,
+  ) async {
+    Log.debug('_monetizationSettingsEvents($id)');
+
+    final Stream<QueryResult> events = await _graphQlProvider
+        .monetizationSettingsEvents(userId: id);
+
+    return events.asyncExpand((event) async* {
+      Log.debug(
+        '_monetizationSettingsEvents() -> ${event.data}',
+        '$runtimeType',
+      );
+
+      final events = MonetizationSettingsEvents$Subscription.fromJson(
+        event.data!,
+      ).monetizationSettingsEvents;
+
+      if (events.$$typename == 'SubscriptionInitialized') {
+        events
+            as MonetizationSettingsEvents$Subscription$MonetizationSettingsEvents$SubscriptionInitialized;
+        yield const MonetizationSettingsEventsInitialized();
+      } else if (events.$$typename == 'MonetizationSettingsList') {
+        final mixin =
+            events
+                as MonetizationSettingsEvents$Subscription$MonetizationSettingsEvents$MonetizationSettingsList;
+        yield MonetizationSettingsEventsList(
+          myMonetizationSettings: mixin.myMonetizationSettings.nodes.firstOrNull
+              ?.toDto(),
+          myMonetizationSettingsVer: mixin.myMonetizationSettings.ver,
+        );
+      } else if (events.$$typename == 'MonetizationSettingsEventsVersioned') {
+        final mixin =
+            events
+                as MonetizationSettingsEvents$Subscription$MonetizationSettingsEvents$MonetizationSettingsEventsVersioned;
+        yield MonetizationSettingsEventsEvent(
+          MonetizationSettingsEventsVersioned(
+            mixin.events.map(_monetizationSettingsEvent).toList(),
+            mixin.ver,
+            mixin.listVer,
+          ),
+        );
+      }
+    });
   }
 }
 

@@ -473,6 +473,23 @@ mixin WalletGraphQlMixin {
     );
   }
 
+  Future<Stream<QueryResult>> monetizationSettingsEvents({
+    UserId? userId,
+  }) async {
+    Log.debug('monetizationSettingsEvents(userId: $userId)', '$runtimeType');
+
+    final variables = MonetizationSettingsEventsArguments(userId: userId);
+    return client.subscribe(
+      SubscriptionOptions(
+        operationName: 'MonetizationSettingsEvents',
+        document: MonetizationSettingsEventsSubscription(
+          variables: variables,
+        ).document,
+        variables: variables.toJson(),
+      ),
+    );
+  }
+
   /// Updates [MonetizationSettings] of the authenticated [MyUser].
   ///
   /// If the [userId] argument is specified, then [MonetizationSettings] will be

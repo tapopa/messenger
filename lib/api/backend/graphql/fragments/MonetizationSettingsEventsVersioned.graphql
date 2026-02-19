@@ -24,6 +24,9 @@ fragment MonetizationSettingsEventsVersioned on MonetizationSettingsEventsVersio
                 ...MonetizationSettings
             }
         }
+        user {
+            id
+        }
         at
         # ... on EventMonetizationSettingsDonationDeleted
         # ... on EventMonetizationSettingsDonationMinPriceUpdated

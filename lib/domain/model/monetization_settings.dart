@@ -19,13 +19,14 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'precise_date_time/precise_date_time.dart';
 import 'price.dart';
+import 'user.dart';
 
 part 'monetization_settings.g.dart';
 
 /// Monetization settings of an [User].
 @JsonSerializable()
 class MonetizationSettings {
-  MonetizationSettings({this.donation, required this.createdAt});
+  MonetizationSettings({this.donation, this.user, required this.createdAt});
 
   /// Constructs a [MonetizationSettings] from the provided [json].
   factory MonetizationSettings.fromJson(Map<String, dynamic> json) =>
@@ -33,6 +34,9 @@ class MonetizationSettings {
 
   /// Monetization settings of [Donation]s.
   final MonetizationSettingsDonation? donation;
+
+  /// [User] these [MonetizationSettings] are specified individually for.
+  final UserId? user;
 
   /// [PreciseDateTime] when these [MonetizationSettings] were created.
   final PreciseDateTime createdAt;

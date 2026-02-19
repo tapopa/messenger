@@ -370,6 +370,7 @@ extension MonetizationSettingsConversion on MonetizationSettingsMixin {
             min: donation!.min.toModel(),
             enabled: donation!.enabled,
           ),
+    user: user?.id,
     createdAt: createdAt,
   );
 

@@ -181,6 +181,7 @@ btn_hide = Hide
 btn_hidden_chats = Hidden chats
 btn_hide_chat = Hide chat
 btn_hide_interface = Hide interface
+btn_individual_settings = Individual settings
 btn_info = Information
 btn_install_android = .apk file for Android
 btn_install_ios = .ipa file for iOS
@@ -989,6 +990,7 @@ label_in_case_crypto_platform_no_identifier3 = ".
 label_incoming_call = Incoming call
 label_individual_monetization = Individual monetization
 label_individual_monetization_description = Users with individual monetization settings.
+label_individual_price_settings = Individual price settings
 label_individual_users_count = Individual users: {$count}
 label_information = Information
 label_installation_error = Installation error
@@ -1393,6 +1395,18 @@ label_your_author_partner_program_tapopa_author =
     Tapopa-Author
 label_your_balance_amount = Your balance: {$balance}
 label_your_direct_link = Direct link to chat with you
+label_your_monetization_settings_for_user = Your monetization settings for the user {$user}
+label_your_monetization_settings_for_user_description1 = You can request a fee from the user{" "}
+label_your_monetization_settings_for_user_description2 = {$user}
+label_your_monetization_settings_for_user_description3 =
+    {" "}for the privilege of sending you messages and making calls.
+
+    You can set a minimum donation amount, as well as the price of incoming messages and calls.
+label_your_monetization_settings_for_user_subtitle1 = You can set individual monetization settings for the user{" "}
+label_your_monetization_settings_for_user_subtitle2 = {$user}
+label_your_monetization_settings_for_user_subtitle3 = {" "}or use{" "}
+label_your_monetization_settings_for_user_subtitle4 = default monetization settings
+label_your_monetization_settings_for_user_subtitle5 = .
 label_your_name = Your name
 label_your_num = Your Gapopa ID
 label_your_password = Your password

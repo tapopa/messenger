@@ -49,10 +49,21 @@ class PartnerService extends Dependency {
   /// Returns the [MonetizationSettings] of the authenticated [MyUser].
   Rx<MonetizationSettings> get settings => _partnerRepository.settings;
 
+  /// Returns the individual [MonetizationSettings] for separate [UserId]s.
+  RxMap<UserId, Rx<MonetizationSettings>> get individual =>
+      _partnerRepository.individual;
+
   /// Returns an [Operation] identified by the provided [id] or [num].
   FutureOr<Rx<Operation>?> get({OperationId? id, OperationNum? num}) {
     Log.debug('get(id: $id, num: $num)', '$runtimeType');
     return _partnerRepository.get(id: id, num: num);
+  }
+
+  /// Listens to the updates of [MonetizationSettings] for the provided [UserId]
+  /// while the returned [Stream] is listened to.
+  Stream<void> updatesFor(UserId id) {
+    Log.debug('updatesFor(id: $id)', '$runtimeType');
+    return _partnerRepository.updatesFor(id);
   }
 
   /// Updates [MonetizationSettings] of the authenticated [MyUser].

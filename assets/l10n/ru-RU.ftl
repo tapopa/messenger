@@ -529,6 +529,8 @@ err_chat_direct_link_occupied = Ссылка занята
 err_could_not_download = При загрузке произошла ошибка. Попробуйте снова.
 err_data_transfer = Ошибка передачи данных. Проверьте Ваше подключение.
 err_dimensions_too_big = Разрешение файла превышает 32767 x 32767 пикселей
+err_donations_disabled = Пользователь отключил донаты
+err_donations_has_minimum = Минимальный донат - {$amount}
 err_email_occupied = Указанный e-mail добавлен к другому аккаунту
 err_incorrect_email = Некорректный e-mail
 err_incorrect_input = Некорректный формат
@@ -1380,6 +1382,7 @@ label_user_removed_user1 = {$author}{" "}
 label_user_removed_user2 = удалил(а)
 label_user_removed_user3 = {" "}{$user}
 label_users_count = Пользователей: {$count}
+label_users_with_individual_monetization_settings = Пользователи с индивидуальными настройками монетизации
 label_version_semicolon = Версия: {$version}
 label_video_call = Видеозвонок{$by ->
         [x]{""}

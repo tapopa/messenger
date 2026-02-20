@@ -590,7 +590,7 @@ class MessageFieldController extends GetxController {
         }),
       );
     } else {
-      panel.removeWhere((e) => e is DonateButton);
+      panel.removeWhere((e) => e is DonatesButton);
     }
   }
 

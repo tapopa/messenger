@@ -529,6 +529,8 @@ err_chat_direct_link_occupied = Link is occupied
 err_could_not_download = An error occurred while downloading. Try again.
 err_data_transfer = Data transfer error. Check your connection.
 err_dimensions_too_big = File dimensions exceed 32767 x 32767 pixels
+err_donations_disabled = User has disabled donations
+err_donations_has_minimum = Minimum donation is {$amount}
 err_email_occupied = Specified e-mail is added to another account
 err_incorrect_email = Incorrect e-mail
 err_incorrect_input = Incorrect input
@@ -1356,6 +1358,7 @@ label_user_removed_user1 = {$author}{" "}
 label_user_removed_user2 = removed
 label_user_removed_user3 = {" "}{$user}
 label_users_count = Users: {$count}
+label_users_with_individual_monetization_settings = Users with individual monetization settings
 label_version_semicolon = Version: {$version}
 label_video_call = Video call{$by ->
         [x]{""}

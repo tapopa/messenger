@@ -27,6 +27,7 @@ subscription MyMonetizationSettingsEvents {
                     __typename
                     ...MonetizationSettings
                 }
+                totalCount
                 ver
             }
         }

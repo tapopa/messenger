@@ -30,7 +30,6 @@ import '/l10n/l10n.dart';
 import '/util/new_type.dart';
 import 'avatar.dart';
 import 'chat.dart';
-import 'monetization_settings.dart';
 import 'precise_date_time/precise_date_time.dart';
 import 'user_call_cover.dart';
 import 'welcome_message.dart';
@@ -57,7 +56,6 @@ class User {
     this.lastSeenAt,
     this.contacts = const [],
     this.welcomeMessage,
-    this.monetizationSettings,
   }) : _dialog = dialog;
 
   /// Constructs a [User] from the provided [json].
@@ -131,8 +129,6 @@ class User {
 
   /// [WelcomeMessage] of this [User].
   WelcomeMessage? welcomeMessage;
-
-  MonetizationSettings? monetizationSettings;
 
   /// Returns [ChatId] of the [Chat]-dialog with this [User].
   ChatId get dialog => _dialog ?? ChatId.local(id);

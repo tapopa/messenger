@@ -15,6 +15,8 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:math';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -26,9 +28,11 @@ import '/themes.dart';
 import '/ui/page/home/page/chat/widget/back_button.dart';
 import '/ui/page/home/widget/app_bar.dart';
 import '/ui/page/home/widget/block.dart';
+import '/ui/page/home/widget/field_button.dart';
 import '/ui/widget/line_divider.dart';
 import '/ui/widget/svg/svg.dart';
 import 'controller.dart';
+import 'individual_users/view.dart';
 import 'set_donations/view.dart';
 import 'widget/price_row.dart';
 
@@ -141,18 +145,20 @@ class PricesView extends StatelessWidget {
                 foldedColor: style.colors.currencyPrimary,
                 children: [
                   Text(
-                    'label_individual_monetization_description'.l10n,
-                    style: style.fonts.small.regular.secondary,
-                  ),
-                  const SizedBox(height: 24),
-                  LineDivider(
-                    'label_individual_users_count'.l10nfmt({'count': 0}),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
                     'label_you_can_set_individual_monetization_in_profile'.l10n,
                     style: style.fonts.small.regular.secondary,
                   ),
+                  const SizedBox(height: 20),
+                  Obx(() {
+                    return FieldButton(
+                      text: 'label_users_count'.l10nfmt({
+                        'count': max(c.total.value - 1, 0),
+                      }),
+                      onPressed: () async {
+                        await IndividualUsersView.show(context);
+                      },
+                    );
+                  }),
                 ],
               ),
             ],

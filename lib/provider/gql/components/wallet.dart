@@ -29,6 +29,7 @@ import '/domain/model/operation.dart';
 import '/domain/model/price.dart';
 import '/domain/model/session.dart';
 import '/domain/model/user.dart';
+import '/store/model/monetization_settings.dart';
 import '/store/model/operation.dart';
 import '/util/log.dart';
 
@@ -473,9 +474,7 @@ mixin WalletGraphQlMixin {
     );
   }
 
-  Future<Stream<QueryResult>> monetizationSettingsEvents({
-    UserId? userId,
-  }) async {
+  Future<Stream<QueryResult>> monetizationSettingsEvents(UserId userId) async {
     Log.debug('monetizationSettingsEvents(userId: $userId)', '$runtimeType');
 
     final variables = MonetizationSettingsEventsArguments(userId: userId);
@@ -550,5 +549,65 @@ mixin WalletGraphQlMixin {
           res.data!,
         ).updateMonetizationSettings
         as UpdateMonetizationSettings$Mutation$UpdateMonetizationSettings$MonetizationSettingsEventsVersioned?;
+  }
+
+  /// Returns [MonetizationSettings] of the authenticated [MyUser] filtered by
+  /// the provided criteria.
+  ///
+  /// Searching `by.userId` is exact, returning:
+  /// - Individual [MonetizationSettings] (if the `by.userId` is different from
+  /// the [MyUser.id]).
+  /// - Common [MonetizationSettings] (if `by.userId` is the [MyUser.id]).
+  /// - If no by (or `by.userId`) argument is provided, then individual
+  /// [MonetizationSettings] for all [User]s will be returned, also including
+  /// the common ones.
+  ///
+  /// ### Authentication
+  ///
+  /// Mandatory.
+  ///
+  /// ### Sorting
+  ///
+  /// Returned [MonetizationSettings] are sorted depending on the provided
+  /// arguments:
+  ///
+  /// If the `by.userId` argument is specified, then exact
+  /// [MonetizationSettings] are returned.
+  ///
+  /// Otherwise, the returned [MonetizationSettings] are sorted primarily by
+  /// their [MonetizationSettings.createdAt] field, and secondary by IDs of the
+  /// [User]s they are specified for, in descending order.
+  Future<MyMonetizationSettings$Query$MyMonetizationSettings>
+  myMonetizationSettings({
+    int? first,
+    MonetizationSettingsCursor? after,
+    int? last,
+    MonetizationSettingsCursor? before,
+  }) async {
+    Log.debug(
+      'myMonetizationSettings($first, $after, $last, $before)',
+      '$runtimeType',
+    );
+
+    final variables = MyMonetizationSettingsArguments(
+      pagination: MonetizationSettingsPagination(
+        first: first,
+        after: after,
+        last: last,
+        before: before,
+      ),
+    );
+
+    final QueryResult result = await client.query(
+      QueryOptions(
+        operationName: 'MyMonetizationSettings',
+        document: MyMonetizationSettingsQuery(variables: variables).document,
+        variables: variables.toJson(),
+      ),
+    );
+
+    return MyMonetizationSettings$Query.fromJson(
+      result.data!,
+    ).myMonetizationSettings;
   }
 }

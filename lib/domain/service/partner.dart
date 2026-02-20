@@ -46,12 +46,26 @@ class PartnerService extends Dependency {
   Paginated<OperationId, Rx<Operation>> get operations =>
       _partnerRepository.operations;
 
+  /// Returns the [MonetizationSettings] that the [UserId]s have for our
+  /// [MyUser].
+  RxMap<UserId, Rx<MonetizationSettings>> get monetization =>
+      _partnerRepository.monetization;
+
   /// Returns the [MonetizationSettings] of the authenticated [MyUser].
   Rx<MonetizationSettings> get settings => _partnerRepository.settings;
 
   /// Returns the individual [MonetizationSettings] for separate [UserId]s.
   RxMap<UserId, Rx<MonetizationSettings>> get individual =>
       _partnerRepository.individual;
+
+  /// Returns the [Paginated] for [MonetizationSettings] per individual
+  /// [UserId]s.
+  Paginated<UserId, Rx<MonetizationSettings>> get paginated =>
+      _partnerRepository.paginated;
+
+  /// Returns the total amount of [MonetizationSettings] applied by the
+  /// [MyUser].
+  RxInt get total => _partnerRepository.total;
 
   /// Returns an [Operation] identified by the provided [id] or [num].
   FutureOr<Rx<Operation>?> get({OperationId? id, OperationNum? num}) {
@@ -61,7 +75,7 @@ class PartnerService extends Dependency {
 
   /// Listens to the updates of [MonetizationSettings] for the provided [UserId]
   /// while the returned [Stream] is listened to.
-  Stream<void> updatesFor(UserId id) {
+  Stream<MonetizationSettings?> updatesFor(UserId id) {
     Log.debug('updatesFor(id: $id)', '$runtimeType');
     return _partnerRepository.updatesFor(id);
   }

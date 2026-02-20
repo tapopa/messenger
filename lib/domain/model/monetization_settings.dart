@@ -25,7 +25,7 @@ part 'monetization_settings.g.dart';
 
 /// Monetization settings of an [User].
 @JsonSerializable()
-class MonetizationSettings {
+class MonetizationSettings implements Comparable<MonetizationSettings> {
   MonetizationSettings({this.donation, this.user, required this.createdAt});
 
   /// Constructs a [MonetizationSettings] from the provided [json].
@@ -43,6 +43,28 @@ class MonetizationSettings {
 
   /// Returns a [Map] representing this [MonetizationSettings].
   Map<String, dynamic> toJson() => _$MonetizationSettingsToJson(this);
+
+  @override
+  String toString() =>
+      'MonetizationSettings(donation: ${donation?.enabled} at ${donation?.min})';
+
+  @override
+  int compareTo(MonetizationSettings other) {
+    final at = other.createdAt.compareTo(createdAt);
+    if (at == 0) {
+      if (user != null && other.user != null) {
+        return user!.val.compareTo(other.user!.val);
+      } else if (other.user == null) {
+        return 1;
+      } else if (user == null) {
+        return -1;
+      }
+
+      return 0;
+    }
+
+    return at;
+  }
 }
 
 /// Monetization settings of [Donation]s.

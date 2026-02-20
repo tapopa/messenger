@@ -16,7 +16,7 @@
 # <https://www.gnu.org/licenses/agpl-3.0.html>.
 
 subscription MonetizationSettingsEvents(
-    $userId: UserId
+    $userId: UserId!
     $by: MonetizationSettingsFilter
 ) {
     monetizationSettingsEvents(
@@ -28,12 +28,9 @@ subscription MonetizationSettingsEvents(
             ok
         }
         ... on MonetizationSettingsList {
-            myMonetizationSettings(pagination: {first: 1}) {
-                nodes {
-                    __typename
-                    ...MonetizationSettings
-                }
-                ver
+            monetizationSettings {
+                __typename
+                ...MonetizationSettings
             }
         }
         ... on MonetizationSettingsEventsVersioned {

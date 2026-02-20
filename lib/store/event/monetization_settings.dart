@@ -55,6 +55,7 @@ class MonetizationSettingsEventsList extends MonetizationSettingsEvents {
     this.monetizationSettings,
     this.myMonetizationSettings,
     this.myMonetizationSettingsVer,
+    this.myMonetizationSettingsTotalCount = 0,
   });
 
   /// [MonetizationSettings] of a [User] this [MonetizationSettingsEventsList]
@@ -64,6 +65,9 @@ class MonetizationSettingsEventsList extends MonetizationSettingsEvents {
   /// [MonetizationSettings] of a [MyUser] this [MonetizationSettingsEventsList]
   /// corresponds to.
   final DtoMonetizationSettings? myMonetizationSettings;
+
+  /// Total count of [MonetizationSettings] applied by [MyUser].
+  final int myMonetizationSettingsTotalCount;
 
   /// [MonetizationSettingsVersion] of [myMonetizationSettings].
   final MonetizationSettingsVersion? myMonetizationSettingsVer;

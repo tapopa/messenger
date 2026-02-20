@@ -376,5 +376,6 @@ extension MonetizationSettingsConversion on MonetizationSettingsMixin {
 
   /// Constructs a new [DtoMonetizationSettings] from this
   /// [MonetizationSettingsMixin].
-  DtoMonetizationSettings toDto() => DtoMonetizationSettings(toModel(), ver);
+  DtoMonetizationSettings toDto({MonetizationSettingsCursor? cursor}) =>
+      DtoMonetizationSettings(toModel(), ver, cursor);
 }

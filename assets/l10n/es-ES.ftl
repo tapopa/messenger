@@ -529,6 +529,8 @@ err_chat_direct_link_occupied = Enlace ocupado
 err_could_not_download = Ocurrió un error durante la descarga. Inténtalo de nuevo.
 err_data_transfer = Error de transferencia de datos. Verifique su conexión.
 err_dimensions_too_big = El tamaño de la imagen excede el límite de 32767 x 32767 píxeles
+err_donations_disabled = El usuario ha deshabilitado las donaciones
+err_donations_has_minimum = La donación mínima es {$amount}
 err_email_occupied = Este e-mail ya pertenece a otra cuenta
 err_incorrect_email = E-mail incorrecto
 err_incorrect_input = Formato incorrecto
@@ -1366,6 +1368,7 @@ label_user_removed_user1 = {$author}{" "}
 label_user_removed_user2 = eliminó
 label_user_removed_user3 = {" "}{$user}
 label_users_count = Usuarios: {$count}
+label_users_with_individual_monetization_settings = Usuarios con configuraciones de monetización individuales
 label_version_semicolon = Versión: {$version}
 label_video_call =
     Videollamada{$by ->

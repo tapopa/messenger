@@ -44,9 +44,18 @@ import 'event/wallet.dart' show operationsEvents;
 import 'model/monetization_settings.dart';
 import 'model/operation.dart';
 import 'model/page_info.dart';
+import 'paginated.dart';
 import 'pagination.dart';
 import 'pagination/graphql.dart';
 import 'wallet.dart';
+
+typedef MonetizationSettingsPaginated =
+    RxPaginatedImpl<
+      UserId,
+      Rx<MonetizationSettings>,
+      DtoMonetizationSettings,
+      MonetizationSettingsCursor
+    >;
 
 /// [MyUser] wallet repository interface.
 class PartnerRepository extends IdentityDependency
@@ -67,33 +76,43 @@ class PartnerRepository extends IdentityDependency
   @override
   final RxMap<UserId, Rx<MonetizationSettings>> individual = RxMap();
 
-  /// [GraphQlProvider] for fetching the [Balance]s.
-  final GraphQlProvider _graphQlProvider;
+  @override
+  final RxInt total = RxInt(0);
 
-  /// [Balance] subscription.
-  StreamQueue<BalanceUpdates>? _availableSubscription;
+  @override
+  late final MonetizationSettingsPaginated paginated =
+      MonetizationSettingsPaginated(
+        pagination: Pagination(
+          onKey: (e) => e.value.user ?? UserId.local(),
+          perPage: 15,
+          provider: GraphQlPageProvider(
+            fetch: ({after, before, first, last}) async {
+              return await _monetizationSettings(
+                after: after,
+                before: before,
+                first: first,
+                last: last,
+              );
+            },
+          ),
+          compare: (a, b) => a.compareTo(b),
+        ),
+        transform:
+            ({
+              required DtoMonetizationSettings data,
+              Rx<MonetizationSettings>? previous,
+            }) {
+              if (previous != null) {
+                return previous..value = data.value;
+              }
 
-  /// [Balance] subscription.
-  StreamQueue<BalanceUpdates>? _holdSubscription;
+              return Rx(data.value);
+            },
+        compare: (a, b) => a.value.compareTo(b.value),
+      );
 
-  /// [Operation]s subscription.
-  StreamQueue<OperationsEvents>? _operationsSubscription;
-
-  /// [MonetizationSettings] subscription.
-  StreamQueue<MonetizationSettingsEvents>? _myMonetizationSettingsSubscription;
-
-  /// Latest [OperationVersion] of the [operations] list events.
-  OperationVersion? _ver;
-
-  /// [MonetizationSettingsVersion] of the [settings] currently applied, if any.
-  MonetizationSettingsVersion? _monetizationSettingsVer;
-
-  /// [Mutex]ex guarding access to [get].
-  final Map<_OperationIdentifier, Mutex> _locks = {};
-
-  final Map<UserId, StreamController> _updates = {};
-  final Map<UserId, StreamQueue<MonetizationSettingsEvents>> _subscriptions =
-      {};
+  @override
+  RxMap<UserId, Rx<MonetizationSettings>> monetization = RxMap();
 
   @override
   late final OperationsPaginated operations = OperationsPaginated(
@@ -123,6 +142,38 @@ class PartnerRepository extends IdentityDependency
     },
     compare: (a, b) => a.value.compareTo(b.value),
   );
+
+  /// [GraphQlProvider] for fetching the [Balance]s.
+  final GraphQlProvider _graphQlProvider;
+
+  /// [Balance] subscription.
+  StreamQueue<BalanceUpdates>? _availableSubscription;
+
+  /// [Balance] subscription.
+  StreamQueue<BalanceUpdates>? _holdSubscription;
+
+  /// [Operation]s subscription.
+  StreamQueue<OperationsEvents>? _operationsSubscription;
+
+  /// [MonetizationSettings] subscription.
+  StreamQueue<MonetizationSettingsEvents>? _myMonetizationSettingsSubscription;
+
+  /// Latest [OperationVersion] of the [operations] list events.
+  OperationVersion? _ver;
+
+  /// [MonetizationSettingsVersion] of the [settings] currently applied, if any.
+  MonetizationSettingsVersion? _monetizationSettingsVer;
+
+  /// [Mutex]ex guarding access to [get].
+  final Map<_OperationIdentifier, Mutex> _locks = {};
+
+  /// [StreamController] for the [updatesFor] listening of
+  /// [MonetizationSettings] updates for [individual] users.
+  final Map<UserId, StreamController<MonetizationSettings?>> _updates = {};
+
+  /// [_monetizationSettingsEvents] of [_updates].
+  final Map<UserId, StreamQueue<MonetizationSettingsEvents>> _subscriptions =
+      {};
 
   @override
   void onInit() {
@@ -215,7 +266,7 @@ class PartnerRepository extends IdentityDependency
   }
 
   @override
-  Stream<void> updatesFor(UserId id) {
+  Stream<MonetizationSettings?> updatesFor(UserId id) {
     final controller = _updates[id] ??= StreamController.broadcast(
       onListen: () async {
         Log.debug('updates($id) -> onListen()', '$runtimeType($id)');
@@ -226,6 +277,8 @@ class PartnerRepository extends IdentityDependency
         _subscriptions.remove(id)?.close(immediate: true);
       },
     );
+
+    _updates[id]?.add(monetization[id]?.value);
 
     return controller.stream;
   }
@@ -246,6 +299,7 @@ class PartnerRepository extends IdentityDependency
     if (userId != null) {
       final Rx<MonetizationSettings>? existing = individual[userId];
 
+      // If any setting is provided, then apply the [MonetizationSettings].
       if (hasAny) {
         final settings = MonetizationSettings(
           createdAt: PreciseDateTime.now(),
@@ -260,18 +314,23 @@ class PartnerRepository extends IdentityDependency
         } else {
           individual[userId] = Rx(settings);
         }
-      } else {
+      }
+      // Otherwise remove the applied settings, if any.
+      else {
         individual.remove(userId);
+        paginated.remove(userId);
       }
     }
 
     final mixin = await _graphQlProvider.updateMonetizationSettings(
       userId: userId,
       settings: MonetizationSettingsInput(
-        donation: donationsEnabled == null && donationsMinimum == null
-            ? null
-            : MonetizationSettingsDonationInput(
-                kw$new: MonetizationSettingsDonationSettingsInput(
+        donation: MonetizationSettingsDonationInput(
+          // `null` provided in the `new` argument resets the settings to use
+          // the default one set by [MyUser].
+          kw$new: donationsEnabled == null && donationsMinimum == null
+              ? null
+              : MonetizationSettingsDonationSettingsInput(
                   enabled:
                       donationsEnabled ??
                       settings.value.donation?.enabled ??
@@ -281,20 +340,24 @@ class PartnerRepository extends IdentityDependency
                       settings.value.donation?.min.sum ??
                       Sum(1),
                 ),
-              ),
+        ),
       ),
     );
 
     if (mixin != null) {
-      _myMonetizationSettingsEvent(
-        MonetizationSettingsEventsEvent(
-          MonetizationSettingsEventsVersioned(
-            mixin.events.map(_monetizationSettingsEvent).toList(),
-            mixin.ver,
-            mixin.listVer,
-          ),
+      final events = MonetizationSettingsEventsEvent(
+        MonetizationSettingsEventsVersioned(
+          mixin.events.map(_decodeMonetizationSettingsEvent).toList(),
+          mixin.ver,
+          mixin.listVer,
         ),
       );
+
+      if (userId == null) {
+        _myMonetizationSettingsEvent(events);
+      } else {
+        _monetizationSettingsEvent(events, userId);
+      }
     }
   }
 
@@ -631,8 +694,9 @@ class PartnerRepository extends IdentityDependency
     }, tag: 'myMonetizationSettingsEvents()');
   }
 
-  /// Handles [MonetizationSettingsEvents] from the
-  /// [_myMonetizationSettingsEvents] subscription.
+  /// Handles [MonetizationSettingsEvents].
+  ///
+  /// If [of] is `null`, then these [events] are [MyUser] related.
   void _myMonetizationSettingsEvent(
     MonetizationSettingsEvents events, {
     bool updateVersion = true,
@@ -654,6 +718,7 @@ class PartnerRepository extends IdentityDependency
         );
 
         settings.value = events.myMonetizationSettings?.value ?? settings.value;
+        total.value = events.myMonetizationSettingsTotalCount;
         _monetizationSettingsVer = events.myMonetizationSettingsVer;
         break;
 
@@ -664,7 +729,7 @@ class PartnerRepository extends IdentityDependency
 
         if (versioned.ver >= _monetizationSettingsVer) {
           Log.debug(
-            '_myMonetizationSettingsEvent(${events.kind}): ignored ${versioned.events.map((e) => e.kind.name).join(', ')}',
+            '_monetizationSettingsEvent(${events.kind}): ignored ${versioned.events.map((e) => e.kind.name).join(', ')}',
             '$runtimeType',
           );
           return;
@@ -682,7 +747,7 @@ class PartnerRepository extends IdentityDependency
         for (var event in versioned.events) {
           switch (event.kind) {
             case MonetizationSettingsEventKind.donationDeleted:
-              event as MonetizationSettingsDonation;
+              event as EventMonetizationSettingsDonationDeleted;
               break;
 
             case MonetizationSettingsEventKind.donationMinPriceUpdated:
@@ -699,6 +764,8 @@ class PartnerRepository extends IdentityDependency
               event.monetizationSettings?.value;
 
           if (monetization != null) {
+            // `userId` here being non-`null` mean that the settings applied are
+            // individual ones.
             if (userId != null && userId != me) {
               final Rx<MonetizationSettings>? existing = individual[userId];
               if (existing != null) {
@@ -706,8 +773,105 @@ class PartnerRepository extends IdentityDependency
               } else {
                 individual[userId] = Rx(monetization);
               }
+
+              final Rx<MonetizationSettings>? stored = paginated.items[userId];
+              if (stored != null) {
+                stored.value = monetization;
+              }
             } else {
               settings.value = monetization;
+            }
+          } else {
+            // `userId` here being non-`null` mean that the settings applied are
+            // individual ones.
+            if (userId != null && userId != me) {
+              individual.remove(userId);
+              paginated.remove(userId);
+            }
+          }
+        }
+        break;
+    }
+  }
+
+  /// Handles [MonetizationSettingsEvents].
+  ///
+  /// If [of] is `null`, then these [events] are [MyUser] related.
+  void _monetizationSettingsEvent(
+    MonetizationSettingsEvents events,
+    UserId of,
+  ) {
+    switch (events.kind) {
+      case MonetizationSettingsEventsKind.initialized:
+        events as MonetizationSettingsEventsInitialized;
+        Log.debug(
+          '_monetizationSettingsEvent(of $of, ${events.kind})',
+          '$runtimeType',
+        );
+        break;
+
+      case MonetizationSettingsEventsKind.list:
+        events as MonetizationSettingsEventsList;
+        Log.debug(
+          '_monetizationSettingsEvent(of $of, ${events.kind})',
+          '$runtimeType',
+        );
+
+        final MonetizationSettings? settings =
+            events.monetizationSettings?.value;
+
+        _updates[of]?.add(settings);
+
+        if (settings == null) {
+          monetization.remove(of);
+        } else {
+          final existing = monetization[of];
+          if (existing == null) {
+            monetization[of] = Rx(settings);
+          } else {
+            existing.value = settings;
+          }
+        }
+        break;
+
+      case MonetizationSettingsEventsKind.event:
+        events as MonetizationSettingsEventsEvent;
+
+        final MonetizationSettingsEventsVersioned versioned = events.event;
+
+        Log.debug(
+          '_monetizationSettingsEvent(of $of, ${events.kind}): ${versioned.events.map((e) => e.kind.name).join(', ')}',
+          '$runtimeType',
+        );
+
+        for (var event in versioned.events) {
+          switch (event.kind) {
+            case MonetizationSettingsEventKind.donationDeleted:
+              event as EventMonetizationSettingsDonationDeleted;
+              break;
+
+            case MonetizationSettingsEventKind.donationMinPriceUpdated:
+              event as EventMonetizationSettingsDonationMinPriceUpdated;
+              break;
+
+            case MonetizationSettingsEventKind.donationToggled:
+              event as EventMonetizationSettingsDonationToggled;
+              break;
+          }
+
+          final MonetizationSettings? monetization =
+              event.monetizationSettings?.value;
+
+          _updates[of]?.add(monetization);
+
+          if (monetization == null) {
+            this.monetization.remove(of);
+          } else {
+            final Rx<MonetizationSettings>? existing = this.monetization[of];
+            if (existing == null) {
+              this.monetization[of] = Rx(monetization);
+            } else {
+              existing.value = monetization;
             }
           }
         }
@@ -746,6 +910,8 @@ class PartnerRepository extends IdentityDependency
           myMonetizationSettings: mixin.myMonetizationSettings.nodes.firstOrNull
               ?.toDto(),
           myMonetizationSettingsVer: mixin.myMonetizationSettings.ver,
+          myMonetizationSettingsTotalCount:
+              mixin.myMonetizationSettings.totalCount,
         );
       } else if (events.$$typename == 'MonetizationSettingsEventsVersioned') {
         final mixin =
@@ -753,7 +919,7 @@ class PartnerRepository extends IdentityDependency
                 as MyMonetizationSettingsEvents$Subscription$MyMonetizationSettingsEvents$MonetizationSettingsEventsVersioned;
         yield MonetizationSettingsEventsEvent(
           MonetizationSettingsEventsVersioned(
-            mixin.events.map(_monetizationSettingsEvent).toList(),
+            mixin.events.map(_decodeMonetizationSettingsEvent).toList(),
             mixin.ver,
             mixin.listVer,
           ),
@@ -764,10 +930,10 @@ class PartnerRepository extends IdentityDependency
 
   /// Constructs a [MonetizationSettingsEvent] from the
   /// [MonetizationSettingsEventsVersionedMixin$Events].
-  MonetizationSettingsEvent _monetizationSettingsEvent(
+  MonetizationSettingsEvent _decodeMonetizationSettingsEvent(
     MonetizationSettingsEventsVersionedMixin$Events e,
   ) {
-    Log.trace('_monetizationSettingsEvent($e)', '$runtimeType');
+    Log.trace('_decodeMonetizationSettingsEvent($e)', '$runtimeType');
 
     if (e.$$typename == 'EventMonetizationSettingsDonationDeleted') {
       return EventMonetizationSettingsDonationDeleted(
@@ -810,8 +976,11 @@ class PartnerRepository extends IdentityDependency
         return;
       }
 
+      _subscriptions.remove(id)?.close(immediate: true);
       _subscriptions[id] = StreamQueue(await _monetizationSettingsEvents(id));
-      await _subscriptions[id]?.execute(_myMonetizationSettingsEvent);
+      await _subscriptions[id]?.execute(
+        (e) => _monetizationSettingsEvent(e, id),
+      );
     }, tag: 'monetizationSettingsEvents($id)');
   }
 
@@ -823,7 +992,7 @@ class PartnerRepository extends IdentityDependency
     Log.debug('_monetizationSettingsEvents($id)');
 
     final Stream<QueryResult> events = await _graphQlProvider
-        .monetizationSettingsEvents(userId: id);
+        .monetizationSettingsEvents(id);
 
     return events.asyncExpand((event) async* {
       Log.debug(
@@ -844,9 +1013,7 @@ class PartnerRepository extends IdentityDependency
             events
                 as MonetizationSettingsEvents$Subscription$MonetizationSettingsEvents$MonetizationSettingsList;
         yield MonetizationSettingsEventsList(
-          myMonetizationSettings: mixin.myMonetizationSettings.nodes.firstOrNull
-              ?.toDto(),
-          myMonetizationSettingsVer: mixin.myMonetizationSettings.ver,
+          monetizationSettings: mixin.monetizationSettings?.toDto(),
         );
       } else if (events.$$typename == 'MonetizationSettingsEventsVersioned') {
         final mixin =
@@ -854,13 +1021,41 @@ class PartnerRepository extends IdentityDependency
                 as MonetizationSettingsEvents$Subscription$MonetizationSettingsEvents$MonetizationSettingsEventsVersioned;
         yield MonetizationSettingsEventsEvent(
           MonetizationSettingsEventsVersioned(
-            mixin.events.map(_monetizationSettingsEvent).toList(),
+            mixin.events.map(_decodeMonetizationSettingsEvent).toList(),
             mixin.ver,
             mixin.listVer,
           ),
         );
       }
     });
+  }
+
+  /// Fetches the [MonetizationSettings] with pagination.
+  Future<Page<DtoMonetizationSettings, MonetizationSettingsCursor>>
+  _monetizationSettings({
+    int? first,
+    MonetizationSettingsCursor? after,
+    int? last,
+    MonetizationSettingsCursor? before,
+  }) async {
+    Log.debug(
+      '_monetizationSettings($first, $after, $last, $before)',
+      '$runtimeType',
+    );
+
+    final query = await _graphQlProvider.myMonetizationSettings(
+      first: first,
+      after: after,
+      last: last,
+      before: before,
+    );
+
+    total.value = query.totalCount;
+
+    return Page(
+      query.edges.map((e) => e.node.toDto(cursor: e.cursor)).toList(),
+      query.pageInfo.toModel((c) => MonetizationSettingsCursor(c)),
+    );
   }
 }
 

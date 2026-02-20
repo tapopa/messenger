@@ -26,7 +26,6 @@ import '/store/model/blocklist.dart';
 import '/store/model/user.dart';
 import 'file.dart';
 import 'my_user.dart';
-import 'wallet.dart';
 
 /// Extension adding models construction from an [UserMixin].
 extension UserConversion on UserMixin {
@@ -48,7 +47,6 @@ extension UserConversion on UserMixin {
     isDeleted: isDeleted,
     isBlocked: isBlocked.record?.toModel(id),
     welcomeMessage: welcomeMessage?.toModel(),
-    monetizationSettings: monetizationSettings.toModel(),
   );
 
   /// Constructs a new [DtoUser] from this [UserMixin].

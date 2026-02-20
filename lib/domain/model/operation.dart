@@ -621,17 +621,8 @@ class Url extends NewType<String> {
 }
 
 /// Sequential number of an affiliated [User].
-class UserAffiliatedNum extends NewType<String> {
+class UserAffiliatedNum extends NewType<int> {
   const UserAffiliatedNum(super.val);
-
-  @override
-  String toString() {
-    try {
-      return UserNum(val).toString();
-    } catch (_) {
-      return val;
-    }
-  }
 }
 
 /// Pricing of an [OperationDeposit].

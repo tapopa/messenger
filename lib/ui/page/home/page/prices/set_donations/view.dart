@@ -19,6 +19,7 @@ import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '/domain/model/monetization_settings.dart';
 import '/domain/model/price.dart';
 import '/domain/model/user.dart';
 import '/l10n/l10n.dart';
@@ -121,12 +122,20 @@ class SetDonationsView extends StatelessWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Obx(() {
+                          final MonetizationSettings? monetization;
+
+                          if (userId == null) {
+                            monetization = c.settings.value;
+                          } else {
+                            monetization = c.individual[userId]?.value;
+                          }
+
                           final bool enabledDiffer =
-                              c.settings.value.donation?.enabled !=
+                              monetization?.donation?.enabled !=
                               c.enabled.value;
 
                           final bool amountDiffer =
-                              c.settings.value.donation?.min.sum.val !=
+                              monetization?.donation?.min.sum.val !=
                               (c.amount.value ?? 1);
 
                           return PrimaryButton(

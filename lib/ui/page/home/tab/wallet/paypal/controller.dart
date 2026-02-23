@@ -160,14 +160,14 @@ class PayPalDepositController extends GetxController {
         'price': total?.l10n ?? nominal.l10next(digits: 0),
         'account': myUser?.num.toString(),
         'client-id': Config.payPalClientId,
-        if (orderId != null) 'order-id': orderId,
         if (orderId == null) ...{
           'operation-id': operation.value?.value.id.val,
           'secret': _secret?.val,
           'method-id': method.id,
           'nominal': nominal.l10next(digits: 0),
           'country': country.val,
-        },
+        } else
+          'order-id': orderId,
       };
 
       final WindowHandle handle = await WebUtils.openPopup(

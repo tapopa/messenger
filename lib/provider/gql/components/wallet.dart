@@ -474,7 +474,7 @@ mixin WalletGraphQlMixin {
     );
   }
 
-  /// Subscribes to [MonetizationSettingEvent]s set by/for the authenticated
+  /// Subscribes to [MonetizationSettingsEvents] set by/for the authenticated
   /// [MyUser].
   ///
   /// If the [userId] argument is absent or `null`, or equals to the

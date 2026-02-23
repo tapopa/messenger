@@ -474,6 +474,56 @@ mixin WalletGraphQlMixin {
     );
   }
 
+  /// Subscribes to [MonetizationSettingEvent]s set by/for the authenticated
+  /// [MyUser].
+  ///
+  /// If the [userId] argument is absent or `null`, or equals to the
+  /// [MyUser.id], then events for [MonetizationSettings] set by the
+  /// authenticated [MyUser] are emitted (both common and individual).
+  ///
+  /// If the [userId] argument specified, and differs from the [MyUser.id], then
+  /// only events for [MonetizationSettings] set for the authenticated [MyUser]
+  /// by that [User] are emitted.
+  ///
+  /// ### Authentication
+  ///
+  /// Mandatory.
+  ///
+  /// ### Initialization
+  ///
+  /// Once this subscription is initialized completely, it immediately emits
+  /// `SubscriptionInitialized`.
+  ///
+  /// If nothing has been emitted for a long period of time after establishing
+  /// this subscription (while not being completed), it should be considered as
+  /// an unexpected server error. This fact can be used on a client side to
+  /// decide whether this subscription has been initialized successfully.
+  ///
+  /// ### Result
+  ///
+  /// An initial state of the [MonetizationSettingsList] will be emitted after
+  /// `SubscriptionInitialized` and before any other
+  /// [MonetizationSettingsEvent]s (and won't be emitted ever again until this
+  /// subscription completes). This allows to skip calling
+  /// `Query.monetizationSettings` (or `Query.myMonetizationSettings`) before
+  /// establishing this subscription.
+  ///
+  /// ### Completion
+  ///
+  /// Infinite.
+  ///
+  /// Completes requiring a re-subscription when:
+  /// - Authenticated [Session] expires (`SESSION_EXPIRED` error is emitted).
+  /// - An error occurs on the server (error is emitted).
+  /// - The server is shutting down or becoming unreachable (unexpectedly
+  /// completes after initialization).
+  ///
+  /// ### Idempotency
+  ///
+  /// It's possible that in rare scenarios this subscription could emit an event
+  /// which have already been applied to the state of some
+  /// [MonetizationSettings], so a client side is expected to handle all the
+  /// events idempotently considering the `MonetizationSettings.ver`.
   Future<Stream<QueryResult>> monetizationSettingsEvents(UserId userId) async {
     Log.debug('monetizationSettingsEvents(userId: $userId)', '$runtimeType');
 

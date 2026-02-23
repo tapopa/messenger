@@ -1,1 +1,6 @@
+- Added PayPal deposit method.
+- Added ability to send donations in chat-dialogs.
+- Added ability to set minimum price of donations globally and individually.
+- Added ability to toggle incoming donations enabled and disabled globally and individually.
+- Redesigned operations page on wallet and monetization tabs.
 - Bug fixes and performance improvements.

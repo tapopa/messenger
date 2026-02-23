@@ -1,1 +1,6 @@
+- Se añadió el método de depósito de PayPal.
+- Se añadió la posibilidad de enviar donaciones en los diálogos de chat.
+- Se añadió la posibilidad de establecer un precio mínimo para las donaciones, tanto global como individualmente.
+- Se añadió la posibilidad de activar y desactivar las donaciones entrantes, tanto global como individualmente.
+- Se rediseñó la página de operaciones en las pestañas de monedero y monetización.
 - Corrección de errores y mejoras de rendimiento.

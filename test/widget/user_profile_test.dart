@@ -26,11 +26,13 @@ import 'package:graphql/client.dart';
 import 'package:messenger/api/backend/schema.dart';
 import 'package:messenger/domain/model/user.dart';
 import 'package:messenger/domain/repository/auth.dart';
+import 'package:messenger/domain/repository/partner.dart';
 import 'package:messenger/domain/service/auth.dart';
 import 'package:messenger/domain/service/call.dart';
 import 'package:messenger/domain/service/chat.dart';
 import 'package:messenger/domain/service/contact.dart';
 import 'package:messenger/domain/service/my_user.dart';
+import 'package:messenger/domain/service/partner.dart';
 import 'package:messenger/domain/service/session.dart';
 import 'package:messenger/domain/service/user.dart';
 import 'package:messenger/provider/drift/account.dart';
@@ -63,6 +65,7 @@ import 'package:messenger/store/call.dart';
 import 'package:messenger/store/chat.dart';
 import 'package:messenger/store/contact.dart';
 import 'package:messenger/store/my_user.dart';
+import 'package:messenger/store/partner.dart';
 import 'package:messenger/store/session.dart';
 import 'package:messenger/store/settings.dart';
 import 'package:messenger/store/user.dart';
@@ -112,6 +115,30 @@ void main() async {
   );
   when(graphQlProvider.getMonolog()).thenAnswer(
     (_) => Future.value(GetMonolog$Query.fromJson({'monolog': null}).monolog),
+  );
+
+  when(
+    graphQlProvider.operations(
+      origin: anyNamed('origin'),
+      first: anyNamed('first'),
+      after: anyNamed('after'),
+      last: anyNamed('last'),
+      before: anyNamed('before'),
+    ),
+  ).thenAnswer(
+    (_) => Future.value(
+      Operations$Query$Operations.fromJson({
+        'edges': [],
+        'pageInfo': {
+          'endCursor': 'endCursor',
+          'hasNextPage': false,
+          'startCursor': 'startCursor',
+          'hasPreviousPage': false,
+        },
+        'totalCount': 0,
+        'ver': 'ver',
+      }),
+    ),
   );
 
   final AuthService authService = AuthService(
@@ -375,6 +402,11 @@ void main() async {
       final chatService = Get.put(ChatService(chatRepository, authService));
 
       Get.put(CallService(authService, chatService, callRepository));
+
+      final partnerRepository = Get.put<AbstractPartnerRepository>(
+        PartnerRepository(graphQlProvider, me: const UserId('me')),
+      );
+      Get.put(PartnerService(partnerRepository));
 
       await tester.pumpWidget(
         createWidgetForTesting(

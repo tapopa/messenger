@@ -36,6 +36,7 @@ import 'package:messenger/domain/model/session.dart';
 import 'package:messenger/domain/model/user.dart';
 import 'package:messenger/domain/repository/auth.dart';
 import 'package:messenger/domain/repository/chat.dart';
+import 'package:messenger/domain/repository/partner.dart';
 import 'package:messenger/domain/repository/session.dart';
 import 'package:messenger/domain/repository/settings.dart';
 import 'package:messenger/domain/repository/wallet.dart';
@@ -45,6 +46,7 @@ import 'package:messenger/domain/service/chat.dart';
 import 'package:messenger/domain/service/contact.dart';
 import 'package:messenger/domain/service/my_user.dart';
 import 'package:messenger/domain/service/notification.dart';
+import 'package:messenger/domain/service/partner.dart';
 import 'package:messenger/domain/service/session.dart';
 import 'package:messenger/domain/service/user.dart';
 import 'package:messenger/domain/service/wallet.dart';
@@ -79,6 +81,7 @@ import 'package:messenger/store/call.dart';
 import 'package:messenger/store/chat.dart';
 import 'package:messenger/store/contact.dart';
 import 'package:messenger/store/my_user.dart';
+import 'package:messenger/store/partner.dart';
 import 'package:messenger/store/session.dart';
 import 'package:messenger/store/settings.dart';
 import 'package:messenger/store/user.dart';
@@ -594,6 +597,11 @@ void main() async {
       ),
     );
     Get.put(WalletService(walletRepository));
+
+    final partnerRepository = Get.put<AbstractPartnerRepository>(
+      PartnerRepository(graphQlProvider, me: const UserId('me')),
+    );
+    Get.put(PartnerService(partnerRepository));
 
     Get.put(CacheWorker(cacheProvider, null));
 

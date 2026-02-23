@@ -32,11 +32,22 @@ All user visible changes to this project will be documented in this file. This p
     - Wallet tab:
         - Operations with pagination on transaction page. ([#26])
 
+### Fixed
+
+- UI:
+    - Chat page:
+        - Draft not being updated when removing attachments or replies. ([team113/messenger#1613])
+    - Profile page:
+        - Invalid microphone and output device displayed as selected by default. ([team113/messenger#1613])
+        - Invalid icon being used for devices with unknown OS. ([team113/messenger#1615])
+
 [#23]: /../../pull/23
 [#26]: /../../pull/26
 [#27]: /../../pull/27
 [#28]: /../../pull/28
 [#29]: /../../pull/29
+[team113/messenger#1613]: https://github.com/team113/messenger/pull/1613
+[team113/messenger#1615]: https://github.com/team113/messenger/pull/1615
 
 
 

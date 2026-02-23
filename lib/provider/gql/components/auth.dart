@@ -341,9 +341,7 @@ mixin AuthGraphQlMixin {
         'map': '{ "token": ["variables.token"] }',
         'token': const RawClientOptions().token ?? token,
       }),
-      options: dio.Options(
-        headers: {if (locale != null) 'Accept-Language': locale},
-      ),
+      options: dio.Options(headers: {'Accept-Language': ?locale}),
       operationName: query.operationName,
     );
   }

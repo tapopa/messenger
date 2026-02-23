@@ -1735,6 +1735,12 @@ class SvgIcons {
     height: 32,
   );
 
+  static const SvgData userAgentUnknown = SvgData(
+    'assets/icons/user_agent/unknown.svg',
+    width: 32,
+    height: 32,
+  );
+
   static const SvgData none = SvgData(
     'assets/icons/none.svg',
     width: 1,

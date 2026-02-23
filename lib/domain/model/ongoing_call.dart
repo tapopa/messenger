@@ -2691,7 +2691,7 @@ class OngoingCall {
     Log.debug('_setAudioDevice($device)', '$runtimeType');
 
     if (device != audioDevice.value) {
-      await _updateSettings(audioDevice: device);
+      await _updateSettings(audio: true, audioDevice: device);
     }
   }
 

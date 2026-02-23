@@ -16,11 +16,12 @@
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
 import '/domain/model/monetization_settings.dart';
+import '/util/new_type.dart';
 import 'version.dart';
 
 /// Persisted in storage [MonetizationSettings]'s [value].
-class DtoMonetizationSettings {
-  DtoMonetizationSettings(this.value, this.ver);
+class DtoMonetizationSettings implements Comparable<DtoMonetizationSettings> {
+  DtoMonetizationSettings(this.value, this.ver, this.cursor);
 
   /// Persisted [MonetizationSettings] model.
   MonetizationSettings value;
@@ -31,8 +32,14 @@ class DtoMonetizationSettings {
   /// tracking state's actuality.
   MonetizationSettingsVersion ver;
 
+  /// [MonetizationSettingsCursor] of the [value].
+  final MonetizationSettingsCursor? cursor;
+
   @override
   String toString() => '$runtimeType($value, $ver)';
+
+  @override
+  int compareTo(DtoMonetizationSettings other) => other.value.compareTo(value);
 }
 
 /// Version of the [MonetizationSettings] state.
@@ -64,4 +71,9 @@ class MonetizationSettingsVersion extends Version {
 
   /// Returns a [String] representing this [MonetizationSettingsVersion].
   String toJson() => val;
+}
+
+/// Cursor of [MonetizationSettings].
+class MonetizationSettingsCursor extends NewType<String> {
+  MonetizationSettingsCursor(super.val);
 }

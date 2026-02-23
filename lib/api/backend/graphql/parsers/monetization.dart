@@ -879,21 +879,18 @@ List<String?>? fromDartListNullableUrlNullableToGraphQLListNullableURLNullable(
 
 // UserAffiliatedNum
 
-UserAffiliatedNum fromGraphQLUserAffiliatedNumToDartUserAffiliatedNum(
-  String v,
-) => UserAffiliatedNum(v);
-String fromDartUserAffiliatedNumToGraphQLUserAffiliatedNum(
-  UserAffiliatedNum v,
-) => v.val;
+UserAffiliatedNum fromGraphQLUserAffiliatedNumToDartUserAffiliatedNum(int v) =>
+    UserAffiliatedNum(v);
+int fromDartUserAffiliatedNumToGraphQLUserAffiliatedNum(UserAffiliatedNum v) =>
+    v.val;
 List<UserAffiliatedNum>
 fromGraphQLListUserAffiliatedNumToDartListUserAffiliatedNum(List<Object?> v) =>
     v
         .map(
-          (e) =>
-              fromGraphQLUserAffiliatedNumToDartUserAffiliatedNum(e as String),
+          (e) => fromGraphQLUserAffiliatedNumToDartUserAffiliatedNum(e as int),
         )
         .toList();
-List<String> fromDartListUserAffiliatedNumToGraphQLListUserAffiliatedNum(
+List<int> fromDartListUserAffiliatedNumToGraphQLListUserAffiliatedNum(
   List<UserAffiliatedNum> v,
 ) => v
     .map((e) => fromDartUserAffiliatedNumToGraphQLUserAffiliatedNum(e))
@@ -902,11 +899,9 @@ List<UserAffiliatedNum>?
 fromGraphQLListNullableUserAffiliatedNumToDartListNullableUserAffiliatedNum(
   List<Object?>? v,
 ) => v
-    ?.map(
-      (e) => fromGraphQLUserAffiliatedNumToDartUserAffiliatedNum(e as String),
-    )
+    ?.map((e) => fromGraphQLUserAffiliatedNumToDartUserAffiliatedNum(e as int))
     .toList();
-List<String>?
+List<int>?
 fromDartListNullableUserAffiliatedNumToGraphQLListNullableUserAffiliatedNum(
   List<UserAffiliatedNum>? v,
 ) => v
@@ -914,10 +909,9 @@ fromDartListNullableUserAffiliatedNumToGraphQLListNullableUserAffiliatedNum(
     .toList();
 
 UserAffiliatedNum?
-fromGraphQLUserAffiliatedNumNullableToDartUserAffiliatedNumNullable(
-  String? v,
-) => v == null ? null : UserAffiliatedNum(v);
-String? fromDartUserAffiliatedNumNullableToGraphQLUserAffiliatedNumNullable(
+fromGraphQLUserAffiliatedNumNullableToDartUserAffiliatedNumNullable(int? v) =>
+    v == null ? null : UserAffiliatedNum(v);
+int? fromDartUserAffiliatedNumNullableToGraphQLUserAffiliatedNumNullable(
   UserAffiliatedNum? v,
 ) => v?.val;
 List<UserAffiliatedNum?>
@@ -927,11 +921,11 @@ fromGraphQLListUserAffiliatedNumNullableToDartListUserAffiliatedNumNullable(
     .map(
       (e) =>
           fromGraphQLUserAffiliatedNumNullableToDartUserAffiliatedNumNullable(
-            e as String?,
+            e as int?,
           ),
     )
     .toList();
-List<String?>
+List<int?>
 fromDartListUserAffiliatedNumNullableToGraphQLListUserAffiliatedNumNullable(
   List<UserAffiliatedNum?> v,
 ) => v
@@ -949,11 +943,11 @@ fromGraphQLListNullableUserAffiliatedNumNullableToDartListNullableUserAffiliated
     ?.map(
       (e) =>
           fromGraphQLUserAffiliatedNumNullableToDartUserAffiliatedNumNullable(
-            e as String?,
+            e as int?,
           ),
     )
     .toList();
-List<String?>?
+List<int?>?
 fromDartListNullableUserAffiliatedNumNullableToGraphQLListNullableUserAffiliatedNumNullable(
   List<UserAffiliatedNum?>? v,
 ) => v
@@ -1165,6 +1159,113 @@ fromDartListNullableMonetizationSettingsVersionNullableToGraphQLListNullableMone
     ?.map(
       (e) =>
           fromDartMonetizationSettingsVersionNullableToGraphQLMonetizationSettingsVersionNullable(
+            e,
+          ),
+    )
+    .toList();
+
+// MonetizationSettingsCursor
+
+MonetizationSettingsCursor
+fromGraphQLMonetizationSettingsCursorToDartMonetizationSettingsCursor(
+  String v,
+) => MonetizationSettingsCursor(v);
+String fromDartMonetizationSettingsCursorToGraphQLMonetizationSettingsCursor(
+  MonetizationSettingsCursor v,
+) => v.val;
+List<MonetizationSettingsCursor>
+fromGraphQLListMonetizationSettingsCursorToDartListMonetizationSettingsCursor(
+  List<Object?> v,
+) => v
+    .map(
+      (e) =>
+          fromGraphQLMonetizationSettingsCursorToDartMonetizationSettingsCursor(
+            e as String,
+          ),
+    )
+    .toList();
+List<String>
+fromDartListMonetizationSettingsCursorToGraphQLListMonetizationSettingsCursor(
+  List<MonetizationSettingsCursor> v,
+) => v
+    .map(
+      (e) =>
+          fromDartMonetizationSettingsCursorToGraphQLMonetizationSettingsCursor(
+            e,
+          ),
+    )
+    .toList();
+List<MonetizationSettingsCursor>?
+fromGraphQLListNullableMonetizationSettingsCursorToDartListNullableMonetizationSettingsCursor(
+  List<Object?>? v,
+) => v
+    ?.map(
+      (e) =>
+          fromGraphQLMonetizationSettingsCursorToDartMonetizationSettingsCursor(
+            e as String,
+          ),
+    )
+    .toList();
+List<String>?
+fromDartListNullableMonetizationSettingsCursorToGraphQLListNullableMonetizationSettingsCursor(
+  List<MonetizationSettingsCursor>? v,
+) => v
+    ?.map(
+      (e) =>
+          fromDartMonetizationSettingsCursorToGraphQLMonetizationSettingsCursor(
+            e,
+          ),
+    )
+    .toList();
+
+MonetizationSettingsCursor?
+fromGraphQLMonetizationSettingsCursorNullableToDartMonetizationSettingsCursorNullable(
+  String? v,
+) => v == null ? null : MonetizationSettingsCursor(v);
+String?
+fromDartMonetizationSettingsCursorNullableToGraphQLMonetizationSettingsCursorNullable(
+  MonetizationSettingsCursor? v,
+) => v?.val;
+List<MonetizationSettingsCursor?>
+fromGraphQLListMonetizationSettingsCursorNullableToDartListMonetizationSettingsCursorNullable(
+  List<Object?> v,
+) => v
+    .map(
+      (e) =>
+          fromGraphQLMonetizationSettingsCursorNullableToDartMonetizationSettingsCursorNullable(
+            e as String?,
+          ),
+    )
+    .toList();
+List<String?>
+fromDartListMonetizationSettingsCursorNullableToGraphQLListMonetizationSettingsCursorNullable(
+  List<MonetizationSettingsCursor?> v,
+) => v
+    .map(
+      (e) =>
+          fromDartMonetizationSettingsCursorNullableToGraphQLMonetizationSettingsCursorNullable(
+            e,
+          ),
+    )
+    .toList();
+List<MonetizationSettingsCursor?>?
+fromGraphQLListNullableMonetizationSettingsCursorNullableToDartListNullableMonetizationSettingsCursorNullable(
+  List<Object?>? v,
+) => v
+    ?.map(
+      (e) =>
+          fromGraphQLMonetizationSettingsCursorNullableToDartMonetizationSettingsCursorNullable(
+            e as String?,
+          ),
+    )
+    .toList();
+List<String?>?
+fromDartListNullableMonetizationSettingsCursorNullableToGraphQLListNullableMonetizationSettingsCursorNullable(
+  List<MonetizationSettingsCursor?>? v,
+) => v
+    ?.map(
+      (e) =>
+          fromDartMonetizationSettingsCursorNullableToGraphQLMonetizationSettingsCursorNullable(
             e,
           ),
     )

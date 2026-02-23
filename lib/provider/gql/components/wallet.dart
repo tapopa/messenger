@@ -29,6 +29,7 @@ import '/domain/model/operation.dart';
 import '/domain/model/price.dart';
 import '/domain/model/session.dart';
 import '/domain/model/user.dart';
+import '/store/model/monetization_settings.dart';
 import '/store/model/operation.dart';
 import '/util/log.dart';
 
@@ -440,8 +441,8 @@ mixin WalletGraphQlMixin {
   ///
   /// ### Result
   ///
-  /// An initial state of the `MonetizationSettingsList` will be emitted after
-  /// `SubscriptionInitialized` and before any other
+  /// An initial state of the [MonetizationSettingsEventsList] will be emitted
+  /// after `SubscriptionInitialized` and before any other
   /// [MonetizationSettingsEvents] (and won't be emitted ever again until this
   /// subscription completes). This allows to skip calling
   /// `Query.myMonetizationSettings` before establishing this subscription.
@@ -469,6 +470,71 @@ mixin WalletGraphQlMixin {
       SubscriptionOptions(
         operationName: 'MyMonetizationSettingsEvents',
         document: MyMonetizationSettingsEventsSubscription().document,
+      ),
+    );
+  }
+
+  /// Subscribes to [MonetizationSettingsEvents] set by/for the authenticated
+  /// [MyUser].
+  ///
+  /// If the [userId] argument is absent or `null`, or equals to the
+  /// [MyUser.id], then events for [MonetizationSettings] set by the
+  /// authenticated [MyUser] are emitted (both common and individual).
+  ///
+  /// If the [userId] argument specified, and differs from the [MyUser.id], then
+  /// only events for [MonetizationSettings] set for the authenticated [MyUser]
+  /// by that [User] are emitted.
+  ///
+  /// ### Authentication
+  ///
+  /// Mandatory.
+  ///
+  /// ### Initialization
+  ///
+  /// Once this subscription is initialized completely, it immediately emits
+  /// `SubscriptionInitialized`.
+  ///
+  /// If nothing has been emitted for a long period of time after establishing
+  /// this subscription (while not being completed), it should be considered as
+  /// an unexpected server error. This fact can be used on a client side to
+  /// decide whether this subscription has been initialized successfully.
+  ///
+  /// ### Result
+  ///
+  /// An initial state of the [MonetizationSettingsEventsList] will be emitted
+  /// after `SubscriptionInitialized` and before any other
+  /// [MonetizationSettingsEvent]s (and won't be emitted ever again until this
+  /// subscription completes). This allows to skip calling
+  /// `Query.monetizationSettings` (or `Query.myMonetizationSettings`) before
+  /// establishing this subscription.
+  ///
+  /// ### Completion
+  ///
+  /// Infinite.
+  ///
+  /// Completes requiring a re-subscription when:
+  /// - Authenticated [Session] expires (`SESSION_EXPIRED` error is emitted).
+  /// - An error occurs on the server (error is emitted).
+  /// - The server is shutting down or becoming unreachable (unexpectedly
+  /// completes after initialization).
+  ///
+  /// ### Idempotency
+  ///
+  /// It's possible that in rare scenarios this subscription could emit an event
+  /// which have already been applied to the state of some
+  /// [MonetizationSettings], so a client side is expected to handle all the
+  /// events idempotently considering the `MonetizationSettings.ver`.
+  Future<Stream<QueryResult>> monetizationSettingsEvents(UserId userId) async {
+    Log.debug('monetizationSettingsEvents(userId: $userId)', '$runtimeType');
+
+    final variables = MonetizationSettingsEventsArguments(userId: userId);
+    return client.subscribe(
+      SubscriptionOptions(
+        operationName: 'MonetizationSettingsEvents',
+        document: MonetizationSettingsEventsSubscription(
+          variables: variables,
+        ).document,
+        variables: variables.toJson(),
       ),
     );
   }
@@ -533,5 +599,65 @@ mixin WalletGraphQlMixin {
           res.data!,
         ).updateMonetizationSettings
         as UpdateMonetizationSettings$Mutation$UpdateMonetizationSettings$MonetizationSettingsEventsVersioned?;
+  }
+
+  /// Returns [MonetizationSettings] of the authenticated [MyUser] filtered by
+  /// the provided criteria.
+  ///
+  /// Searching `by.userId` is exact, returning:
+  /// - Individual [MonetizationSettings] (if the `by.userId` is different from
+  /// the [MyUser.id]).
+  /// - Common [MonetizationSettings] (if `by.userId` is the [MyUser.id]).
+  /// - If no by (or `by.userId`) argument is provided, then individual
+  /// [MonetizationSettings] for all [User]s will be returned, also including
+  /// the common ones.
+  ///
+  /// ### Authentication
+  ///
+  /// Mandatory.
+  ///
+  /// ### Sorting
+  ///
+  /// Returned [MonetizationSettings] are sorted depending on the provided
+  /// arguments:
+  ///
+  /// If the `by.userId` argument is specified, then exact
+  /// [MonetizationSettings] are returned.
+  ///
+  /// Otherwise, the returned [MonetizationSettings] are sorted primarily by
+  /// their [MonetizationSettings.createdAt] field, and secondary by IDs of the
+  /// [User]s they are specified for, in descending order.
+  Future<MyMonetizationSettings$Query$MyMonetizationSettings>
+  myMonetizationSettings({
+    int? first,
+    MonetizationSettingsCursor? after,
+    int? last,
+    MonetizationSettingsCursor? before,
+  }) async {
+    Log.debug(
+      'myMonetizationSettings($first, $after, $last, $before)',
+      '$runtimeType',
+    );
+
+    final variables = MyMonetizationSettingsArguments(
+      pagination: MonetizationSettingsPagination(
+        first: first,
+        after: after,
+        last: last,
+        before: before,
+      ),
+    );
+
+    final QueryResult result = await client.query(
+      QueryOptions(
+        operationName: 'MyMonetizationSettings',
+        document: MyMonetizationSettingsQuery(variables: variables).document,
+        variables: variables.toJson(),
+      ),
+    );
+
+    return MyMonetizationSettings$Query.fromJson(
+      result.data!,
+    ).myMonetizationSettings;
   }
 }

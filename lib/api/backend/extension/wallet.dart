@@ -370,10 +370,12 @@ extension MonetizationSettingsConversion on MonetizationSettingsMixin {
             min: donation!.min.toModel(),
             enabled: donation!.enabled,
           ),
+    user: user?.id,
     createdAt: createdAt,
   );
 
   /// Constructs a new [DtoMonetizationSettings] from this
   /// [MonetizationSettingsMixin].
-  DtoMonetizationSettings toDto() => DtoMonetizationSettings(toModel(), ver);
+  DtoMonetizationSettings toDto({MonetizationSettingsCursor? cursor}) =>
+      DtoMonetizationSettings(toModel(), ver, cursor);
 }

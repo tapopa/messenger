@@ -40,8 +40,27 @@ abstract class AbstractPartnerRepository {
   /// Returns [MonetizationSettings] of the authenticated [MyUser].
   Rx<MonetizationSettings> get settings;
 
+  /// Returns the [MonetizationSettings] that the [UserId]s have for our
+  /// [MyUser].
+  RxMap<UserId, Rx<MonetizationSettings>> get monetization;
+
+  /// Returns the individual [MonetizationSettings] for separate [UserId]s.
+  RxMap<UserId, Rx<MonetizationSettings>> get individual;
+
+  /// Returns the [Paginated] for [MonetizationSettings] per individual
+  /// [UserId]s.
+  Paginated<UserId, Rx<MonetizationSettings>> get paginated;
+
+  /// Returns the total amount of [MonetizationSettings] applied by the
+  /// [MyUser].
+  RxInt get total;
+
   /// Returns an [Operation] identified by the provided [id] or [num].
   FutureOr<Rx<Operation>?> get({OperationId? id, OperationNum? num});
+
+  /// Listens to the updates of [MonetizationSettings] for the provided [UserId]
+  /// while the returned [Stream] is listened to.
+  Stream<MonetizationSettings?> updatesFor(UserId id);
 
   /// Updates [MonetizationSettings] of the authenticated [MyUser].
   ///

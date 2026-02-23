@@ -27,14 +27,17 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import '/api/backend/schema.dart' show UserPresence;
 import '/config.dart';
 import '/domain/model/chat.dart';
+import '/domain/model/monetization_settings.dart';
 import '/domain/model/mute_duration.dart';
 import '/domain/model/my_user.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
+import '/domain/model/price.dart';
 import '/domain/model/user.dart';
 import '/domain/repository/contact.dart';
 import '/domain/repository/user.dart';
 import '/domain/service/call.dart';
 import '/domain/service/chat.dart';
+import '/domain/service/partner.dart';
 import '/domain/service/user.dart';
 import '/l10n/l10n.dart';
 import '/provider/gql/exceptions.dart'
@@ -61,6 +64,7 @@ class UserController extends GetxController {
     this._userService,
     this._chatService,
     this._callService,
+    this._partnerService,
   );
 
   /// ID of the [User] this [UserController] represents.
@@ -132,12 +136,18 @@ class UserController extends GetxController {
   /// [CallService] starting a new [OngoingCall] with this [user].
   final CallService _callService;
 
+  /// [PartnerService] maintaining the [MonetizationSettings].
+  final PartnerService _partnerService;
+
   /// [Worker] reacting on the [RxChatContact.contact] or [user] changes
   /// updating the [name].
   Worker? _worker;
 
   /// Subscription for the [user] changes.
   StreamSubscription? _userSubscription;
+
+  /// Subscription for the [MonetizationSettings] of the [user] changes.
+  StreamSubscription? _monetizationSubscription;
 
   /// [Sentry] transaction monitoring this [UserController] readiness.
   final ISentrySpan _ready = Sentry.startTransaction(
@@ -166,6 +176,13 @@ class UserController extends GetxController {
   /// Indicates whether this [user] is a [Config.supportId].
   bool get isSupport => Config.isSupport(user?.id ?? id);
 
+  /// Returns the [MonetizationSettings] of the authenticated [MyUser].
+  Rx<MonetizationSettings> get settings => _partnerService.settings;
+
+  /// Returns the individual [MonetizationSettings] for separate [UserId]s.
+  RxMap<UserId, Rx<MonetizationSettings>> get individual =>
+      _partnerService.individual;
+
   @override
   void onInit() {
     _fetchUser();
@@ -175,6 +192,7 @@ class UserController extends GetxController {
   @override
   void onClose() {
     _userSubscription?.cancel();
+    _monetizationSubscription?.cancel();
     _worker?.dispose();
     scrollController.dispose();
     super.onClose();
@@ -391,6 +409,18 @@ class UserController extends GetxController {
     });
   }
 
+  /// Updates the [MonetizationSettings] for the current [User].
+  Future<void> updateMonetizationSettings({
+    bool? donationsEnabled,
+    Sum? donationsMinimum,
+  }) async {
+    await _partnerService.updateMonetizationSettings(
+      userId: id,
+      donationsEnabled: donationsEnabled,
+      donationsMinimum: donationsMinimum,
+    );
+  }
+
   /// Fetches the [user] value from the [_userService].
   Future<void> _fetchUser() async {
     try {
@@ -398,6 +428,7 @@ class UserController extends GetxController {
       user = fetched is RxUser? ? fetched : await fetched;
 
       _userSubscription = user?.updates.listen((_) {});
+      _monetizationSubscription = _partnerService.updatesFor(id).listen((_) {});
       status.value = user == null ? RxStatus.empty() : RxStatus.success();
 
       SchedulerBinding.instance.addPostFrameCallback((_) => _ready.finish());

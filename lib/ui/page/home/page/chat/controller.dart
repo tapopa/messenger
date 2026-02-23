@@ -51,6 +51,7 @@ import '/domain/model/chat_message_input.dart';
 import '/domain/model/chat.dart';
 import '/domain/model/contact.dart';
 import '/domain/model/donation.dart';
+import '/domain/model/monetization_settings.dart';
 import '/domain/model/mute_duration.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/price.dart';
@@ -68,6 +69,7 @@ import '/domain/service/contact.dart';
 import '/domain/service/disposable_service.dart';
 import '/domain/service/my_user.dart';
 import '/domain/service/notification.dart';
+import '/domain/service/partner.dart';
 import '/domain/service/session.dart';
 import '/domain/service/user.dart';
 import '/domain/service/wallet.dart';
@@ -121,7 +123,8 @@ class ChatController extends GetxController with IdentityAware {
     this._notificationService,
     this._myUserService,
     this._sessionService,
-    this._walletService, {
+    this._walletService,
+    this._partnerService, {
     this.itemId,
     this.onContext,
   });
@@ -299,6 +302,9 @@ class ChatController extends GetxController with IdentityAware {
   /// Subscription for the [RxUser] changes.
   StreamSubscription? _userSubscription;
 
+  /// Subscription for the [MonetizationSettings] of the [user] changes.
+  StreamSubscription? _monetizationSubscription;
+
   /// Indicator whether [_updateFabStates] should not be react on
   /// [FlutterListViewController.position] changes.
   bool _ignorePositionChanges = false;
@@ -344,6 +350,9 @@ class ChatController extends GetxController with IdentityAware {
 
   /// [WalletService] for retrieving the [Balance] of [MyUser].
   final WalletService _walletService;
+
+  /// [PartnerService] controlling the [MonetizationSettings].
+  final PartnerService _partnerService;
 
   /// Worker performing a [readChat] on [_lastSeenItem] changes.
   Worker? _readWorker;
@@ -532,6 +541,22 @@ class ChatController extends GetxController with IdentityAware {
           if (_walletService.balance.value.sum.val < donation) {
             return _showBalanceExceeded();
           }
+
+          final UserId? userId = user?.id;
+          if (userId != null) {
+            final MonetizationSettings? settings =
+                _partnerService.monetization[userId]?.value;
+            if (settings != null) {
+              if (settings.donation?.enabled != true) {
+                return _showDonationsDisabled();
+              }
+
+              final double minimum = settings.donation?.min.sum.val ?? 1;
+              if (donation < minimum) {
+                return _showDonationsMinimum();
+              }
+            }
+          }
         }
 
         if (text.isNotEmpty ||
@@ -565,6 +590,11 @@ class ChatController extends GetxController with IdentityAware {
               .onError<PostChatMessageException>(
                 (_, _) => _showBalanceExceeded(),
                 test: (e) => e.code == PostChatMessageErrorCode.notEnoughFunds,
+              )
+              .onError<PostChatMessageException>(
+                (_, _) => _showDonationsDisabled(),
+                test: (e) =>
+                    e.code == PostChatMessageErrorCode.disabledDonation,
               )
               .onError<UploadAttachmentException>(
                 (e, _) => MessagePopup.error(e),
@@ -694,6 +724,7 @@ class ChatController extends GetxController with IdentityAware {
     _typingSubscription?.cancel();
     _chatSubscription?.cancel();
     _userSubscription?.cancel();
+    _monetizationSubscription?.cancel();
     _onActivityChanged?.cancel();
     _onFocusChanged?.cancel();
     _typingTimer?.cancel();
@@ -847,6 +878,10 @@ class ChatController extends GetxController with IdentityAware {
           .onError<PostChatMessageException>(
             (_, _) => _showBalanceExceeded(),
             test: (e) => e.code == PostChatMessageErrorCode.notEnoughFunds,
+          )
+          .onError<PostChatMessageException>(
+            (_, _) => _showDonationsDisabled(),
+            test: (e) => e.code == PostChatMessageErrorCode.disabledDonation,
           )
           .onError<UploadAttachmentException>((e, _) => MessagePopup.error(e))
           .onError<ConnectionException>((_, _) {});
@@ -1094,7 +1129,6 @@ class ChatController extends GetxController with IdentityAware {
         unreadMessages = chat!.chat.value.unreadCount;
 
         send.toggleLogs(isMonolog || isSupport);
-        send.toggleDonate(isDialog && !isSupport);
 
         await chat!.ensureDraft();
         final ChatMessage? draft = chat!.draft.value;
@@ -1158,11 +1192,28 @@ class ChatController extends GetxController with IdentityAware {
 
         if (isDialog) {
           _userSubscription?.cancel();
-          _userSubscription = chat?.members.values
-              .lastWhereOrNull((u) => u.user.id != me)
-              ?.user
-              .updates
-              .listen((_) {});
+          _monetizationSubscription?.cancel();
+
+          final RxUser? recipient = user;
+          if (recipient != null) {
+            _userSubscription = recipient.updates.listen((_) {});
+
+            _monetizationSubscription = _partnerService
+                .updatesFor(recipient.id)
+                .listen((e) {
+                  Log.debug(
+                    'updatesFor(${recipient.id}) -> $e',
+                    '$runtimeType',
+                  );
+
+                  final bool hasDonates = e?.donation?.enabled == true;
+
+                  if (!isSupport) {
+                    send.toggleDonate(hasDonates);
+                    edit.value?.toggleDonate(hasDonates);
+                  }
+                });
+          }
         }
 
         _readWorker ??= ever(_lastSeenItem, readChat);
@@ -2637,6 +2688,29 @@ class ChatController extends GetxController with IdentityAware {
         );
       },
     );
+  }
+
+  /// Displays a [MessagePopup.error] visually representing a donations disabled
+  /// message.
+  Future<void> _showDonationsDisabled() async {
+    await MessagePopup.alert('err_donations_disabled'.l10n);
+  }
+
+  /// Displays a [MessagePopup.error] visually representing a donations disabled
+  /// message.
+  Future<void> _showDonationsMinimum() async {
+    final UserId? userId = user?.id;
+    if (userId != null) {
+      final MonetizationSettings? settings =
+          _partnerService.monetization[userId]?.value;
+      if (settings != null) {
+        await MessagePopup.alert(
+          'err_donations_has_minimum'.l10nfmt({
+            'amount': '${settings.donation?.min.l10n}',
+          }),
+        );
+      }
+    }
   }
 
   /// Disables the [search], if its focus is lost or its query is empty.

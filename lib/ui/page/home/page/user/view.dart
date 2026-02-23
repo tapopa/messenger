@@ -18,6 +18,7 @@
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
 import 'package:expandable_text/expandable_text.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -26,12 +27,17 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 import '/api/backend/schema.dart' show UserPresence;
 import '/domain/model/chat.dart';
+import '/domain/model/monetization_settings.dart';
+import '/domain/model/price.dart';
 import '/domain/model/user.dart';
 import '/domain/repository/chat.dart';
 import '/l10n/l10n.dart';
 import '/routes.dart';
 import '/themes.dart';
 import '/ui/page/home/page/chat/widget/back_button.dart';
+import '/ui/page/home/page/my_profile/widget/switch_field.dart';
+import '/ui/page/home/page/prices/set_donations/view.dart';
+import '/ui/page/home/page/prices/widget/price_row.dart';
 import '/ui/page/home/widget/action.dart';
 import '/ui/page/home/widget/app_bar.dart';
 import '/ui/page/home/widget/big_avatar.dart';
@@ -40,6 +46,7 @@ import '/ui/page/home/widget/highlighted_container.dart';
 import '/ui/page/home/widget/scroll_keyboard_handler.dart';
 import '/ui/widget/animated_button.dart';
 import '/ui/widget/animated_switcher.dart';
+import '/ui/widget/line_divider.dart';
 import '/ui/widget/obscured_selection_area.dart';
 import '/ui/widget/primary_button.dart';
 import '/ui/widget/progress_indicator.dart';
@@ -59,7 +66,7 @@ class UserView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: UserController(id, Get.find(), Get.find(), Get.find()),
+      init: UserController(id, Get.find(), Get.find(), Get.find(), Get.find()),
       tag: id.val,
       global: !Get.isRegistered<UserController>(tag: id.val),
       builder: (UserController c) {
@@ -91,6 +98,7 @@ class UserView extends StatelessWidget {
               ),
             _name(c, context, index: c.isBlocked != null ? 2 : 1),
             _identifier(c, context),
+            if (!c.isSupport) _monetization(c, context),
             SelectionContainer.disabled(
               child: Block(children: [_actions(c, context)]),
             ),
@@ -363,6 +371,125 @@ class UserView extends StatelessWidget {
           text: '${c.user?.user.value.num}',
           label: 'label_num'.l10n,
         ),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+
+  /// Returns the [Block] displaying the applied [MonetizationSettings].
+  Widget _monetization(UserController c, BuildContext context) {
+    final style = Theme.of(context).style;
+
+    return Block(
+      title: 'label_your_monetization_settings_for_user'.l10nfmt({
+        'user': c.user?.title(),
+      }),
+      children: [
+        const SizedBox(height: 8),
+        Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: 'label_your_monetization_settings_for_user_description1'
+                    .l10n,
+              ),
+              TextSpan(
+                text: 'label_your_monetization_settings_for_user_description2'
+                    .l10nfmt({'user': c.user?.title()}),
+                style: style.fonts.small.regular.onBackground,
+              ),
+              TextSpan(
+                text: 'label_your_monetization_settings_for_user_description3'
+                    .l10n,
+              ),
+            ],
+          ),
+          style: style.fonts.small.regular.secondary,
+        ),
+        const SizedBox(height: 24),
+        const LineDivider(''),
+        const SizedBox(height: 20),
+        Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text:
+                    'label_your_monetization_settings_for_user_subtitle1'.l10n,
+              ),
+              TextSpan(
+                text: 'label_your_monetization_settings_for_user_subtitle2'
+                    .l10nfmt({'user': c.user?.title()}),
+                style: style.fonts.small.regular.onBackground,
+              ),
+              TextSpan(
+                text:
+                    'label_your_monetization_settings_for_user_subtitle3'.l10n,
+              ),
+              TextSpan(
+                text:
+                    'label_your_monetization_settings_for_user_subtitle4'.l10n,
+                style: style.fonts.small.regular.primary,
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () => router.prices(push: true),
+              ),
+              TextSpan(
+                text:
+                    'label_your_monetization_settings_for_user_subtitle5'.l10n,
+              ),
+            ],
+          ),
+          style: style.fonts.small.regular.secondary,
+        ),
+        const SizedBox(height: 16),
+        Obx(() {
+          final Rx<MonetizationSettings>? settings = c.individual[c.id];
+
+          return SwitchField(
+            label: 'btn_individual_settings'.l10n,
+            value: settings != null,
+            onChanged: (b) async {
+              if (b) {
+                await c.updateMonetizationSettings(
+                  donationsEnabled: c.settings.value.donation?.enabled ?? true,
+                  donationsMinimum:
+                      c.settings.value.donation?.min.sum ?? Sum(0),
+                );
+              } else {
+                await c.updateMonetizationSettings();
+              }
+            },
+          );
+        }),
+        const SizedBox(height: 24),
+        Obx(() {
+          if (c.individual.containsKey(c.id)) {
+            return LineDivider('label_individual_price_settings'.l10n);
+          }
+
+          return LineDivider('label_default_price_settings'.l10n);
+        }),
+        const SizedBox(height: 20),
+        Obx(() {
+          final Rx<MonetizationSettings>? individual = c.individual[c.id];
+          final MonetizationSettings settings =
+              individual?.value ?? c.settings.value;
+
+          final bool enabled = settings.donation?.enabled == true;
+
+          return PriceRow(
+            label: 'label_donations'.l10n,
+            subtitle: enabled
+                ? 'label_donations_described_subtitle'.l10n
+                : 'label_you_have_disabled_incoming_donations'.l10n,
+            enabled: enabled,
+            price: settings.donation?.min ?? Price.zero,
+            onChange: individual == null
+                ? null
+                : () async {
+                    await SetDonationsView.show(context, userId: c.id);
+                  },
+          );
+        }),
         const SizedBox(height: 8),
       ],
     );

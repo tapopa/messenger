@@ -19,6 +19,7 @@ import 'package:get/get.dart';
 
 import '/domain/model/monetization_settings.dart';
 import '/domain/model/price.dart';
+import '/domain/model/user.dart';
 import '/domain/service/partner.dart';
 import '/l10n/l10n.dart';
 import '/ui/widget/text_field.dart';
@@ -26,7 +27,11 @@ import '/util/message_popup.dart';
 
 /// Controller of a [SetDonationsView].
 class SetDonationsController extends GetxController {
-  SetDonationsController(this._partnerService);
+  SetDonationsController(this._partnerService, {this.userId});
+
+  /// [UserId] of a [User] for whom the [MonetizationSettings] are being
+  /// changed.
+  final UserId? userId;
 
   /// [TextFieldState] for setting the minimum [Sum] of incoming [Donation]s.
   late final TextFieldState state = TextFieldState(
@@ -73,10 +78,22 @@ class SetDonationsController extends GetxController {
   /// Returns the [MonetizationSettings] of the authenticated [MyUser].
   Rx<MonetizationSettings> get settings => _partnerService.settings;
 
+  /// Returns the [MonetizationSettings] of the authenticated [MyUser].
+  RxMap<UserId, Rx<MonetizationSettings>> get individual =>
+      _partnerService.individual;
+
   @override
   void onInit() {
-    enabled.value = settings.value.donation?.enabled == true;
-    amount.value = settings.value.donation?.min.sum.val;
+    final MonetizationSettings? monetization;
+
+    if (userId == null) {
+      monetization = settings.value;
+    } else {
+      monetization = individual[userId]?.value;
+    }
+
+    enabled.value = monetization?.donation?.enabled == true;
+    amount.value = monetization?.donation?.min.sum.val;
     state.text = amount.value == null
         ? ''
         : '${amount.value?.toStringAsFixed(2)}';
@@ -88,6 +105,7 @@ class SetDonationsController extends GetxController {
   Future<void> save() async {
     try {
       await _partnerService.updateMonetizationSettings(
+        userId: userId,
         donationsEnabled: enabled.value,
         donationsMinimum: Sum(amount.value ?? 1),
       );

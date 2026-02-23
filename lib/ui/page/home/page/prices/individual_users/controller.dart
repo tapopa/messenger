@@ -15,23 +15,47 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:async';
+
 import 'package:get/get.dart';
 
+import '/domain/repository/user.dart';
 import '/domain/model/monetization_settings.dart';
+import '/domain/model/user.dart';
+import '/domain/repository/paginated.dart';
 import '/domain/service/partner.dart';
+import '/domain/service/user.dart';
 
-/// Controller for [Routes.prices] page.
-class PricesController extends GetxController {
-  PricesController(this._partnerService);
+/// Controller of a [IndividualUsersView].
+class IndividualUsersController extends GetxController {
+  IndividualUsersController(this._partnerService, this._userService);
 
-  /// [PartnerService] used for retrieving and modifying the
-  /// [MonetizationSettings].
+  /// [PartnerService] maintaining the [MonetizationSettings].
   final PartnerService _partnerService;
 
-  /// Returns the [MonetizationSettings] of the authenticated [MyUser].
-  Rx<MonetizationSettings> get settings => _partnerService.settings;
+  /// [UserService] for retrieving the [RxUser]s.
+  final UserService _userService;
 
   /// Returns the total amount of [MonetizationSettings] applied by the
   /// [MyUser].
   RxInt get total => _partnerService.total;
+
+  /// Returns the [Paginated] for [MonetizationSettings] per individual
+  /// [UserId]s.
+  Paginated<UserId, Rx<MonetizationSettings>> get paginated =>
+      _partnerService.paginated;
+
+  @override
+  void onInit() {
+    paginated.around();
+    super.onInit();
+  }
+
+  /// Returns a [RxUser] identified by the provided [id], if any.
+  FutureOr<RxUser?> getUser(UserId id) => _userService.get(id);
+
+  /// Removes [MonetizationSettings] settings for the provided [UserId].
+  Future<void> removeSettings(UserId id) async {
+    await _partnerService.updateMonetizationSettings(userId: id);
+  }
 }

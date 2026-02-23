@@ -15,17 +15,27 @@
 # along with this program. If not, see
 # <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-fragment MonetizationSettings on MonetizationSettings {
-    donation {
-        enabled
-        min {
+subscription MonetizationSettingsEvents(
+    $userId: UserId!
+    $by: MonetizationSettingsFilter
+) {
+    monetizationSettingsEvents(
+        userId: $userId
+        by: $by
+    ) {
+        __typename
+        ... on SubscriptionInitialized {
+            ok
+        }
+        ... on MonetizationSettingsList {
+            monetizationSettings {
+                __typename
+                ...MonetizationSettings
+            }
+        }
+        ... on MonetizationSettingsEventsVersioned {
             __typename
-            ...Price
+            ...MonetizationSettingsEventsVersioned
         }
     }
-    user {
-        id
-    }
-    createdAt
-    ver
 }

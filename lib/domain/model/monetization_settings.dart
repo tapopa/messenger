@@ -15,27 +15,73 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'package:json_annotation/json_annotation.dart';
+
 import 'precise_date_time/precise_date_time.dart';
 import 'price.dart';
+import 'user.dart';
+
+part 'monetization_settings.g.dart';
 
 /// Monetization settings of an [User].
-class MonetizationSettings {
-  MonetizationSettings({this.donation, required this.createdAt});
+@JsonSerializable()
+class MonetizationSettings implements Comparable<MonetizationSettings> {
+  MonetizationSettings({this.donation, this.user, required this.createdAt});
+
+  /// Constructs a [MonetizationSettings] from the provided [json].
+  factory MonetizationSettings.fromJson(Map<String, dynamic> json) =>
+      _$MonetizationSettingsFromJson(json);
 
   /// Monetization settings of [Donation]s.
   final MonetizationSettingsDonation? donation;
 
+  /// [User] these [MonetizationSettings] are specified individually for.
+  final UserId? user;
+
   /// [PreciseDateTime] when these [MonetizationSettings] were created.
   final PreciseDateTime createdAt;
+
+  /// Returns a [Map] representing this [MonetizationSettings].
+  Map<String, dynamic> toJson() => _$MonetizationSettingsToJson(this);
+
+  @override
+  String toString() =>
+      'MonetizationSettings(donation: ${donation?.enabled} at ${donation?.min})';
+
+  @override
+  int compareTo(MonetizationSettings other) {
+    final at = other.createdAt.compareTo(createdAt);
+    if (at == 0) {
+      if (user != null && other.user != null) {
+        return user!.val.compareTo(other.user!.val);
+      } else if (other.user == null) {
+        return 1;
+      } else if (user == null) {
+        return -1;
+      }
+
+      return 0;
+    }
+
+    return at;
+  }
 }
 
 /// Monetization settings of [Donation]s.
+@JsonSerializable()
 class MonetizationSettingsDonation {
   MonetizationSettingsDonation({this.enabled = true, required this.min});
+
+  /// Constructs a [MonetizationSettingsDonation] from the provided [json].
+  factory MonetizationSettingsDonation.fromJson(Map<String, dynamic> json) =>
+      _$MonetizationSettingsDonationFromJson(json);
 
   /// Indicator whether the [User] accepts [Donation]s or not.
   final bool enabled;
 
   /// Minimal [Price] of [Donation]s allowed in the [Chat] with the [User].
   final Price min;
+
+  /// Returns a [Map] representing this [MonetizationSettingsDonation].
+  Map<String, dynamic> toJson() => _$MonetizationSettingsDonationToJson(this);
 }

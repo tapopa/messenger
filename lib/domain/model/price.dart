@@ -15,10 +15,15 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'package:json_annotation/json_annotation.dart';
+
 import '/util/new_type.dart';
 import 'promo_share.dart';
 
+part 'price.g.dart';
+
 /// Price of something.
+@JsonSerializable()
 class Price {
   const Price({required this.sum, required this.currency});
 
@@ -37,6 +42,9 @@ class Price {
   /// Constructs a [Price] with `EUR` currency of the provided [amount].
   Price.eur(double amount) : sum = Sum(amount), currency = Currency('EUR');
 
+  /// Constructs a [Price] from the provided [json].
+  factory Price.fromJson(Map<String, dynamic> json) => _$PriceFromJson(json);
+
   /// [Sum] of this [Price].
   final Sum sum;
 
@@ -48,6 +56,9 @@ class Price {
 
   @override
   String toString() => 'Price(${currency.val} -> ${sum.val})';
+
+  /// Returns a [Map] representing this [Price].
+  Map<String, dynamic> toJson() => _$PriceToJson(this);
 
   /// Multiplies this [Price] to the [other].
   Price operator *(Price other) {
@@ -85,6 +96,12 @@ class Sum extends NewType<double> implements Comparable<Sum> {
 /// [ISO 4217]: https://iso.org/iso-4217-currency-codes.html
 class Currency extends NewType<String> {
   const Currency(super.val);
+
+  /// Constructs a [Currency] from the provided [val].
+  factory Currency.fromJson(String val) = Currency;
+
+  /// Returns a [String] representing this [Currency].
+  String toJson() => val;
 }
 
 /// Modifier of a [Price].

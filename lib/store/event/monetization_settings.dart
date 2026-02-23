@@ -18,6 +18,7 @@
 import '/domain/model/chat.dart';
 import '/domain/model/monetization_settings.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
+import '/domain/model/user.dart';
 import '/store/model/monetization_settings.dart';
 
 /// Possible kinds of a [MonetizationSettingsEvent].
@@ -54,6 +55,7 @@ class MonetizationSettingsEventsList extends MonetizationSettingsEvents {
     this.monetizationSettings,
     this.myMonetizationSettings,
     this.myMonetizationSettingsVer,
+    this.myMonetizationSettingsTotalCount = 0,
   });
 
   /// [MonetizationSettings] of a [User] this [MonetizationSettingsEventsList]
@@ -63,6 +65,9 @@ class MonetizationSettingsEventsList extends MonetizationSettingsEvents {
   /// [MonetizationSettings] of a [MyUser] this [MonetizationSettingsEventsList]
   /// corresponds to.
   final DtoMonetizationSettings? myMonetizationSettings;
+
+  /// Total count of [MonetizationSettings] applied by [MyUser].
+  final int myMonetizationSettingsTotalCount;
 
   /// [MonetizationSettingsVersion] of [myMonetizationSettings].
   final MonetizationSettingsVersion? myMonetizationSettingsVer;
@@ -107,7 +112,11 @@ class MonetizationSettingsEventsVersioned {
 
 /// Events happening in a [Chat].
 abstract class MonetizationSettingsEvent {
-  const MonetizationSettingsEvent(this.monetizationSettings, this.at);
+  const MonetizationSettingsEvent(
+    this.monetizationSettings,
+    this.userId,
+    this.at,
+  );
 
   /// State of the [MonetizationSettings] after this [MonetizationSettingsEvent]
   /// being applied.
@@ -115,6 +124,9 @@ abstract class MonetizationSettingsEvent {
 
   /// [PreciseDateTime] when this [MonetizationSettingsEvent] happened.
   final PreciseDateTime at;
+
+  /// [UserId] the [MonetizationSettings] are specified individually for.
+  final UserId? userId;
 
   /// Returns [MonetizationSettingsEventKind] of this [MonetizationSettingsEvent].
   MonetizationSettingsEventKind get kind;
@@ -125,6 +137,7 @@ class EventMonetizationSettingsDonationDeleted
     extends MonetizationSettingsEvent {
   const EventMonetizationSettingsDonationDeleted(
     super.monetizationSettings,
+    super.userId,
     super.at,
   );
 
@@ -138,6 +151,7 @@ class EventMonetizationSettingsDonationMinPriceUpdated
     extends MonetizationSettingsEvent {
   const EventMonetizationSettingsDonationMinPriceUpdated(
     super.monetizationSettings,
+    super.userId,
     super.at,
   );
 
@@ -151,6 +165,7 @@ class EventMonetizationSettingsDonationToggled
     extends MonetizationSettingsEvent {
   const EventMonetizationSettingsDonationToggled(
     super.monetizationSettings,
+    super.userId,
     super.at,
   );
 

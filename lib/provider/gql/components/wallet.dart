@@ -441,8 +441,8 @@ mixin WalletGraphQlMixin {
   ///
   /// ### Result
   ///
-  /// An initial state of the `MonetizationSettingsList` will be emitted after
-  /// `SubscriptionInitialized` and before any other
+  /// An initial state of the [MonetizationSettingsEventsList] will be emitted
+  /// after `SubscriptionInitialized` and before any other
   /// [MonetizationSettingsEvents] (and won't be emitted ever again until this
   /// subscription completes). This allows to skip calling
   /// `Query.myMonetizationSettings` before establishing this subscription.
@@ -501,8 +501,8 @@ mixin WalletGraphQlMixin {
   ///
   /// ### Result
   ///
-  /// An initial state of the [MonetizationSettingsList] will be emitted after
-  /// `SubscriptionInitialized` and before any other
+  /// An initial state of the [MonetizationSettingsEventsList] will be emitted
+  /// after `SubscriptionInitialized` and before any other
   /// [MonetizationSettingsEvent]s (and won't be emitted ever again until this
   /// subscription completes). This allows to skip calling
   /// `Query.monetizationSettings` (or `Query.myMonetizationSettings`) before

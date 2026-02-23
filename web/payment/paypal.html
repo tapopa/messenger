@@ -631,7 +631,7 @@ mutation DeclineOperationDeposit(
     // Create the script element.
     const sdk = document.createElement('script');
     let clientId = urlParams.get('client-id');
-    sdk.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=HKD&intent=authorize`;
+    sdk.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD&intent=authorize`;
     sdk.type = 'text/javascript';
     sdk.async = true; // Makes the script load without blocking HTML parsing.
 

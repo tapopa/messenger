@@ -1102,11 +1102,16 @@ label_operation_completed = Completed
 label_operation_declined = Unfinished
 label_operation_failed = Failed
 label_operation_in_progress = In progress...
-label_operation_label_cannot_processed_automatically = Unfortunately, the transaction cannot be processed automatically. The transaction will be checked and processed manually within 24 hours.
+label_operation_label_cannot_processed_automatically =
+    Unfortunately, the transaction cannot be processed automatically. The transaction will be checked and processed manually within 24 hours.
+
+    You can check current status of transaction in the section "Wallet", page "Your transactions".
 label_operation_label_completed = Wallet top up completed.
 label_operation_label_failed = An error occurred while processing the transaction.
+label_operation_label_failed_wrong_billing_country = Transaction failed. Billing country you indicated does not correspond to your PayPal account country. The funds will be returned to the sender's account within 24 hours.
+label_operation_label_failed_unknown = Transaction failed. Kindly check the status of your account with your service provider, try another payment option, or try again later.
 label_operation_label_in_progress = Operation in progress...
-label_operation_label_interrupted = Transaction failed. The funds have been returned to the sender's account.
+label_operation_label_interrupted = Transaction unfinished.
 label_operation_label_waiting_for_paypal = Waiting response from the PayPal. {$seconds} {$seconds ->
         [one] second
         *[other] seconds

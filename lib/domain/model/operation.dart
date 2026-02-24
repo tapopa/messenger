@@ -24,7 +24,8 @@ import '/api/backend/schema.dart'
         OperationOrigin,
         OperationDirection,
         OperationCancellationCode,
-        OperationRewardCause;
+        OperationRewardCause,
+        OperationDepositFailureCode;
 import '/util/new_type.dart';
 import 'chat.dart';
 import 'chat_item.dart';
@@ -152,6 +153,7 @@ class OperationDeposit extends Operation {
     this.invoice,
     this.processingUrl,
     this.pricing,
+    this.failed,
   });
 
   /// Kind of this [OperationDeposit].
@@ -170,6 +172,9 @@ class OperationDeposit extends Operation {
 
   /// Pricing of this [OperationDeposit].
   final OperationDepositPricing? pricing;
+
+  /// Information about why this [OperationDeposit] failed, if it did.
+  final OperationDepositFailure? failed;
 
   @override
   int get hashCode => Object.hash(
@@ -654,4 +659,15 @@ class OperationDepositPricing {
   /// Calculated total [Price] of the [OperationDeposit] to be paid, after the
   /// tax being applied, in the provided [Currency].
   final Price? total;
+}
+
+/// Information about [OperationDeposit]'s failure.
+class OperationDepositFailure {
+  OperationDepositFailure({required this.code, required this.at});
+
+  /// Code explaining why the [OperationDeposit] failed.
+  final OperationDepositFailureCode code;
+
+  /// [PreciseDateTime] when the [OperationDeposit] failed.
+  final PreciseDateTime at;
 }

@@ -229,7 +229,9 @@ class PayPalDepositView extends StatelessWidget {
                         if (c.error.value != null) {
                           text = c.error.value!;
                         } else {
-                          switch (c.operation.value?.value.status) {
+                          final Operation? operation = c.operation.value?.value;
+
+                          switch (operation?.status) {
                             case OperationStatus.canceled:
                               text = 'label_operation_canceled'.l10n;
                               break;
@@ -243,7 +245,46 @@ class PayPalDepositView extends StatelessWidget {
                               break;
 
                             case OperationStatus.failed:
-                              text = 'label_operation_label_failed'.l10n;
+                              if (operation is OperationDeposit) {
+                                switch (operation.failed?.code) {
+                                  case null:
+                                  case OperationDepositFailureCode
+                                      .artemisUnknown:
+                                    text =
+                                        'label_operation_label_failed_unknown'
+                                            .l10n;
+                                    break;
+
+                                  case OperationDepositFailureCode.denied:
+                                    text =
+                                        'label_operation_label_failed_unknown'
+                                            .l10n;
+                                    break;
+
+                                  case OperationDepositFailureCode.expired:
+                                    text =
+                                        'label_operation_label_failed_unknown'
+                                            .l10n;
+                                    break;
+
+                                  case OperationDepositFailureCode
+                                      .internalError:
+                                    text =
+                                        'label_operation_label_failed_unknown'
+                                            .l10n;
+                                    break;
+
+                                  case OperationDepositFailureCode
+                                      .wrongBillingCountry:
+                                    text =
+                                        'label_operation_label_failed_wrong_billing_country'
+                                            .l10n;
+                                    break;
+                                }
+                              } else {
+                                text =
+                                    'label_operation_label_failed_unknown'.l10n;
+                              }
                               break;
 
                             case OperationStatus.inProgress:

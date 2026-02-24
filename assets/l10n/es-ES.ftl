@@ -1110,9 +1110,14 @@ label_operation_completed = Completado
 label_operation_declined = Inconclusa
 label_operation_failed = Falló
 label_operation_in_progress = En progreso...
-label_operation_label_cannot_processed_automatically = Lamentablemente, la transacción no se puede procesar automáticamente. Se revisará y procesará manualmente en 24 horas.
+label_operation_label_cannot_processed_automatically =
+    Lamentablemente, la transacción no se puede procesar automáticamente. Se revisará y procesará manualmente en 24 horas.
+
+    Puede consultar el estado actual de la transacción en la sección "Monedero", página "Sus transacciones".
 label_operation_label_completed = Recarga de billetera completada.
 label_operation_label_failed = Ocurrió un error al procesar la transacción.
+label_operation_label_failed_wrong_billing_country = Transacción fallida. El país de facturación indicado no corresponde al de su cuenta PayPal. Los fondos se devolverán a la cuenta del remitente en 24 horas.
+label_operation_label_failed_unknown = Transacción fallida. Por favor, verifique el estado de su cuenta con su proveedor de servicios, pruebe con otra opción de pago o inténtelo de nuevo más tarde.
 label_operation_label_in_progress = Operación en curso...
 label_operation_label_interrupted = Transacción fallida. Los fondos se han devuelto a la cuenta del remitente.
 label_operation_label_waiting_for_paypal = Esperando respuesta de PayPal. {$seconds} {$seconds ->

@@ -152,7 +152,6 @@ class PayPalDepositController extends GetxController {
       final MyUser? myUser = this.myUser.value;
       if (myUser != null) {
         WebUtils.putAccount(myUser.id);
-        WebUtils.putAvatar(myUser.avatar);
       }
 
       final String url = '${Config.origin}/payment/paypal.html';

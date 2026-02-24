@@ -42,7 +42,6 @@ import 'package:video_player_web/video_player_web.dart';
 import 'package:web/web.dart' as web;
 
 import '/config.dart';
-import '/domain/model/avatar.dart';
 import '/domain/model/chat.dart';
 import '/domain/model/session.dart';
 import '/domain/model/user.dart';
@@ -437,15 +436,6 @@ class WebUtils {
       web.window.localStorage.removeItem('account');
     } else {
       web.window.localStorage.setItem('account', userId.val);
-    }
-  }
-
-  /// Puts the provided [UserAvatar] to the browser's storage.
-  static void putAvatar(UserAvatar? avatar) {
-    if (avatar == null) {
-      web.window.localStorage.removeItem('avatar');
-    } else {
-      web.window.localStorage.setItem('avatar', avatar.original.url);
     }
   }
 

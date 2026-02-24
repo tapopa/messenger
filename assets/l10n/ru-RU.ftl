@@ -1122,11 +1122,16 @@ label_operation_completed = Завершено
 label_operation_declined = Не завершено
 label_operation_failed = Неуспешно
 label_operation_in_progress = В процессе...
-label_operation_label_cannot_processed_automatically = К сожалению, транзакция не может быть обработана автоматически. Транзакция будет проверена и обработана вручную в течение 24 часов.
+label_operation_label_cannot_processed_automatically =
+    К сожалению, транзакция не может быть обработана автоматически. Транзакция будет проверена и обработана вручную в течение 24 часов.
+
+    You can check current status of transaction in the section "Wallet", page "Your transactions".
 label_operation_label_completed = Пополнение успешно зачислено.
 label_operation_label_failed = Во время обработки транзакции произошла ошибка.
+label_operation_label_failed_wrong_billing_country = Транзакция не завершена. Указанная Вами страна выставления счетов не соответствует стране Вашего аккаунта PayPal. Средства будут возвращены на счет отправителя в течение 24 часов.
+label_operation_label_failed_unknown = Транзакция не завершена. Проверьте статус Вашего аккуанта со стороны сервис провайдера, попробуйте другой способ оплаты или попробуйте позже.
 label_operation_label_in_progress = Операция в процессе...
-label_operation_label_interrupted = Транзакция прервана. Средства были возвращены на счёт отправителя.
+label_operation_label_interrupted = Транзакция не завершена.
 label_operation_label_waiting_for_paypal = Ждём ответа от PayPal. {$seconds} {$seconds ->
         [one] секунда
         [few] секунды

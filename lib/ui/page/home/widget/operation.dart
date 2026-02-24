@@ -446,7 +446,9 @@ class OperationWidget extends StatelessWidget {
                     child: Text(primaryText, style: primaryStyle),
                   ),
 
-                  if (operation.status == OperationStatus.failed)
+                  if (operation.status == OperationStatus.failed ||
+                      operation.status == OperationStatus.canceled ||
+                      operation.status == OperationStatus.declined)
                     Positioned(
                       left: 0,
                       top: 1,

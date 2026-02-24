@@ -51,6 +51,14 @@ extension OperationDepositPricingConversion on OperationDepositPricingMixin {
   );
 }
 
+/// Extension adding models construction from an [OperationDepositFailureMixin].
+extension OperationDepositFailureConversion on OperationDepositFailureMixin {
+  /// Constructs a new [OperationDepositFailure] from this
+  /// [OperationDepositFailureMixin].
+  OperationDepositFailure toModel() =>
+      OperationDepositFailure(code: code, at: at);
+}
+
 /// Extension adding models construction from an [OperationDepositMixin].
 extension OperationDepositConversion on OperationDepositMixin {
   /// Constructs a new [OperationDeposit] from this [OperationDepositMixin].
@@ -69,6 +77,7 @@ extension OperationDepositConversion on OperationDepositMixin {
     invoice: invoice,
     processingUrl: processingUrl == null ? null : Url(processingUrl!),
     pricing: price?.toModel(),
+    failed: failed?.toModel(),
   );
 
   /// Constructs a new [DtoOperation] from this [OperationDepositMixin].

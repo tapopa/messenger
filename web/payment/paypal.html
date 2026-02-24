@@ -28,12 +28,14 @@
   <title>PayPal Top Up</title>
   <style>
     :root {
+      --background: #00000084;
       --bg: #f5f7fb;
       --border: #e1e5ee;
       --text: #3a3f4b;
       --muted: #8a8f9c;
       --primary: #63B4FF;
       --danger: #F44336;
+      --white: #fff;
     }
 
     @font-face {
@@ -48,33 +50,90 @@
 
     body {
       margin: 0;
-      background: #111;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: var(--background);
     }
 
     /* Modal */
     .constrained {
-      width: 420px;
       background: var(--bg);
+    }
+
+    @media only screen and (max-width: 600px) {
+      .constrained {
+        border-radius: 0px;
+        width: 100vw;
+        height: 100vh;
+      }
+    }
+
+    @media only screen and (min-width: 600px) {
+      .constrained {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 436px;
+        height: 550px;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    .block {
+      width: 95%;
+      background: var(--white);
       padding: 22px;
       position: relative;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      border: 0.5px solid #ddd;
+    }
+
+    @media only screen and (min-width: 600px) {
+      .block {
+        width: 380px;
+      }
+    }
+
+    h3 {
+      font-size: 17px;
+      font-weight: 400;
+      padding: 0px;
+      margin: 0px;
     }
 
     .modal-header {
       text-align: center;
-      font-size: 17px;
+      vertical-align: center;
+      font-size: 20px;
       font-weight: 600;
       color: var(--text);
-      margin-bottom: 14px;
+      background-color: var(--white);
+      width: 100%;
+      height: 60px;
+      line-height: 60px;
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      justify-content: space-between;
+      border: 0.5px solid #ddd;
+      box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2);
+    }
+
+    @media only screen and (min-width: 600px) {
+      .modal-header {
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
+      }
     }
 
     .close-btn {
-      position: absolute;
-      right: 16px;
-      top: 16px;
       font-size: 22px;
       cursor: pointer;
       color: #7d8596;
@@ -82,6 +141,7 @@
 
     .close-btn:hover {
       color: #000;
+      cursor: pointer;
     }
 
     .description {
@@ -162,30 +222,17 @@
     .space-between {
       display: flex;
       align-items: center;
-      font-size: 15px;
       justify-content: space-between;
-    }
-
-    .split {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
+      font-size: 15px;
+      height: calc(100% - 72px);
     }
 
     .split-top,
     .split-bottom {
-      width: 100vw;
+      width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-    }
-
-    .split-top {
-      height: 50vh;
-    }
-
-    .split-bottom {
-      height: 50vh;
     }
 
     .scrollable {
@@ -203,6 +250,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      padding: 0px 16px;
     }
 
     .cover {
@@ -248,96 +296,231 @@
       color: var(--danger);
       font-size: 13px;
     }
+
+    .primary-btn {
+      width: 100%;
+      height: 48px;
+      line-height: 48px;
+      text-align: center;
+      color: var(--white);
+      background-color: var(--primary);
+      font-size: 15px;
+      border-radius: 12px;
+      cursor: pointer;
+    }
   </style>
 </head>
 
 <body>
-  <div class="close-btn" onclick="closeModal()">×</div>
+  <!-- Pay. -->
+  <div id="view-pay" class="not-hidden">
+    <div class="constrained">
+      <div class="modal-header">
+        <div style="width: 46px;"></div>
+        <span l10n="label_top_up_by_paypal">Top up by PayPal</span>
+        <img src="/assets/assets/icons/close_primary.svg" width="16px" height="16px" style="margin-right: 24px;"
+          onclick="closeModal()">
+      </div>
+      <div class="gap-h-6"></div>
 
-  <div class="split">
-    <div class="split-top cover" id="avatar">
-      <img class="cover" />
-    </div>
+      <div class="space-between">
+        <div class="block">
+          <h3><span l10n="label_details">Details</span></h3>
+          <div class="gap-h-6"></div>
+          <div class="column">
+            <div class="row">
+              <span class="label" l10n="label_name">Tap ID</span>
+              <span class="value" id="name">Alice</span>
+            </div>
 
-    <!-- Pay. -->
-    <div id="view-pay">
-      <div class="split-bottom scrollable constrained">
-        <div class="modal-header" l10n="label_top_up_by_paypal">Top up by PayPal</div>
-
-        <div class="divider">
-          <span l10n="label_details">Details</span>
-        </div>
-
-        <div class="column">
-          <div class="row">
-            <span class="label" l10n="label_account">Account</span>
-            <span class="value" id="account"">1111-1111-1111-1111</span>
+            <div class="row">
+              <span class="label" l10n="label_num">Tap ID</span>
+              <span class="value" id="account"">1111-1111-1111-1111</span>
             </div>
 
             <div class=" row">
-              <span class="label" l10n="label_top_up_option">Top up option</span>
-              <span class="value">PayPal</span>
-          </div>
+                <span class="label" l10n="label_top_up_option">Top up option</span>
+                <span class="value">PayPal</span>
+            </div>
 
-          <div class="row">
-            <span class="label" l10n="label_to_be_paid">To be paid</span>
-            <span class="value" id="price">$6.49</span>
+            <div class="row">
+              <span class="label" l10n="label_to_be_paid">To be paid</span>
+              <span class="value" id="price">$6.49</span>
+            </div>
           </div>
         </div>
 
-        <div class="gap-h-12"></div>
-        <div class="subtitle" l10n="label_to_make_payment_secure_paypal_page_will_open">To make the payment a secure
-          PayPal page will open.</div>
-        <div class="gap-h-12"></div>
+        <div class="centered">
+          <div class="gap-h-12"></div>
+          <div>Transaction is ready to begin</div>
+          <div class="gap-h-6"></div>
+          <div class="subtitle">To make the payment a secure PayPal page will open.</div>
+          <div class="gap-h-12"></div>
+        </div>
 
-        <div id="paypal-btn" class="paypal-btn"></div>
-
-        <div class="gap-h-12"></div>
-        <button class="cancel-btn" l10n="btn_cancel" onclick="closeModal()">Cancel</button>
+        <div>
+          <div id="paypal-btn" class="paypal-btn"></div>
+          <div class="gap-h-12"></div>
+        </div>
       </div>
     </div>
+  </div>
 
-    <!-- Processing. -->
-    <div id="view-processing" class="hidden">
-      <div class="split-bottom space-between constrained">
-        <div class="modal-header" l10n="label_top_up_by_paypal">Top up by PayPal</div>
+  <!-- Processing. -->
+  <div id="view-processing" class="hidden">
+    <div class="constrained">
+      <div class="modal-header">
+        <div style="width: 46px;"></div>
+        <span l10n="label_top_up_by_paypal">Top up by PayPal</span>
+        <img src="/assets/assets/icons/close_primary.svg" width="16px" height="16px" style="margin-right: 24px;"
+          onclick="closeModal()">
+      </div>
+      <div class="gap-h-6"></div>
+
+      <div class="space-between">
+        <div class="block">
+          <h3><span l10n="label_details">Details</span></h3>
+          <div class="gap-h-6"></div>
+          <div class="column">
+            <div class="row">
+              <span class="label" l10n="label_name">Tap ID</span>
+              <span class="value" id="name">Alice</span>
+            </div>
+
+            <div class="row">
+              <span class="label" l10n="label_num">Tap ID</span>
+              <span class="value" id="account"">1111-1111-1111-1111</span>
+            </div>
+
+            <div class=" row">
+                <span class="label" l10n="label_top_up_option">Top up option</span>
+                <span class="value">PayPal</span>
+            </div>
+
+            <div class="row">
+              <span class="label" l10n="label_to_be_paid">To be paid</span>
+              <span class="value" id="price">$6.49</span>
+            </div>
+          </div>
+        </div>
 
         <div class="centered">
-          <div l10n="label_transaction_is_being_processed">Transaction is being processed</div>
+          <div class="gap-h-12"></div>
+          <div l10n="label_transaction_is_being_processed">Transaction is being processed.</div>
           <div class="gap-h-6"></div>
           <div class="subtitle" l10n="label_paypal_in_progress_bottom_description">To report any problems contact
-            Support Service and provide your PayPal account e-mail,
+            Support Service and provide your PayPal account
+            e-mail,
             Tapopa ID, Transaction ID.</div>
+          <div class="gap-h-12"></div>
         </div>
 
-        <button class="text-btn" l10n="btn_close_button" onclick="closeModal()">Close window</button>
+        <div style="width: 100%; padding: 0px 10px;">
+          <div class="primary-btn" l10n="btn_close_button" onclick="closeModal()">Close window</div>
+          <div class="gap-h-12"></div>
+        </div>
       </div>
     </div>
+  </div>
 
-    <!-- Unfinished. -->
-    <div id="view-unfinished" class="hidden">
-      <div class="split-bottom space-between constrained">
-        <div class="modal-header" l10n="label_top_up_by_paypal">Top up by PayPal</div>
+  <!-- Unfinished. -->
+  <div id="view-unfinished" class="hidden">
+    <div class="constrained">
+      <div class="modal-header">
+        <div style="width: 46px;"></div>
+        <span l10n="label_top_up_by_paypal">Top up by PayPal</span>
+        <img src="/assets/assets/icons/close_primary.svg" width="16px" height="16px" style="margin-right: 24px;"
+          onclick="closeModal()">
+      </div>
+      <div class="gap-h-6"></div>
+
+      <div class="space-between">
+        <div class="block">
+          <h3><span l10n="label_details">Details</span></h3>
+          <div class="gap-h-6"></div>
+          <div class="column">
+            <div class="row">
+              <span class="label" l10n="label_name">Tap ID</span>
+              <span class="value" id="name">Alice</span>
+            </div>
+
+            <div class="row">
+              <span class="label" l10n="label_num">Tap ID</span>
+              <span class="value" id="account"">1111-1111-1111-1111</span>
+            </div>
+
+            <div class=" row">
+                <span class="label" l10n="label_top_up_option">Top up option</span>
+                <span class="value">PayPal</span>
+            </div>
+
+            <div class="row">
+              <span class="label" l10n="label_to_be_paid">To be paid</span>
+              <span class="value" id="price">$6.49</span>
+            </div>
+          </div>
+        </div>
 
         <div class="centered">
-          <div l10n="label_transaction_unfinished">Transaction unfinished</div>
+          <div class="gap-h-12"></div>
+          <div l10n="label_transaction_unfinished">Transaction unfinished.</div>
           <div class="gap-h-6"></div>
           <div class="subtitle" l10n="label_paypal_in_progress_bottom_description">To report any problems contact
-            Support Service and provide your PayPal account e-mail,
+            Support Service and provide your PayPal account
+            e-mail,
             Tapopa ID, Transaction ID.</div>
+          <div class="gap-h-12"></div>
         </div>
 
-        <button class="text-btn" l10n="btn_close_button" onclick="closeModal()">Close window</button>
+        <div style="width: 100%; padding: 0px 10px;">
+          <div class="primary-btn" l10n="btn_close_button" onclick="closeModal()">Close window</div>
+          <div class="gap-h-12"></div>
+        </div>
       </div>
     </div>
+  </div>
 
-    <!-- Error. -->
-    <div id="view-error" class="hidden">
-      <div class="split-bottom space-between constrained">
-        <div class="modal-header" l10n="label_top_up_by_paypal">Top up by PayPal</div>
+  <!-- Error. -->
+  <div id="view-error" class="hidden">
+    <div class="constrained">
+      <div class="modal-header">
+        <div style="width: 46px;"></div>
+        <span l10n="label_top_up_by_paypal">Top up by PayPal</span>
+        <img src="/assets/assets/icons/close_primary.svg" width="16px" height="16px" style="margin-right: 24px;"
+          onclick="closeModal()">
+      </div>
+      <div class="gap-h-6"></div>
+
+      <div class="space-between">
+        <div class="block">
+          <h3><span l10n="label_details">Details</span></h3>
+          <div class="gap-h-6"></div>
+          <div class="column">
+            <div class="row">
+              <span class="label" l10n="label_name">Tap ID</span>
+              <span class="value" id="name">Alice</span>
+            </div>
+
+            <div class="row">
+              <span class="label" l10n="label_num">Tap ID</span>
+              <span class="value" id="account"">1111-1111-1111-1111</span>
+            </div>
+
+            <div class=" row">
+                <span class="label" l10n="label_top_up_option">Top up option</span>
+                <span class="value">PayPal</span>
+            </div>
+
+            <div class="row">
+              <span class="label" l10n="label_to_be_paid">To be paid</span>
+              <span class="value" id="price">$6.49</span>
+            </div>
+          </div>
+        </div>
 
         <div class="centered">
-          <div l10n="label_operation_label_failed">An error occurred while processing the transaction</div>
+          <div class="gap-h-12"></div>
+          <div l10n="label_operation_label_failed">An error occurred while processing the transaction.</div>
           <div class="gap-h-6"></div>
           <div class="error" id="error" l10n="label_error">Error.</div>
           <div class="gap-h-6"></div>
@@ -345,12 +528,15 @@
             Support Service and provide your PayPal account
             e-mail,
             Tapopa ID, Transaction ID.</div>
+          <div class="gap-h-12"></div>
         </div>
 
-        <button class="text-btn" l10n="btn_close_button" onclick="closeModal()">Close window</button>
+        <div style="width: 100%; padding: 0px 10px;">
+          <div class="primary-btn" l10n="btn_close_button" onclick="closeModal()">Close window</div>
+          <div class="gap-h-12"></div>
+        </div>
       </div>
     </div>
-
   </div>
 
   <!-- Define the view transition functions -->
@@ -631,7 +817,7 @@ mutation DeclineOperationDeposit(
     // Create the script element.
     const sdk = document.createElement('script');
     let clientId = urlParams.get('client-id');
-    sdk.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD&intent=authorize`;
+    sdk.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD&intent=authorize&disable-funding=card,venmo`;
     sdk.type = 'text/javascript';
     sdk.async = true; // Makes the script load without blocking HTML parsing.
 
@@ -687,48 +873,8 @@ mutation DeclineOperationDeposit(
       element.innerHTML = urlParams.get('account');
     });
 
-    document.querySelectorAll('[id=avatar]').forEach(element => {
-      let avatarUrl = localStorage.getItem('avatar');
-      if (avatarUrl != null) {
-        element.innerHTML = `<img class="cover" src="${avatarUrl}" />`;
-      } else {
-
-        let account = urlParams.get('account');
-
-        let sum = 0;
-        for (let i = 0; i < account.length; i++) {
-          if (account.charAt(i) != '-') {
-            sum += account.charCodeAt(i);
-          }
-        }
-
-        const colors = [
-          '#D2B334',
-          '#2192FF',
-          '#9C27B0',
-          '#FF9800',
-          '#0094A7',
-          '#7F81FF',
-          '#FF5722',
-          '#C70100',
-          '#8BC34A',
-          '#16712D',
-          '#FF5B89',
-          '#332FD0',
-          '#B96215',
-          '#00BF79',
-          '#00ACCF',
-          '#ED36FF',
-          '#00CC25',
-          '#FF1008',
-          '#CB9F7A',
-        ];
-
-        let color = colors.at(sum % colors.length);
-        let lighter = adjustColor(color, 20);
-
-        element.innerHTML = `<div style="background: linear-gradient(${lighter}, ${color}); width: 100%; height: 100%;">${account.substring(0, 2)}</div>`;
-      }
+    document.querySelectorAll('[id=name]').forEach(element => {
+      element.innerHTML = urlParams.get('name');
     });
   </script>
 </body>

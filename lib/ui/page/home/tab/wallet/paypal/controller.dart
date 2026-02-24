@@ -152,13 +152,13 @@ class PayPalDepositController extends GetxController {
       final MyUser? myUser = this.myUser.value;
       if (myUser != null) {
         WebUtils.putAccount(myUser.id);
-        WebUtils.putAvatar(myUser.avatar);
       }
 
       final String url = '${Config.origin}/payment/paypal.html';
       final Map<String, dynamic> parameters = {
         'price': total?.l10n ?? nominal.l10next(digits: 0),
         'account': myUser?.num.toString(),
+        'name': myUser?.title,
         'client-id': Config.payPalClientId,
         if (orderId == null) ...{
           'operation-id': operation.value?.value.id.val,

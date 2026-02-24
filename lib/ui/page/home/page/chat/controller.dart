@@ -1207,9 +1207,10 @@ class ChatController extends GetxController with IdentityAware {
                   );
 
                   final bool hasDonates = e?.donation?.enabled == true;
+                  final double minimum = e?.donation?.min.sum.val ?? 1;
 
                   if (!isSupport) {
-                    send.toggleDonate(hasDonates);
+                    send.toggleDonate(hasDonates, minimum: minimum);
                     edit.value?.toggleDonate(hasDonates);
                   }
                 });

@@ -1052,6 +1052,7 @@ label_microphone_changed = El micrófono ha cambiado a {$microphone}
 label_minimum_amount = Monto mínimo
 label_minimum_amount_cannot_be_less_than = El monto mínimo de donaciones que acepta no puede ser menor a {$amount}
 label_minimum_amount_cannot_be_more_than = El monto mínimo de donaciones que acepta no puede ser mayor a {$amount}
+label_minimum_amount_semicolon = Monto mínimo:{" "}
 label_mobile_apps = Aplicación móvil
 label_monetization_history = Historial de monetización
 label_monetization_settings_by_default = Su configuración de monetización predeterminada

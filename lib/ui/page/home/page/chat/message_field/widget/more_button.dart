@@ -73,6 +73,10 @@ class _ChatMoreWidgetState extends State<ChatMoreWidget> {
     final bool disabled = widget.onPressed == null;
     final ChatButton? trailing = _button.trailing;
 
+    if (_button is BuilderButton) {
+      return (_button as BuilderButton).builder(context);
+    }
+
     return IgnorePointer(
       ignoring: disabled,
       child: MouseRegion(

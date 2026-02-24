@@ -246,3 +246,20 @@ class SendDonateButton extends ChatButton {
   @override
   bool get repeatable => true;
 }
+
+/// [ChatButton] building a custom [Widget].
+class BuilderButton extends ChatButton {
+  const BuilderButton(this.builder);
+
+  /// Builder building the [Widget] in pace of this button.
+  final Widget Function(BuildContext) builder;
+
+  @override
+  String get hint => '';
+
+  @override
+  SvgData get asset => SvgIcons.userAgentUnknown;
+
+  @override
+  bool get repeatable => true;
+}

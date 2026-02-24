@@ -159,6 +159,7 @@ class PayPalDepositController extends GetxController {
       final Map<String, dynamic> parameters = {
         'price': total?.l10n ?? nominal.l10next(digits: 0),
         'account': myUser?.num.toString(),
+        'name': myUser?.title,
         'client-id': Config.payPalClientId,
         if (orderId == null) ...{
           'operation-id': operation.value?.value.id.val,

@@ -1428,16 +1428,16 @@ label_your_author_partner_program_tapopa_author =
 label_your_balance_amount = Ваш баланс: {$balance}
 label_your_direct_link = Прямая ссылка на чат с Вами
 label_your_monetization_settings_for_user = Ваши настройки монетизации для пользователя {$user}
-label_your_monetization_settings_for_user_description1 = You can request a fee from the user{" "}
+label_your_monetization_settings_for_user_description1 = Вы можете запросить у пользователя{" "}
 label_your_monetization_settings_for_user_description2 = {$user}
 label_your_monetization_settings_for_user_description3 =
-    {" "}for the privilege of sending you messages and making calls.
+    {" "}плату за право отправлять вам сообщения и совершать звонки.
 
-    You can set a minimum donation amount, as well as the price of incoming messages and calls.
-label_your_monetization_settings_for_user_subtitle1 = You can set individual monetization settings for the user{" "}
+    Вы можете установить минимальную сумму донатов, а также стоимость входящих сообщений и звонков.
+label_your_monetization_settings_for_user_subtitle1 = Вы можете установить индивидуальные параметры монетизации для пользователя{" "}
 label_your_monetization_settings_for_user_subtitle2 = {$user}
-label_your_monetization_settings_for_user_subtitle3 = {" "}or use{" "}
-label_your_monetization_settings_for_user_subtitle4 = default monetization settings
+label_your_monetization_settings_for_user_subtitle3 = {" "}или использовать{" "}
+label_your_monetization_settings_for_user_subtitle4 = настройки монетизации по умолчанию
 label_your_monetization_settings_for_user_subtitle5 = .
 label_your_name = Ваше имя
 label_your_num = Ваш Tap ID

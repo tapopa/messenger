@@ -55,7 +55,9 @@ import '/domain/service/user.dart';
 import '/l10n/l10n.dart';
 import '/provider/gql/exceptions.dart';
 import '/routes.dart';
+import '/themes.dart';
 import '/ui/page/support/log/controller.dart';
+import '/ui/widget/line_divider.dart';
 import '/ui/widget/text_field.dart';
 import '/util/log.dart';
 import '/util/message_popup.dart';
@@ -561,7 +563,9 @@ class MessageFieldController extends GetxController {
   }
 
   /// Adds or removes [DonateButton] from the [panel].
-  void toggleDonate(bool enabled) {
+  void toggleDonate(bool enabled, {double minimum = 1}) {
+    panel.removeWhere((e) => e is DonatesButton);
+
     if (enabled) {
       final List<Price> prices = [
         Price.xxx(1),
@@ -573,11 +577,41 @@ class MessageFieldController extends GetxController {
         Price.xxx(100),
       ];
 
-      panel.addIf(
-        panel.none((e) => e is DonatesButton),
+      panel.add(
         DonatesButton(() {
-          overlay.addAll(
-            prices.map((e) {
+          overlay.addAll([
+            BuilderButton((context) {
+              final style = Theme.of(context).style;
+
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'label_minimum_amount_semicolon'.l10n,
+                          style: style.fonts.small.regular.secondary,
+                        ),
+                      ),
+                      Text(
+                        Price.xxx(minimum).l10n,
+                        style: style.fonts.small.regular.secondary,
+                      ),
+                      const SizedBox(width: 12),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+                    child: LineDivider(''),
+                  ),
+                ],
+              );
+            }),
+            ...prices.map((e) {
               return DonateButton(
                 hint: e.l10n,
                 onPressed: () => donation.value = e.sum.val,
@@ -585,12 +619,10 @@ class MessageFieldController extends GetxController {
                   () => onSubmit?.call(donateOnly: e.sum.val),
                 ),
               );
-            }).toList(),
-          );
+            }),
+          ]);
         }),
       );
-    } else {
-      panel.removeWhere((e) => e is DonatesButton);
     }
   }
 

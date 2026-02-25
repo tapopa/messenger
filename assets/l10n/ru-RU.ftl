@@ -1062,6 +1062,7 @@ label_messenger1 = Мессенджер
 label_messenger2 = от Tapopa
 label_microphone_changed = Микрофон был изменён на {$microphone}
 label_minimum_amount = Минимальная сумма
+label_minimum_amount_semicolon = Минимальная сумма:{" "}
 label_minimum_amount_cannot_be_less_than = Минимальная сумма донатов Вы принимаете не может быть меньше чем {$amount}
 label_minimum_amount_cannot_be_more_than = Минимальная сумма донатов Вы принимаете не может быть больше чем {$amount}
 label_mobile_apps = Мобильные приложения

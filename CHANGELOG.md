@@ -16,8 +16,11 @@ All user visible changes to this project will be documented in this file. This p
 - UI:
     - Wallet tab:
         - Redesigned PayPal deposit. ([#31])
+    - Chat page:
+        - Minimum donation amount displaying in donation selection menu. ([#32])
 
 [#31]: /../../pull/31
+[#32]: /../../pull/32
 
 
 

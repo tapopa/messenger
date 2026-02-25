@@ -233,7 +233,7 @@ class MessageFieldController extends GetxController {
   UserId? get me => _chatService?.me;
 
   /// Returns the currently authenticated [MyUser], if any.
-  Rx<MyUser?>? get _myUser => _myUserService?.myUser;
+  Rx<MyUser?>? get myUser => _myUserService?.myUser;
 
   /// Returns the [Session]s known to this device, if any.
   RxList<RxSession>? get _sessions => _sessionService?.sessions;
@@ -533,7 +533,7 @@ class MessageFieldController extends GetxController {
       sessions: _sessions,
       sessionId: _sessionId,
       userAgent: await PlatformUtils.userAgent,
-      myUser: _myUser?.value,
+      myUser: myUser?.value,
       token: _token,
       pushNotifications: _pushNotifications,
       notificationSettings: await LogController.getNotificationSettings(),

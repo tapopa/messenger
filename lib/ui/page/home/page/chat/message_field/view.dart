@@ -614,7 +614,7 @@ class MessageFieldView extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 2),
                   child: DonateWidget(
                     c.donation.value,
-                    name: '${c.me}',
+                    name: '${c.myUser?.value?.title ?? c.me}',
                     leading: WidgetButton(
                       onPressed: () {
                         c.donation.value = c.donation.value - 1;
@@ -918,44 +918,48 @@ class MessageFieldView extends StatelessWidget {
     final List<Widget> additional = [];
 
     if (item is ChatMessage) {
-      if (item.attachments.isNotEmpty) {
-        additional.addAll(
-          item.attachments.map((a) {
-            final ImageAttachment? image = a is ImageAttachment ? a : null;
+      additional.addAll(
+        item.donations.map((e) {
+          return DonateRectangle();
+        }),
+      );
 
-            return Container(
-              margin: const EdgeInsets.only(right: 2),
-              decoration: BoxDecoration(
-                color: fromMe
-                    ? style.colors.onPrimaryOpacity25
-                    : style.colors.onBackgroundOpacity2,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              width: 30,
-              height: 30,
-              child: image == null
-                  ? Icon(
-                      Icons.file_copy,
-                      color: fromMe
-                          ? style.colors.onPrimary
-                          : style.colors.secondaryHighlightDarkest,
-                      size: 16,
-                    )
-                  : RetryImage(
-                      image.small.url,
-                      checksum: image.small.checksum,
-                      thumbhash: image.small.thumbhash,
-                      fit: BoxFit.cover,
-                      height: 30,
-                      width: 30,
-                      borderRadius: BorderRadius.circular(4),
-                      onForbidden: () async =>
-                          await onAttachmentError?.call(item),
-                    ),
-            );
-          }).toList(),
-        );
-      }
+      additional.addAll(
+        item.attachments.map((a) {
+          final ImageAttachment? image = a is ImageAttachment ? a : null;
+
+          return Container(
+            margin: const EdgeInsets.only(right: 2),
+            decoration: BoxDecoration(
+              color: fromMe
+                  ? style.colors.onPrimaryOpacity25
+                  : style.colors.onBackgroundOpacity2,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            width: 30,
+            height: 30,
+            child: image == null
+                ? Icon(
+                    Icons.file_copy,
+                    color: fromMe
+                        ? style.colors.onPrimary
+                        : style.colors.secondaryHighlightDarkest,
+                    size: 16,
+                  )
+                : RetryImage(
+                    image.small.url,
+                    checksum: image.small.checksum,
+                    thumbhash: image.small.thumbhash,
+                    fit: BoxFit.cover,
+                    height: 30,
+                    width: 30,
+                    borderRadius: BorderRadius.circular(4),
+                    onForbidden: () async =>
+                        await onAttachmentError?.call(item),
+                  ),
+          );
+        }).toList(),
+      );
 
       if (item.text != null && item.text!.val.isNotEmpty) {
         content = Text(

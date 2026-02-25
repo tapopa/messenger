@@ -1195,7 +1195,7 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
     List<Widget> additional = [];
 
     if (item is ChatMessageQuote) {
-      if (item.attachments.isNotEmpty) {
+      if (item.donations.isNotEmpty || item.attachments.isNotEmpty) {
         int take = (constraints.maxWidth - 35) ~/ 52;
         if (take <= item.attachments.length - 1) {
           take -= 1;
@@ -1255,7 +1255,7 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
           ].take(take),
         );
 
-        if (item.attachments.length > take) {
+        if (item.donations.length + item.attachments.length > take) {
           final int count = (item.attachments.length - take).clamp(1, 99);
 
           widgets.add(

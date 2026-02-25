@@ -1415,16 +1415,16 @@ label_your_author_partner_program_tapopa_author =
 label_your_balance_amount = Su saldo: {$balance}
 label_your_direct_link = Enlace directo para chatear con Usted
 label_your_monetization_settings_for_user = Su configuración de monetización para el usuario {$user}
-label_your_monetization_settings_for_user_description1 = You can request a fee from the user{" "}
+label_your_monetization_settings_for_user_description1 = Puedes solicitar una tarifa al usuario{" "}
 label_your_monetization_settings_for_user_description2 = {$user}
 label_your_monetization_settings_for_user_description3 =
-    {" "}for the privilege of sending you messages and making calls.
+    {" "}o el privilegio de enviarte mensajes y hacer llamadas.
 
-    You can set a minimum donation amount, as well as the price of incoming messages and calls.
-label_your_monetization_settings_for_user_subtitle1 = You can set individual monetization settings for the user{" "}
+    Puedes establecer un importe mínimo de donación, así como el precio de los mensajes y las llamadas entrantes.
+label_your_monetization_settings_for_user_subtitle1 = Puede establecer configuraciones de monetización individuales para el usuario{" "}
 label_your_monetization_settings_for_user_subtitle2 = {$user}
-label_your_monetization_settings_for_user_subtitle3 = {" "}or use{" "}
-label_your_monetization_settings_for_user_subtitle4 = default monetization settings
+label_your_monetization_settings_for_user_subtitle3 = {" "}o utilizar la{" "}
+label_your_monetization_settings_for_user_subtitle4 = configuración de monetización predeterminada
 label_your_monetization_settings_for_user_subtitle5 = .
 label_your_name = Su nombre
 label_your_num = Su Tap ID

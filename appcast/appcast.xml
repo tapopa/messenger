@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?><rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"><channel>
+<item><title>0.3.2</title><description xml:lang="en-US"><![CDATA[- Added PayPal deposit method.
+- Added ability to send donations in chat-dialogs.
+- Added ability to set minimum price of donations globally and individually.
+- Added ability to toggle incoming donations enabled and disabled globally and individually.
+- Redesigned operations page on wallet and monetization tabs.
+- Bug fixes and performance improvements.]]></description> <description xml:lang="es-ES"><![CDATA[- Se añadió el método de depósito de PayPal.
+- Se añadió la posibilidad de enviar donaciones en los diálogos de chat.
+- Se añadió la posibilidad de establecer un precio mínimo para las donaciones, tanto global como individualmente.
+- Se añadió la posibilidad de activar y desactivar las donaciones entrantes, tanto global como individualmente.
+- Se rediseñó la página de operaciones en las pestañas de monedero y monetización.
+- Corrección de errores y mejoras de rendimiento.]]></description> <description xml:lang="ru-RU"><![CDATA[- Добавлен способ пополнения счёта через PayPal.
+- Добавлена возможность делать донаты в диалогах.
+- Добавлена возможность настраивать минимальную сумму доната глобально и индивидуально.
+- Добавлена возможность включать и выключать входящие донаты глобально и индивидуально.
+- Обновлён дизайн страниц транзакций на вкладках монетизации и кошелька.
+- Исправления ошибок и улучшения производительности.]]></description><pubDate>Mon, 23 Feb 2026 15:52:22 +0000</pubDate><enclosure sparkle:os="macos" url="tapopa-macos.zip" /><enclosure sparkle:os="windows" url="tapopa-windows.zip" /><enclosure sparkle:os="linux" url="tapopa-linux.zip" /><enclosure sparkle:os="android" url="tapopa-android.apk" /><enclosure sparkle:os="ios" url="tapopa-ios.ipa" /></item>
+<item><title>0.3.1</title><description xml:lang="en-US"><![CDATA[- Bug fixes and performance improvements.]]></description> <description xml:lang="es-ES"><![CDATA[- Corrección de errores y mejoras de rendimiento.]]></description> <description xml:lang="ru-RU"><![CDATA[- Исправления ошибок и улучшения производительности.]]></description><pubDate>Wed, 11 Feb 2026 09:30:45 +0000</pubDate><enclosure sparkle:os="macos" url="tapopa-macos.zip" /><enclosure sparkle:os="windows" url="tapopa-windows.zip" /><enclosure sparkle:os="linux" url="tapopa-linux.zip" /><enclosure sparkle:os="android" url="tapopa-android.apk" /><enclosure sparkle:os="ios" url="tapopa-ios.ipa" /></item>
+<item><title>0.3.0</title><description xml:lang="en-US"><![CDATA[- Allow user name to be 1 symbols long.
+- Bug fixes and performance improvements.]]></description> <description xml:lang="es-ES"><![CDATA[- Permitir que el nombre de usuario tenga 1 símbolo de longitud.
+- Corrección de errores y mejoras de rendimiento.]]></description> <description xml:lang="ru-RU"><![CDATA[- Добавлена возможность указывать имя длиной в 1 символ.
+- Исправления ошибок и улучшения производительности.]]></description><pubDate>Thu, 05 Feb 2026 07:22:42 +0000</pubDate><enclosure sparkle:os="macos" url="tapopa-macos.zip" /><enclosure sparkle:os="windows" url="tapopa-windows.zip" /><enclosure sparkle:os="linux" url="tapopa-linux.zip" /><enclosure sparkle:os="android" url="tapopa-android.apk" /><enclosure sparkle:os="ios" url="tapopa-ios.ipa" /></item>
+<item><title>0.2.2</title><description xml:lang="en-US"><![CDATA[- Added output device modal switcher when pressing switch button in call with external devices connected on mobile devices.
+- Added join and decline call buttons to user profile page.
+- Redesigned deposit page on desktop to be only in tab.
+- Bug fixes and performance improvements.]]></description> <description xml:lang="es-ES"><![CDATA[- Se añadió un selector modal de dispositivo de salida al pulsar el botón de cambio en una llamada con dispositivos externos conectados en dispositivos móviles.
+- Se añadieron botones para unirse y rechazar llamadas a la página de perfil del usuario.
+- Se rediseñó la página de depósito en el escritorio para que solo aparezca en la pestaña.
+- Corrección de errores y mejoras de rendimiento.]]></description> <description xml:lang="ru-RU"><![CDATA[- Добавлено отображение списка всех устройств выхода в звонке при подключенных внешних устройствах на мобильных устройствах.
+- Добавлены кнопки присоединения и отклонения звонка в профиле пользователя.
+- Обновлён дизайн пополнения счёта для десктоп платформ.
+- Исправления ошибок и улучшения производительности.]]></description><pubDate>Mon, 02 Feb 2026 05:58:40 +0000</pubDate><enclosure sparkle:os="macos" url="tapopa-macos.zip" /><enclosure sparkle:os="windows" url="tapopa-windows.zip" /><enclosure sparkle:os="linux" url="tapopa-linux.zip" /><enclosure sparkle:os="android" url="tapopa-android.apk" /><enclosure sparkle:os="ios" url="tapopa-ios.ipa" /></item>
+<item><title>0.2.1</title><description xml:lang="en-US"><![CDATA[- Bug fixes and performance improvements.]]></description> <description xml:lang="es-ES"><![CDATA[- Se corrigieron errores y se mejoraron el rendimiento.]]></description> <description xml:lang="ru-RU"><![CDATA[- Исправления ошибок и улучшения производительности.]]></description><pubDate>Tue, 27 Jan 2026 10:40:13 +0000</pubDate><enclosure sparkle:os="macos" url="tapopa-macos.zip" /><enclosure sparkle:os="windows" url="tapopa-windows.zip" /><enclosure sparkle:os="linux" url="tapopa-linux.zip" /><enclosure sparkle:os="android" url="tapopa-android.apk" /><enclosure sparkle:os="ios" url="tapopa-ios.ipa" /></item>
+<item><title>0.2.0</title><description xml:lang="en-US"><![CDATA[- Added reconnecting notification when network changes during a call.
+- Added collect logs button to notes and support chat.
+- Bug fixes and performance improvements.]]></description> <description xml:lang="es-ES"><![CDATA[- Se agregó una notificación de reconexión cuando la red cambia durante una llamada.
+- Se agregó el botón de recopilar registros a las notas y al chat de soporte.
+- Se corrigieron errores y se mejoraron el rendimiento.]]></description> <description xml:lang="ru-RU"><![CDATA[- Добавлено уведомление о переподключении при изменении сети в звонке.
+- Добавлена кнопка прикрепления логов в заметки и в чат поддержки.
+- Исправления ошибок и улучшения производительности.]]></description><pubDate>Thu, 22 Jan 2026 09:45:41 +0000</pubDate><enclosure sparkle:os="macos" url="tapopa-macos.zip" /><enclosure sparkle:os="windows" url="tapopa-windows.zip" /><enclosure sparkle:os="linux" url="tapopa-linux.zip" /><enclosure sparkle:os="android" url="tapopa-android.apk" /><enclosure sparkle:os="ios" url="tapopa-ios.ipa" /></item>
+<item><title>0.1.0</title><description xml:lang="en-US"><![CDATA[- Added monetization and wallet tabs.
+- Added top up and transactions pages to wallet tab.
+- Added partner programs, your promotion, set your prices and withdraw pages.
+- Added chat with Tapopa.]]></description> <description xml:lang="es-ES"><![CDATA[- Se añadieron las pestañas de monetización y billetera.
+- Se añadieron páginas de recarga y transacciones a la pestaña de billetera.
+- Se añadieron programas de socios, promociones, configuración de precios y páginas de retiro.
+- Se añadió el chat con Tapopa.]]></description> <description xml:lang="ru-RU"><![CDATA[- Добавлены вкладки монетизации и кошелька.
+- Добавлены страницы пополнения счёта и транзакций на вкладке кошелька.
+- Добавлены страницы партнёрских программ, продвижения, установки цен и вывода средств.
+- Добавлен чат с Тапопой.]]></description><pubDate>Thu, 15 Jan 2026 16:50:43 +0000</pubDate><enclosure sparkle:os="macos" url="tapopa-macos.zip" /><enclosure sparkle:os="windows" url="tapopa-windows.zip" /><enclosure sparkle:os="linux" url="tapopa-linux.zip" /><enclosure sparkle:os="android" url="tapopa-android.apk" /><enclosure sparkle:os="ios" url="tapopa-ios.ipa" /></item>
+</channel></rss>

@@ -1,0 +1,16 @@
+<item><title>0.3.2</title><description xml:lang="en-US"><![CDATA[- Added PayPal deposit method.
+- Added ability to send donations in chat-dialogs.
+- Added ability to set minimum price of donations globally and individually.
+- Added ability to toggle incoming donations enabled and disabled globally and individually.
+- Redesigned operations page on wallet and monetization tabs.
+- Bug fixes and performance improvements.]]></description> <description xml:lang="es-ES"><![CDATA[- Se añadió el método de depósito de PayPal.
+- Se añadió la posibilidad de enviar donaciones en los diálogos de chat.
+- Se añadió la posibilidad de establecer un precio mínimo para las donaciones, tanto global como individualmente.
+- Se añadió la posibilidad de activar y desactivar las donaciones entrantes, tanto global como individualmente.
+- Se rediseñó la página de operaciones en las pestañas de monedero y monetización.
+- Corrección de errores y mejoras de rendimiento.]]></description> <description xml:lang="ru-RU"><![CDATA[- Добавлен способ пополнения счёта через PayPal.
+- Добавлена возможность делать донаты в диалогах.
+- Добавлена возможность настраивать минимальную сумму доната глобально и индивидуально.
+- Добавлена возможность включать и выключать входящие донаты глобально и индивидуально.
+- Обновлён дизайн страниц транзакций на вкладках монетизации и кошелька.
+- Исправления ошибок и улучшения производительности.]]></description><pubDate>Mon, 23 Feb 2026 15:52:22 +0000</pubDate><enclosure sparkle:os="macos" url="tapopa-macos.zip" /><enclosure sparkle:os="windows" url="tapopa-windows.zip" /><enclosure sparkle:os="linux" url="tapopa-linux.zip" /><enclosure sparkle:os="android" url="tapopa-android.apk" /><enclosure sparkle:os="ios" url="tapopa-ios.ipa" /></item>

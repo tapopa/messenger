@@ -1,0 +1,10 @@
+<item><title>0.1.0</title><description xml:lang="en-US"><![CDATA[- Added monetization and wallet tabs.
+- Added top up and transactions pages to wallet tab.
+- Added partner programs, your promotion, set your prices and withdraw pages.
+- Added chat with Tapopa.]]></description> <description xml:lang="es-ES"><![CDATA[- Se añadieron las pestañas de monetización y billetera.
+- Se añadieron páginas de recarga y transacciones a la pestaña de billetera.
+- Se añadieron programas de socios, promociones, configuración de precios y páginas de retiro.
+- Se añadió el chat con Tapopa.]]></description> <description xml:lang="ru-RU"><![CDATA[- Добавлены вкладки монетизации и кошелька.
+- Добавлены страницы пополнения счёта и транзакций на вкладке кошелька.
+- Добавлены страницы партнёрских программ, продвижения, установки цен и вывода средств.
+- Добавлен чат с Тапопой.]]></description><pubDate>Thu, 15 Jan 2026 16:50:43 +0000</pubDate><enclosure sparkle:os="macos" url="tapopa-macos.zip" /><enclosure sparkle:os="windows" url="tapopa-windows.zip" /><enclosure sparkle:os="linux" url="tapopa-linux.zip" /><enclosure sparkle:os="android" url="tapopa-android.apk" /><enclosure sparkle:os="ios" url="tapopa-ios.ipa" /></item>

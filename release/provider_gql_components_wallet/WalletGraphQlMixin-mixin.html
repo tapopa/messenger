@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the WalletGraphQlMixin mixin from the wallet library, for the Dart programming language.">
+  <title>WalletGraphQlMixin mixin - wallet library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">messenger</a></li>
+    <li><a href="../provider_gql_components_wallet/">provider&#47;gql&#47;components&#47;wallet.dart</a></li>
+    <li class="self-crumb">WalletGraphQlMixin mixin</li>
+  </ol>
+  <div class="self-name">WalletGraphQlMixin</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="provider_gql_components_wallet&#47;provider_gql_components_wallet-library-sidebar.html"
+    data-below-sidebar="provider_gql_components_wallet&#47;WalletGraphQlMixin-mixin-sidebar.html">
+    <div>
+<h1><span class="kind-mixin">WalletGraphQlMixin</span> mixin 
+ 
+</h1></div>
+
+    
+<section class="desc markdown">
+  <p><a href="../domain_model_my_user/MyUser-class.html">MyUser</a>'s purse related functionality.</p>
+</section>
+
+
+      <section>
+        <dl class="dl-horizontal">
+
+          
+
+          
+
+            <dt>Mixin applications</dt>
+            <dd>
+              <ul class="comma-separated mixin-relationships">
+                <li><a href="../provider_gql_graphql/GraphQlProvider-class.html">GraphQlProvider</a></li>
+              </ul>
+            </dd>
+          
+
+          
+        </dl>
+      </section>
+
+    
+  <section
+      class="summary offset-anchor"
+      id="instance-properties">
+    <h2>Properties</h2>
+    <dl class="properties">
+        <dt id="client" class="property">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/client.html">client</a></span>
+  <span class="signature">&#8594; <a href="../provider_gql_base/GraphQlClient-class.html">GraphQlClient</a></span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">no setter</span></div>
+
+</dd>
+
+        <dt id="hashCode" class="property inherited">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/hashCode.html">hashCode</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a></span>
+  
+
+</dt>
+<dd class="inherited">
+  The hash code for this object.
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="runtimeType" class="property inherited">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/runtimeType.html">runtimeType</a></span>
+  <span class="signature">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/Type-class.html">Type</a></span>
+  
+
+</dt>
+<dd class="inherited">
+  A representation of the runtime type of the object.
+  <div class="features"><span class="feature">no setter</span><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="token" class="property">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/token.html">token</a></span>
+  <span class="signature">&#8594; <a href="../domain_model_session/AccessTokenSecret-class.html">AccessTokenSecret</a>?</span>
+  
+
+</dt>
+<dd>
+  
+  <div class="features"><span class="feature">no setter</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+
+    
+  <section
+      class="summary offset-anchor"
+      id="instance-methods">
+    <h2>Methods</h2>
+    <dl class="callables">
+        <dt id="balance" class="callable">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/balance.html">balance</a></span><span class="signature">(<wbr><span class="parameter" id="balance-param-origin"><span class="type-annotation"><a href="../api_backend_schema.graphql/BalanceOrigin.html">BalanceOrigin</a></span> <span class="parameter-name">origin</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../api_backend_schema.graphql/Balance$Query$Balance-class.html">Balance$Query$Balance</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Returns the current <a href="../domain_model_balance/Balance-class.html">Balance</a> of the authenticated <a href="../domain_model_my_user/MyUser-class.html">MyUser</a> in the
+provided <a href="../api_backend_schema.graphql/BalanceOrigin.html">BalanceOrigin</a>.
+  
+
+</dd>
+
+        <dt id="balanceUpdates" class="callable">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/balanceUpdates.html">balanceUpdates</a></span><span class="signature">(<wbr><span class="parameter" id="balanceUpdates-param-origin"><span class="type-annotation"><a href="../api_backend_schema.graphql/BalanceOrigin.html">BalanceOrigin</a></span> <span class="parameter-name">origin</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/Stream-class.html">Stream</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://pub.dev/documentation/graphql/5.2.3/graphql/QueryResult-class.html">QueryResult</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/Object-class.html">Object</a>?</span>&gt;</span></span>&gt;</span></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Subscribes to <a href="../domain_model_balance/Balance-class.html">Balance</a> updates of the authenticated <a href="../domain_model_my_user/MyUser-class.html">MyUser</a> in the
+provided <a href="../api_backend_schema.graphql/BalanceOrigin.html">BalanceOrigin</a>.
+  
+
+</dd>
+
+        <dt id="completeOperationDeposit" class="callable">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/completeOperationDeposit.html">completeOperationDeposit</a></span><span class="signature">(<wbr>{<span class="parameter" id="completeOperationDeposit-param-id"><span>required</span> <span class="type-annotation"><a href="../domain_model_operation/OperationId-class.html">OperationId</a></span> <span class="parameter-name">id</span>, </span><span class="parameter" id="completeOperationDeposit-param-secret"><span class="type-annotation"><a href="../domain_model_operation_deposit_method/OperationDepositSecret-class.html">OperationDepositSecret</a>?</span> <span class="parameter-name">secret</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../api_backend_schema.graphql/OperationEventsVersionedMixin-mixin.html">OperationEventsVersionedMixin</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Completes an <a href="../domain_model_operation/OperationDeposit-class.html">OperationDeposit</a>.
+  
+
+</dd>
+
+        <dt id="createOperationDeposit" class="callable">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/createOperationDeposit.html">createOperationDeposit</a></span><span class="signature">(<wbr>{<span class="parameter" id="createOperationDeposit-param-methodId"><span>required</span> <span class="type-annotation"><a href="../domain_model_operation_deposit_method/OperationDepositMethodId-class.html">OperationDepositMethodId</a></span> <span class="parameter-name">methodId</span>, </span><span class="parameter" id="createOperationDeposit-param-kind"><span>required</span> <span class="type-annotation"><a href="../api_backend_schema.graphql/OperationDepositInput-class.html">OperationDepositInput</a></span> <span class="parameter-name">kind</span>, </span><span class="parameter" id="createOperationDeposit-param-country"><span>required</span> <span class="type-annotation"><a href="../domain_model_country/CountryCode-class.html">CountryCode</a></span> <span class="parameter-name">country</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../api_backend_schema.graphql/OperationEventsVersionedMixin-mixin.html">OperationEventsVersionedMixin</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Creates a new <a href="../domain_model_operation/OperationDeposit-class.html">OperationDeposit</a>.
+  
+
+</dd>
+
+        <dt id="declineOperationDeposit" class="callable">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/declineOperationDeposit.html">declineOperationDeposit</a></span><span class="signature">(<wbr>{<span class="parameter" id="declineOperationDeposit-param-id"><span>required</span> <span class="type-annotation"><a href="../domain_model_operation/OperationId-class.html">OperationId</a></span> <span class="parameter-name">id</span>, </span><span class="parameter" id="declineOperationDeposit-param-secret"><span class="type-annotation"><a href="../domain_model_operation_deposit_method/OperationDepositSecret-class.html">OperationDepositSecret</a>?</span> <span class="parameter-name">secret</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../api_backend_schema.graphql/OperationEventsVersionedMixin-mixin.html">OperationEventsVersionedMixin</a>?</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Declines an <a href="../domain_model_operation/OperationDeposit-class.html">OperationDeposit</a>.
+  
+
+</dd>
+
+        <dt id="monetizationSettingsEvents" class="callable">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/monetizationSettingsEvents.html">monetizationSettingsEvents</a></span><span class="signature">(<wbr><span class="parameter" id="monetizationSettingsEvents-param-userId"><span class="type-annotation"><a href="../domain_model_user/UserId-class.html">UserId</a></span> <span class="parameter-name">userId</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/Stream-class.html">Stream</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://pub.dev/documentation/graphql/5.2.3/graphql/QueryResult-class.html">QueryResult</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/Object-class.html">Object</a>?</span>&gt;</span></span>&gt;</span></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Subscribes to <a href="../store_event_monetization_settings/MonetizationSettingsEvents-class.html">MonetizationSettingsEvents</a> set by/for the authenticated
+<a href="../domain_model_my_user/MyUser-class.html">MyUser</a>.
+  
+
+</dd>
+
+        <dt id="myMonetizationSettings" class="callable">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/myMonetizationSettings.html">myMonetizationSettings</a></span><span class="signature">(<wbr>{<span class="parameter" id="myMonetizationSettings-param-first"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">first</span>, </span><span class="parameter" id="myMonetizationSettings-param-after"><span class="type-annotation"><a href="../store_model_monetization_settings/MonetizationSettingsCursor-class.html">MonetizationSettingsCursor</a>?</span> <span class="parameter-name">after</span>, </span><span class="parameter" id="myMonetizationSettings-param-last"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">last</span>, </span><span class="parameter" id="myMonetizationSettings-param-before"><span class="type-annotation"><a href="../store_model_monetization_settings/MonetizationSettingsCursor-class.html">MonetizationSettingsCursor</a>?</span> <span class="parameter-name">before</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../api_backend_schema.graphql/MyMonetizationSettings$Query$MyMonetizationSettings-class.html">MyMonetizationSettings$Query$MyMonetizationSettings</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Returns <a href="../domain_model_monetization_settings/MonetizationSettings-class.html">MonetizationSettings</a> of the authenticated <a href="../domain_model_my_user/MyUser-class.html">MyUser</a> filtered by
+the provided criteria.
+  
+
+</dd>
+
+        <dt id="myMonetizationSettingsEvents" class="callable">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/myMonetizationSettingsEvents.html">myMonetizationSettingsEvents</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/Stream-class.html">Stream</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://pub.dev/documentation/graphql/5.2.3/graphql/QueryResult-class.html">QueryResult</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/Object-class.html">Object</a>?</span>&gt;</span></span>&gt;</span></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Subscribes to <a href="../store_event_monetization_settings/MonetizationSettingsEvents-class.html">MonetizationSettingsEvents</a> of the <a href="../domain_model_monetization_settings/MonetizationSettings-class.html">MonetizationSettings</a>
+set by the authenticated <a href="../domain_model_my_user/MyUser-class.html">MyUser</a> (both common and individual ones).
+  
+
+</dd>
+
+        <dt id="noSuchMethod" class="callable inherited">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
+    <span class="returntype parameter">&#8594; dynamic</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Invoked when a nonexistent method or property is accessed.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="operation" class="callable">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/operation.html">operation</a></span><span class="signature">(<wbr><span class="parameter" id="operation-param-id"><span class="type-annotation"><a href="../domain_model_operation/OperationId-class.html">OperationId</a>?</span> <span class="parameter-name">id</span>, </span><span class="parameter" id="operation-param-num"><span class="type-annotation"><a href="../domain_model_operation/OperationNum-class.html">OperationNum</a>?</span> <span class="parameter-name">num</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../api_backend_schema.graphql/Operation$Query$Operation-class.html">Operation$Query$Operation</a>?</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Returns an <a href="../domain_model_operation/Operation-class.html">Operation</a> by its <a href="../domain_model_operation/OperationId-class.html">OperationId</a> or <a href="../domain_model_operation/OperationNum-class.html">OperationNum</a>.
+  
+
+</dd>
+
+        <dt id="operationDepositMethods" class="callable">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/operationDepositMethods.html">operationDepositMethods</a></span><span class="signature">(<wbr><span class="parameter" id="operationDepositMethods-param-country"><span class="type-annotation"><a href="../domain_model_country/CountryCode-class.html">CountryCode</a></span> <span class="parameter-name">country</span>, </span><span class="parameter" id="operationDepositMethods-param-currency"><span class="type-annotation"><a href="../domain_model_price/Currency-class.html">Currency</a>?</span> <span class="parameter-name">currency</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/List-class.html">List</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../api_backend_schema.graphql/OperationDepositMethods$Query$OperationDepositMethods-class.html">OperationDepositMethods$Query$OperationDepositMethods</a></span>&gt;</span></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Returns information about available <a href="../domain_model_operation_deposit_method/OperationDepositMethod-class.html">OperationDepositMethod</a>s for the
+authenticated <a href="../domain_model_my_user/MyUser-class.html">MyUser</a>.
+  
+
+</dd>
+
+        <dt id="operations" class="callable">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/operations.html">operations</a></span><span class="signature">(<wbr>{<span class="parameter" id="operations-param-origin"><span class="type-annotation"><a href="../api_backend_schema.graphql/OperationOrigin.html">OperationOrigin</a></span> <span class="parameter-name">origin</span> = <span class="default-value">OperationOrigin.purse</span>, </span><span class="parameter" id="operations-param-first"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">first</span>, </span><span class="parameter" id="operations-param-after"><span class="type-annotation"><a href="../store_model_operation/OperationsCursor-class.html">OperationsCursor</a>?</span> <span class="parameter-name">after</span>, </span><span class="parameter" id="operations-param-last"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">last</span>, </span><span class="parameter" id="operations-param-before"><span class="type-annotation"><a href="../store_model_operation/OperationsCursor-class.html">OperationsCursor</a>?</span> <span class="parameter-name">before</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../api_backend_schema.graphql/Operations$Query$Operations-class.html">Operations$Query$Operations</a></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Returns <a href="../domain_model_operation/Operation-class.html">Operation</a>s filtered by the provided criteria.
+  
+
+</dd>
+
+        <dt id="operationsEvents" class="callable">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/operationsEvents.html">operationsEvents</a></span><span class="signature">(<wbr><span class="parameter" id="operationsEvents-param-origin"><span class="type-annotation"><a href="../api_backend_schema.graphql/OperationOrigin.html">OperationOrigin</a></span> <span class="parameter-name">origin</span>, </span><span class="parameter" id="operationsEvents-param-ver"><span class="type-annotation"><a href="../store_model_operation/OperationVersion-class.html">OperationVersion</a>?</span> <span class="parameter-name">ver</span>, </span><span class="parameter" id="operationsEvents-param-onVer"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-async/FutureOr-class.html">FutureOr</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../store_model_operation/OperationVersion-class.html">OperationVersion</a>?</span>&gt;</span></span> <span class="parameter-name">onVer</span>()</span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/Stream-class.html">Stream</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://pub.dev/documentation/graphql/5.2.3/graphql/QueryResult-class.html">QueryResult</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/Object-class.html">Object</a>?</span>&gt;</span></span>&gt;</span></span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Subscribes to <a href="../store_event_operation/OperationEvent-class.html">OperationEvent</a>s happening in the provided
+<a href="../api_backend_schema.graphql/OperationOrigin.html">OperationOrigin</a>.
+  
+
+</dd>
+
+        <dt id="toString" class="callable inherited">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/toString.html">toString</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  A string representation of this object.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+        <dt id="updateMonetizationSettings" class="callable">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/updateMonetizationSettings.html">updateMonetizationSettings</a></span><span class="signature">(<wbr>{<span class="parameter" id="updateMonetizationSettings-param-userId"><span class="type-annotation"><a href="../domain_model_user/UserId-class.html">UserId</a>?</span> <span class="parameter-name">userId</span>, </span><span class="parameter" id="updateMonetizationSettings-param-settings"><span>required</span> <span class="type-annotation"><a href="../api_backend_schema.graphql/MonetizationSettingsInput-class.html">MonetizationSettingsInput</a></span> <span class="parameter-name">settings</span></span>})
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../api_backend_schema.graphql/MonetizationSettingsEventsVersionedMixin-mixin.html">MonetizationSettingsEventsVersionedMixin</a>?</span>&gt;</span></span>
+  </span>
+  
+
+</dt>
+<dd>
+  Updates <a href="../domain_model_monetization_settings/MonetizationSettings-class.html">MonetizationSettings</a> of the authenticated <a href="../domain_model_my_user/MyUser-class.html">MyUser</a>.
+  
+
+</dd>
+
+    </dl>
+  </section>
+    
+  <section
+      class="summary offset-anchor inherited"
+      id="operators">
+    <h2>Operators</h2>
+    <dl class="callables">
+        <dt id="operator ==" class="callable inherited">
+  <span class="name"><a href="../provider_gql_components_wallet/WalletGraphQlMixin/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  The equality operator.
+  <div class="features"><span class="feature">inherited</span></div>
+
+</dd>
+
+    </dl>
+  </section>
+    
+    
+    
+
+</div> <!-- /.main-content -->
+<div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+  <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">messenger</a></li>
+    <li><a href="../provider_gql_components_wallet/">wallet</a></li>
+    <li class="self-crumb">WalletGraphQlMixin mixin</li>
+</ol>
+
+  <h5>wallet library</h5>
+  <div id="dartdoc-sidebar-left-content"></div>
+</div>
+<div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    messenger
+      0.3.2
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

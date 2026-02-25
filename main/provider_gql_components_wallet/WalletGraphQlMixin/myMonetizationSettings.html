@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the myMonetizationSettings method from the WalletGraphQlMixin mixin, for the Dart programming language.">
+  <title>myMonetizationSettings method - WalletGraphQlMixin mixin - wallet library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">messenger</a></li>
+    <li><a href="../../provider_gql_components_wallet/">provider&#47;gql&#47;components&#47;wallet.dart</a></li>
+    <li><a href="../../provider_gql_components_wallet/WalletGraphQlMixin-mixin.html">WalletGraphQlMixin</a></li>
+    <li class="self-crumb">myMonetizationSettings method</li>
+  </ol>
+  <div class="self-name">myMonetizationSettings</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+<div
+    id="dartdoc-main-content"
+    class="main-content"
+    data-above-sidebar="provider_gql_components_wallet&#47;WalletGraphQlMixin-mixin-sidebar.html"
+    data-below-sidebar="">
+    <div>
+<h1><span class="kind-method">myMonetizationSettings</span> method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<span class="returntype"><a href="https://api.flutter.dev/flutter/flutter_test/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../../api_backend_schema.graphql/MyMonetizationSettings$Query$MyMonetizationSettings-class.html">MyMonetizationSettings$Query$MyMonetizationSettings</a></span>&gt;</span></span>
+<span class="name ">myMonetizationSettings</span>(<wbr>{<ol class="parameter-list"> <li><span class="parameter" id="myMonetizationSettings-param-first"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">first</span>, </span></li>
+<li><span class="parameter" id="myMonetizationSettings-param-after"><span class="type-annotation"><a href="../../store_model_monetization_settings/MonetizationSettingsCursor-class.html">MonetizationSettingsCursor</a>?</span> <span class="parameter-name">after</span>, </span></li>
+<li><span class="parameter" id="myMonetizationSettings-param-last"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/int-class.html">int</a>?</span> <span class="parameter-name">last</span>, </span></li>
+<li><span class="parameter" id="myMonetizationSettings-param-before"><span class="type-annotation"><a href="../../store_model_monetization_settings/MonetizationSettingsCursor-class.html">MonetizationSettingsCursor</a>?</span> <span class="parameter-name">before</span>, </span></li>
+</ol>})
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Returns <a href="../../domain_model_monetization_settings/MonetizationSettings-class.html">MonetizationSettings</a> of the authenticated <a href="../../domain_model_my_user/MyUser-class.html">MyUser</a> filtered by
+the provided criteria.</p>
+<p>Searching <code>by.userId</code> is exact, returning:</p>
+<ul>
+<li>Individual <a href="../../domain_model_monetization_settings/MonetizationSettings-class.html">MonetizationSettings</a> (if the <code>by.userId</code> is different from
+the <a href="../../domain_model_my_user/MyUser/id.html">MyUser.id</a>).</li>
+<li>Common <a href="../../domain_model_monetization_settings/MonetizationSettings-class.html">MonetizationSettings</a> (if <code>by.userId</code> is the <a href="../../domain_model_my_user/MyUser/id.html">MyUser.id</a>).</li>
+<li>If no by (or <code>by.userId</code>) argument is provided, then individual
+<a href="../../domain_model_monetization_settings/MonetizationSettings-class.html">MonetizationSettings</a> for all <a href="../../domain_model_user/User-class.html">User</a>s will be returned, also including
+the common ones.</li>
+</ul>
+<h3 id="authentication">Authentication</h3>
+<p>Mandatory.</p>
+<h3 id="sorting">Sorting</h3>
+<p>Returned <a href="../../domain_model_monetization_settings/MonetizationSettings-class.html">MonetizationSettings</a> are sorted depending on the provided
+arguments:</p>
+<p>If the <code>by.userId</code> argument is specified, then exact
+<a href="../../domain_model_monetization_settings/MonetizationSettings-class.html">MonetizationSettings</a> are returned.</p>
+<p>Otherwise, the returned <a href="../../domain_model_monetization_settings/MonetizationSettings-class.html">MonetizationSettings</a> are sorted primarily by
+their <a href="../../domain_model_monetization_settings/MonetizationSettings/createdAt.html">MonetizationSettings.createdAt</a> field, and secondary by IDs of the
+<a href="../../domain_model_user/User-class.html">User</a>s they are specified for, in descending order.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;MyMonetizationSettings$Query$MyMonetizationSettings&gt;
+myMonetizationSettings({
+  int? first,
+  MonetizationSettingsCursor? after,
+  int? last,
+  MonetizationSettingsCursor? before,
+}) async {
+  Log.debug(
+    &#39;myMonetizationSettings($first, $after, $last, $before)&#39;,
+    &#39;$runtimeType&#39;,
+  );
+
+  final variables = MyMonetizationSettingsArguments(
+    pagination: MonetizationSettingsPagination(
+      first: first,
+      after: after,
+      last: last,
+      before: before,
+    ),
+  );
+
+  final QueryResult result = await client.query(
+    QueryOptions(
+      operationName: &#39;MyMonetizationSettings&#39;,
+      document: MyMonetizationSettingsQuery(variables: variables).document,
+      variables: variables.toJson(),
+    ),
+  );
+
+  return MyMonetizationSettings$Query.fromJson(
+    result.data!,
+  ).myMonetizationSettings;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../../index.html">messenger</a></li>
+    <li><a href="../../provider_gql_components_wallet/">wallet</a></li>
+    <li><a href="../../provider_gql_components_wallet/WalletGraphQlMixin-mixin.html">WalletGraphQlMixin</a></li>
+    <li class="self-crumb">myMonetizationSettings method</li>
+</ol>
+
+    <h5>WalletGraphQlMixin mixin</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+</div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    messenger
+      0.3.2
+  </span>
+  
+</footer>
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+

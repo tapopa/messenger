@@ -23,15 +23,15 @@ Feature: Deleted users are displayed in chats
     And I have "English" language set
     And users Bob and Charlie
     And I have group with Bob and Charlie
-    And I wait until "Bob, Alice, Charlie" group is present
+    And I wait until "Alice, Bob, Charlie" group is present
     And Bob has dialog with me
     And I wait until "Bob" dialog is present
-    And I see "Bob, Alice, Charlie" chat
+    And I see "Alice, Bob, Charlie" chat
     And I see "Bob" chat
     And I see avatar title as "Bo" for "Bob" chat
 
     When Bob deletes their account
-    Then I see "Deleted Account, Alice, Charlie" chat
+    Then I see "Alice, Deleted Account, Charlie" chat
     And I see "Deleted Account" chat
     And I see avatar title as "Bo" for "Deleted Account" chat
 

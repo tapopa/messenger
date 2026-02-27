@@ -150,10 +150,17 @@ final StepDefinitionGeneric haveGroup2 =
       (TestUser bob, TestUser charlie, context) async {
         final ChatService chatService = Get.find();
 
-        final chat = await chatService.createGroupChat([
+        final chat = await chatService.createGroupChat([], name: null);
+
+        await chatService.addChatMember(
+          chat.id,
           context.world.sessions[bob.name]!.userId,
+        );
+
+        await chatService.addChatMember(
+          chat.id,
           context.world.sessions[charlie.name]!.userId,
-        ], name: null);
+        );
 
         context.world.groups[chat.title()] = chat.id;
       },

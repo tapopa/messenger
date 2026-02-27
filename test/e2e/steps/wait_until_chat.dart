@@ -65,7 +65,19 @@ untilChatExists = then2<String, Existence, CustomWorld>(
         chat = chats[id];
       }
 
-      chat ??= chats.values.firstWhereOrNull((e) => e.title() == name);
+      Log.debug(
+        'untilChatExists -> `chat` ($dialogId ?? ${context.world.groups[name]}) so far is `$chat`',
+        'E2E',
+      );
+
+      chat ??= chats.values.firstWhereOrNull((e) {
+        Log.debug(
+          'untilChatExists -> comparing `${e.title()}` against `$name` -> ${e.title() == name}',
+          'E2E',
+        );
+
+        return e.title() == name;
+      });
 
       if (chat == null) {
         Log.debug(

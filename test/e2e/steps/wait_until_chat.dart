@@ -57,10 +57,15 @@ untilChatExists = then2<String, Existence, CustomWorld>(
       final ChatId? dialogId = context.world.sessions[name]?.dialog;
       final ChatService chatService = Get.find<ChatService>();
       final RxObsMap<ChatId, RxChat> chats = chatService.chats;
-      final RxChat? chat =
-          chats[dialogId] ??
-          chats[context.world.groups[name]] ??
-          chats.values.firstWhereOrNull((e) => e.title() == name);
+
+      RxChat? chat;
+
+      final ChatId? id = dialogId ?? context.world.groups[name];
+      if (id != null) {
+        chat = chats[id];
+      }
+
+      chat ??= chats.values.firstWhereOrNull((e) => e.title() == name);
 
       if (chat == null) {
         Log.debug(

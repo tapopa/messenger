@@ -25,6 +25,7 @@ import 'package:messenger/domain/model/chat.dart';
 import 'package:messenger/domain/repository/chat.dart';
 import 'package:messenger/domain/service/chat.dart';
 import 'package:messenger/util/log.dart';
+import 'package:messenger/util/obs/obs.dart';
 
 import '../configuration.dart';
 import '../world/custom_world.dart';
@@ -53,9 +54,20 @@ untilChatExists = then2<String, Existence, CustomWorld>(
 
       final ChatId? dialogId = context.world.sessions[name]?.dialog;
       final ChatService chatService = Get.find<ChatService>();
-      final RxChat? chat =
-          chatService.chats[dialogId] ??
-          chatService.chats[context.world.groups[name]];
+      final RxObsMap<ChatId, RxChat> chats = chatService.chats;
+      final RxChat? chat = chats[dialogId] ?? chats[context.world.groups[name]];
+
+      if (chat == null) {
+        Log.debug(
+          'untilChatExists -> chat seems to be `null`, we are looking for `$name` (`${context.world.groups[name]}`), thus the whole list -> ${chats.values.map((e) => e.toString()).join(', ')}',
+          'E2E',
+        );
+
+        Log.debug(
+          'untilChatExists -> and the paginated -> ${chatService.paginated.values.map((e) => e.toString()).join(', ')}',
+          'E2E',
+        );
+      }
 
       final Finder finder = context.world.appDriver.findByKeySkipOffstage(
         'Chat_${chat?.id}',

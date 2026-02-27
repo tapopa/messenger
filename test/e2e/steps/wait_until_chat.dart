@@ -36,7 +36,7 @@ import '../world/custom_world.dart';
 /// - Then I wait until "Dummy" chat is present
 final StepDefinitionGeneric
 untilChatExists = then2<String, Existence, CustomWorld>(
-  'I wait until {string} (chat|group|dialog) is {existence}',
+  'I wait until {string} (?:chat|group|dialog) is {existence}',
   (name, existence, context) async {
     await context.world.appDriver.waitUntil(() async {
       Log.debug(

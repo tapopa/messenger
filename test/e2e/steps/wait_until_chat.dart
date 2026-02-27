@@ -36,7 +36,7 @@ import '../world/custom_world.dart';
 /// - Then I wait until "Dummy" chat is present
 final StepDefinitionGeneric
 untilChatExists = then2<String, Existence, CustomWorld>(
-  'I wait until {string} chat is {existence}',
+  'I wait until {string} (chat|group|dialog) is {existence}',
   (name, existence, context) async {
     await context.world.appDriver.waitUntil(() async {
       Log.debug(
@@ -51,8 +51,11 @@ untilChatExists = then2<String, Existence, CustomWorld>(
         'E2E',
       );
 
+      final ChatId? dialogId = context.world.sessions[name]?.dialog;
+      final ChatService chatService = Get.find<ChatService>();
       final RxChat? chat =
-          Get.find<ChatService>().chats[context.world.groups[name]];
+          chatService.chats[dialogId] ??
+          chatService.chats[context.world.groups[name]];
 
       final Finder finder = context.world.appDriver.findByKeySkipOffstage(
         'Chat_${chat?.id}',

@@ -17,6 +17,7 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'package:collection/collection.dart';
 import 'package:flutter_gherkin/src/flutter/parameters/existence_parameter.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
@@ -24,7 +25,9 @@ import 'package:gherkin/gherkin.dart';
 import 'package:messenger/domain/model/chat.dart';
 import 'package:messenger/domain/repository/chat.dart';
 import 'package:messenger/domain/service/chat.dart';
+import 'package:messenger/ui/page/home/page/chat/controller.dart';
 import 'package:messenger/util/log.dart';
+import 'package:messenger/util/obs/obs.dart';
 
 import '../configuration.dart';
 import '../world/custom_world.dart';
@@ -36,7 +39,7 @@ import '../world/custom_world.dart';
 /// - Then I wait until "Dummy" chat is present
 final StepDefinitionGeneric
 untilChatExists = then2<String, Existence, CustomWorld>(
-  'I wait until {string} chat is {existence}',
+  'I wait until {string} (?:chat|group|dialog) is {existence}',
   (name, existence, context) async {
     await context.world.appDriver.waitUntil(() async {
       Log.debug(
@@ -51,8 +54,42 @@ untilChatExists = then2<String, Existence, CustomWorld>(
         'E2E',
       );
 
-      final RxChat? chat =
-          Get.find<ChatService>().chats[context.world.groups[name]];
+      final ChatId? dialogId = context.world.sessions[name]?.dialog;
+      final ChatService chatService = Get.find<ChatService>();
+      final RxObsMap<ChatId, RxChat> chats = chatService.chats;
+
+      RxChat? chat;
+
+      final ChatId? id = dialogId ?? context.world.groups[name];
+      if (id != null) {
+        chat = chats[id];
+      }
+
+      Log.debug(
+        'untilChatExists -> `chat` ($dialogId ?? ${context.world.groups[name]}) so far is `$chat`',
+        'E2E',
+      );
+
+      chat ??= chats.values.firstWhereOrNull((e) {
+        Log.debug(
+          'untilChatExists -> comparing `${e.title()}` against `$name` -> ${e.title() == name}',
+          'E2E',
+        );
+
+        return e.title() == name;
+      });
+
+      if (chat == null) {
+        Log.debug(
+          'untilChatExists -> chat seems to be `null`, we are looking for `$name` (`${context.world.groups[name]}`), thus the whole list -> ${chats.values.map((e) => e.toString()).join(', ')}',
+          'E2E',
+        );
+
+        Log.debug(
+          'untilChatExists -> and the paginated -> ${chatService.paginated.values.map((e) => e.toString()).join(', ')}',
+          'E2E',
+        );
+      }
 
       final Finder finder = context.world.appDriver.findByKeySkipOffstage(
         'Chat_${chat?.id}',

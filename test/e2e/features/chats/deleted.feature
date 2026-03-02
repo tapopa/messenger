@@ -23,9 +23,9 @@ Feature: Deleted users are displayed in chats
     And I have "English" language set
     And users Bob and Charlie
     And I have group with Bob and Charlie
-    And I wait until text "Alice, Bob, Charlie" is present
+    And I wait until "Alice, Bob, Charlie" group is present
     And Bob has dialog with me
-    And I wait until text "Bob" is present
+    And I wait until "Bob" dialog is present
     And I see "Alice, Bob, Charlie" chat
     And I see "Bob" chat
     And I see avatar title as "Bo" for "Bob" chat

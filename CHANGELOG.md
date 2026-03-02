@@ -6,10 +6,10 @@ All user visible changes to this project will be documented in this file. This p
 
 
 
-## [0.4.0] · 2026-??-??
-[0.4.0]: /../../tree/v0.4.0
+## [0.3.3] · 2026-03-02
+[0.3.3]: /../../tree/v0.3.3
 
-[Diff](/../../compare/v0.3.2...v0.4.0) | [Milestone](/../../milestone/8)
+[Diff](/../../compare/v0.3.2...v0.3.3) | [Milestone](/../../milestone/8)
 
 ### Changed
 
@@ -22,6 +22,7 @@ All user visible changes to this project will be documented in this file. This p
         - Minimum donation amount displaying in donation selection menu. ([#32])
 
 ### Fixed
+
 - UI:
     - Profile page:
         - Country and city missing from linked Web devices. ([team113/messenger#1620])

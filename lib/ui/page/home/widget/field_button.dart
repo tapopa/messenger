@@ -129,7 +129,7 @@ class _FieldButtonState extends State<FieldButton> {
               : widget.error
               ? BorderSide(color: style.colors.danger)
               : widget.border ??
-                    BorderSide(width: 0.5, color: style.colors.secondary),
+                    BorderSide(width: 0.5, color: style.colors.primary),
           child:
               widget.child ??
               Text(widget.text ?? '', maxLines: widget.maxLines),

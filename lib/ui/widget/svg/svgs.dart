@@ -1335,8 +1335,8 @@ class SvgIcons {
 
   static const SvgData blockRed19 = SvgData(
     'assets/icons/block_red19.svg',
-    width: 18,
-    height: 18,
+    width: 20,
+    height: 20,
   );
 
   static const SvgData cleanHistory = SvgData(
@@ -1497,32 +1497,32 @@ class SvgIcons {
 
   static const SvgData favorite19 = SvgData(
     'assets/icons/favorite19.svg',
-    width: 18,
-    height: 18,
+    width: 20,
+    height: 20,
   );
 
   static const SvgData unfavorite19 = SvgData(
     'assets/icons/unfavorite19.svg',
-    width: 18,
-    height: 18,
+    width: 20,
+    height: 20,
   );
 
   static const SvgData muted19 = SvgData(
     'assets/icons/muted19.svg',
-    width: 18,
-    height: 18,
+    width: 20,
+    height: 20,
   );
 
   static const SvgData unmuted19 = SvgData(
     'assets/icons/unmuted19.svg',
-    width: 18,
-    height: 18,
+    width: 20,
+    height: 20,
   );
 
   static const SvgData cleanHistory19 = SvgData(
     'assets/icons/clean_history19.svg',
-    width: 18,
-    height: 18,
+    width: 20,
+    height: 20,
   );
 
   static const SvgData clearSearch = SvgData(
@@ -1561,16 +1561,10 @@ class SvgIcons {
     height: 19,
   );
 
-  static const SvgData report = SvgData(
-    'assets/icons/report.svg',
-    width: 18,
-    height: 18,
-  );
-
   static const SvgData report19 = SvgData(
     'assets/icons/report19.svg',
-    width: 18,
-    height: 18,
+    width: 20,
+    height: 20,
   );
 
   static const SvgData reportWhite = SvgData(
@@ -1587,14 +1581,14 @@ class SvgIcons {
 
   static const SvgData delete19 = SvgData(
     'assets/icons/delete19.svg',
-    width: 19,
-    height: 18,
+    width: 20,
+    height: 20,
   );
 
   static const SvgData delete19White = SvgData(
     'assets/icons/delete19_white.svg',
-    width: 19,
-    height: 18,
+    width: 20,
+    height: 20,
   );
 
   static const SvgData download19 = SvgData(
@@ -2325,6 +2319,36 @@ class SvgIcons {
 
   static const SvgData attachmentMinus = SvgData(
     'assets/icons/attachment_minus.svg',
+    width: 30,
+    height: 30,
+  );
+
+  static const SvgData quickChat = SvgData(
+    'assets/icons/quick_chat.svg',
+    width: 30,
+    height: 30,
+  );
+
+  static const SvgData quickAudio = SvgData(
+    'assets/icons/quick_audio.svg',
+    width: 30,
+    height: 30,
+  );
+
+  static const SvgData quickVideo = SvgData(
+    'assets/icons/quick_video.svg',
+    width: 30,
+    height: 30,
+  );
+
+  static const SvgData quickForward = SvgData(
+    'assets/icons/quick_forward.svg',
+    width: 30,
+    height: 30,
+  );
+
+  static const SvgData quickShare = SvgData(
+    'assets/icons/quick_share.svg',
     width: 30,
     height: 30,
   );

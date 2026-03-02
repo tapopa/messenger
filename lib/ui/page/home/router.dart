@@ -97,6 +97,7 @@ class HomeRouterDelegate extends RouterDelegate<RouteConfiguration>
             child: ChatView(
               ChatId(id),
               itemId: router.arguments?['itemId'] as ChatItemId?,
+              search: router.arguments?['search'] == true,
             ),
           ),
         );

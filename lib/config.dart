@@ -157,7 +157,7 @@ class Config {
   static String scheme = 'tapopa';
 
   /// URL address of IP geolocation API server.
-  static String geoEndpoint = 'https://ipwho.is';
+  static String geoEndpoint = '/geo-ip';
 
   /// URL address of IP address discovering API server.
   static String ipEndpoint = 'https://api.ipify.org?format=json';

@@ -15,11 +15,12 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-import 'package:flutter_gherkin/flutter_gherkin.dart';
 import 'package:flutter_gherkin/src/flutter/parameters/existence_parameter.dart';
 import 'package:gherkin/gherkin.dart';
+import 'package:messenger/util/log.dart';
 
 import '../configuration.dart';
+import '../world/custom_world.dart';
 
 /// Waits until the provided text is present or absent.
 ///
@@ -27,19 +28,24 @@ import '../configuration.dart';
 /// - Then I wait until text "Dummy" is absent
 /// - Then I wait until text "Dummy" is present
 final StepDefinitionGeneric untilTextExists =
-    then2<String, Existence, FlutterWorld>(
+    then2<String, Existence, CustomWorld>(
       'I wait until text {string} is {existence}',
       (text, existence, context) async {
         await context.world.appDriver.waitUntil(() async {
-          await context.world.appDriver.waitForAppToSettle();
+          Log.debug('untilTextExists($text) -> await pump()...', 'E2E');
+          await context.world.appDriver.nativeDriver.pump(
+            const Duration(seconds: 2),
+          );
+          Log.debug('untilTextExists($text) -> await pump()... done!', 'E2E');
 
-          return existence == Existence.absent
-              ? context.world.appDriver.isAbsent(
-                  context.world.appDriver.findByTextSkipOffstage(text),
-                )
-              : context.world.appDriver.isPresent(
-                  context.world.appDriver.findByTextSkipOffstage(text),
-                );
+          final finder = context.world.appDriver.findByTextSkipOffstage(text);
+
+          Log.debug('untilTextExists($text) -> finder is $finder', 'E2E');
+
+          return switch (existence) {
+            Existence.absent => finder.evaluate().isEmpty,
+            Existence.present => finder.evaluate().isNotEmpty,
+          };
         }, timeout: const Duration(seconds: 30));
       },
     );

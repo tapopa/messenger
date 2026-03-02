@@ -1,3 +1,5 @@
+- Added minimum donation displaying in donation selection menu.
 - Redesigned user profile page.
 - Redesigned chat profile page.
+- Redesigned PayPal deposit process.
 - Bug fixes and performance improvements.

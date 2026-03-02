@@ -1,3 +1,5 @@
-- Página de perfil de usuario rediseñada.
-- Página de perfil de chat rediseñada.
+- Se añadió la visualización de la donación mínima en el menú de selección de donaciones.
+- Se rediseñó la página de perfil de usuario.
+- Se rediseñó la página de perfil del chat.
+- Se rediseñó el proceso de depósito de PayPal.
 - Corrección de errores y mejoras de rendimiento.

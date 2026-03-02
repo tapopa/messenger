@@ -804,10 +804,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: e8345198b68913db871d22ec9d82879d2980d69d
+      resolved-ref: "4c1c65bb0a919535bd9c60e6d722beabfa21e9b0"
       url: "https://github.com/sleepysquash/getx.git"
     source: git
-    version: "4.7.2"
+    version: "4.7.3"
   gherkin:
     dependency: "direct dev"
     description:

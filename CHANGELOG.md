@@ -14,14 +14,25 @@ All user visible changes to this project will be documented in this file. This p
 ### Changed
 
 - UI:
+    - Redesigned user page. ([team113/messenger#1625])
+    - Redesigned chat info page. ([team113/messenger#1625])
     - Wallet tab:
         - Redesigned PayPal deposit. ([#31])
     - Chat page:
         - Minimum donation amount displaying in donation selection menu. ([#32])
 
+### Fixed
+- UI:
+    - Profile page:
+        - Country and city missing from linked Web devices. ([team113/messenger#1620])
+    - Media panel:
+        - Reconnect button playing animation when dragging. ([team113/messenger#1621])
+
 [#31]: /../../pull/31
 [#32]: /../../pull/32
-
+[team113/messenger#1620]: https://github.com/team113/messenger/pull/1620
+[team113/messenger#1621]: https://github.com/team113/messenger/pull/1621
+[team113/messenger#1625]: https://github.com/team113/messenger/pull/1625
 
 
 

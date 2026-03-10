@@ -1,5 +1,7 @@
-- Se añadió la visualización de la donación mínima en el menú de selección de donaciones.
-- Se rediseñó la página de perfil de usuario.
-- Se rediseñó la página de perfil del chat.
-- Se rediseñó el proceso de depósito de PayPal.
+- Se añadió la visualización del volumen de entrada al modal del interruptor del micrófono.
+- Se añadió el desplazamiento horizontal de toda la aplicación cuando la ventana tiene menos de 300 px de ancho.
+- Se rediseñó la búsqueda en la pestaña de chats.
+- Se rediseñó el menú de selección de archivos adjuntos en el chat.
+- Se rediseñaron algunas partes del reproductor multimedia de escritorio.
+- Se aumentó la resolución de la cámara en las llamadas a 960x720.
 - Corrección de errores y mejoras de rendimiento.

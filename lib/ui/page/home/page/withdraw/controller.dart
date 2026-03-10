@@ -135,7 +135,7 @@ class WithdrawController extends GetxController {
 
   /// Selects a [passport] file.
   Future<void> pickPassport() async {
-    final FilePickerResult? result = await FilePicker.platform.pickFiles(
+    final FilePickerResult? result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowMultiple: false,
       withData: true,

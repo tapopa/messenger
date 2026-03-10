@@ -89,13 +89,14 @@ class _MessageFieldMoreState extends State<MessageFieldMore>
       builder: (context, constraints) {
         final Rect? rect = widget.c.fieldKey.globalPaintBounds;
 
-        final double left = rect?.left ?? 0;
-        final double right = rect == null
-            ? 0
-            : (constraints.maxWidth - rect.right);
+        double left = rect?.left ?? 0;
+        double right = rect == null ? 0 : (constraints.maxWidth - rect.right);
         final double bottom = rect == null
             ? 0
             : (constraints.maxHeight - rect.bottom + rect.height);
+
+        left += 8;
+        right += 8;
 
         return Obx(() {
           final List<Widget> children = [];
@@ -135,6 +136,8 @@ class _MessageFieldMoreState extends State<MessageFieldMore>
             children: children,
           );
 
+          final bool mobile = PlatformUtils.isMobile;
+
           return Stack(
             fit: StackFit.expand,
             children: [
@@ -146,6 +149,68 @@ class _MessageFieldMoreState extends State<MessageFieldMore>
                     width: rect?.left ?? constraints.maxWidth,
                     height: constraints.maxHeight,
                     color: style.colors.transparent,
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Listener(
+                  onPointerDown: (_) => dismiss(),
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      left: (rect?.left ?? constraints.maxWidth) + 50,
+                    ),
+                    width:
+                        constraints.maxWidth -
+                        (rect?.left ?? constraints.maxWidth) -
+                        50,
+                    height: constraints.maxHeight,
+                    color: style.colors.transparent,
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Listener(
+                  onPointerDown: (_) => dismiss(),
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      left: (rect?.left ?? constraints.maxWidth),
+                    ),
+                    width: 50,
+                    height: rect?.top ?? 0,
+                    color: style.colors.transparent,
+                  ),
+                ),
+              ),
+              Positioned(
+                left: left,
+                right: mobile ? right : null,
+                bottom: 0,
+                child: SlideTransition(
+                  position: Tween(
+                    begin: mobile ? const Offset(0, 1) : Offset.zero,
+                    end: Offset.zero,
+                  ).animate(_animation),
+                  child: FadeTransition(
+                    opacity: Tween(
+                      begin: mobile ? 1.0 : 0.0,
+                      end: 1.0,
+                    ).animate(_animation),
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: bottom + 10),
+                      decoration: BoxDecoration(
+                        color: style.colors.onPrimary,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          CustomBoxShadow(
+                            blurRadius: 8,
+                            color: style.colors.onBackgroundOpacity13,
+                          ),
+                        ],
+                      ),
+                      child: mobile ? actions : IntrinsicWidth(child: actions),
+                    ),
                   ),
                 ),
               ),

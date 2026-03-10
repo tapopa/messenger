@@ -6,6 +6,50 @@ All user visible changes to this project will be documented in this file. This p
 
 
 
+## [0.3.4] · 2026-03-10
+[0.3.4]: /../../tree/v0.3.4
+
+[Diff](/../../compare/v0.3.3...v0.3.4) | [Milestone](/../../milestone/9)
+
+### Added
+
+- UI:
+    - Profile page:
+        - Display input volume for selected microphone. ([team113/messenger#1634])
+
+### Changed
+
+- UI:
+    - Chats tab:
+        - Redesigned searching. ([team113/messenger#1630])
+    - Horizontal application scroll when window's width is less than 300px. ([team113/messenger#1632])
+    - Chat page:
+        - Redesigned attachments buttons. ([team113/messenger#1633])
+        - Redesigned desktop player. ([team113/messenger#1636])
+    - Media panel:
+        - Increased camera resolution to 960x720. ([team113/messenger#1637])
+
+### Fixed
+
+- UI:
+    - Player:
+        - Screen turning dark when double pressing escape. ([team113/messenger#1629])
+    - Freelance page:
+        - Multiline lines displayed in a single line. ([team113/messenger#1617], [team113/messenger#544])
+
+[team113/messenger#544]: https://github.com/team113/messenger/issues/544
+[team113/messenger#1617]: https://github.com/team113/messenger/pull/1617
+[team113/messenger#1629]: https://github.com/team113/messenger/pull/1629
+[team113/messenger#1630]: https://github.com/team113/messenger/pull/1630
+[team113/messenger#1632]: https://github.com/team113/messenger/pull/1632
+[team113/messenger#1633]: https://github.com/team113/messenger/pull/1633
+[team113/messenger#1634]: https://github.com/team113/messenger/pull/1634
+[team113/messenger#1636]: https://github.com/team113/messenger/pull/1636
+[team113/messenger#1637]: https://github.com/team113/messenger/pull/1637
+
+
+
+
 ## [0.3.3] · 2026-03-02
 [0.3.3]: /../../tree/v0.3.3
 

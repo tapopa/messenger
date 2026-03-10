@@ -6,7 +6,7 @@ All user visible changes to this project will be documented in this file. This p
 
 
 
-## [0.1.1] · 2026-03-03
+## [0.1.1] · 2026-03-10
 [0.1.1]: https://github.com/tapopa/messenger/tree/helm%2Ftapopa-messenger%2F0.1.1/helm/tapopa-messenger
 
 ### Added

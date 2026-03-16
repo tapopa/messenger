@@ -377,8 +377,8 @@ class AvatarWidget extends StatelessWidget {
         builder: (context, constraints) {
           return SvgImage.asset(
             'assets/images/support.svg',
-            width: constraints.maxHeight * 0.8,
-            height: constraints.maxHeight * 0.8,
+            width: constraints.maxHeight * 1.0,
+            height: constraints.maxHeight * 1.0,
           );
         },
       ),

@@ -84,4 +84,8 @@ class ApplicationSettings {
     videoVolume,
     logLevel,
   );
+
+  @override
+  String toString() =>
+      'ApplicationSettings(enablePopups: $enablePopups, locale: $locale, showIntroduction: $showIntroduction, sideBarWidth: $sideBarWidth, callButtons: $callButtons, pinnedActions: $pinnedActions, muteKeys: $muteKeys, videoVolume: $videoVolume, logLevel: $logLevel)';
 }

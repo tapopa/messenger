@@ -144,7 +144,7 @@ class Config {
   ///
   /// Should be bumped up, when breaking changes in this scheme occur, however
   /// be sure to write migrations and test them.
-  static int commonVersion = 8;
+  static int commonVersion = 9;
 
   /// Schema version of the [ScopedDatabase].
   ///
@@ -172,7 +172,7 @@ class Config {
   static bool redirectStdOut = true;
 
   /// [UserId] of the [User]-support.
-  static String supportId = '7IjN4UqGJyALCV68yVP7Yb';
+  static String supportId = 'tapopa';
 
   /// [UserId]s of the [User]s that should be considered as supports.
   static List<String> supportIds = [];
@@ -350,7 +350,7 @@ class Config {
         ? const String.fromEnvironment('SOCAPP_SUPPORT_SECONDARY')
         : document['support']?['secondary'];
 
-    supportIds = ids == null ? [supportId] : ids.split(',');
+    supportIds = ids == null ? [...supportIds, supportId] : ids.split(',');
 
     payPalClientId = const bool.hasEnvironment('SOCAPP_PAYPAL_CLIENT_ID')
         ? const String.fromEnvironment('SOCAPP_PAYPAL_CLIENT_ID')
@@ -394,7 +394,7 @@ class Config {
     if (confRemote) {
       try {
         final response = await (await PlatformUtils.dio).fetch(
-          RequestOptions(path: '$url:$port/conf?${Pubspec.ref}'),
+          RequestOptions(path: '$url:$port/conf?v=${Pubspec.ref}'),
         );
         if (response.statusCode == 200) {
           dynamic remote;

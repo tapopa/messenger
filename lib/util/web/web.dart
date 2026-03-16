@@ -1219,6 +1219,13 @@ class WebUtils {
   /// iOS `AVAudioSession`.
   static Future<void> setupAudioSessionManagement(bool value) => Future.value();
 
+  /// Ensures the [ISRG Root X1 certificate][1] is trusted on the device.
+  ///
+  /// [1]: https://letsencrypt.org/certificates/
+  static Future<void> ensureIsrgCertificate() async {
+    // No-op, as browsers handle the root certificate themselves.
+  }
+
   /// Posts the [message] to a broadcast channel with [name] identifier.
   static void postBroadcastMessage(String name, Map<String, dynamic> message) {
     final web.BroadcastChannel channel = web.BroadcastChannel(name);

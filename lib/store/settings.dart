@@ -77,7 +77,26 @@ class SettingsRepository extends IdentityDependency
 
   @override
   Future<void> init() async {
-    Log.debug('onInit()', '$runtimeType');
+    Log.debug('onInit()...', '$runtimeType');
+
+    await _guard.protect(() async {
+      final DtoSettings? settings = await _settingsLocal.read(me);
+      mediaSettings.value = settings?.media ?? MediaSettings();
+      applicationSettings.value =
+          settings?.application ?? ApplicationSettings();
+
+      final DtoBackground? bytes = await _backgroundLocal.read(me);
+      background.value = bytes?.bytes;
+
+      Log.debug(
+        'onInit()... done! applicationSettings -> ${applicationSettings.value} mediaSettings -> ${mediaSettings.value}',
+        '$runtimeType',
+      );
+    });
+
+    _initSettingsSubscription();
+    _initBackgroundSubscription();
+
     super.onInit();
   }
 

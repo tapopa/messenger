@@ -6,6 +6,48 @@ All user visible changes to this project will be documented in this file. This p
 
 
 
+## [0.4.0] · 2026-??-??
+[0.4.0]: /../../tree/v0.4.0
+
+[Diff](/../../compare/v0.3.4...v0.4.0) | [Milestone](/../../milestone/10)
+
+### Added
+
+- UI:
+    - Profile page:
+        - Added help and sign out blocks. ([team113/messenger#1638])
+
+### Changed
+
+- UI:
+    - Chat info page:
+        - Redesigned links block. ([team113/messenger#1644], [team113/messenger#1642], [team113/messenger#1638])
+    - Profile page:
+        - Redesigned links, cache and media devices blocks. ([team113/messenger#1644], [team113/messenger#1638])
+    - Chats tab:
+        - Avatar for support chats. ([team113/messenger#1646])
+    - Chat page:
+        - Media attachments displayed in column instead of grid. ([team113/messenger#1651], [team113/messenger#1647])
+
+### Fixed
+
+- UI:
+    - Chat page:
+        - Welcome message displayed at bottom instead of top. ([team113/messenger#1649])
+    - Media panel:
+        - Click cursor missing when hovering over dock buttons on macOS. ([team113/messenger#1651])
+
+[team113/messenger#1638]: https://github.com/team113/messenger/pull/1638
+[team113/messenger#1642]: https://github.com/team113/messenger/pull/1642
+[team113/messenger#1644]: https://github.com/team113/messenger/pull/1644
+[team113/messenger#1646]: https://github.com/team113/messenger/pull/1646
+[team113/messenger#1647]: https://github.com/team113/messenger/pull/1647
+[team113/messenger#1649]: https://github.com/team113/messenger/pull/1649
+[team113/messenger#1651]: https://github.com/team113/messenger/pull/1651
+
+
+
+
 ## [0.3.4] · 2026-03-10
 [0.3.4]: /../../tree/v0.3.4
 

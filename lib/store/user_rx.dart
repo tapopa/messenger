@@ -184,6 +184,9 @@ class RxUserImpl extends RxUser {
     await _userEvent(events);
   }
 
+  @override
+  String toString() => 'RxUserImpl(${user.toJson()})';
+
   /// Initializes [UserRepository.userEvents] subscription.
   Future<void> _initRemoteSubscription() async {
     Log.debug('_initRemoteSubscription()', '$runtimeType($id)');

@@ -1,6 +1,1 @@
-- Se agregaron bloques de ayuda y cierre de sesión a la página de perfil.
-- Se agregó un avatar para el chat de soporte.
-- Se actualizó el diseño del bloque de enlaces en la página de perfil del chat.
-- Se actualizaron los bloques de enlaces, caché y dispositivos multimedia en la página de perfil.
-- Se actualizó el diseño de los archivos adjuntos multimedia para que se muestren en columnas en lugar de cuadrícula en el chat.
-- Corrección de errores y mejoras de rendimiento.
+- Avatar actualizado para el chat de soporte.

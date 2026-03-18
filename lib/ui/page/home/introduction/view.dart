@@ -156,128 +156,67 @@ class IntroductionView extends StatelessWidget {
               header = null;
               padding = EdgeInsets.zero;
 
-              final Widget logo = Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // const SizedBox(height: 8),
-                  Expanded(
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SvgImage.asset(
-                            'assets/images/logo.svg',
-                            width: 58.5,
-                            height: 58,
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Messenger',
-                            style: style.fonts.larger.regular.onBackground,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 64, top: 2),
-                            child: Text(
-                              'by Tapopa',
-                              style: style.fonts.small.regular.onBackground
-                                  .copyWith(fontStyle: FontStyle.italic),
-                            ),
-                          ),
-                        ],
+              final Widget logo = Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SvgImage.asset(
+                      'assets/images/logo.svg',
+                      width: 58.5,
+                      height: 58,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Messenger',
+                      style: style.fonts.larger.regular.onBackground,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 64, top: 2),
+                      child: Text(
+                        'by Tapopa',
+                        style: style.fonts.small.regular.onBackground.copyWith(
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
                     ),
-                  ),
-                  // WidgetButton(
-                  //   onPressed: () async {
-                  //     await TermsOfUseView.show(router.context!);
-                  //   },
-                  //   child: Text(
-                  //     'label_terms_and_privacy_policy'.l10n,
-                  //     style: style.fonts.smallest.regular.secondary,
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 8),
-                ],
+                  ],
+                ),
               );
 
-              final Widget side = Column(
-                children: [
-                  // const SizedBox(height: 8),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Obx(() {
-                        final Widget child;
+              final Widget side = Center(
+                child: Obx(() {
+                  final Widget child;
 
-                        if (c.chat.value == null && c.fetching.value) {
-                          child = ConstrainedBox(
-                            key: const Key('Loading'),
-                            constraints: const BoxConstraints(maxWidth: 350),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: style.colors.onPrimary,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Center(
-                                child: AnimatedPulsing(
-                                  child: Text(
-                                    'label_loading'.l10n,
-                                    style: style.fonts.big.regular.onBackground,
-                                  ),
-                                ),
-                              ),
+                  if (c.chat.value == null && c.fetching.value) {
+                    child = ConstrainedBox(
+                      key: const Key('Loading'),
+                      constraints: const BoxConstraints(maxWidth: 350),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: style.colors.onPrimary,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Center(
+                          child: AnimatedPulsing(
+                            child: Text(
+                              'label_loading'.l10n,
+                              style: style.fonts.big.regular.onBackground,
                             ),
-                          );
-                        } else {
-                          child = buttons;
-                        }
-
-                        return SizedBox(
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 250),
-                            child: child,
                           ),
-                        );
-                      }),
+                        ),
+                      ),
+                    );
+                  } else {
+                    child = buttons;
+                  }
+
+                  return SizedBox(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      child: child,
                     ),
-                  ),
-                  // Center(
-                  //   child: Row(
-                  //     mainAxisSize: MainAxisSize.min,
-                  //     children: [
-                  //       WidgetButton(
-                  //         onPressed: () {
-                  //           c.previousPage = c.page.value;
-                  //           c.page.value = IntroductionStage.language;
-                  //         },
-                  //         child: Text(
-                  //           'label_language_entry'.l10nfmt({
-                  //             'code': L10n.chosen.value?.locale.languageCode
-                  //                 .toUpperCase(),
-                  //             'name': L10n.chosen.value?.name,
-                  //           }),
-                  //           style: style.fonts.smallest.regular.secondary,
-                  //         ),
-                  //       ),
-                  //       SizedBox(width: 4),
-                  //       Container(
-                  //         color: style.colors.secondaryLight,
-                  //         width: 1,
-                  //         height: 8,
-                  //       ),
-                  //       SizedBox(width: 4),
-                  //       WidgetButton(
-                  //         onPressed: () => router.push(Routes.support),
-                  //         child: Text(
-                  //           'btn_help'.l10n,
-                  //           style: style.fonts.smallest.regular.secondary,
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 8),
-                ],
+                  );
+                }),
               );
 
               children = [
@@ -285,14 +224,10 @@ class IntroductionView extends StatelessWidget {
                   children: [
                     Expanded(child: SizedBox(height: 160, child: logo)),
                     Expanded(
-                      child: ClipPath(
-                        clipper: _Clipper(12),
-                        child: Container(
-                          height: 160,
-                          padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-                          color: style.colors.background,
-                          child: side,
-                        ),
+                      child: Container(
+                        height: 160,
+                        padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                        child: side,
                       ),
                     ),
                   ],
@@ -960,7 +895,7 @@ class IntroductionView extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: style.cardRadius,
-                color: style.colors.background,
+                color: style.colors.onPrimary,
               ),
               width: double.infinity,
             ),
@@ -972,6 +907,7 @@ class IntroductionView extends StatelessWidget {
                 'assets/images/modal.svg',
                 width: double.infinity,
                 fit: BoxFit.cover,
+                alignment: Alignment.center,
               ),
             ),
           ),
@@ -1270,32 +1206,4 @@ class IntroductionView extends StatelessWidget {
       );
     });
   }
-}
-
-/// [CustomClipper] clipping an oval and the borders with [radius].
-class _Clipper extends CustomClipper<Path> {
-  const _Clipper(this.radius);
-
-  /// Radius of the corner being clipped.
-  final double radius;
-
-  @override
-  Path getClip(Size size) {
-    final path = Path()
-      ..lineTo(size.width - radius, 0)
-      ..quadraticBezierTo(size.width, 0, size.width, radius)
-      ..lineTo(size.width, size.height - radius)
-      ..quadraticBezierTo(
-        size.width,
-        size.height,
-        size.width - radius,
-        size.height,
-      )
-      ..lineTo(8, size.height)
-      ..quadraticBezierTo(-16, size.height / 2, 27, 0);
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => true;
 }

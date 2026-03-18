@@ -70,20 +70,20 @@ class PrimaryButton extends StatelessWidget {
       ),
     );
 
-    if (leading != null) {
-      return Stack(
-        children: [
-          fieldButton,
-          Positioned(
-            top: 0,
-            bottom: 0,
-            left: 16,
-            child: IgnorePointer(child: leading),
-          ),
-        ],
-      );
+    if (leading == null) {
+      return fieldButton;
     }
 
-    return fieldButton;
+    return Stack(
+      children: [
+        fieldButton,
+        Positioned(
+          top: 0,
+          bottom: 0,
+          left: 16,
+          child: IgnorePointer(child: leading),
+        ),
+      ],
+    );
   }
 }

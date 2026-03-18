@@ -6,6 +6,21 @@ All user visible changes to this project will be documented in this file. This p
 
 
 
+## [0.4.0] · 2026-??-??
+[0.4.0]: /../../tree/v0.4.0
+
+[Diff](/../../compare/v0.3.6...v0.4.0) | [Milestone](/../../milestone/12)
+
+### Changed
+
+- UI: 
+    - Login modal. ([#40])
+
+[#40]: /../../pull/40
+
+
+
+
 ## [0.3.6] · 2026-03-16
 [0.3.6]: /../../tree/v0.3.6
 

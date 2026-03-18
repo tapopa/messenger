@@ -81,6 +81,7 @@ class FieldButton extends StatefulWidget {
   /// Indicator whether the [text] should have danger color.
   final bool danger;
 
+  /// Indicator whether [Border] of this button should display danger.
   final bool error;
 
   /// [BorderSide] to display around this [FieldButton] instead of the
@@ -97,55 +98,57 @@ class _FieldButtonState extends State<FieldButton> {
   Widget build(BuildContext context) {
     final style = Theme.of(context).style;
 
+    final Widget button = OutlinedRoundedButton(
+      maxWidth: double.infinity,
+      maxHeight: double.infinity,
+      color: widget.danger && widget.border == null
+          ? style.colors.danger
+          : widget.warning
+          ? style.colors.primary
+          : style.colors.onPrimary,
+      disabled: style.colors.secondaryHighlight,
+      onPressed: widget.onPressed,
+      style:
+          widget.style ??
+          style.fonts.normal.regular.primary.copyWith(
+            // Exception, as [widget.style] may vary.
+            color: widget.onPressed == null
+                ? style.colors.onBackground
+                : widget.warning
+                ? style.colors.onPrimary
+                : widget.danger
+                ? widget.border == null
+                      ? style.colors.onPrimary
+                      : style.colors.danger
+                : style.colors.primary,
+          ),
+      leading: widget.trailing,
+      headline: widget.headline,
+      border: widget.onPressed == null
+          ? BorderSide(width: 0.5, color: style.colors.secondaryLight)
+          : widget.warning
+          ? null
+          : widget.error
+          ? BorderSide(color: style.colors.danger)
+          : widget.border ??
+                BorderSide(width: 0.5, color: style.colors.primary),
+      child: widget.child ?? Text(widget.text ?? '', maxLines: widget.maxLines),
+    );
+
+    if (widget.subtitle == null) {
+      return button;
+    }
+
     return Column(
       children: [
-        OutlinedRoundedButton(
-          maxWidth: double.infinity,
-          color: widget.danger && widget.border == null
-              ? style.colors.danger
-              : widget.warning
-              ? style.colors.primary
-              : style.colors.onPrimary,
-          disabled: style.colors.secondaryHighlight,
-          onPressed: widget.onPressed,
-          style:
-              widget.style ??
-              style.fonts.normal.regular.primary.copyWith(
-                // Exception, as [widget.style] may vary.
-                color: widget.onPressed == null
-                    ? style.colors.onBackground
-                    : widget.warning
-                    ? style.colors.onPrimary
-                    : widget.danger
-                    ? widget.border == null
-                          ? style.colors.onPrimary
-                          : style.colors.danger
-                    : style.colors.primary,
-              ),
-          height: 46,
-          leading: widget.trailing,
-          headline: widget.headline,
-          maxHeight: double.infinity,
-          border: widget.onPressed == null
-              ? BorderSide(width: 0.5, color: style.colors.secondaryLight)
-              : widget.warning
-              ? null
-              : widget.error
-              ? BorderSide(color: style.colors.danger)
-              : widget.border ??
-                    BorderSide(width: 0.5, color: style.colors.primary),
-          child:
-              widget.child ??
-              Text(widget.text ?? '', maxLines: widget.maxLines),
-        ),
-        if (widget.subtitle != null)
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 8, 24, 8),
-              child: widget.subtitle,
-            ),
+        button,
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 8, 24, 8),
+            child: widget.subtitle,
           ),
+        ),
       ],
     );
   }

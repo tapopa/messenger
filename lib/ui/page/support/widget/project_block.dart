@@ -22,14 +22,14 @@ import '/themes.dart';
 import '/ui/page/home/widget/block.dart';
 import '/ui/widget/svg/svg.dart';
 
-/// [Block] display the [InteractiveLogo].
+/// [Block] display the [SvgImage] logo.
 class ProjectBlock extends StatelessWidget {
   const ProjectBlock({super.key, this.onPressed, this.children = const []});
 
   /// Callback, called when logo is pressed.
   final void Function()? onPressed;
 
-  /// [Widget]s to display under the [InteractiveLogo], if any.
+  /// [Widget]s to display under the [SvgImage], if any.
   final List<Widget> children;
 
   @override

@@ -990,7 +990,9 @@ class IntroductionView extends StatelessWidget {
                       }).toList(),
                     ),
                   ),
-                  if (PlatformUtils.isWeb && !WebUtils.isChrome) ...[
+                  if (PlatformUtils.isWeb &&
+                      !PlatformUtils.isIOS &&
+                      !WebUtils.isChrome) ...[
                     const SizedBox(height: 6),
                     Text(
                       'label_optimized_for_google_chrome'.l10n,

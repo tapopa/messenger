@@ -17,10 +17,10 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../widget/svg/svg.dart';
 import '/l10n/l10n.dart';
 import '/themes.dart';
 import '/ui/page/home/widget/block.dart';
+import '/ui/widget/svg/svg.dart';
 
 /// [Block] display the [InteractiveLogo].
 class ProjectBlock extends StatelessWidget {

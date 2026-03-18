@@ -1129,6 +1129,7 @@ label_operation_label_waiting_for_paypal = Waiting response from the PayPal. {$s
         *[other] seconds
     }.
 label_optimism_op_mainnet = Optimism (OP Mainnet)
+label_optimized_for_google_chrome = Optimized for Google Chrome
 label_order_payment = Order your withdrawal
 label_outgoing_call = Calling
 label_participants = Members: {$count}

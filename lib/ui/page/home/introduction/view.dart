@@ -18,6 +18,7 @@
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,6 +42,7 @@ import '/ui/widget/text_field.dart';
 import '/ui/widget/widget_button.dart';
 import '/util/message_popup.dart';
 import '/util/platform_utils.dart';
+import '/util/web/web_utils.dart';
 import 'controller.dart';
 import 'widget/animated_pulsing.dart';
 
@@ -157,7 +159,7 @@ class IntroductionView extends StatelessWidget {
               final Widget logo = Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const SizedBox(height: 8),
+                  // const SizedBox(height: 8),
                   Expanded(
                     child: Center(
                       child: Column(
@@ -185,22 +187,22 @@ class IntroductionView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  WidgetButton(
-                    onPressed: () async {
-                      await TermsOfUseView.show(router.context!);
-                    },
-                    child: Text(
-                      'label_terms_and_privacy_policy'.l10n,
-                      style: style.fonts.smallest.regular.secondary,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
+                  // WidgetButton(
+                  //   onPressed: () async {
+                  //     await TermsOfUseView.show(router.context!);
+                  //   },
+                  //   child: Text(
+                  //     'label_terms_and_privacy_policy'.l10n,
+                  //     style: style.fonts.smallest.regular.secondary,
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 8),
                 ],
               );
 
               final Widget side = Column(
                 children: [
-                  const SizedBox(height: 8),
+                  // const SizedBox(height: 8),
                   Expanded(
                     child: Align(
                       alignment: Alignment.center,
@@ -239,42 +241,42 @@ class IntroductionView extends StatelessWidget {
                       }),
                     ),
                   ),
-                  Center(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        WidgetButton(
-                          onPressed: () {
-                            c.previousPage = c.page.value;
-                            c.page.value = IntroductionStage.language;
-                          },
-                          child: Text(
-                            'label_language_entry'.l10nfmt({
-                              'code': L10n.chosen.value?.locale.languageCode
-                                  .toUpperCase(),
-                              'name': L10n.chosen.value?.name,
-                            }),
-                            style: style.fonts.smallest.regular.secondary,
-                          ),
-                        ),
-                        SizedBox(width: 4),
-                        Container(
-                          color: style.colors.secondaryLight,
-                          width: 1,
-                          height: 8,
-                        ),
-                        SizedBox(width: 4),
-                        WidgetButton(
-                          onPressed: () => router.push(Routes.support),
-                          child: Text(
-                            'btn_help'.l10n,
-                            style: style.fonts.smallest.regular.secondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
+                  // Center(
+                  //   child: Row(
+                  //     mainAxisSize: MainAxisSize.min,
+                  //     children: [
+                  //       WidgetButton(
+                  //         onPressed: () {
+                  //           c.previousPage = c.page.value;
+                  //           c.page.value = IntroductionStage.language;
+                  //         },
+                  //         child: Text(
+                  //           'label_language_entry'.l10nfmt({
+                  //             'code': L10n.chosen.value?.locale.languageCode
+                  //                 .toUpperCase(),
+                  //             'name': L10n.chosen.value?.name,
+                  //           }),
+                  //           style: style.fonts.smallest.regular.secondary,
+                  //         ),
+                  //       ),
+                  //       SizedBox(width: 4),
+                  //       Container(
+                  //         color: style.colors.secondaryLight,
+                  //         width: 1,
+                  //         height: 8,
+                  //       ),
+                  //       SizedBox(width: 4),
+                  //       WidgetButton(
+                  //         onPressed: () => router.push(Routes.support),
+                  //         child: Text(
+                  //           'btn_help'.l10n,
+                  //           style: style.fonts.smallest.regular.secondary,
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 8),
                 ],
               );
 
@@ -862,9 +864,7 @@ class IntroductionView extends StatelessWidget {
                       return RectangleButton(
                         key: Key('Language_${e.locale.languageCode}'),
                         selected: selected,
-                        onPressed: () {
-                          L10n.set(e);
-                        },
+                        onPressed: () => L10n.set(e),
                         child: Row(
                           children: [
                             Text(e.locale.languageCode.toUpperCase()),
@@ -942,58 +942,130 @@ class IntroductionView extends StatelessWidget {
       ],
     );
 
+    final Widget container = Container(
+      decoration: BoxDecoration(
+        borderRadius: style.cardRadius,
+        boxShadow: const [
+          CustomBoxShadow(
+            blurRadius: 8,
+            color: Color(0x22000000),
+            blurStyle: BlurStyle.outer,
+          ),
+        ],
+      ),
+      margin: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: style.cardRadius,
+                color: style.colors.background,
+              ),
+              width: double.infinity,
+            ),
+          ),
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: style.cardRadius,
+              child: SvgImage.asset(
+                'assets/images/modal.svg',
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Obx(() {
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              decoration: BoxDecoration(
+                borderRadius: style.cardRadius,
+                color: c.page.value == null ? null : style.colors.background,
+              ),
+              width: double.infinity,
+              child: children,
+            );
+          }),
+        ],
+      ),
+    );
+
     return ConstrainedBox(
       key: c.opacity.value == 1 ? const Key('IntroductionView') : null,
       constraints: BoxConstraints(
         maxWidth: context.isNarrow ? double.infinity : 450,
         minHeight: 0,
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: style.cardRadius,
-          boxShadow: const [
-            CustomBoxShadow(
-              blurRadius: 8,
-              color: Color(0x22000000),
-              blurStyle: BlurStyle.outer,
-            ),
-          ],
-        ),
-        margin: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: style.cardRadius,
-                  color: style.colors.background,
-                ),
-                width: double.infinity,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(child: container),
+          Obx(() {
+            final List<Widget> subtitle = [
+              WidgetButton(
+                onPressed: () async {
+                  await TermsOfUseView.show(router.context!);
+                },
+                child: Text('label_terms_and_privacy_policy'.l10n),
               ),
-            ),
-            Positioned.fill(
-              child: ClipRRect(
-                borderRadius: style.cardRadius,
-                child: SvgImage.asset(
-                  'assets/images/modal.svg',
-                  width: double.infinity,
-                  fit: BoxFit.cover,
+              WidgetButton(
+                onPressed: () => router.push(Routes.support),
+                child: Text('btn_help'.l10n),
+              ),
+              WidgetButton(
+                onPressed: () {
+                  c.previousPage = c.page.value;
+                  c.page.value = IntroductionStage.language;
+                },
+                child: Text(
+                  'label_language_entry'.l10nfmt({
+                    'code': L10n.chosen.value?.locale.languageCode
+                        .toUpperCase(),
+                    'name': L10n.chosen.value?.name,
+                  }),
                 ),
               ),
-            ),
-            Obx(() {
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
-                decoration: BoxDecoration(
-                  borderRadius: style.cardRadius,
-                  color: c.page.value == null ? null : style.colors.background,
-                ),
-                width: double.infinity,
-                child: children,
-              );
-            }),
-          ],
-        ),
+            ];
+
+            return AnimatedSizeAndFade.showHide(
+              fadeDuration: const Duration(milliseconds: 250),
+              sizeDuration: const Duration(milliseconds: 250),
+              show: c.page.value == null,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 6),
+                  DefaultTextStyle(
+                    style: style.fonts.smaller.regular.onPrimary,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: subtitle.expandIndexed((i, e) {
+                        return [
+                          e,
+                          if (i < subtitle.length - 1)
+                            Container(
+                              margin: EdgeInsets.fromLTRB(4, 0, 4, 0),
+                              color: style.colors.secondaryLight,
+                              width: 1,
+                              height: 8,
+                            ),
+                        ];
+                      }).toList(),
+                    ),
+                  ),
+                  if (PlatformUtils.isWeb && !WebUtils.isChrome) ...[
+                    const SizedBox(height: 6),
+                    Text(
+                      'label_optimized_for_google_chrome'.l10n,
+                      style: style.fonts.smallest.regular.onPrimaryOpacity50,
+                    ),
+                  ],
+                ],
+              ),
+            );
+          }),
+        ],
       ),
     );
   }

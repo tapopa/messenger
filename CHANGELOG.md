@@ -14,9 +14,9 @@ All user visible changes to this project will be documented in this file. This p
 ### Changed
 
 - UI: 
-    - Login modal. ([#40])
+    - Login modal. ([#41])
 
-[#40]: /../../pull/40
+[#41]: /../../pull/41
 
 
 

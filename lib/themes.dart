@@ -95,7 +95,13 @@ part 'themes.g.dart';
     'regular': ['onBackground', 'secondary', 'onPrimary', 'primary'],
   },
   'smallest': {
-    'regular': ['onBackground', 'onPrimary', 'secondary', 'primary'],
+    'regular': [
+      'onBackground',
+      'onPrimary',
+      'onPrimaryOpacity50',
+      'secondary',
+      'primary',
+    ],
   },
 })
 class Themes {
@@ -208,6 +214,7 @@ class Themes {
       secondaryHighlight: colors.secondaryHighlight,
       secondaryHighlightDarkest: colors.secondaryHighlightDarkest,
       onPrimary: colors.onPrimary,
+      onPrimaryOpacity50: colors.onPrimaryOpacity50,
       danger: colors.danger,
       currencyPrimary: colors.currencyPrimary,
       onDonatePrimary: colors.onDonatePrimary,

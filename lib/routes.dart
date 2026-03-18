@@ -87,6 +87,7 @@ import 'ui/page/home/view.dart';
 import 'ui/page/popup_call/view.dart';
 import 'ui/page/popup_gallery/view.dart';
 import 'ui/page/style/view.dart';
+import 'ui/page/support/view.dart';
 import 'ui/page/unknown/view.dart';
 import 'ui/widget/lifecycle_observer.dart';
 import 'ui/widget/progress_indicator.dart';
@@ -117,6 +118,7 @@ class Routes {
   static const home = '/';
   static const me = '/me';
   static const menu = '/menu';
+  static const support = '/support';
   static const partner = '/partner';
   static const partnerTransactions = '/partner/transactions';
   static const prices = '/partner/prices';
@@ -362,6 +364,7 @@ class RouterState extends ChangeNotifier {
   String _guarded(String to) {
     if (to.startsWith(Routes.wallet) ||
         to.startsWith(Routes.erase) ||
+        to.startsWith(Routes.support) ||
         to.startsWith(Routes.partner) ||
         to.startsWith(Routes.chatDirectLink)) {
       return to;
@@ -885,6 +888,14 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
           ),
         ),
       ];
+    } else if (_state.route.startsWith(Routes.support)) {
+      return const [
+        MaterialPage(
+          key: ValueKey('SupportPage'),
+          name: Routes.support,
+          child: SupportView(),
+        ),
+      ];
     }
 
     /// [Routes.home] page is always included.
@@ -1169,6 +1180,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
         _state.route.startsWith(Routes.user) ||
         _state.route.startsWith(Routes.wallet) ||
         _state.route.startsWith(Routes.erase) ||
+        _state.route.startsWith(Routes.support) ||
         _state.route.startsWith(Routes.partner) ||
         _state.route.startsWith(Routes.chatDirectLink) ||
         _state.route == Routes.me ||

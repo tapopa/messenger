@@ -20,7 +20,7 @@
 alert_account_will_be_deleted1 = La cuenta{" "}
 alert_account_will_be_deleted2 = {" "}será eliminada
 alert_by_proceeding_you_accept_terms1 = Al continuar, Usted acepta{" "}
-alert_by_proceeding_you_accept_terms2 = Condiciones de Uso y Política de Privacidad
+alert_by_proceeding_you_accept_terms2 = Términos y Condiciones
 alert_by_proceeding_you_accept_terms3 = .
 alert_chat_will_be_reported1 = El grupo{" "}
 alert_chat_will_be_reported2 = {" "}será reportado

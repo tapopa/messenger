@@ -573,8 +573,6 @@ class IntroductionController extends GetxController with IdentityAware {
 
       final bool authorized = _authService.isAuthorized();
 
-      // router.switchedFrom = userId;
-
       await _authService.signIn(
         password: userPassword,
         login: userLogin,
@@ -582,7 +580,6 @@ class IntroductionController extends GetxController with IdentityAware {
         email: userEmail,
         phone: userPhone,
         force: authorized,
-        // removeAfterwards: userId,
       );
 
       // TODO: This is a hack that should be removed, as whenever the account
@@ -731,8 +728,6 @@ class IntroductionController extends GetxController with IdentityAware {
 
   /// Switches to the account with the given [id].
   Future<void> switchTo(UserId id) async {
-    // router.switchedFrom = userId;
-
     try {
       // TODO: This is a hack that should be removed, as whenever the account is
       //       changed, the [HomeView] and its dependencies must be rebuilt,

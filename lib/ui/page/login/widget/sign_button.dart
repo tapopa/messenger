@@ -55,8 +55,8 @@ class SignButton extends StatelessWidget {
         title: title,
         subtitle: subtitle,
         style: onPressed == null
-            ? style.fonts.medium.regular.secondary
-            : style.fonts.medium.regular.onBackground,
+            ? style.fonts.normal.regular.secondary
+            : style.fonts.normal.regular.primary,
         onPressed: onPressed,
         prefix: icon == null
             ? null

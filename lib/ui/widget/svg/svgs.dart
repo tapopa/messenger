@@ -244,7 +244,7 @@ class SvgIcons {
 
   static const SvgData password = SvgData(
     'assets/icons/password.svg',
-    width: 18,
+    width: 20,
     height: 20,
   );
 
@@ -316,8 +316,8 @@ class SvgIcons {
 
   static const SvgData email = SvgData(
     'assets/icons/email.svg',
-    width: 21.93,
-    height: 22.5,
+    width: 20,
+    height: 20,
   );
 
   static const SvgData phone = SvgData(
@@ -2272,8 +2272,8 @@ class SvgIcons {
 
   static const SvgData newAccount = SvgData(
     'assets/icons/new_account.svg',
-    width: 26,
-    height: 25,
+    width: 20,
+    height: 20,
   );
 
   static const SvgData enterWhite = SvgData(

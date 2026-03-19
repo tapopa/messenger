@@ -60,7 +60,7 @@ class PrefixButton extends StatelessWidget {
           decoration: BoxDecoration(
             color: styles.colors.onPrimary,
             borderRadius: borderRadius,
-            border: Border.all(width: 0.5, color: styles.colors.secondary),
+            border: Border.all(width: 0.5, color: styles.colors.primary),
           ),
           child: Material(
             color: styles.colors.transparent,
@@ -70,8 +70,8 @@ class PrefixButton extends StatelessWidget {
               onTap: onPressed,
               hoverColor: styles.colors.onBackgroundOpacity7,
               child: Container(
-                constraints: const BoxConstraints(
-                  minHeight: 46,
+                constraints: BoxConstraints(
+                  minHeight: subtitle == null ? 46 : 54,
                   maxHeight: double.infinity,
                 ),
                 padding: const EdgeInsets.fromLTRB(13.6, 4.2, 13.6, 4.2),
@@ -92,7 +92,7 @@ class PrefixButton extends StatelessWidget {
                           subtitle!,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
-                          style: styles.fonts.small.regular.secondary,
+                          style: styles.fonts.smaller.regular.secondary,
                         ),
                     ],
                   ),

@@ -700,25 +700,27 @@ class IntroductionView extends StatelessWidget {
                   );
                 }),
                 const SizedBox(height: 16),
-                Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'alert_by_proceeding_you_accept_terms1'.l10n,
-                      ),
-                      TextSpan(
-                        text: 'alert_by_proceeding_you_accept_terms2'.l10n,
-                        style: style.fonts.small.regular.primary,
-                        recognizer: TapGestureRecognizer()..onTap = () {},
-                      ),
-                      TextSpan(
-                        text: 'alert_by_proceeding_you_accept_terms3'.l10n,
-                      ),
-                    ],
+                Center(
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'alert_by_proceeding_you_accept_terms1'.l10n,
+                        ),
+                        TextSpan(
+                          text: 'alert_by_proceeding_you_accept_terms2'.l10n,
+                          style: style.fonts.smallest.regular.primary,
+                          recognizer: TapGestureRecognizer()..onTap = () {},
+                        ),
+                        TextSpan(
+                          text: 'alert_by_proceeding_you_accept_terms3'.l10n,
+                        ),
+                      ],
+                    ),
+                    style: style.fonts.smallest.regular.secondary,
                   ),
-                  style: style.fonts.small.regular.secondary,
                 ),
-                const SizedBox(height: 25),
+                const SizedBox(height: 12),
               ];
               break;
 

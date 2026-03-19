@@ -142,6 +142,10 @@
       margin: 0 8px;
     }
 
+    .gap-h-1 {
+      margin: 1px 0px;
+    }
+
     .gap-h-3 {
       margin: 3px 0px;
     }
@@ -293,8 +297,8 @@
 
     .welcome-content {
       display: flex;
-      justify-content: center;
-      flex-direction: column;
+      justify-content: space-around;
+      flex-direction: row;
     }
 
     .welcome {
@@ -309,13 +313,15 @@
       max-width: min(284px, calc(100%));
       height: 160px;
       max-height: 160px;
-      margin: 10px 0px;
-      padding: 0px 52px;
+      /* margin: 10px 0px; */
+      /* padding: 0px 52px; */
       border-radius: 12px;
       border: #DEDEDE solid 0.5px;
       background-color: #F2F5F8;
       box-shadow: 0px 0px 5px rgba(0, 0, 0, .2);
       display: hidden;
+      background-image: url('/assets/assets/images/modal.svg');
+      background-position: center;
     }
 
     .avatar {
@@ -359,8 +365,7 @@
         position: fixed;
         transform: translateX(-50%);
         left: 50%;
-        width: min(82%, calc(350px));
-        max-width: min(82%, calc(350px));
+        width: 100%;
       }
 
       .navigation {
@@ -396,11 +401,11 @@
       .welcome {
         position: fixed;
         left: 50%;
-        width: min(352px, calc(100% - 0px - 245px));
-        max-width: min(352px, calc(100% - 0px - 245px));
+        width: 410px;
+        max-width: 410px;
         transform: translate(-50%, -50%);
         margin: 0px 0px;
-        padding: 0px 40px;
+        /* padding: 0px 24px; */
       }
     }
 
@@ -450,6 +455,34 @@
       align-items: center;
       margin: 0px auto;
     }
+
+    .title {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center
+    }
+
+    .loader {
+      width: 38px;
+      height: 38px;
+      border: 2px solid #63B4FF;
+      border-bottom-color: #F2F5F800;
+      border-radius: 50%;
+      display: inline-block;
+      box-sizing: border-box;
+      animation: rotation 1s linear infinite;
+    }
+
+    @keyframes rotation {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
   </style>
   <script>
     let audioContext;
@@ -488,7 +521,7 @@
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest" type="application/javascript"></script>
 
   <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter_bootstrap.js?v={{build_ver}}"></script>
+  <!-- <script src="flutter_bootstrap.js?v={{build_ver}}"></script> -->
 
   <!-- Initialize `medea_jason` JS code -->
   <script type="module">
@@ -611,25 +644,16 @@
     <div id="welcome" class="main">
       <div class="welcome">
         <div class="welcome-content">
-          <div style="text-align: center; font-size: 18px; color: #000">Messenger by Tapopa</div>
-          <div class="gap-h-3"></div>
-          <div class="gap-h-3"></div>
-          <div class="gap-h-3"></div>
-          <div class="gap-h-3"></div>
-          <div class="meter">
-            <span style="width:80%;">
-              <span class="progress">
-                <div class="shimmer"
-                  style="font-size: 17px; color: #000; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);">
-                  Loading...
-                </div>
-              </span>
-            </span>
+          <div class="title" style="width: 100%;">
+            <img src="assets/assets/images/logo.svg" style="width: 58.5px; height: 58px;">
+            <div class="gap-h-1"></div>
+            <span style="font-size: 23px">Messenger</span>
+            <div class="gap-h-1"></div>
+            <span style="font-size: 13px; width: 55%; font-style: italic; text-align: right;">by Tapopa</span>
           </div>
-          <div class="gap-h-3"></div>
-          <div class="gap-h-3"></div>
-          <div class="gap-h-3"></div>
-          <div class="gap-h-3"></div>
+          <div class="title" style="width: 100%;">
+            <div class="loader"></div>
+          </div>
         </div>
       </div>
     </div>

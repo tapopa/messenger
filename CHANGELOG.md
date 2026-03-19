@@ -14,9 +14,12 @@ All user visible changes to this project will be documented in this file. This p
 ### Changed
 
 - UI: 
-    - Login modal. ([#41])
+    - Login modal. ([#42], [#41])
+- Web:
+    - Page loader. ([#42])
 
 [#41]: /../../pull/41
+[#42]: /../../pull/42
 
 
 

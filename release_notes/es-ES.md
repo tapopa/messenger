@@ -1,4 +1,6 @@
 - Permite crear varios enlaces directos que conduzcan a tu chat.
 - Diseño actualizado de la página de soporte.
 - La búsqueda de usuarios ahora muestra su biografía.
+- Diseño del modal de inicio de sesión actualizado.
+- Cargador de página actualizado para la aplicación web.
 - Corrección de errores y mejoras de rendimiento.

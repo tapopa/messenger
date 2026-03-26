@@ -1,4 +1,6 @@
 - Allow creating multiple direct links leading to your chat.
 - Updated support page design.
 - Updated users searching to display users' biography.
+- Updated login modal design.
+- Updated page loader for Web application.
 - Bug fixes and performance improvements.

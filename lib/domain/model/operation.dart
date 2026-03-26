@@ -151,7 +151,7 @@ class OperationDeposit extends Operation {
 
     this.kind = OperationDepositKind.paypal,
     this.invoice,
-    this.processingUrl,
+    required this.details,
     this.pricing,
     this.failed,
   });
@@ -167,8 +167,8 @@ class OperationDeposit extends Operation {
   /// `null` if this [status] is not `COMPLETED`.
   final InvoiceFile? invoice;
 
-  /// [Url] to process this [OperationDeposit] on.
-  final Url? processingUrl;
+  /// Details of this [OperationDeposit].
+  final OperationDepositDetails details;
 
   /// Pricing of this [OperationDeposit].
   final OperationDepositPricing? pricing;
@@ -190,7 +190,7 @@ class OperationDeposit extends Operation {
     kind,
     billingCountry,
     invoice,
-    processingUrl,
+    details,
     pricing,
   );
 
@@ -208,13 +208,35 @@ class OperationDeposit extends Operation {
         kind == other.kind &&
         billingCountry == other.billingCountry &&
         invoice == other.invoice &&
-        processingUrl == other.processingUrl &&
+        details == other.details &&
         pricing == other.pricing;
   }
 
   @override
   String toString() =>
       'OperationDeposit($id, createdAt: $createdAt, status: ${status.name})';
+}
+
+/// Details of an [OperationDeposit].
+abstract class OperationDepositDetails {
+  const OperationDepositDetails();
+}
+
+/// Details of an [OperationDeposit] of an [OperationDepositKind.paypal].
+class OperationDepositPayPalDetails extends OperationDepositDetails {
+  const OperationDepositPayPalDetails({required this.processingUrl});
+
+  /// [Url] to process this [OperationDeposit] on.
+  final Url processingUrl;
+
+  @override
+  int get hashCode => processingUrl.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return other is OperationDepositPayPalDetails &&
+        processingUrl == other.processingUrl;
+  }
 }
 
 /// [Operation] of depositing money to [MyUser]'s purse.

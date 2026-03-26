@@ -57,7 +57,7 @@ class Config {
   /// Domain considered as an origin of the application.
   static String origin = '';
 
-  /// [ChatDirectLink] prefix.
+  /// [DirectLink] prefix.
   ///
   /// If empty, then [origin] is used.
   static String link = '';
@@ -490,7 +490,7 @@ class Config {
     }
 
     if (link.isEmpty) {
-      link = '$origin${Routes.chatDirectLink}';
+      link = '$origin${Routes.directLink}';
     }
 
     ws = '$wsUrl:$wsPort$graphql';

@@ -779,7 +779,7 @@ class OngoingCall {
                 for (final ChatCallEvent event in versioned.events) {
                   switch (event.kind) {
                     case ChatCallEventKind.roomReady:
-                      final node = event as EventChatCallRoomReady;
+                      final node = event as ChatCallRoomReadyEvent;
 
                       if (!_background) {
                         await _joinRoom(node.joinLink);
@@ -789,7 +789,7 @@ class OngoingCall {
                       break;
 
                     case ChatCallEventKind.finished:
-                      final node = event as EventChatCallFinished;
+                      final node = event as ChatCallFinishedEvent;
                       if (node.chatId == chatId.value) {
                         calls.removeCredentials(node.call.chatId, node.call.id);
                         calls.remove(chatId.value);
@@ -797,7 +797,7 @@ class OngoingCall {
                       break;
 
                     case ChatCallEventKind.memberLeft:
-                      final node = event as EventChatCallMemberLeft;
+                      final node = event as ChatCallMemberLeftEvent;
                       if (me.id.userId == node.user.id &&
                           me.id.deviceId == node.deviceId) {
                         calls.remove(chatId.value);
@@ -820,7 +820,7 @@ class OngoingCall {
                       break;
 
                     case ChatCallEventKind.memberJoined:
-                      final node = event as EventChatCallMemberJoined;
+                      final node = event as ChatCallMemberJoinedEvent;
 
                       final CallMemberId redialedId = CallMemberId(
                         node.user.id,
@@ -861,7 +861,7 @@ class OngoingCall {
                       break;
 
                     case ChatCallEventKind.handLowered:
-                      final node = event as EventChatCallHandLowered;
+                      final node = event as ChatCallHandLoweredEvent;
 
                       // Ignore the event, if it's our hand and is already lowered.
                       if (node.user.id == _me.userId &&
@@ -885,7 +885,7 @@ class OngoingCall {
                       break;
 
                     case ChatCallEventKind.handRaised:
-                      final node = event as EventChatCallHandRaised;
+                      final node = event as ChatCallHandRaisedEvent;
 
                       // Ignore the event, if it's our hand and is already raised.
                       if (node.user.id == _me.userId &&
@@ -909,7 +909,7 @@ class OngoingCall {
                       break;
 
                     case ChatCallEventKind.declined:
-                      final node = event as EventChatCallDeclined;
+                      final node = event as ChatCallDeclinedEvent;
                       final CallMemberId id = CallMemberId(node.user.id, null);
                       if (members[id]?.isConnected.value == false) {
                         members.remove(id)?.dispose();
@@ -917,7 +917,7 @@ class OngoingCall {
                       break;
 
                     case ChatCallEventKind.callMoved:
-                      final node = event as EventChatCallMoved;
+                      final node = event as ChatCallMovedEvent;
                       chatId.value = node.newChatId;
                       call.value = node.newCall;
 
@@ -933,12 +933,12 @@ class OngoingCall {
                       break;
 
                     case ChatCallEventKind.redialed:
-                      final node = event as EventChatCallMemberRedialed;
+                      final node = event as ChatCallMemberRedialedEvent;
                       _addDialing(node.user.id);
                       break;
 
                     case ChatCallEventKind.answerTimeoutPassed:
-                      final node = event as EventChatCallAnswerTimeoutPassed;
+                      final node = event as ChatCallAnswerTimeoutPassedEvent;
 
                       if (node.user?.id != null) {
                         final CallMemberId id = CallMemberId(
@@ -963,11 +963,11 @@ class OngoingCall {
                       break;
 
                     case ChatCallEventKind.conversationStarted:
-                      // TODO: Implement [EventChatCallConversationStarted].
+                      // TODO: Implement [ChatCallConversationStartedEvent].
                       break;
 
                     case ChatCallEventKind.undialed:
-                      final node = event as EventChatCallMemberUndialed;
+                      final node = event as ChatCallMemberUndialedEvent;
 
                       final CallMemberId id = CallMemberId(node.user.id, null);
                       if (members[id]?.isConnected.value == false) {
@@ -1373,15 +1373,22 @@ class OngoingCall {
     }
 
     await _videoGuard.protect(() async {
-      final Map<CallMemberId, bool> previous = Map.fromEntries(
+      final Map<CallMemberId, bool> devices = Map.fromEntries(
         members.values
             .where((e) => e.id != _me)
-            .map((e) => MapEntry(e.id, e.hasVideo.value)),
+            .map((e) => MapEntry(e.id, e.hasDeviceVideo.value)),
+      );
+
+      final Map<CallMemberId, bool> displays = Map.fromEntries(
+        members.values
+            .where((e) => e.id != _me)
+            .map((e) => MapEntry(e.id, e.hasDisplayVideo.value)),
       );
 
       try {
         for (var e in members.values.where((e) => e.id != _me)) {
-          e.hasVideo.value = enabled;
+          e.hasDisplayVideo.value = enabled;
+          e.hasDeviceVideo.value = enabled;
         }
 
         if (enabled) {
@@ -1394,8 +1401,12 @@ class OngoingCall {
       } on MediaStateTransitionException catch (_) {
         // No-op.
       } catch (e) {
-        for (var e in previous.entries) {
-          members[e.key]?.hasVideo.value = e.value;
+        for (var e in devices.entries) {
+          members[e.key]?.hasDeviceVideo.value = e.value;
+        }
+
+        for (var e in displays.entries) {
+          members[e.key]?.hasDisplayVideo.value = e.value;
         }
 
         rethrow;
@@ -1778,7 +1789,16 @@ class OngoingCall {
                   break;
 
                 case MediaKind.video:
-                  members[id]?.hasVideo.value = true;
+                  switch (track.mediaSourceKind()) {
+                    case MediaSourceKind.device:
+                      members[id]?.hasDeviceVideo.value = true;
+                      break;
+
+                    case MediaSourceKind.display:
+                      members[id]?.hasDisplayVideo.value = true;
+                      break;
+                  }
+
                   await t.createRenderer();
                   break;
               }
@@ -1815,7 +1835,16 @@ class OngoingCall {
 
           case MediaKind.video:
             if (track.mediaDirection().isEmitting) {
-              members[id]?.hasVideo.value = true;
+              switch (track.mediaSourceKind()) {
+                case MediaSourceKind.device:
+                  members[id]?.hasDeviceVideo.value = true;
+                  break;
+
+                case MediaSourceKind.display:
+                  members[id]?.hasDisplayVideo.value = true;
+                  break;
+              }
+
               await t.createRenderer();
             }
             break;
@@ -1857,7 +1886,7 @@ class OngoingCall {
           // In case a new link will be sent shortly.
           connectionLost.value = true;
 
-          // Awaiting 5 seconds for another `EventChatCallRoomReady` to come in
+          // Awaiting 5 seconds for another `ChatCallRoomReadyEvent` to come in
           // case there's a new room being opened instead of the closed one.
           await Future.delayed(Duration(seconds: 4));
 
@@ -2337,6 +2366,11 @@ class OngoingCall {
             );
           }
 
+          Log.debug(
+            '_updateSettings() -> `_mediaStreamSettings()` contains audio($audio ?? ($hasAudio || ${audioState.value.isEnabled})), video($video ?? ${videoState.value.isEnabled}), screen($screen ?? ${screenShareState.value.isEnabled})',
+            '$runtimeType',
+          );
+
           _settings = _mediaStreamSettings(
             audio: audio ?? (hasAudio || audioState.value.isEnabled),
             video: video ?? videoState.value.isEnabled,
@@ -2504,6 +2538,7 @@ class OngoingCall {
                   devices.firstWhereOrNull(
                     (e) => e.deviceId() == track.getTrack().deviceId(),
                   );
+              members[_me]?.hasDeviceVideo.value = true;
               break;
 
             case MediaSourceKind.display:
@@ -2512,10 +2547,10 @@ class OngoingCall {
                   displays.firstWhereOrNull(
                     (e) => e.deviceId() == track.getTrack().deviceId(),
                   );
+              members[_me]?.hasDisplayVideo.value = true;
               break;
           }
 
-          members[_me]?.hasVideo.value = true;
           await t.createRenderer();
         }
         break;
@@ -2673,6 +2708,14 @@ class OngoingCall {
         audio.firstOrNull;
 
     if (device != null && audioDevice.value != device) {
+      if (device.id() == 'default' && without.contains(device.deviceId())) {
+        Log.debug(
+          '_pickAudioDevice(without: $without) -> picked the `default` device, yet it is aiming the `without` device, thus IGNORING the call! Default is: $device',
+          '$runtimeType',
+        );
+        return;
+      }
+
       _notifications.add(DeviceChangedNotification(device: device));
       await _setAudioDevice(device);
     }
@@ -2719,6 +2762,10 @@ class OngoingCall {
     if (device != audioDevice.value) {
       await _updateSettings(audio: true, audioDevice: device);
     }
+
+    // Check whether the currently picked output device will work with the
+    // current microphone, as it's known on Windows 10 to have some issues.
+    await _ensureValidOutputDevice();
   }
 
   /// Sets the provided [device] as a currently used [outputDevice].
@@ -2746,6 +2793,10 @@ class OngoingCall {
         rethrow;
       }
     }
+
+    // Check whether the currently picked output device will work with the
+    // current microphone, as it's known on Windows 10 to have some issues.
+    await _ensureValidOutputDevice();
   }
 
   /// Handles the [LocalMediaInitException] by enabling/disabling certain
@@ -2856,6 +2907,77 @@ class OngoingCall {
             .where((t) => t.kind == kind && t.source == source)
             .isNotEmpty ??
         false;
+  }
+
+  Future<bool> _ensureValidOutputDevice({
+    DeviceDetails? device,
+    Iterable<DeviceDetails>? outputs,
+  }) async {
+    Log.debug(
+      '_ensureValidOutputDevice(device: $device, outputs: $outputs)',
+      '$runtimeType',
+    );
+
+    outputs ??= devices.output();
+
+    device ??= outputDevice.value;
+    device ??= devices.output().firstOrNull;
+
+    // Ensure we aren't using unavailable device.
+    //
+    // For Windows 10 such device is an output bluetooth device in a
+    // non-communication device mode, which is known to cause issues.
+    if (PlatformUtils.isWindows && await PlatformUtils.isWindows10) {
+      final DeviceDetails? microphone = audioDevice.value;
+
+      Log.debug(
+        '_ensureValidOutputDevice() -> device is $device, comparing against $microphone -> groups are equal? ${microphone?.groupId() == device?.groupId()}',
+        '$runtimeType',
+      );
+
+      // Look for any logical output devices that are the same physical devices.
+      if (device != null && microphone != null) {
+        // If group is the same, then it's the same physical device.
+        if (microphone.groupId() == device.groupId()) {
+          // Check whether this device is in communication mode or not.
+          bool hasCommunicationDevice = false;
+
+          for (var compared in outputs) {
+            if (compared.groupId() == device.groupId()) {
+              if (!hasCommunicationDevice) {
+                final int? ourRate = device.numChannels();
+                final int? theirRate = compared.numChannels();
+
+                Log.debug(
+                  '_ensureValidOutputDevice() -> groups of $device and $compared are equal, thus comparing the channels: $ourRate vs $theirRate',
+                  '$runtimeType',
+                );
+
+                if (ourRate != null && theirRate != null) {
+                  // This is a communication device, if its channel number is
+                  // lower than the same physical device with higher channel
+                  // number.
+                  hasCommunicationDevice = ourRate > theirRate;
+                }
+              }
+            }
+          }
+
+          Log.debug(
+            '_ensureValidOutputDevice() -> compared the whole list of devices, so hasCommunicationDevice($hasCommunicationDevice)',
+            '$runtimeType',
+          );
+
+          // If it's not a communication device, then don't use it.
+          if (hasCommunicationDevice) {
+            await _pickOutputDevice(without: [device.deviceId(), device.id()]);
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
   }
 }
 
@@ -3103,9 +3225,13 @@ class CallMember {
   /// [DateTime] when this [CallMember] has joined.
   final Rx<PreciseDateTime?> joinedAt;
 
-  /// Indicator whether video [tracks] of this [CallMember] should be ignored or
-  /// not.
-  final RxBool hasVideo = RxBool(true);
+  /// Indicator whether [MediaSourceKind.device] video [tracks] of this
+  /// [CallMember] should be ignored or not.
+  final RxBool hasDeviceVideo = RxBool(true);
+
+  /// Indicator whether [MediaSourceKind.display] video [tracks] of this
+  /// [CallMember] should be ignored or not.
+  final RxBool hasDisplayVideo = RxBool(true);
 
   /// [ConnectionHandle] of this [CallMember].
   ConnectionHandle? _connection;
@@ -3134,10 +3260,18 @@ class CallMember {
     }
 
     await _videoGuard.protect(() async {
-      final bool previous = hasVideo.value;
+      final bool previous = switch (source) {
+        MediaSourceKind.device => hasDeviceVideo.value,
+        MediaSourceKind.display => hasDisplayVideo.value,
+      };
+
+      final RxBool reactive = switch (source) {
+        MediaSourceKind.device => hasDeviceVideo,
+        MediaSourceKind.display => hasDisplayVideo,
+      };
 
       try {
-        hasVideo.value = enabled;
+        reactive.value = enabled;
 
         if (enabled) {
           await _connection?.enableRemoteVideo(source);
@@ -3145,7 +3279,7 @@ class CallMember {
           await _connection?.disableRemoteVideo(source);
         }
       } catch (e) {
-        hasVideo.value = previous;
+        reactive.value = previous;
       }
     });
   }

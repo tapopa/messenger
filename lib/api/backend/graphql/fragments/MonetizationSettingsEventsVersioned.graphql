@@ -28,9 +28,9 @@ fragment MonetizationSettingsEventsVersioned on MonetizationSettingsEventsVersio
             id
         }
         at
-        # ... on EventMonetizationSettingsDonationDeleted
-        # ... on EventMonetizationSettingsDonationMinPriceUpdated
-        # ... on EventMonetizationSettingsDonationToggled
+        # ... on MonetizationSettingsDonationDeletedEvent
+        # ... on MonetizationSettingsDonationMinPriceUpdatedEvent
+        # ... on MonetizationSettingsDonationToggledEvent
     }
     ver
     listVer

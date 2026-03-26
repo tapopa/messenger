@@ -549,7 +549,7 @@ class WalletRepository extends IdentityDependency
         for (var event in versioned.events) {
           switch (event.kind) {
             case OperationEventKind.canceled:
-              event as EventOperationCanceled;
+              event as OperationCanceledEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -557,7 +557,7 @@ class WalletRepository extends IdentityDependency
               break;
 
             case OperationEventKind.chargeCreated:
-              event as EventOperationChargeCreated;
+              event as OperationChargeCreatedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -565,7 +565,7 @@ class WalletRepository extends IdentityDependency
               break;
 
             case OperationEventKind.depositBonusCreated:
-              event as EventOperationDepositBonusCreated;
+              event as OperationDepositBonusCreatedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -573,7 +573,7 @@ class WalletRepository extends IdentityDependency
               break;
 
             case OperationEventKind.depositCompleted:
-              event as EventOperationDepositCompleted;
+              event as OperationDepositCompletedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -581,7 +581,7 @@ class WalletRepository extends IdentityDependency
               break;
 
             case OperationEventKind.depositCreated:
-              event as EventOperationDepositCreated;
+              event as OperationDepositCreatedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -589,7 +589,7 @@ class WalletRepository extends IdentityDependency
               break;
 
             case OperationEventKind.depositDeclined:
-              event as EventOperationDepositDeclined;
+              event as OperationDepositDeclinedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -597,7 +597,7 @@ class WalletRepository extends IdentityDependency
               break;
 
             case OperationEventKind.depositFailed:
-              event as EventOperationDepositFailed;
+              event as OperationDepositFailedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -605,7 +605,7 @@ class WalletRepository extends IdentityDependency
               break;
 
             case OperationEventKind.dividendCreated:
-              event as EventOperationDividendCreated;
+              event as OperationDividendCreatedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -613,7 +613,7 @@ class WalletRepository extends IdentityDependency
               break;
 
             case OperationEventKind.earnDonationCreated:
-              event as EventOperationEarnDonationCreated;
+              event as OperationEarnDonationCreatedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -621,7 +621,7 @@ class WalletRepository extends IdentityDependency
               break;
 
             case OperationEventKind.grantCreated:
-              event as EventOperationGrantCreated;
+              event as OperationGrantCreatedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -629,7 +629,7 @@ class WalletRepository extends IdentityDependency
               break;
 
             case OperationEventKind.purchaseDonationCreated:
-              event as EventOperationPurchaseDonationCreated;
+              event as OperationPurchaseDonationCreatedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -637,7 +637,7 @@ class WalletRepository extends IdentityDependency
               break;
 
             case OperationEventKind.rewardCreated:
-              event as EventOperationRewardCreated;
+              event as OperationRewardCreatedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),

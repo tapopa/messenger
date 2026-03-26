@@ -69,6 +69,7 @@ class ChatsTabView extends StatelessWidget {
         Get.find(),
         Get.find(),
         Get.find(),
+        Get.find(),
       ),
       builder: (ChatsTabController c) {
         return Stack(

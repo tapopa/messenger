@@ -26,6 +26,7 @@ import 'package:get/get.dart';
 import '/api/backend/schema.dart';
 import '/config.dart';
 import '/domain/model/chat.dart';
+import '/domain/model/link.dart';
 import '/domain/model/my_user.dart';
 import '/domain/model/session.dart';
 import '/domain/model/user.dart';
@@ -62,8 +63,8 @@ enum IntroductionStage {
 class IntroductionController extends GetxController with IdentityAware {
   IntroductionController(
     this._authService,
-    this._myUserService,
     this._chatService,
+    this._myUserService,
   );
 
   /// Opacity of the displayed [IntroductionView].
@@ -408,7 +409,7 @@ class IntroductionController extends GetxController with IdentityAware {
   /// [Timer] disabling [emailCode] submitting for [codeTimeout].
   Timer? _codeTimer;
 
-  ChatDirectLinkSlug? _slug;
+  DirectLinkSlug? _slug;
 
   /// [Worker] adding and removing this modal to/from [RouterState.obscuring].
   Worker? _opacityWorker;
@@ -455,12 +456,12 @@ class IntroductionController extends GetxController with IdentityAware {
 
     if (router.byLink) {
       final String? slug = router.initial?.uri.path.replaceFirst(
-        Routes.chatDirectLink,
+        Routes.directLink,
         '',
       );
 
       if (slug != null) {
-        _slug = ChatDirectLinkSlug(slug);
+        _slug = DirectLinkSlug(slug);
         _scheduleChat();
       }
     } else {
@@ -493,11 +494,11 @@ class IntroductionController extends GetxController with IdentityAware {
 
       if (last != previous) {
         Log.debug('_routesWorker -> `last` is `$last`', '$runtimeType');
-        if (last.startsWith(Routes.chatDirectLink)) {
-          final String slug = last.replaceFirst(Routes.chatDirectLink, '');
+        if (last.startsWith(Routes.directLink)) {
+          final String slug = last.replaceFirst(Routes.directLink, '');
 
           if (slug.isNotEmpty) {
-            _slug = ChatDirectLinkSlug(slug);
+            _slug = DirectLinkSlug(slug);
             _scheduleChat(route: last);
           }
         }
@@ -564,6 +565,11 @@ class IntroductionController extends GetxController with IdentityAware {
       login.error.value = '';
       password.error.value = 'err_incorrect_login_or_password'.l10n;
       password.unsubmit();
+      return;
+    }
+
+    final UserId? meId = myUser.value?.id;
+    if (meId == null) {
       return;
     }
 
@@ -1077,7 +1083,7 @@ class IntroductionController extends GetxController with IdentityAware {
       try {
         fetching.value = true;
 
-        final ChatId chatId = await _chatService.useChatDirectLink(_slug!);
+        final ChatId chatId = await _chatService.useDirectLink(_slug!);
         if (isClosed || _authService.isClosed) {
           return;
         }
@@ -1085,22 +1091,26 @@ class IntroductionController extends GetxController with IdentityAware {
         router.chat(chatId);
 
         chat.value = await _chatService.get(chatId);
-      } on UseChatDirectLinkException catch (e) {
+      } on UseDirectLinkException catch (e) {
         switch (e.code) {
-          case UseChatDirectLinkErrorCode.artemisUnknown:
+          case UseDirectLinkErrorCode.artemisUnknown:
             Log.error('Unable to `_scheduleChat()` -> $e', '$runtimeType');
             break;
 
-          case UseChatDirectLinkErrorCode.blocked:
+          case UseDirectLinkErrorCode.blocked:
             Log.error('Unable to `_scheduleChat()` -> $e', '$runtimeType');
             break;
 
-          case UseChatDirectLinkErrorCode.unknownDirectLink:
+          case UseDirectLinkErrorCode.unknownDirectLink:
             if (isClosed || _authService.isClosed) {
               return;
             }
 
             await _scheduleSupport(force: true, route: route);
+            break;
+
+          case UseDirectLinkErrorCode.sameUser:
+            Log.error('Unable to `_scheduleChat()` -> $e', '$runtimeType');
             break;
         }
       } catch (e) {

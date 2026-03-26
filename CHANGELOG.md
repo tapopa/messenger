@@ -13,13 +13,37 @@ All user visible changes to this project will be documented in this file. This p
 
 ### Changed
 
-- UI: 
+- UI:
+    - Support page. ([team113/messenger#1660])
+    - Chats tab:
+        - Display about information when searching users. ([team113/messenger#1659])
+    - Profile page:
+        - Allow creating multiple direct links to chat. ([team113/messenger#1664])
     - Login modal. ([#42], [#41])
 - Web:
     - Page loader. ([#42])
 
+### Fixed
+
+- UI:
+    - Media panel:
+        - Inability to drag-n-drop buttons in dock. ([team113/messenger#1654])
+        - Incoming video being disabled when disabling screen sharing only. ([team113/messenger#1662])
+- macOS:
+    - Application crashing when exiting. ([team113/messenger#1657], [team113/messenger#1561])
+- Windows:
+    - Unsupported devices displayed in output devices list for Windows 10. ([team113/messenger#1643])
+
 [#41]: /../../pull/41
 [#42]: /../../pull/42
+[team113/messenger#1561]: https://github.com/team113/messenger/issues/1561
+[team113/messenger#1643]: https://github.com/team113/messenger/pull/1643
+[team113/messenger#1654]: https://github.com/team113/messenger/pull/1654
+[team113/messenger#1657]: https://github.com/team113/messenger/pull/1657
+[team113/messenger#1659]: https://github.com/team113/messenger/pull/1659
+[team113/messenger#1660]: https://github.com/team113/messenger/pull/1660
+[team113/messenger#1662]: https://github.com/team113/messenger/pull/1662
+[team113/messenger#1664]: https://github.com/team113/messenger/pull/1664
 
 
 

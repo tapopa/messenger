@@ -36,7 +36,12 @@ fragment OperationDeposit on OperationDeposit {
     kind
     billingCountry
     invoice
-    processingUrl
+    details {
+        __typename
+        ... on OperationDepositPayPalDetails {
+            processingUrl
+        }
+    }
     price {
         __typename
         ...OperationDepositPricing

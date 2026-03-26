@@ -308,8 +308,8 @@ mixin WalletGraphQlMixin {
   /// ### Result
   ///
   /// One of the following [OperationEvent]s may be produced on success:
-  /// - [EventOperationDepositCompleted];
-  /// - [EventOperationDepositFailed].
+  /// - [OperationDepositCompletedEvent];
+  /// - [OperationDepositFailedEvent].
   ///
   /// ### Idempotent
   ///
@@ -365,7 +365,7 @@ mixin WalletGraphQlMixin {
   /// ### Result
   ///
   /// Only the following [OperationEvent] may be produced on success:
-  /// - [EventOperationDepositDeclined].
+  /// - [OperationDepositDeclinedEvent].
   ///
   /// ### Idempotent
   ///
@@ -555,9 +555,9 @@ mixin WalletGraphQlMixin {
   ///
   /// One of the following [MonetizationSettingsEvents] may be produced on
   /// success:
-  /// - [EventMonetizationSettingsDonationDeleted];
-  /// - [EventMonetizationSettingsDonationMinPriceUpdated];
-  /// - [EventMonetizationSettingsDonationToggled].
+  /// - [MonetizationSettingsDonationDeletedEvent];
+  /// - [MonetizationSettingsDonationMinPriceUpdatedEvent];
+  /// - [MonetizationSettingsDonationToggledEvent].
   ///
   /// ### Idempotent
   ///

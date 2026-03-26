@@ -30,6 +30,7 @@ import '/domain/model/chat_item.dart';
 import '/domain/model/chat_item_quote_input.dart';
 import '/domain/model/chat_message_input.dart';
 import '/domain/model/donation.dart';
+import '/domain/model/link.dart';
 import '/domain/model/mute_duration.dart';
 import '/domain/model/my_user.dart';
 import '/domain/model/native_file.dart';
@@ -178,14 +179,6 @@ abstract class AbstractChatRepository {
   /// later use in the [sendChatMessage] method.
   Future<Attachment?> uploadAttachment(LocalAttachment attachment);
 
-  /// Creates a new [ChatDirectLink] with the specified [ChatDirectLinkSlug] and
-  /// deletes the current active [ChatDirectLink] of the given [Chat]-group (if
-  /// any).
-  Future<void> createChatDirectLink(ChatId chatId, ChatDirectLinkSlug slug);
-
-  /// Deletes the current [ChatDirectLink] of the given [Chat]-group.
-  Future<void> deleteChatDirectLink(ChatId chatId);
-
   /// Notifies [ChatMember]s about the authenticated [MyUser] typing in the
   /// specified [Chat] at the moment.
   Stream<dynamic> keepTyping(ChatId id);
@@ -234,9 +227,9 @@ abstract class AbstractChatRepository {
   /// provided.
   Future<void> clearChat(ChatId id, [ChatItemId? untilId]);
 
-  /// Uses the specified [ChatDirectLink] by the authenticated [MyUser] creating
-  /// a new [Chat]-dialog or joining an existing [Chat]-group.
-  Future<ChatId> useChatDirectLink(ChatDirectLinkSlug slug);
+  /// Uses the specified [DirectLink] by the authenticated [MyUser] creating a
+  /// new [Chat]-dialog or joining an existing [Chat]-group.
+  Future<ChatId> useDirectLink(DirectLinkSlug slug);
 }
 
 /// Unified reactive [Chat] entity with its [ChatItem]s.

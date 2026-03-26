@@ -225,7 +225,7 @@ void main() async {
             'ver': '1',
             'events': [
               {
-                '__typename': 'EventChatCallFinished',
+                '__typename': 'ChatCallFinishedEvent',
                 'chatId': 'chatId',
                 'callId': 'first',
                 'call': {
@@ -271,7 +271,7 @@ void main() async {
         source: QueryResultSource.network,
         data: {
           'incomingChatCallsTopEvents': {
-            '__typename': 'EventIncomingChatCallsTopChatCallAdded',
+            '__typename': 'IncomingChatCallsTopChatCallAddedEvent',
             'call': {
               'id': 'second',
               'chatId': 'chatId',
@@ -527,7 +527,7 @@ void main() async {
         source: QueryResultSource.network,
         data: {
           'incomingChatCallsTopEvents': {
-            '__typename': 'EventIncomingChatCallsTopChatCallAdded',
+            '__typename': 'IncomingChatCallsTopChatCallAddedEvent',
             'call': {
               'id': 'id',
               'chatId': 'incoming',
@@ -572,7 +572,7 @@ void main() async {
         source: QueryResultSource.network,
         data: {
           'incomingChatCallsTopEvents': {
-            '__typename': 'EventIncomingChatCallsTopChatCallAdded',
+            '__typename': 'IncomingChatCallsTopChatCallAddedEvent',
             'call': {
               'id': 'id1',
               'chatId': 'incoming',
@@ -736,7 +736,7 @@ class _FakeGraphQlProvider extends MockedGraphQlProvider {
         source: QueryResultSource.network,
         data: {
           'incomingChatCallsTopEvents': {
-            '__typename': 'EventIncomingChatCallsTopChatCallAdded',
+            '__typename': 'IncomingChatCallsTopChatCallAddedEvent',
             'call': {
               'id': 'id',
               'chatId': chatId.val,
@@ -773,7 +773,7 @@ class _FakeGraphQlProvider extends MockedGraphQlProvider {
               '__typename': 'ChatEventsVersioned',
               'events': [
                 {
-                  '__typename': 'EventChatCallStarted',
+                  '__typename': 'ChatCallStartedEvent',
                   'callId': 'id',
                   'chatId': chatId.val,
                   'call': {
@@ -844,7 +844,7 @@ class _FakeGraphQlProvider extends MockedGraphQlProvider {
             'ver': '1',
             'events': [
               {
-                '__typename': 'EventChatCallFinished',
+                '__typename': 'ChatCallFinishedEvent',
                 'chatId': chatId.val,
                 'callId': 'id',
                 'call': {
@@ -898,7 +898,7 @@ class _FakeGraphQlProvider extends MockedGraphQlProvider {
                 '__typename': 'ChatEventsVersioned',
                 'events': [
                   {
-                    '__typename': 'EventChatCallMemberJoined',
+                    '__typename': 'ChatCallMemberJoinedEvent',
                     'callId': 'id',
                     'chatId': chatId.val,
                     'call': {

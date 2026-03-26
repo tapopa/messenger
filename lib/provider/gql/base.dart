@@ -204,6 +204,9 @@ class GraphQlClient {
   /// Unique ID of this [GraphQlClient] to differentiate it from others.
   final String _id = const Uuid().v4();
 
+  /// [Timer] sending pings in period to indicate that we're alive.
+  Timer? _kaTimer;
+
   /// Returns [GraphQLClient] with or without [token] header authorization.
   Future<GraphQLClient> get client async {
     if (_client != null && _currentToken == token) {
@@ -526,8 +529,9 @@ class GraphQlClient {
 
     _wsLink = WebSocketLink(
       Config.ws,
+      subProtocol: GraphQLProtocol.graphqlTransportWs,
       config: SocketClientConfig(
-        initialPayload: {'ticket': token?.val},
+        initialPayload: {'authorization': token?.val},
         headers: {
           if (!PlatformUtils.isWeb) 'User-Agent': await PlatformUtils.userAgent,
         },
@@ -567,6 +571,11 @@ class GraphQlClient {
             }
           }, onDone: _reconnect);
 
+          _kaTimer?.cancel();
+          _kaTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+            _wsChannel?.sink.add('{"type":"ping"}');
+          });
+
           return _wsChannel!;
         },
       ),
@@ -594,6 +603,7 @@ class GraphQlClient {
     _backoffTimer?.cancel();
     _channelSubscription?.cancel();
     _wsChannel?.sink.close();
+    _kaTimer?.cancel();
     _wsLink?.dispose();
     _wsLink = null;
   }

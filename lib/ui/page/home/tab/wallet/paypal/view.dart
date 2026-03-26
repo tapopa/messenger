@@ -199,6 +199,9 @@ class PayPalDepositView extends StatelessWidget {
                         origin: OperationOrigin.purse,
                         direction: OperationDirection.incoming,
                         status: OperationStatus.inProgress,
+                        details: OperationDepositPayPalDetails(
+                          processingUrl: Url(''),
+                        ),
                       ),
                     );
                   }),

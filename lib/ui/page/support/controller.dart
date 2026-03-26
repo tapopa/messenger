@@ -15,7 +15,6 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '/domain/model/my_user.dart';
@@ -26,15 +25,13 @@ import '/domain/service/auth.dart';
 import '/domain/service/my_user.dart';
 import '/domain/service/notification.dart';
 import '/domain/service/session.dart';
-import '/l10n/l10n.dart';
-import '/ui/worker/upgrade.dart';
+import '/routes.dart';
 import '/util/message_popup.dart';
 import '/util/platform_utils.dart';
 
 /// Controller of the `Routes.support` page.
 class SupportController extends GetxController {
   SupportController(
-    this._upgradeWorker,
     this._authService,
     this._myUserService,
     this._sessionService,
@@ -46,9 +43,6 @@ class SupportController extends GetxController {
 
   /// Indicator whether [checkForUpdates] is currently being executed.
   final RxBool checkingForUpdates = RxBool(false);
-
-  /// [UpgradeWorker] to check for new application updates.
-  final UpgradeWorker _upgradeWorker;
 
   /// [AuthService] used to retrieve the current [sessionId].
   final AuthService _authService;
@@ -78,22 +72,17 @@ class SupportController extends GetxController {
   /// being active.
   bool? get pushNotifications => _notificationService?.pushNotifications;
 
-  /// Fetches the application updates via the [UpgradeWorker].
-  Future<void> checkForUpdates() async {
-    checkingForUpdates.value = true;
+  /// Returns the [Credentials] used in [AuthService].
+  Rx<Credentials?> get credentials => _authService.credentials;
 
+  /// Registers and redirects to the support page.
+  Future<void> register() async {
     try {
-      final hasUpdates = await _upgradeWorker.fetchUpdates(force: true);
-      if (!hasUpdates) {
-        MessagePopup.alert(
-          'label_no_updates_are_available_title'.l10n,
-          description: [
-            TextSpan(text: 'label_no_updates_are_available_subtitle'.l10n),
-          ],
-        );
-      }
-    } finally {
-      checkingForUpdates.value = false;
+      await _authService.register();
+      router.support();
+    } catch (e) {
+      MessagePopup.error(e);
+      rethrow;
     }
   }
 }

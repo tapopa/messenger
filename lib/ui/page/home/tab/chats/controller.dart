@@ -31,8 +31,8 @@ import 'package:log_me/log_me.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
 import '/domain/model/attachment.dart';
-import '/domain/model/chat.dart';
 import '/domain/model/chat_item.dart';
+import '/domain/model/chat.dart';
 import '/domain/model/contact.dart';
 import '/domain/model/mute_duration.dart';
 import '/domain/model/my_user.dart';
@@ -49,6 +49,7 @@ import '/domain/service/auth.dart';
 import '/domain/service/call.dart';
 import '/domain/service/chat.dart';
 import '/domain/service/contact.dart';
+import '/domain/service/link.dart';
 import '/domain/service/my_user.dart';
 import '/domain/service/session.dart';
 import '/domain/service/user.dart';
@@ -85,6 +86,7 @@ class ChatsTabController extends GetxController {
     this._contactService,
     this._myUserService,
     this._sessionService,
+    this._linkService,
   );
 
   /// Reactive list of sorted [Chat]s.
@@ -152,6 +154,9 @@ class ChatsTabController extends GetxController {
 
   /// [SessionService] for checking the current [connected] status.
   final SessionService _sessionService;
+
+  /// [LinkService] for searching for ours [DirectLink]s.
+  final LinkService _linkService;
 
   /// Subscription for the [ChatService.paginated] changes.
   late final StreamSubscription _chatsSubscription;
@@ -849,6 +854,7 @@ class ChatsTabController extends GetxController {
       _contactService,
       _myUserService,
       _sessionService,
+      _linkService,
       categories: [
         SearchCategory.recent,
         SearchCategory.chat,

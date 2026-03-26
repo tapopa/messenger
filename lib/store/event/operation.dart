@@ -112,8 +112,8 @@ abstract class OperationEvent {
 }
 
 /// Event of an [Operation] being canceled.
-class EventOperationCanceled extends OperationEvent {
-  const EventOperationCanceled(
+class OperationCanceledEvent extends OperationEvent {
+  const OperationCanceledEvent(
     super.id,
     super.origin,
     super.at,
@@ -129,8 +129,8 @@ class EventOperationCanceled extends OperationEvent {
 }
 
 /// Event of a new [OperationCharge] being created.
-class EventOperationChargeCreated extends OperationEvent {
-  const EventOperationChargeCreated(
+class OperationChargeCreatedEvent extends OperationEvent {
+  const OperationChargeCreatedEvent(
     super.id,
     super.origin,
     super.at,
@@ -142,8 +142,8 @@ class EventOperationChargeCreated extends OperationEvent {
 }
 
 /// Event of a new [OperationDepositBonus] being created.
-class EventOperationDepositBonusCreated extends OperationEvent {
-  const EventOperationDepositBonusCreated(
+class OperationDepositBonusCreatedEvent extends OperationEvent {
+  const OperationDepositBonusCreatedEvent(
     super.id,
     super.origin,
     super.at,
@@ -155,8 +155,8 @@ class EventOperationDepositBonusCreated extends OperationEvent {
 }
 
 /// Event of an [OperationDeposit] being completed.
-class EventOperationDepositCompleted extends OperationEvent {
-  const EventOperationDepositCompleted(
+class OperationDepositCompletedEvent extends OperationEvent {
+  const OperationDepositCompletedEvent(
     super.id,
     super.origin,
     super.at,
@@ -168,8 +168,8 @@ class EventOperationDepositCompleted extends OperationEvent {
 }
 
 /// Event of a new [OperationDeposit] being created.
-class EventOperationDepositCreated extends OperationEvent {
-  const EventOperationDepositCreated(
+class OperationDepositCreatedEvent extends OperationEvent {
+  const OperationDepositCreatedEvent(
     super.id,
     super.origin,
     super.at,
@@ -181,8 +181,8 @@ class EventOperationDepositCreated extends OperationEvent {
 }
 
 /// Event of an [OperationDeposit] being declined.
-class EventOperationDepositDeclined extends OperationEvent {
-  const EventOperationDepositDeclined(
+class OperationDepositDeclinedEvent extends OperationEvent {
+  const OperationDepositDeclinedEvent(
     super.id,
     super.origin,
     super.at,
@@ -194,8 +194,8 @@ class EventOperationDepositDeclined extends OperationEvent {
 }
 
 /// Event of an [OperationDeposit] being failed.
-class EventOperationDepositFailed extends OperationEvent {
-  const EventOperationDepositFailed(
+class OperationDepositFailedEvent extends OperationEvent {
+  const OperationDepositFailedEvent(
     super.id,
     super.origin,
     super.at,
@@ -207,8 +207,8 @@ class EventOperationDepositFailed extends OperationEvent {
 }
 
 /// Event of a new [OperationDividend] being created.
-class EventOperationDividendCreated extends OperationEvent {
-  const EventOperationDividendCreated(
+class OperationDividendCreatedEvent extends OperationEvent {
+  const OperationDividendCreatedEvent(
     super.id,
     super.origin,
     super.at,
@@ -220,8 +220,8 @@ class EventOperationDividendCreated extends OperationEvent {
 }
 
 /// Event of a new [OperationEarnDonation] being created.
-class EventOperationEarnDonationCreated extends OperationEvent {
-  const EventOperationEarnDonationCreated(
+class OperationEarnDonationCreatedEvent extends OperationEvent {
+  const OperationEarnDonationCreatedEvent(
     super.id,
     super.origin,
     super.at,
@@ -233,8 +233,8 @@ class EventOperationEarnDonationCreated extends OperationEvent {
 }
 
 /// Event of a new [OperationGrant] being created.
-class EventOperationGrantCreated extends OperationEvent {
-  const EventOperationGrantCreated(
+class OperationGrantCreatedEvent extends OperationEvent {
+  const OperationGrantCreatedEvent(
     super.id,
     super.origin,
     super.at,
@@ -246,8 +246,8 @@ class EventOperationGrantCreated extends OperationEvent {
 }
 
 /// Event of a new [OperationPurchaseDonation] being created.
-class EventOperationPurchaseDonationCreated extends OperationEvent {
-  const EventOperationPurchaseDonationCreated(
+class OperationPurchaseDonationCreatedEvent extends OperationEvent {
+  const OperationPurchaseDonationCreatedEvent(
     super.id,
     super.origin,
     super.at,
@@ -259,8 +259,8 @@ class EventOperationPurchaseDonationCreated extends OperationEvent {
 }
 
 /// Event of a new [OperationReward] being created.
-class EventOperationRewardCreated extends OperationEvent {
-  const EventOperationRewardCreated(
+class OperationRewardCreatedEvent extends OperationEvent {
+  const OperationRewardCreatedEvent(
     super.id,
     super.origin,
     super.at,

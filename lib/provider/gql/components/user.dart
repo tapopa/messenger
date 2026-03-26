@@ -28,6 +28,7 @@ import '../base.dart';
 import '../exceptions.dart';
 import '/api/backend/schema.dart';
 import '/domain/model/chat.dart';
+import '/domain/model/link.dart';
 import '/domain/model/my_user.dart';
 import '/domain/model/session.dart';
 import '/domain/model/user.dart';
@@ -142,7 +143,7 @@ mixin UserGraphQlMixin {
   Future<SearchUsers$Query> searchUsers({
     UserNum? num,
     UserLogin? login,
-    ChatDirectLinkSlug? link,
+    DirectLinkSlug? link,
     UserName? name,
     int? first,
     UsersCursor? after,
@@ -179,7 +180,7 @@ mixin UserGraphQlMixin {
   /// ### Authentication
   ///
   /// Optional.
-  Future<SearchLink$Query> searchLink(ChatDirectLinkSlug link) async {
+  Future<SearchLink$Query> searchLink(DirectLinkSlug link) async {
     Log.debug('searchLink($link)', '$runtimeType');
 
     final variables = SearchLinkArguments(directLink: link);
@@ -202,8 +203,8 @@ mixin UserGraphQlMixin {
   /// ### Result
   ///
   /// One of the following [MyUserEvent]s may be produced on success:
-  /// - [EventUserNameUpdated] (if [name] argument is specified);
-  /// - [EventUserNameRemoved] (if [name] argument is absent or is `null`).
+  /// - [UserNameUpdatedEvent] (if [name] argument is specified);
+  /// - [UserNameRemovedEvent] (if [name] argument is absent or is `null`).
   ///
   /// ### Idempotent
   ///
@@ -232,8 +233,8 @@ mixin UserGraphQlMixin {
   /// ### Result
   ///
   /// One of the following [MyUserEvent]s may be produced on success:
-  /// - [EventUserBioUpdated] (if the [bio] argument is specified);
-  /// - [EventUserBioRemoved] (if the [bio] argument is absent or is `null`).
+  /// - [UserBioUpdatedEvent] (if the [bio] argument is specified);
+  /// - [UserBioRemovedEvent] (if the [bio] argument is absent or is `null`).
   ///
   /// ### Idempotent
   ///
@@ -262,8 +263,8 @@ mixin UserGraphQlMixin {
   /// ### Result
   ///
   /// One of the following [MyUserEvent]s may be produced on success:
-  /// - [EventUserStatusUpdated] (if [text] argument is specified);
-  /// - [EventUserStatusRemoved] (if [text] argument is absent or is `null`).
+  /// - [UserStatusUpdatedEvent] (if [text] argument is specified);
+  /// - [UserStatusRemovedEvent] (if [text] argument is absent or is `null`).
   ///
   /// ### Idempotent
   ///
@@ -294,8 +295,8 @@ mixin UserGraphQlMixin {
   /// ### Result
   ///
   /// One of the following [MyUserEvent]s may be produced on success:
-  /// - [EventUserLoginUpdated] (if [login] argument is specified);
-  /// - [EventUserLoginRemoved] (if [login] argument is absent or is `null`).
+  /// - [UserLoginUpdatedEvent] (if [login] argument is specified);
+  /// - [UserLoginRemovedEvent] (if [login] argument is absent or is `null`).
   ///
   /// ### Idempotent
   ///
@@ -330,7 +331,7 @@ mixin UserGraphQlMixin {
   /// ### Result
   ///
   /// Only the following [MyUserEvent] may be produced on success:
-  /// - [EventUserPresenceUpdated].
+  /// - [UserPresenceUpdatedEvent].
   ///
   /// ### Idempotent
   ///
@@ -383,7 +384,7 @@ mixin UserGraphQlMixin {
   /// ### Result
   ///
   /// Only the following [MyUserEvent] is always produced on success:
-  /// - [EventUserPasswordUpdated].
+  /// - [UserPasswordUpdatedEvent].
   ///
   /// ### Non-idempotent
   ///
@@ -432,7 +433,7 @@ mixin UserGraphQlMixin {
   /// ### Result
   ///
   /// Only the following [MyUserEvent] is always produced on success:
-  /// - [EventUserDeleted].
+  /// - [UserDeletedEvent].
   ///
   /// ### Non-idempotent
   ///
@@ -496,7 +497,7 @@ mixin UserGraphQlMixin {
   /// Finite.
   ///
   /// Completes without re-subscription necessity when:
-  /// - The authenticated [MyUser] is deleted (emits [EventUserDeleted] and
+  /// - The authenticated [MyUser] is deleted (emits [UserDeletedEvent] and
   /// completes).
   ///
   /// Completes requiring a re-subscription when:
@@ -507,7 +508,7 @@ mixin UserGraphQlMixin {
   ///
   /// ### Idempotency
   ///
-  /// This subscription could emit the same [EventUserDeleted] multiple times,
+  /// This subscription could emit the same [UserDeletedEvent] multiple times,
   /// so a client side is expected to handle it idempotently considering the
   /// `MyUser.ver`.
   Future<Stream<QueryResult>> myUserEvents(
@@ -626,7 +627,7 @@ mixin UserGraphQlMixin {
   /// Finite.
   ///
   /// Completes without re-subscription necessity when:
-  /// - The specified [User] is deleted (emits [EventUserDeleted] and
+  /// - The specified [User] is deleted (emits [UserDeletedEvent] and
   /// completes).
   /// - The specified [User] doesn't exist (emits nothing, completes immediately
   /// after being established).
@@ -639,7 +640,7 @@ mixin UserGraphQlMixin {
   ///
   /// ### Idempotency
   ///
-  /// This subscription could emit the same [EventUserDeleted] multiple times,
+  /// This subscription could emit the same [UserDeletedEvent] multiple times,
   /// so a client side is expected to handle it idempotently considering the
   /// [UserVersion].
   Future<Stream<QueryResult>> userEvents(
@@ -670,7 +671,7 @@ mixin UserGraphQlMixin {
   /// ### Result
   ///
   /// Only the following [MyUserEvent] may be produced on success:
-  /// - [EventUserEmailRemoved].
+  /// - [UserEmailRemovedEvent].
   ///
   /// ### Idempotent
   ///
@@ -715,7 +716,7 @@ mixin UserGraphQlMixin {
   /// ### Result
   ///
   /// Only the following [MyUserEvent] may be produced on success:
-  /// - [EventUserPhoneRemoved].
+  /// - [UserPhoneRemovedEvent].
   ///
   /// ### Idempotent
   ///
@@ -762,7 +763,7 @@ mixin UserGraphQlMixin {
   /// ### Result
   ///
   /// Only the following [MyUserEvent] may be produced on success:
-  /// - [EventUserEmailAdded].
+  /// - [UserEmailAddedEvent].
   ///
   /// ### Idempotent
   ///
@@ -852,7 +853,7 @@ mixin UserGraphQlMixin {
   /// ### Result
   ///
   /// Only the following [MyUserEvent] may be produced on success:
-  /// - [EventUserPhoneAdded].
+  /// - [UserPhoneAddedEvent].
   ///
   /// ### Idempotent
   ///
@@ -888,85 +889,6 @@ mixin UserGraphQlMixin {
     //     as MyUserEventsVersionedMixin?;
   }
 
-  /// Creates a new [ChatDirectLink] with the specified [ChatDirectLinkSlug] and
-  /// deletes the current active [ChatDirectLink] of the authenticated [MyUser]
-  /// (if any).
-  ///
-  /// Deleted [ChatDirectLink]s can be re-created again by the original owner
-  /// only ([MyUser]) and cannot leak to somebody else.
-  ///
-  /// ### Authentication
-  ///
-  /// Mandatory.
-  ///
-  /// ### Result
-  ///
-  /// Only the following [MyUserEvent] may be produced on success:
-  /// - [EventUserDirectLinkUpdated].
-  ///
-  /// ### Idempotent
-  ///
-  /// Succeeds as no-op (and returns no [MyUserEvent]) if the authenticated
-  /// [MyUser] has an active [ChatDirectLink] with such [ChatDirectLinkSlug]
-  /// already.
-  Future<MyUserEventsVersionedMixin?> createUserDirectLink(
-    ChatDirectLinkSlug slug,
-  ) async {
-    Log.debug('createUserDirectLink($slug)', '$runtimeType');
-
-    final variables = CreateUserDirectLinkArguments(slug: slug);
-    final QueryResult result = await client.mutate(
-      MutationOptions(
-        operationName: 'CreateUserDirectLink',
-        document: CreateUserDirectLinkMutation(variables: variables).document,
-        variables: variables.toJson(),
-      ),
-      onException: (data) => CreateChatDirectLinkException(
-        (CreateUserDirectLink$Mutation.fromJson(data).createChatDirectLink
-                as CreateUserDirectLink$Mutation$CreateChatDirectLink$CreateChatDirectLinkError)
-            .code,
-      ),
-    );
-    return CreateUserDirectLink$Mutation.fromJson(
-          result.data!,
-        ).createChatDirectLink
-        as MyUserEventsVersionedMixin?;
-  }
-
-  /// Deletes the current [ChatDirectLink] of the authenticated [MyUser].
-  ///
-  /// ### Authentication
-  ///
-  /// Mandatory.
-  ///
-  /// ### Result
-  ///
-  /// Only the following [MyUserEvent] may be produced on success:
-  /// - [EventUserDirectLinkDeleted].
-  ///
-  /// ### Idempotent
-  ///
-  /// Succeeds as no-op (and returns no [MyUserEvent]) if the authenticated
-  /// [MyUser] has no active [ChatDirectLink]s already.
-  Future<MyUserEventsVersionedMixin?> deleteUserDirectLink() async {
-    Log.debug('deleteUserDirectLink()', '$runtimeType');
-
-    final QueryResult result = await client.mutate(
-      MutationOptions(
-        operationName: 'DeleteUserDirectLink',
-        document: DeleteUserDirectLinkMutation().document,
-      ),
-      onException: (data) => DeleteChatDirectLinkException(
-        DeleteUserDirectLink$Mutation.fromJson(data).deleteChatDirectLink
-            as DeleteChatDirectLinkErrorCode,
-      ),
-    );
-    return DeleteUserDirectLink$Mutation.fromJson(
-          result.data!,
-        ).deleteChatDirectLink
-        as MyUserEventsVersionedMixin?;
-  }
-
   /// Updates or resets the [MyUser.avatar] field with the provided image
   /// [file].
   ///
@@ -981,8 +903,8 @@ mixin UserGraphQlMixin {
   /// ### Result
   ///
   /// One of the following [MyUserEvent]s may be produced on success:
-  /// - [EventUserAvatarUpdated] (if image [file] is provided);
-  /// - [EventUserAvatarRemoved] (if image [file] is not provided).
+  /// - [UserAvatarUpdatedEvent] (if image [file] is provided);
+  /// - [UserAvatarRemovedEvent] (if image [file] is not provided).
   ///
   /// ### Idempotent
   ///
@@ -1063,8 +985,8 @@ mixin UserGraphQlMixin {
   /// ### Result
   ///
   /// One of the following [MyUserEvent]s may be produced on success:
-  /// - [EventUserCallCoverUpdated] (if image [file] is provided);
-  /// - [EventUserCallCoverRemoved] (if image [file] is not provided).
+  /// - [UserCallCoverUpdatedEvent] (if image [file] is provided);
+  /// - [UserCallCoverRemovedEvent] (if image [file] is not provided).
   ///
   /// ### Idempotent
   ///
@@ -1153,8 +1075,8 @@ mixin UserGraphQlMixin {
   /// ### Result
   ///
   /// One of the following [MyUserEvent]s may be produced on success:
-  /// - [EventUserMuted] (if [mute] argument is not `null`);
-  /// - [EventUserUnmuted] (if [mute] argument is `null`).
+  /// - [UserMutedEvent] (if [mute] argument is not `null`);
+  /// - [UserUnmutedEvent] (if [mute] argument is `null`).
   ///
   /// ### Idempotent
   ///
@@ -1233,7 +1155,7 @@ mixin UserGraphQlMixin {
   /// ### Result
   ///
   /// Only the following BlocklistEvent may be produced on success:
-  /// - [EventBlocklistRecordAdded].
+  /// - [BlocklistRecordAddedEvent].
   ///
   /// ### Idempotent
   ///
@@ -1273,7 +1195,7 @@ mixin UserGraphQlMixin {
   /// ### Result
   ///
   /// Only the following [BlocklistEvent] may be produced on success:
-  /// - [EventBlocklistRecordRemoved].
+  /// - [BlocklistRecordRemovedEvent].
   ///
   /// Idempotent
   ///
@@ -1525,8 +1447,8 @@ mixin UserGraphQlMixin {
   /// ### Result
   ///
   /// One of the following [MyUserEvent]s may be produced on success:
-  /// - [EventUserWelcomeMessageUpdated] (if [content] argument is specified);
-  /// - [EventUserWelcomeMessageDeleted] (if [content] argument is absent or
+  /// - [UserWelcomeMessageUpdatedEvent] (if [content] argument is specified);
+  /// - [UserWelcomeMessageDeletedEvent] (if [content] argument is absent or
   /// `null`).
   ///
   /// ### Idempotent
@@ -1553,9 +1475,10 @@ mixin UserGraphQlMixin {
             .code,
       ),
     );
-    return DeleteUserDirectLink$Mutation.fromJson(
+
+    return UpdateWelcomeMessage$Mutation.fromJson(
           result.data!,
-        ).deleteChatDirectLink
+        ).updateWelcomeMessage
         as MyUserEventsVersionedMixin?;
   }
 }

@@ -75,7 +75,18 @@ extension OperationDepositConversion on OperationDepositMixin {
     kind: kind,
     billingCountry: billingCountry,
     invoice: invoice,
-    processingUrl: processingUrl == null ? null : Url(processingUrl!),
+    details: switch (details.$$typename) {
+      'OperationDepositPayPalDetails' => OperationDepositPayPalDetails(
+        processingUrl: Url(
+          (details
+                  as OperationDepositMixin$Details$OperationDepositPayPalDetails)
+              .processingUrl,
+        ),
+      ),
+      (_) => throw Exception(
+        'Unsupported `OperationDepositDetails` type: ${details.$$typename}',
+      ),
+    },
     pricing: price?.toModel(),
     failed: failed?.toModel(),
   );

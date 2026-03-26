@@ -134,6 +134,9 @@ class PlatformUtilsImpl {
   /// Indicates whether device's OS is Windows.
   bool get isWindows => GetPlatform.isWindows;
 
+  /// Indicates whether device's OS is Windows 10.
+  Future<bool> get isWindows10 async => isWindows && await WebUtils.isWindows10;
+
   /// Indicates whether device's OS is Linux.
   bool get isLinux => GetPlatform.isLinux;
 
@@ -1058,8 +1061,8 @@ class CustomMouseCursors {
   static Future<void> _initCursor(
     String path,
     String name, {
-    double width = 30,
-    double height = 30,
+    double width = 32,
+    double height = 32,
   }) async {
     try {
       final ByteData bytes = await rootBundle.load(path);

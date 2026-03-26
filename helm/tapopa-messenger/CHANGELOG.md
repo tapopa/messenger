@@ -6,6 +6,18 @@ All user visible changes to this project will be documented in this file. This p
 
 
 
+## [0.1.2] · 2026-??-??
+[0.1.2]: https://github.com/tapopa/messenger/tree/helm%2Ftapopa-messenger%2F0.1.1/helm/tapopa-messenger
+
+### Fixed
+
+- `/geo-ip` [Nginx] proxy not forwarding requests. ([team113/messenger#1661])
+
+[team113/messenger#1661]: https://github.com/team113/messenger/pull/1661
+
+
+
+
 ## [0.1.1] · 2026-03-10
 [0.1.1]: https://github.com/tapopa/messenger/tree/helm%2Ftapopa-messenger%2F0.1.1/helm/tapopa-messenger
 

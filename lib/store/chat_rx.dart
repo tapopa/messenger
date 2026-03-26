@@ -28,8 +28,8 @@ import 'package:mutex/mutex.dart';
 import '/api/backend/schema.dart'
     show
         ChatCallFinishReason,
-        ChatKind,
         DonationInput,
+        Kind,
         PostChatMessageErrorCode,
         ReadChatErrorCode;
 import '/domain/model/attachment.dart';
@@ -273,11 +273,11 @@ class RxChatImpl extends RxChat {
     UserCallCover? callCover;
 
     switch (chat.value.kind) {
-      case ChatKind.monolog:
+      case Kind.monolog:
         callCover = members.values.firstOrNull?.user.user.value.callCover;
         break;
 
-      case ChatKind.dialog:
+      case Kind.dialog:
         callCover = members.values
             .firstWhereOrNull((e) => e.user.id != me)
             ?.user
@@ -286,8 +286,8 @@ class RxChatImpl extends RxChat {
             .callCover;
         break;
 
-      case ChatKind.group:
-      case ChatKind.artemisUnknown:
+      case Kind.group:
+      case Kind.artemisUnknown:
         return null;
     }
 
@@ -861,8 +861,8 @@ class RxChatImpl extends RxChat {
         final event =
             response?.events
                     .map((e) => _chatRepository.chatEvent(e))
-                    .firstWhereOrNull((e) => e is EventChatItemPosted)
-                as EventChatItemPosted?;
+                    .firstWhereOrNull((e) => e is ChatItemPostedEvent)
+                as ChatItemPostedEvent?;
 
         if (event != null && event.item is DtoChatMessage) {
           remove(message.value.id);
@@ -883,6 +883,7 @@ class RxChatImpl extends RxChat {
           case PostChatMessageErrorCode.artemisUnknown:
           case PostChatMessageErrorCode.disabledDonation:
           case PostChatMessageErrorCode.tooSmallDonation:
+          case PostChatMessageErrorCode.disabled:
             rethrow;
 
           case PostChatMessageErrorCode.unknownChat:
@@ -1718,7 +1719,7 @@ class RxChatImpl extends RxChat {
   /// Updates the [_userSubscriptions].
   void _updateUsersSubscriptions() {
     switch (chat.value.kind) {
-      case ChatKind.dialog:
+      case Kind.dialog:
         final RxUser? rxUser = members.values
             .firstWhereOrNull((u) => u.user.id != me)
             ?.user;
@@ -1730,7 +1731,7 @@ class RxChatImpl extends RxChat {
         }
         break;
 
-      case ChatKind.group:
+      case Kind.group:
         if (chat.value.name != null) {
           _userSubscriptions.removeWhere((k, v) {
             v.cancel();
@@ -1763,8 +1764,8 @@ class RxChatImpl extends RxChat {
         }
         break;
 
-      case ChatKind.monolog:
-      case ChatKind.artemisUnknown:
+      case Kind.monolog:
+      case Kind.artemisUnknown:
         // No-op.
         break;
     }
@@ -1777,16 +1778,16 @@ class RxChatImpl extends RxChat {
     RxUser? member;
 
     switch (chat.value.kind) {
-      case ChatKind.dialog:
+      case Kind.dialog:
         member = members.values.firstWhereOrNull((e) => e.user.id != me)?.user;
         break;
 
-      case ChatKind.group:
-      case ChatKind.monolog:
+      case Kind.group:
+      case Kind.monolog:
         avatar.value = chat.value.avatar;
         break;
 
-      case ChatKind.artemisUnknown:
+      case Kind.artemisUnknown:
         // No-op.
         break;
     }
@@ -2136,7 +2137,7 @@ class RxChatImpl extends RxChat {
 
           switch (event.kind) {
             case ChatEventKind.redialed:
-              event as EventChatCallMemberRedialed;
+              event as ChatCallMemberRedialedEvent;
               _chatRepository.addCall(event.call);
               break;
 
@@ -2154,17 +2155,17 @@ class RxChatImpl extends RxChat {
               break;
 
             case ChatEventKind.itemHidden:
-              event as EventChatItemHidden;
+              event as ChatItemHiddenEvent;
               remove(event.itemId);
               break;
 
             case ChatEventKind.muted:
-              event as EventChatMuted;
+              event as ChatMutedEvent;
               write((chat) => chat.value.muted = event.duration);
               break;
 
             case ChatEventKind.typingStarted:
-              event as EventChatTypingStarted;
+              event as ChatTypingStartedEvent;
               typingUsers.addIf(
                 !typingUsers.any((e) => e.id == event.user.id),
                 event.user,
@@ -2176,32 +2177,32 @@ class RxChatImpl extends RxChat {
               break;
 
             case ChatEventKind.typingStopped:
-              event as EventChatTypingStopped;
+              event as ChatTypingStoppedEvent;
               typingUsers.removeWhere((e) => e.id == event.user.id);
               break;
 
             case ChatEventKind.hidden:
-              event as EventChatHidden;
+              event as ChatHiddenEvent;
               write((chat) => chat.value.isHidden = true);
               continue;
 
             case ChatEventKind.archived:
-              event as EventChatArchived;
+              event as ChatArchivedEvent;
               write((chat) => chat.value.isArchived = true);
               break;
 
             case ChatEventKind.unarchived:
-              event as EventChatUnarchived;
+              event as ChatUnarchivedEvent;
               write((chat) => chat.value.isArchived = false);
               break;
 
             case ChatEventKind.itemDeleted:
-              event as EventChatItemDeleted;
+              event as ChatItemDeletedEvent;
               remove(event.itemId);
               break;
 
             case ChatEventKind.itemEdited:
-              event as EventChatItemEdited;
+              event as ChatItemEditedEvent;
               final item = await get(event.itemId);
               if (item != null) {
                 final message = item.value as ChatMessage;
@@ -2231,7 +2232,7 @@ class RxChatImpl extends RxChat {
               break;
 
             case ChatEventKind.callStarted:
-              event as EventChatCallStarted;
+              event as ChatCallStartedEvent;
 
               if (!chat.value.isDialog) {
                 event.call.conversationStartedAt ??= PreciseDateTime.now();
@@ -2253,7 +2254,7 @@ class RxChatImpl extends RxChat {
               break;
 
             case ChatEventKind.callDeclined:
-              event as EventChatCallDeclined;
+              event as ChatCallDeclinedEvent;
 
               if (dto.value.ongoingCall?.id == event.call.id) {
                 write((chat) => chat.value.ongoingCall = event.call);
@@ -2269,7 +2270,7 @@ class RxChatImpl extends RxChat {
               break;
 
             case ChatEventKind.unreadItemsCountUpdated:
-              event as EventChatUnreadItemsCountUpdated;
+              event as ChatUnreadItemsCountUpdatedEvent;
               if (event.count < unreadCount.value || _readTimer == null) {
                 unreadCount.value = event.count;
               } else if (event.count > dto.value.unreadCount) {
@@ -2284,7 +2285,7 @@ class RxChatImpl extends RxChat {
               break;
 
             case ChatEventKind.callFinished:
-              event as EventChatCallFinished;
+              event as ChatCallFinishedEvent;
 
               if (dto.value.ongoingCall?.id == event.call.id) {
                 write((chat) => chat.value.ongoingCall = null);
@@ -2317,7 +2318,7 @@ class RxChatImpl extends RxChat {
               break;
 
             case ChatEventKind.callMemberLeft:
-              event as EventChatCallMemberLeft;
+              event as ChatCallMemberLeftEvent;
               int? i =
                   dto.value.ongoingCall?.members.indexWhere(
                     (e) => e.user.id == event.user.id,
@@ -2330,7 +2331,7 @@ class RxChatImpl extends RxChat {
               break;
 
             case ChatEventKind.callMemberJoined:
-              event as EventChatCallMemberJoined;
+              event as ChatCallMemberJoinedEvent;
 
               write(
                 (chat) => chat.value.ongoingCall?.members.add(
@@ -2388,7 +2389,7 @@ class RxChatImpl extends RxChat {
               break;
 
             case ChatEventKind.lastItemUpdated:
-              event as EventChatLastItemUpdated;
+              event as ChatLastItemUpdatedEvent;
               write((chat) => chat.value.lastItem = event.lastItem?.value);
 
               // TODO: [ChatCall.conversationStartedAt] shouldn't be `null`
@@ -2422,12 +2423,12 @@ class RxChatImpl extends RxChat {
               break;
 
             case ChatEventKind.delivered:
-              event as EventChatDelivered;
+              event as ChatDeliveredEvent;
               write((chat) => chat.value.lastDelivery = event.until);
               break;
 
             case ChatEventKind.read:
-              event as EventChatRead;
+              event as ChatReadEvent;
 
               _updateReadFor(event.byUser.id, event.at);
 
@@ -2457,7 +2458,7 @@ class RxChatImpl extends RxChat {
               break;
 
             case ChatEventKind.itemPosted:
-              event as EventChatItemPosted;
+              event as ChatItemPostedEvent;
               final DtoChatItem item = event.item;
 
               if (dto.value.isHidden) {
@@ -2561,32 +2562,16 @@ class RxChatImpl extends RxChat {
               break;
 
             case ChatEventKind.totalItemsCountUpdated:
-              event as EventChatTotalItemsCountUpdated;
+              event as ChatTotalItemsCountUpdatedEvent;
               write((chat) => chat.value.totalCount = event.count);
               break;
 
-            case ChatEventKind.directLinkUpdated:
-              event as EventChatDirectLinkUpdated;
-              write((chat) => chat.value.directLink = event.link);
-              break;
-
-            case ChatEventKind.directLinkUsageCountUpdated:
-              event as EventChatDirectLinkUsageCountUpdated;
-              write(
-                (chat) => chat.value.directLink?.usageCount = event.usageCount,
-              );
-              break;
-
-            case ChatEventKind.directLinkDeleted:
-              write((chat) => chat.value.directLink = null);
-              break;
-
             case ChatEventKind.callMoved:
-              // TODO: Implement EventChatCallMoved.
+              // TODO: Implement ChatCallMovedEvent.
               break;
 
             case ChatEventKind.favorited:
-              event as EventChatFavorited;
+              event as ChatFavoritedEvent;
               write((chat) => chat.value.favoritePosition = event.position);
               break;
 
@@ -2595,7 +2580,7 @@ class RxChatImpl extends RxChat {
               break;
 
             case ChatEventKind.callConversationStarted:
-              event as EventChatCallConversationStarted;
+              event as ChatCallConversationStartedEvent;
 
               // Call is already finished, no reason to try adding it.
               if (event.call.finishReason == null) {
@@ -2609,7 +2594,7 @@ class RxChatImpl extends RxChat {
               break;
 
             case ChatEventKind.callAnswerTimeoutPassed:
-              event as EventChatCallAnswerTimeoutPassed;
+              event as ChatCallAnswerTimeoutPassedEvent;
 
               if (event.callId == chat.value.ongoingCall?.id) {
                 write((chat) => chat.value.ongoingCall?.dialed = null);

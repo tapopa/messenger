@@ -137,7 +137,10 @@ class PayPalDepositController extends GetxController {
 
       final Operation? order = operation.value?.value;
       if (order is OperationDeposit) {
-        orderId = order.processingUrl?.val.split('?order_id=').last;
+        final details = order.details;
+        if (details is OperationDepositPayPalDetails) {
+          orderId = details.processingUrl.val.split('?order_id=').last;
+        }
 
         if (total == null) {
           final OperationDepositPricing? pricing = order.pricing;

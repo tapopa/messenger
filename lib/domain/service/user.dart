@@ -21,6 +21,7 @@ import 'dart:async';
 
 import 'package:get/get.dart';
 
+import '/domain/model/link.dart';
 import '/domain/model/user.dart';
 import '/domain/repository/paginated.dart';
 import '/domain/repository/user.dart';
@@ -42,7 +43,7 @@ class UserService extends Dependency {
     UserNum? num,
     UserName? name,
     UserLogin? login,
-    ChatDirectLinkSlug? link,
+    DirectLinkSlug? link,
   }) {
     Log.debug('search($num, $name, $login, $link)', '$runtimeType');
 

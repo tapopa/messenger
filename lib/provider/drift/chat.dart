@@ -51,7 +51,6 @@ class Chats extends Table {
   BoolColumn get isHidden => boolean().withDefault(const Constant(false))();
   BoolColumn get isArchived => boolean().withDefault(const Constant(false))();
   TextColumn get muted => text().nullable()();
-  TextColumn get directLink => text().nullable()();
   IntColumn get createdAt => integer()
       .map(const PreciseDateTimeConverter())
       .clientDefault(
@@ -404,9 +403,6 @@ extension _ChatDb on DtoChat {
         muted: e.muted == null
             ? null
             : MuteDuration.fromJson(jsonDecode(e.muted!)),
-        directLink: e.directLink == null
-            ? null
-            : ChatDirectLink.fromJson(jsonDecode(e.directLink!)),
         createdAt: e.createdAt,
         updatedAt: e.updatedAt,
         lastReads: (jsonDecode(e.lastReads) as List)
@@ -456,9 +452,6 @@ extension _ChatDb on DtoChat {
       isHidden: value.isHidden,
       isArchived: value.isArchived,
       muted: value.muted == null ? null : jsonEncode(value.muted?.toJson()),
-      directLink: value.directLink == null
-          ? null
-          : jsonEncode(value.directLink?.toJson()),
       createdAt: value.createdAt,
       updatedAt: value.updatedAt,
       lastReads: jsonEncode(value.lastReads.map((e) => e.toJson()).toList()),

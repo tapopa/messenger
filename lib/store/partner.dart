@@ -569,7 +569,7 @@ class PartnerRepository extends IdentityDependency
         for (var event in versioned.events) {
           switch (event.kind) {
             case OperationEventKind.canceled:
-              event as EventOperationCanceled;
+              event as OperationCanceledEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -577,7 +577,7 @@ class PartnerRepository extends IdentityDependency
               break;
 
             case OperationEventKind.chargeCreated:
-              event as EventOperationChargeCreated;
+              event as OperationChargeCreatedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -585,7 +585,7 @@ class PartnerRepository extends IdentityDependency
               break;
 
             case OperationEventKind.depositBonusCreated:
-              event as EventOperationDepositBonusCreated;
+              event as OperationDepositBonusCreatedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -593,7 +593,7 @@ class PartnerRepository extends IdentityDependency
               break;
 
             case OperationEventKind.depositCompleted:
-              event as EventOperationDepositCompleted;
+              event as OperationDepositCompletedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -601,7 +601,7 @@ class PartnerRepository extends IdentityDependency
               break;
 
             case OperationEventKind.depositCreated:
-              event as EventOperationDepositCreated;
+              event as OperationDepositCreatedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -609,7 +609,7 @@ class PartnerRepository extends IdentityDependency
               break;
 
             case OperationEventKind.depositDeclined:
-              event as EventOperationDepositDeclined;
+              event as OperationDepositDeclinedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -617,7 +617,7 @@ class PartnerRepository extends IdentityDependency
               break;
 
             case OperationEventKind.depositFailed:
-              event as EventOperationDepositFailed;
+              event as OperationDepositFailedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -625,7 +625,7 @@ class PartnerRepository extends IdentityDependency
               break;
 
             case OperationEventKind.dividendCreated:
-              event as EventOperationDividendCreated;
+              event as OperationDividendCreatedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -633,7 +633,7 @@ class PartnerRepository extends IdentityDependency
               break;
 
             case OperationEventKind.earnDonationCreated:
-              event as EventOperationEarnDonationCreated;
+              event as OperationEarnDonationCreatedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -641,7 +641,7 @@ class PartnerRepository extends IdentityDependency
               break;
 
             case OperationEventKind.grantCreated:
-              event as EventOperationGrantCreated;
+              event as OperationGrantCreatedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -649,7 +649,7 @@ class PartnerRepository extends IdentityDependency
               break;
 
             case OperationEventKind.purchaseDonationCreated:
-              event as EventOperationPurchaseDonationCreated;
+              event as OperationPurchaseDonationCreatedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -657,7 +657,7 @@ class PartnerRepository extends IdentityDependency
               break;
 
             case OperationEventKind.rewardCreated:
-              event as EventOperationRewardCreated;
+              event as OperationRewardCreatedEvent;
               await operations.put(
                 event.operation,
                 ignoreBounds: operations.contains(event.id),
@@ -747,15 +747,15 @@ class PartnerRepository extends IdentityDependency
         for (var event in versioned.events) {
           switch (event.kind) {
             case MonetizationSettingsEventKind.donationDeleted:
-              event as EventMonetizationSettingsDonationDeleted;
+              event as MonetizationSettingsDonationDeletedEvent;
               break;
 
             case MonetizationSettingsEventKind.donationMinPriceUpdated:
-              event as EventMonetizationSettingsDonationMinPriceUpdated;
+              event as MonetizationSettingsDonationMinPriceUpdatedEvent;
               break;
 
             case MonetizationSettingsEventKind.donationToggled:
-              event as EventMonetizationSettingsDonationToggled;
+              event as MonetizationSettingsDonationToggledEvent;
               break;
           }
 
@@ -847,15 +847,15 @@ class PartnerRepository extends IdentityDependency
         for (var event in versioned.events) {
           switch (event.kind) {
             case MonetizationSettingsEventKind.donationDeleted:
-              event as EventMonetizationSettingsDonationDeleted;
+              event as MonetizationSettingsDonationDeletedEvent;
               break;
 
             case MonetizationSettingsEventKind.donationMinPriceUpdated:
-              event as EventMonetizationSettingsDonationMinPriceUpdated;
+              event as MonetizationSettingsDonationMinPriceUpdatedEvent;
               break;
 
             case MonetizationSettingsEventKind.donationToggled:
-              event as EventMonetizationSettingsDonationToggled;
+              event as MonetizationSettingsDonationToggledEvent;
               break;
           }
 
@@ -935,21 +935,21 @@ class PartnerRepository extends IdentityDependency
   ) {
     Log.trace('_decodeMonetizationSettingsEvent($e)', '$runtimeType');
 
-    if (e.$$typename == 'EventMonetizationSettingsDonationDeleted') {
-      return EventMonetizationSettingsDonationDeleted(
+    if (e.$$typename == 'MonetizationSettingsDonationDeletedEvent') {
+      return MonetizationSettingsDonationDeletedEvent(
         e.monetizationSettings?.node.toDto(),
         e.user?.id,
         e.at,
       );
     } else if (e.$$typename ==
-        'EventMonetizationSettingsDonationMinPriceUpdated') {
-      return EventMonetizationSettingsDonationMinPriceUpdated(
+        'MonetizationSettingsDonationMinPriceUpdatedEvent') {
+      return MonetizationSettingsDonationMinPriceUpdatedEvent(
         e.monetizationSettings?.node.toDto(),
         e.user?.id,
         e.at,
       );
-    } else if (e.$$typename == 'EventMonetizationSettingsDonationToggled') {
-      return EventMonetizationSettingsDonationToggled(
+    } else if (e.$$typename == 'MonetizationSettingsDonationToggledEvent') {
+      return MonetizationSettingsDonationToggledEvent(
         e.monetizationSettings?.node.toDto(),
         e.user?.id,
         e.at,

@@ -102,7 +102,7 @@ void main() async {
                     '__typename': 'MyUserEventsVersioned',
                     'events': [
                       {
-                        '__typename': 'EventUserEmailAdded',
+                        '__typename': 'UserEmailAddedEvent',
                         'userId': 'id',
                         'email': 'test@dummy.com',
                         'confirmed': false,
@@ -128,7 +128,7 @@ void main() async {
                     '__typename': 'MyUserEventsVersioned',
                     'events': [
                       {
-                        '__typename': 'EventUserEmailAdded',
+                        '__typename': 'UserEmailAddedEvent',
                         'userId': 'id',
                         'email': 'test@dummy.com',
                         'confirmed': true,
@@ -195,7 +195,7 @@ void main() async {
                     '__typename': 'MyUserEventsVersioned',
                     'events': [
                       {
-                        '__typename': 'EventUserEmailRemoved',
+                        '__typename': 'UserEmailRemovedEvent',
                         'userId': 'id',
                         'email': 'test@dummy.com',
                         'at': DateTime.now().toString(),

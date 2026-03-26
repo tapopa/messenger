@@ -25,6 +25,7 @@ import 'package:graphql/client.dart';
 import '../base.dart';
 import '../exceptions.dart';
 import '/api/backend/schema.dart';
+import '/domain/model/link.dart';
 import '/domain/model/my_user.dart';
 import '/domain/model/session.dart';
 import '/domain/model/user.dart';
@@ -62,7 +63,7 @@ mixin AuthGraphQlMixin {
   Future<SignUp$Mutation$CreateUser> signUp({
     UserLogin? login,
     UserPassword? password,
-    ChatDirectLinkSlug? affiliate,
+    DirectLinkSlug? affiliate,
   }) async {
     Log.debug(
       'signUp(login: $login, password: ${password?.obscured}, affiliate: $affiliate)',
@@ -110,7 +111,7 @@ mixin AuthGraphQlMixin {
   /// ### Result
   ///
   /// Only the following [SessionEvent] may be produced on success:
-  /// - [EventSessionDeleted].
+  /// - [SessionDeletedEvent].
   ///
   /// Idempotent
   ///

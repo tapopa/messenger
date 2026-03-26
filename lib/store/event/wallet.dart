@@ -61,87 +61,87 @@ Future<Stream<OperationsEvents>> operationsEvents(
 OperationEvent operationEvent(OperationEventsVersionedMixin$Events e) {
   Log.trace('_operationEvent($e)', 'WalletRepository');
 
-  if (e.$$typename == 'EventOperationCanceled') {
-    e as OperationEventsVersionedMixin$Events$EventOperationCanceled;
-    return EventOperationCanceled(
+  if (e.$$typename == 'OperationCanceledEvent') {
+    e as OperationEventsVersionedMixin$Events$OperationCanceledEvent;
+    return OperationCanceledEvent(
       e.id,
       e.origin,
       e.at,
       e.operation.node.toDto(cursor: e.operation.cursor),
       e.canceled.toModel(),
     );
-  } else if (e.$$typename == 'EventOperationChargeCreated') {
-    return EventOperationChargeCreated(
+  } else if (e.$$typename == 'OperationChargeCreatedEvent') {
+    return OperationChargeCreatedEvent(
       e.id,
       e.origin,
       e.at,
       e.operation.node.toDto(cursor: e.operation.cursor),
     );
-  } else if (e.$$typename == 'EventOperationDepositBonusCreated') {
-    return EventOperationDepositBonusCreated(
+  } else if (e.$$typename == 'OperationDepositBonusCreatedEvent') {
+    return OperationDepositBonusCreatedEvent(
       e.id,
       e.origin,
       e.at,
       e.operation.node.toDto(cursor: e.operation.cursor),
     );
-  } else if (e.$$typename == 'EventOperationDepositCompleted') {
-    return EventOperationDepositCompleted(
+  } else if (e.$$typename == 'OperationDepositCompletedEvent') {
+    return OperationDepositCompletedEvent(
       e.id,
       e.origin,
       e.at,
       e.operation.node.toDto(cursor: e.operation.cursor),
     );
-  } else if (e.$$typename == 'EventOperationDepositCreated') {
-    return EventOperationDepositCreated(
+  } else if (e.$$typename == 'OperationDepositCreatedEvent') {
+    return OperationDepositCreatedEvent(
       e.id,
       e.origin,
       e.at,
       e.operation.node.toDto(cursor: e.operation.cursor),
     );
-  } else if (e.$$typename == 'EventOperationDepositDeclined') {
-    return EventOperationDepositDeclined(
+  } else if (e.$$typename == 'OperationDepositDeclinedEvent') {
+    return OperationDepositDeclinedEvent(
       e.id,
       e.origin,
       e.at,
       e.operation.node.toDto(cursor: e.operation.cursor),
     );
-  } else if (e.$$typename == 'EventOperationDepositFailed') {
-    return EventOperationDepositFailed(
+  } else if (e.$$typename == 'OperationDepositFailedEvent') {
+    return OperationDepositFailedEvent(
       e.id,
       e.origin,
       e.at,
       e.operation.node.toDto(cursor: e.operation.cursor),
     );
-  } else if (e.$$typename == 'EventOperationDividendCreated') {
-    return EventOperationDividendCreated(
+  } else if (e.$$typename == 'OperationDividendCreatedEvent') {
+    return OperationDividendCreatedEvent(
       e.id,
       e.origin,
       e.at,
       e.operation.node.toDto(cursor: e.operation.cursor),
     );
-  } else if (e.$$typename == 'EventOperationEarnDonationCreated') {
-    return EventOperationEarnDonationCreated(
+  } else if (e.$$typename == 'OperationEarnDonationCreatedEvent') {
+    return OperationEarnDonationCreatedEvent(
       e.id,
       e.origin,
       e.at,
       e.operation.node.toDto(cursor: e.operation.cursor),
     );
-  } else if (e.$$typename == 'EventOperationGrantCreated') {
-    return EventOperationGrantCreated(
+  } else if (e.$$typename == 'OperationGrantCreatedEvent') {
+    return OperationGrantCreatedEvent(
       e.id,
       e.origin,
       e.at,
       e.operation.node.toDto(cursor: e.operation.cursor),
     );
-  } else if (e.$$typename == 'EventOperationPurchaseDonationCreated') {
-    return EventOperationPurchaseDonationCreated(
+  } else if (e.$$typename == 'OperationPurchaseDonationCreatedEvent') {
+    return OperationPurchaseDonationCreatedEvent(
       e.id,
       e.origin,
       e.at,
       e.operation.node.toDto(cursor: e.operation.cursor),
     );
-  } else if (e.$$typename == 'EventOperationRewardCreated') {
-    return EventOperationRewardCreated(
+  } else if (e.$$typename == 'OperationRewardCreatedEvent') {
+    return OperationRewardCreatedEvent(
       e.id,
       e.origin,
       e.at,

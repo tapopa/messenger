@@ -19,11 +19,11 @@ import 'dart:async';
 
 import 'package:drift/drift.dart';
 
-import '/domain/model/user.dart';
+import '/domain/model/link.dart';
 import '/util/log.dart';
 import 'drift.dart';
 
-/// [ChatDirectLinkSlug] stored as an affiliate of this application.
+/// [DirectLinkSlug] stored as an affiliate of this application.
 @DataClassName('SlugRow')
 class Slugs extends Table {
   @override
@@ -33,12 +33,12 @@ class Slugs extends Table {
   TextColumn get slug => text()();
 }
 
-/// [DriftProviderBase] for manipulating the persisted [ChatDirectLinkSlug]s.
+/// [DriftProviderBase] for manipulating the persisted [DirectLinkSlug]s.
 class SlugDriftProvider extends DriftProviderBase {
   SlugDriftProvider(super.common);
 
   /// Creates or updates the provided [slug] in the database.
-  Future<void> upsert(ChatDirectLinkSlug slug) async {
+  Future<void> upsert(DirectLinkSlug slug) async {
     Log.debug('upsert($slug)', '$runtimeType');
 
     await safe((db) async {
@@ -51,11 +51,11 @@ class SlugDriftProvider extends DriftProviderBase {
     }, tag: 'slugs.upsert()');
   }
 
-  /// Returns the [ChatDirectLinkSlug] stored in the database, if any.
-  Future<ChatDirectLinkSlug?> read() async {
+  /// Returns the [DirectLinkSlug] stored in the database, if any.
+  Future<DirectLinkSlug?> read() async {
     Log.debug('read()', '$runtimeType');
 
-    return await safe<ChatDirectLinkSlug?>((db) async {
+    return await safe<DirectLinkSlug?>((db) async {
       final stmt = db.select(db.slugs)..where((u) => u.id.equals(0));
       final SlugRow? row = await stmt.getSingleOrNull();
       Log.debug('read() -> $row', '$runtimeType');
@@ -64,11 +64,11 @@ class SlugDriftProvider extends DriftProviderBase {
         return null;
       }
 
-      return ChatDirectLinkSlug.unchecked(row.slug);
+      return DirectLinkSlug.unchecked(row.slug);
     }, tag: 'slugs.read()');
   }
 
-  /// Deletes the stored [ChatDirectLinkSlug] from the database.
+  /// Deletes the stored [DirectLinkSlug] from the database.
   Future<void> delete() async {
     Log.debug('delete()', '$runtimeType');
 

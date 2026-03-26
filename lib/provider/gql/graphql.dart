@@ -22,6 +22,7 @@ import 'components/auth.dart';
 import 'components/call.dart';
 import 'components/chat.dart';
 import 'components/contact.dart';
+import 'components/link.dart';
 import 'components/user.dart';
 import 'components/wallet.dart';
 
@@ -33,4 +34,5 @@ class GraphQlProvider extends GraphQlProviderBase
         CallGraphQlMixin,
         ContactGraphQlMixin,
         ChatGraphQlMixin,
-        WalletGraphQlMixin {}
+        WalletGraphQlMixin,
+        LinkGraphQlMixin {}

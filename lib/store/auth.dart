@@ -63,7 +63,7 @@ class AuthRepository extends DisposableInterface
   /// [CredentialsDriftProvider] for removing [Credentials].
   final CredentialsDriftProvider _credentialsProvider;
 
-  /// [SlugDriftProvider] for retrieving affiliate [ChatDirectLinkSlug].
+  /// [SlugDriftProvider] for retrieving affiliate [DirectLinkSlug].
   final SlugDriftProvider _slugProvider;
 
   /// [StreamSubscription] for the [MyUserDriftProvider.watch].

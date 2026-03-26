@@ -51,23 +51,23 @@ fragment OperationEventsVersioned on OperationEventsVersioned {
             cursor
         }
         at
-        ... on EventOperationCanceled {
+        ... on OperationCanceledEvent {
             canceled {
                 __typename
                 ...OperationCancellation
             }
         }
-        # ... on EventOperationChargeCreated
-        # ... on EventOperationDepositBonusCreated
-        # ... on EventOperationDepositCompleted
-        # ... on EventOperationDepositCreated
-        # ... on EventOperationDepositDeclined
-        # ... on EventOperationDepositFailed
-        # ... on EventOperationDividendCreated
-        # ... on EventOperationEarnDonationCreated
-        # ... on EventOperationGrantCreated
-        # ... on EventOperationPurchaseDonationCreated
-        # ... on EventOperationRewardCreated
+        # ... on OperationChargeCreatedEvent
+        # ... on OperationDepositBonusCreatedEvent
+        # ... on OperationDepositCompletedEvent
+        # ... on OperationDepositCreatedEvent
+        # ... on OperationDepositDeclinedEvent
+        # ... on OperationDepositFailedEvent
+        # ... on OperationDividendCreatedEvent
+        # ... on OperationEarnDonationCreatedEvent
+        # ... on OperationGrantCreatedEvent
+        # ... on OperationPurchaseDonationCreatedEvent
+        # ... on OperationRewardCreatedEvent
     }
     ver
     listVer

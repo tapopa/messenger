@@ -24,11 +24,12 @@ import 'package:get/get.dart';
 import '/api/backend/schema.dart'
     show CropAreaInput, DeleteChatForwardErrorCode, DeleteChatMessageErrorCode;
 import '/domain/model/attachment.dart';
-import '/domain/model/chat.dart';
-import '/domain/model/chat_item.dart';
 import '/domain/model/chat_item_quote_input.dart';
+import '/domain/model/chat_item.dart';
 import '/domain/model/chat_message_input.dart';
+import '/domain/model/chat.dart';
 import '/domain/model/donation.dart';
+import '/domain/model/link.dart';
 import '/domain/model/mute_duration.dart';
 import '/domain/model/native_file.dart';
 import '/domain/model/sending_status.dart';
@@ -376,23 +377,6 @@ class ChatService extends Dependency {
     return await _chatRepository.uploadAttachment(attachment);
   }
 
-  /// Creates a new [ChatDirectLink] with the specified [ChatDirectLinkSlug] and
-  /// deletes the current active [ChatDirectLink] of the given [Chat]-group (if
-  /// any).
-  Future<void> createChatDirectLink(
-    ChatId chatId,
-    ChatDirectLinkSlug slug,
-  ) async {
-    Log.debug('createChatDirectLink($chatId, $slug)', '$runtimeType');
-    await _chatRepository.createChatDirectLink(chatId, slug);
-  }
-
-  /// Deletes the current [ChatDirectLink] of the given [Chat]-group.
-  Future<void> deleteChatDirectLink(ChatId chatId) async {
-    Log.debug('deleteChatDirectLink($chatId)', '$runtimeType');
-    await _chatRepository.deleteChatDirectLink(chatId);
-  }
-
   /// Notifies [ChatMember]s about the authenticated [MyUser] typing in the
   /// specified [Chat] at the moment.
   Stream<dynamic> keepTyping(ChatId chatId) {
@@ -500,9 +484,11 @@ class ChatService extends Dependency {
     await _chatRepository.clearChat(id, untilId);
   }
 
-  Future<ChatId> useChatDirectLink(ChatDirectLinkSlug slug) async {
-    Log.debug('useChatDirectLink($slug)', '$runtimeType');
-    return await _chatRepository.useChatDirectLink(slug);
+  /// Uses the specified [DirectLink] by the authenticated [MyUser] creating a
+  /// new [Chat]-dialog or joining an existing [Chat]-group.
+  Future<ChatId> useDirectLink(DirectLinkSlug slug) async {
+    Log.debug('useDirectLink($slug)', '$runtimeType');
+    return await _chatRepository.useDirectLink(slug);
   }
 }
 

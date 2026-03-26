@@ -133,9 +133,9 @@ abstract class MonetizationSettingsEvent {
 }
 
 /// Event of [MonetizationSettingsDonation] being deleted.
-class EventMonetizationSettingsDonationDeleted
+class MonetizationSettingsDonationDeletedEvent
     extends MonetizationSettingsEvent {
-  const EventMonetizationSettingsDonationDeleted(
+  const MonetizationSettingsDonationDeletedEvent(
     super.monetizationSettings,
     super.userId,
     super.at,
@@ -147,9 +147,9 @@ class EventMonetizationSettingsDonationDeleted
 }
 
 /// Event of a [MonetizationSettingsDonation.min] [Price] being updated.
-class EventMonetizationSettingsDonationMinPriceUpdated
+class MonetizationSettingsDonationMinPriceUpdatedEvent
     extends MonetizationSettingsEvent {
-  const EventMonetizationSettingsDonationMinPriceUpdated(
+  const MonetizationSettingsDonationMinPriceUpdatedEvent(
     super.monetizationSettings,
     super.userId,
     super.at,
@@ -161,9 +161,9 @@ class EventMonetizationSettingsDonationMinPriceUpdated
 }
 
 /// Event of a [MonetizationSettingsDonation.enabled] state being updated.
-class EventMonetizationSettingsDonationToggled
+class MonetizationSettingsDonationToggledEvent
     extends MonetizationSettingsEvent {
-  const EventMonetizationSettingsDonationToggled(
+  const MonetizationSettingsDonationToggledEvent(
     super.monetizationSettings,
     super.userId,
     super.at,

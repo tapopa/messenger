@@ -28,11 +28,13 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'config.dart';
 import 'domain/model/chat.dart';
 import 'domain/model/chat_item.dart';
+import 'domain/model/link.dart';
 import 'domain/model/user.dart';
 import 'domain/repository/blocklist.dart';
 import 'domain/repository/call.dart';
 import 'domain/repository/chat.dart';
 import 'domain/repository/contact.dart';
+import 'domain/repository/link.dart';
 import 'domain/repository/my_user.dart';
 import 'domain/repository/partner.dart';
 import 'domain/repository/session.dart';
@@ -44,6 +46,7 @@ import 'domain/service/blocklist.dart';
 import 'domain/service/call.dart';
 import 'domain/service/chat.dart';
 import 'domain/service/contact.dart';
+import 'domain/service/link.dart';
 import 'domain/service/my_user.dart';
 import 'domain/service/notification.dart';
 import 'domain/service/partner.dart';
@@ -75,6 +78,7 @@ import 'store/blocklist.dart';
 import 'store/call.dart';
 import 'store/chat.dart';
 import 'store/contact.dart';
+import 'store/link.dart';
 import 'store/my_user.dart';
 import 'store/partner.dart';
 import 'store/session.dart';
@@ -109,7 +113,7 @@ class Routes {
   static const affiliate = '/partner/affiliate';
   static const auth = '/';
   static const call = '/call';
-  static const chatDirectLink = '/~';
+  static const directLink = '/~';
   static const chatInfo = '/info';
   static const chats = '/chats';
   static const contacts = '/contacts';
@@ -254,9 +258,8 @@ class RouterState extends ChangeNotifier {
   /// Current [Routes.home] tab.
   HomeTab get tab => _tab;
 
-  /// Indicator whether [initial] starts with [Routes.chatDirectLink].
-  bool get byLink =>
-      initial?.uri.path.startsWith(Routes.chatDirectLink) == true;
+  /// Indicator whether [initial] starts with [Routes.directLink].
+  bool get byLink => initial?.uri.path.startsWith(Routes.directLink) == true;
 
   /// Changes selected [tab] to the provided one.
   set tab(HomeTab to) {
@@ -366,7 +369,7 @@ class RouterState extends ChangeNotifier {
         to.startsWith(Routes.erase) ||
         to.startsWith(Routes.support) ||
         to.startsWith(Routes.partner) ||
-        to.startsWith(Routes.chatDirectLink)) {
+        to.startsWith(Routes.directLink)) {
       return to;
     }
 
@@ -615,7 +618,10 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
               deps.put(MonologDriftProvider(Get.find(), scoped));
               deps.put(DraftDriftProvider(Get.find(), scoped));
               deps.put(SessionDriftProvider(Get.find(), scoped));
-              await deps.put(VersionDriftProvider(Get.find())).init();
+              final versionProvider = deps.put(
+                VersionDriftProvider(Get.find()),
+              );
+              await versionProvider.init();
 
               final AbstractSettingsRepository settingsRepository = deps
                   .put<AbstractSettingsRepository>(
@@ -702,6 +708,10 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
                       me: me,
                     ),
                   );
+              final AbstractLinkRepository linkRepository = deps
+                  .put<AbstractLinkRepository>(
+                    LinkRepository(graphQlProvider, versionProvider, me: me),
+                  );
 
               final AbstractSessionRepository sessionRepository = deps
                   .put<AbstractSessionRepository>(
@@ -722,6 +732,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
               );
               deps.put(UserService(userRepository));
               deps.put(ContactService(contactRepository));
+              deps.put(LinkService(linkRepository));
 
               final ChatService chatService = deps.put(
                 ChatService(chatRepository, Get.find()),
@@ -1123,6 +1134,12 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
                   me: me,
                 ),
               );
+          final AbstractLinkRepository linkRepository = deps
+              .put<AbstractLinkRepository>(
+                LinkRepository(graphQlProvider, versionProvider, me: me),
+              );
+
+          deps.put(LinkService(linkRepository));
 
           final MyUserService myUserService = deps.put(
             MyUserService(Get.find(), myUserRepository),
@@ -1171,7 +1188,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
           deps.put(MyUserWorker(myUserService));
 
           return deps;
-        }, link: router.arguments?['link'] as ChatDirectLinkSlug?),
+        }, link: router.arguments?['link'] as DirectLinkSlug?),
       ),
     );
 
@@ -1182,7 +1199,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
         _state.route.startsWith(Routes.erase) ||
         _state.route.startsWith(Routes.support) ||
         _state.route.startsWith(Routes.partner) ||
-        _state.route.startsWith(Routes.chatDirectLink) ||
+        _state.route.startsWith(Routes.directLink) ||
         _state.route == Routes.me ||
         _state.route == Routes.home) {
       _updateTabTitle();
@@ -1335,7 +1352,7 @@ extension RouteLinks on RouterState {
     ChatId id, {
     RouteAs mode = RouteAs.replace,
     ChatItemId? itemId,
-    ChatDirectLinkSlug? link,
+    DirectLinkSlug? link,
     bool search = false,
   }) {
     switch (mode) {
@@ -1376,7 +1393,7 @@ extension RouteLinks on RouterState {
     UserId? me, {
     RouteAs mode = RouteAs.replace,
     ChatItemId? itemId,
-    ChatDirectLinkSlug? link,
+    DirectLinkSlug? link,
   }) {
     ChatId chatId = chat.id;
 
@@ -1418,8 +1435,8 @@ extension RouteLinks on RouterState {
   /// Changes router location to the [Routes.nowhere] page.
   void nowhere() => go(Routes.nowhere);
 
-  /// Changes router location to the [Routes.chatDirectLink] page.
-  void link(ChatDirectLinkSlug slug) => go('${Routes.chatDirectLink}$slug');
+  /// Changes router location to the [Routes.directLink] page.
+  void link(DirectLinkSlug slug) => go('${Routes.directLink}$slug');
 
   /// Changes router location to the [Routes.erase] page.
   void erase({bool push = false}) => (push ? this.push : go)(Routes.erase);

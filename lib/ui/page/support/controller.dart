@@ -41,9 +41,6 @@ class SupportController extends GetxController {
   /// [PlatformUtilsImpl.userAgent] string.
   final RxnString userAgent = RxnString();
 
-  /// Indicator whether [checkForUpdates] is currently being executed.
-  final RxBool checkingForUpdates = RxBool(false);
-
   /// [AuthService] used to retrieve the current [sessionId].
   final AuthService _authService;
 

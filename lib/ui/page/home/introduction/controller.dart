@@ -97,11 +97,11 @@ class IntroductionController extends GetxController with IdentityAware {
   /// Previous [IntroductionStage].
   IntroductionStage? previousPage;
 
-  /// Indicator whether [chat] is being fetched, in case [Routes.chatDirectLink]
-  /// is the initial route.
+  /// Indicator whether [chat] is being fetched, in case [Routes.directLink] is
+  /// the initial route.
   final RxBool fetching = RxBool(false);
 
-  /// [RxChat] of a [Routes.chatDirectLink] initial route.
+  /// [RxChat] of a [Routes.directLink] initial route.
   final Rx<RxChat?> chat = Rx(null);
 
   /// [MyUser] to complete sign in information as.
@@ -565,11 +565,6 @@ class IntroductionController extends GetxController with IdentityAware {
       login.error.value = '';
       password.error.value = 'err_incorrect_login_or_password'.l10n;
       password.unsubmit();
-      return;
-    }
-
-    final UserId? meId = myUser.value?.id;
-    if (meId == null) {
       return;
     }
 

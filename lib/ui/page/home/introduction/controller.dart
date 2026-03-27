@@ -568,11 +568,6 @@ class IntroductionController extends GetxController with IdentityAware {
       return;
     }
 
-    final UserId? meId = myUser.value?.id;
-    if (meId == null) {
-      return;
-    }
-
     try {
       login.status.value = RxStatus.loading();
       password.status.value = RxStatus.loading();

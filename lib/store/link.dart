@@ -123,7 +123,7 @@ class LinkRepository extends DisposableInterface
                 DirectLinksCursor? before,
                 DirectLinksCursor? after,
               }) async {
-                if (chatId?.isLocal == true) {
+                if (chatId?.isLocal == true || me.isLocal) {
                   return Page([], PageInfo());
                 }
 

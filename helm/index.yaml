@@ -1,0 +1,46 @@
+apiVersion: v1
+entries:
+  tapopa-messenger:
+  - annotations:
+      artifacthub.io/license: AGPL-3.0-or-later
+    apiVersion: v2
+    appVersion: 0.4.0
+    created: "2026-03-28T05:21:18.291706797Z"
+    description: Messenger by Tapopa.
+    digest: 9afeed94b0332a11d19e3bb4029405a8c42fc0d8d2bfc27af4f41583857bd0d8
+    name: tapopa-messenger
+    sources:
+    - https://github.com/tapopa/messenger
+    type: application
+    urls:
+    - https://tapopa.github.io/messenger/helm/tapopa-messenger-0.1.2.tgz
+    version: 0.1.2
+  - annotations:
+      artifacthub.io/license: AGPL-3.0-or-later
+    apiVersion: v2
+    appVersion: 0.3.4
+    created: "2026-03-28T05:21:18.290950149Z"
+    description: Messenger by Tapopa.
+    digest: 6a9a7ab57750125629ff14c7e18aa3fac4e51424e46227ff42779ffdfc28b3e5
+    name: tapopa-messenger
+    sources:
+    - https://github.com/tapopa/messenger
+    type: application
+    urls:
+    - https://tapopa.github.io/messenger/helm/tapopa-messenger-0.1.1.tgz
+    version: 0.1.1
+  - annotations:
+      artifacthub.io/license: AGPL-3.0-or-later
+    apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-03-28T05:21:18.290178593Z"
+    description: Messenger by Tapopa.
+    digest: e99b29e2461e64cef0c07ea0e764aaf7405de3cd73989aa422f5bdb70e23b07f
+    name: tapopa-messenger
+    sources:
+    - https://github.com/tapopa/messenger
+    type: application
+    urls:
+    - https://tapopa.github.io/messenger/helm/tapopa-messenger-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-03-28T05:21:18.288418303Z"

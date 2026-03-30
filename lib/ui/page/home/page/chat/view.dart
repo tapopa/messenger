@@ -778,21 +778,20 @@ class ChatView extends StatelessWidget {
         throw Exception('Unreachable');
       }
 
-      return Padding(
-        padding: EdgeInsets.only(
-          top: previousSame || previous is UnreadMessagesElement ? 0 : 9,
-          bottom: isLast ? ChatController.lastItemBottomOffset : 0,
-        ),
-        child: FutureOrBuilder<RxUser?>(
-          key: element.key,
-          futureOr: () => c.getUser(e.value.author.id),
-          builder: (_, user) => Obx(() {
-            return HighlightedContainer(
-              highlight:
-                  c.highlighted.value == element.id ||
-                  c.selected.contains(element),
-              padding: const EdgeInsets.fromLTRB(8, 1.5, 8, 1.5),
-              child: _selectable(
+      return HighlightedContainer(
+        highlight:
+            c.highlighted.value == element.id || c.selected.contains(element),
+        padding: const EdgeInsets.fromLTRB(8, 1.5, 8, 1.5),
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: previousSame || previous is UnreadMessagesElement ? 0 : 9,
+            bottom: isLast ? ChatController.lastItemBottomOffset : 0,
+          ),
+          child: FutureOrBuilder<RxUser?>(
+            key: element.key,
+            futureOr: () => c.getUser(e.value.author.id),
+            builder: (_, user) => Obx(() {
+              return _selectable(
                 context,
                 c,
                 item: element,
@@ -897,9 +896,9 @@ class ChatView extends StatelessWidget {
                   },
                   onDragging: (e) => c.isDraggingItem.value = e,
                 ),
-              ),
-            );
-          }),
+              );
+            }),
+          ),
         ),
       );
     } else if (element is ChatForwardElement) {

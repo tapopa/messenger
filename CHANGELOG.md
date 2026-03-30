@@ -6,9 +6,20 @@ All user visible changes to this project will be documented in this file. This p
 
 
 
-## main
+## [0.5.0] · 2026-??-??
+[0.5.0]: /../../tree/v0.5.0
 
-[Diff](/../../compare/v0.4.0...main) | [Milestone](/../../milestone/13)
+[Diff](/../../compare/v0.4.0...v0.5.0) | [Milestone](/../../milestone/13)
+
+### Fixed
+
+- UI:
+    - Media panel:
+        - Context menu missing from dialog calls on mobiles. ([team113/messenger#1666])
+    - Chat page:
+        - Gaps between selected messages. ([team113/messenger#1666])
+
+[team113/messenger#1666]: https://github.com/team113/messenger/pull/1666
 
 
 

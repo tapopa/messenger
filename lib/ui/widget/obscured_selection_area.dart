@@ -19,6 +19,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 
 import '/routes.dart';
@@ -109,7 +110,11 @@ class _ObscuredSelectionAreaState extends State<ObscuredSelectionArea> {
           }
         }
 
-        widget.onSelectionChanged?.call(a);
+        // Invoke `onSelectionChanged` in a frame afterwards, since sometimes
+        // this callback can enter a race condition with its dependencies.
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          widget.onSelectionChanged?.call(a);
+        });
       },
       child: child(),
     );

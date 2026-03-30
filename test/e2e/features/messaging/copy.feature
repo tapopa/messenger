@@ -19,7 +19,6 @@
 
 Feature: Text messages selection and copying
 
-  @failing
   @messaging
   Scenario: User copies text of a message
     Given I am Alice

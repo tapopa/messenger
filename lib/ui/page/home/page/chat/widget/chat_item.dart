@@ -2122,7 +2122,11 @@ extension LinkParsingExtension on String {
     List<TapGestureRecognizer> recognizers, [
     TextStyle? style,
   ]) {
-    final Iterable<RegExpMatch> matches = _regex.allMatches(this);
+    final Iterable<RegExpMatch> matches = [
+      ..._regex.allMatches(this),
+      ...UserNum.sourceExp.allMatches(this),
+    ].sorted((a, b) => a.start.compareTo(b.start));
+
     if (matches.isEmpty) {
       return TextSpan(text: this);
     }
@@ -2139,6 +2143,10 @@ extension LinkParsingExtension on String {
       final String link = links[i];
 
       final int index = text.indexOf(link);
+      if (index == -1) {
+        continue;
+      }
+
       final List<String> parts = [
         text.substring(0, index),
         text.substring(index + link.length),
@@ -2157,9 +2165,16 @@ extension LinkParsingExtension on String {
           style: style,
           recognizer: recognizer
             ..onTap = () async {
-              final Uri uri;
+              Uri? uri;
 
-              if (link.isEmail) {
+              final bool isNum = UserNum.sourceExp.hasMatch(link);
+
+              if (isNum) {
+                final UserNum? parsed = UserNum.tryParse(link);
+                if (parsed != null) {
+                  return router.chat(ChatId(link), mode: RouteAs.push);
+                }
+              } else if (link.isEmail) {
                 uri = Uri(scheme: 'mailto', path: link);
               } else {
                 uri = Uri.parse(
@@ -2185,8 +2200,10 @@ extension LinkParsingExtension on String {
                 }
               }
 
-              if (await canLaunchUrl(uri)) {
-                await launchUrl(uri);
+              if (uri != null) {
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri);
+                }
               }
             },
         ),

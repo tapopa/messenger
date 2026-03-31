@@ -721,10 +721,16 @@ class MessageFieldController extends GetxController {
             .firstOrNull;
 
         if (text != null) {
-          final text = await reader.readValue(Formats.plainText);
+          String? text = await reader.readValue(Formats.plainText);
+
+          // Replace "Tap ID: ..." strings with [UserNum]s.
+          text = text?.replaceAllMapped(UserNum.stringExp, (match) {
+            return UserNum.tryParse(match.input)?.toString() ?? match.input;
+          });
 
           if (field.focus.hasFocus) {
             int cursor;
+
             if (field.controller.selection.isCollapsed) {
               cursor = field.controller.selection.base.offset;
               field.text =

@@ -658,7 +658,12 @@ mutation CreateOperationDeposit(
                 id
                 num
                 status
-                processingUrl
+                details {
+                    __typename
+                    ... on OperationDepositPayPalDetails {
+                        processingUrl
+                    }
+                }
               }
             }
           }
@@ -835,7 +840,7 @@ mutation DeclineOperationDeposit(
           }
 
           let operation = await createOperationDeposit();
-          return operation.processingUrl.split('?order_id=')[1];
+          return operation.details.processingUrl.split('?order_id=')[1];
         },
         onApprove: (data, actions) => {
           console.log(`onApprove(${data})`);

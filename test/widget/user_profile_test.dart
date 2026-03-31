@@ -430,7 +430,7 @@ void main() async {
       expect(find.byKey(const Key('Present')), findsOneWidget);
       expect(
         find.text(
-          'label_num_semicolon5769hyphen2360hyphen9862hyphen1822',
+          'label_num_semicolonⓉ5769hyphen2360hyphen9862hyphen1822',
           findRichText: true,
         ),
         findsOneWidget,

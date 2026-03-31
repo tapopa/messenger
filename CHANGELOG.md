@@ -11,6 +11,11 @@ All user visible changes to this project will be documented in this file. This p
 
 [Diff](/../../compare/v0.4.0...v0.5.0) | [Milestone](/../../milestone/13)
 
+### Changed
+
+- UI:
+    - Currency symbol. ([#46])
+
 ### Fixed
 
 - UI:
@@ -19,6 +24,7 @@ All user visible changes to this project will be documented in this file. This p
     - Chat page:
         - Gaps between selected messages. ([team113/messenger#1666])
 
+[#46]: /../../pull/46
 [team113/messenger#1666]: https://github.com/team113/messenger/pull/1666
 
 

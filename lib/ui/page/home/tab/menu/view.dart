@@ -38,6 +38,7 @@ import '/ui/widget/menu_button.dart';
 import '/ui/widget/svg/svg.dart';
 import '/ui/widget/widget_button.dart';
 import '/util/platform_utils.dart';
+import '/util/web/web_utils.dart';
 import 'accounts/view.dart';
 import 'confirm/view.dart';
 import 'controller.dart';
@@ -208,6 +209,12 @@ class MenuTabView extends StatelessWidget {
 
       case ProfileTab.storage:
         if (PlatformUtils.isWeb) {
+          return const SizedBox();
+        }
+        break;
+
+      case ProfileTab.download:
+        if (WebUtils.isPwa) {
           return const SizedBox();
         }
         break;

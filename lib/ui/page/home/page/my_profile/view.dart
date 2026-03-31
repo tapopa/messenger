@@ -405,6 +405,10 @@ Widget _block(BuildContext context, MyProfileController c, int i) {
       return block(children: [_devices(context, c)]);
 
     case ProfileTab.download:
+      if (WebUtils.isPwa) {
+        return const SizedBox();
+      }
+
       return block(
         title: 'label_download_and_update'.l10n,
         children: [_downloads(context, c)],

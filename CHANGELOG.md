@@ -15,6 +15,9 @@ All user visible changes to this project will be documented in this file. This p
 
 - UI:
     - Currency symbol. ([#46])
+    - Tap ID visual appearance. ([#46])
+    - Chat page:
+        - Tapping on Tap ID sent in message opens chat with user. ([#46])
 
 ### Fixed
 

@@ -41,6 +41,7 @@ import 'package:xdg_directories/xdg_directories.dart';
 
 import '/config.dart';
 import '/domain/model/native_file.dart';
+import '/domain/model/user.dart';
 import '/pubspec.g.dart';
 import '/routes.dart';
 import '/ui/worker/cache.dart';
@@ -675,6 +676,11 @@ class PlatformUtilsImpl {
     Uint8List? data,
   }) async {
     if (text != null) {
+      // Replace [UserNum]s with "Tap ID: ..." strings.
+      text = text.replaceAllMapped(UserNum.sourceExp, (match) {
+        return 'Tap ID: ${match.input.replaceFirst('Ⓣ', '')}';
+      });
+
       await Clipboard.setData(ClipboardData(text: text));
     } else if (data != null && format != null) {
       final clipboard = SystemClipboard.instance;

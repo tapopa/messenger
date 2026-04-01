@@ -202,6 +202,16 @@ class UserNum extends NewType<String> {
     return UserNum._(val);
   }
 
+  /// [RegExp] matching copied [toString] representation of [UserNum].
+  static final RegExp stringExp = RegExp(
+    r'Tap ID: [0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}',
+  );
+
+  /// [RegExp] matching original [toString] representation of [UserNum].
+  static final RegExp sourceExp = RegExp(
+    r'Ⓣ[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}',
+  );
+
   /// [RegExp] matching any amount of non-numeric symbols.
   static final RegExp _nonDigitsRegExp = RegExp(r'[^0-9]+');
 
@@ -220,7 +230,7 @@ class UserNum extends NewType<String> {
   /// Returns [UserNum] as [String] formatted in quartets.
   @override
   String toString() {
-    String formattedUserNum = '';
+    String formattedUserNum = 'Ⓣ';
 
     for (int i = 0; i < val.length; i++) {
       if (i % 4 == 0 && i > 0) {

@@ -181,12 +181,12 @@ class Themes {
     );
 
     if (_roboto == null) {
-      _roboto = FontLoader('Roboto-Gapopa');
+      _roboto = FontLoader('RobotoTapopa');
       _roboto?.addFont(
-        PlatformUtils.loadBytes('assets/fonts/Roboto-Gapopa-Regular.ttf'),
+        PlatformUtils.loadBytes('assets/fonts/RobotoTapopa-Regular.ttf'),
       );
       _roboto?.addFont(
-        PlatformUtils.loadBytes('assets/fonts/Roboto-Gapopa-Bold.ttf'),
+        PlatformUtils.loadBytes('assets/fonts/RobotoTapopa-Bold.ttf'),
       );
       _roboto?.load().then((_) async {
         Log.debug('light() -> `FontLoader` has loaded the font', 'Themes');
@@ -194,7 +194,7 @@ class Themes {
     }
 
     final TextStyle textStyle = TextStyle(
-      fontFamily: 'Roboto-Gapopa',
+      fontFamily: 'RobotoTapopa',
       fontFamilyFallback: ['Roboto'],
       color: colors.onBackground,
       fontSize: 17,

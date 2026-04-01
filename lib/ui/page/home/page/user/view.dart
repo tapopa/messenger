@@ -336,7 +336,8 @@ class UserView extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        StyledBackButton(),
+        const SizedBox(width: 4),
+        const StyledBackButton(),
         const SizedBox(width: 8),
         Expanded(
           child: Column(

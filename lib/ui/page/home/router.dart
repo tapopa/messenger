@@ -31,6 +31,7 @@ import 'page/affiliate/view.dart';
 import 'page/chat/info/view.dart';
 import 'page/chat/view.dart';
 import 'page/contact/view.dart';
+import 'page/management/view.dart';
 import 'page/my_profile/view.dart';
 import 'page/partner_transactions/view.dart';
 import 'page/prices/view.dart';
@@ -133,6 +134,14 @@ class HomeRouterDelegate extends RouterDelegate<RouteConfiguration>
             key: ValueKey('AffiliatePage'),
             name: Routes.affiliate,
             child: AffiliateView(),
+          ),
+        );
+      } else if (route.startsWith(Routes.management)) {
+        pages.add(
+          const CustomPage(
+            key: ValueKey('ManagementPage'),
+            name: Routes.management,
+            child: ManagementView(),
           ),
         );
       } else if (route.startsWith(Routes.partnerTransactions)) {

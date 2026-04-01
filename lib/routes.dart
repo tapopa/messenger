@@ -113,21 +113,22 @@ class Routes {
   static const affiliate = '/partner/affiliate';
   static const auth = '/';
   static const call = '/call';
-  static const directLink = '/~';
   static const chatInfo = '/info';
   static const chats = '/chats';
   static const contacts = '/contacts';
+  static const directLink = '/~';
   static const erase = '/erase';
   static const gallery = '/gallery';
   static const home = '/';
+  static const management = '/partner/management';
   static const me = '/me';
   static const menu = '/menu';
-  static const support = '/support';
   static const partner = '/partner';
   static const partnerTransactions = '/partner/transactions';
   static const prices = '/partner/prices';
   static const promotion = '/partner/promotion';
   static const statistics = '/partner/statistics';
+  static const support = '/support';
   static const user = '/user';
   static const wallet = '/wallet';
   static const walletTransactions = '/wallet/transactions';
@@ -1444,6 +1445,10 @@ extension RouteLinks on RouterState {
   /// Changes router location to the [Routes.affiliate] page.
   void affiliate({bool push = false}) =>
       (push ? this.push : go)(Routes.affiliate);
+
+  /// Changes router location to the [Routes.management] page.
+  void management({bool push = false}) =>
+      (push ? this.push : go)(Routes.management);
 
   /// Changes router location to the [Routes.promotion] page.
   void promotion({bool push = false}) =>

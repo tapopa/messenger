@@ -121,7 +121,7 @@ class PartnerTabView extends StatelessWidget {
                   }),
                 ),
                 SizedBox(height: 8),
-                LineDivider('label_for_authors'.l10n),
+                LineDivider('label_your_monetization'.l10n),
                 SizedBox(height: 8),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 1.5),
@@ -153,7 +153,7 @@ class PartnerTabView extends StatelessWidget {
                   }),
                 ),
                 SizedBox(height: 8),
-                LineDivider('label_for_promoters'.l10n),
+                LineDivider('label_your_partner_income'.l10n),
                 SizedBox(height: 8),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 1.5),
@@ -167,6 +167,37 @@ class PartnerTabView extends StatelessWidget {
                       leading: const SvgIcon(SvgIcons.menuPromoter),
                       inverted: enabled,
                       subtitle: 'btn_partner_programs_subtitle'.l10n,
+                    );
+                  }),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 1.5),
+                  child: MenuButton(
+                    title: 'btn_your_promo_plus'.l10n,
+                    leading: const SvgIcon(SvgIcons.menuPromoPlus),
+                    subtitle: 'btn_your_promo_plus_subtitle'.l10n,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 1.5),
+                  child: MenuButton(
+                    title: 'btn_your_links'.l10n,
+                    leading: const SvgIcon(SvgIcons.menuLinks),
+                    subtitle: 'btn_your_links_subtitle'.l10n,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 1.5),
+                  child: Obx(() {
+                    final bool enabled =
+                        router.routes.lastOrNull == Routes.management;
+
+                    return MenuButton(
+                      title: 'btn_link_management'.l10n,
+                      onPressed: router.management,
+                      leading: const SvgIcon(SvgIcons.menuManagement),
+                      inverted: enabled,
+                      subtitle: 'btn_link_management_subtitle'.l10n,
                     );
                   }),
                 ),

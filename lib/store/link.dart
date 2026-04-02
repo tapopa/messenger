@@ -384,7 +384,11 @@ class LinkRepository extends DisposableInterface
                   break;
               }
 
-              if (e.key.userId == userId && e.key.chatId == chatId) {
+              final bool userMatch = e.key.userId == userId;
+              final bool groupMatch = e.key.chatId == chatId;
+
+              if ((userMatch && groupMatch) ||
+                  (groupMatch && e.key.userId == null && chatId == null)) {
                 await e.value.pagination?.put(
                   event.link.value,
                   ignoreBounds: true,

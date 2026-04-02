@@ -51,6 +51,9 @@ class LinkRepository extends DisposableInterface
   /// to.
   final UserId me;
 
+  @override
+  final RxInt total = RxInt(0);
+
   /// [GraphQlProvider] used to operate with API in order to create links.
   final GraphQlProvider _graphQlProvider;
 
@@ -142,6 +145,10 @@ class LinkRepository extends DisposableInterface
                   ),
                 );
 
+                if (chatId == null && userId == null) {
+                  total.value = query.totalCount;
+                }
+
                 return Page(
                   query.edges
                       .map((e) => e.node.toDto(cursor: e.cursor))
@@ -210,7 +217,7 @@ class LinkRepository extends DisposableInterface
 
   /// Initializes [_directLinksRemoteEvents] subscription.
   Future<void> _initRemoteSubscription({ChatId? chatId}) async {
-    if (isClosed) {
+    if (me.isLocal || isClosed) {
       return;
     }
 
@@ -223,7 +230,7 @@ class LinkRepository extends DisposableInterface
     }
 
     await WebUtils.protect(() async {
-      if (isClosed) {
+      if (me.isLocal || isClosed) {
         return;
       }
 
@@ -377,7 +384,11 @@ class LinkRepository extends DisposableInterface
                   break;
               }
 
-              if (e.key.userId == userId && e.key.chatId == chatId) {
+              final bool userMatch = e.key.userId == userId;
+              final bool groupMatch = e.key.chatId == chatId;
+
+              if ((userMatch && groupMatch) ||
+                  (groupMatch && e.key.userId == null && chatId == null)) {
                 await e.value.pagination?.put(
                   event.link.value,
                   ignoreBounds: true,

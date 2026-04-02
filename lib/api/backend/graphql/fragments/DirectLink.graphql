@@ -35,5 +35,12 @@ fragment DirectLink on DirectLink {
     ver
     stats {
         visitors
+        visits
+        affiliations
+        referrals
+        income {
+            __typename
+            ...Price
+        }
     }
 }

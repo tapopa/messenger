@@ -18,6 +18,9 @@ All user visible changes to this project will be documented in this file. This p
     - Tap ID visual appearance. ([#46])
     - Chat page:
         - Tapping on Tap ID sent in message opens chat with user. ([#46])
+    - Monetization tab:
+        - Updated icons and texts. ([#47])
+        - Links statistics page. ([#47])
 
 ### Fixed
 
@@ -28,6 +31,7 @@ All user visible changes to this project will be documented in this file. This p
         - Gaps between selected messages. ([team113/messenger#1666])
 
 [#46]: /../../pull/46
+[#47]: /../../pull/47
 [team113/messenger#1666]: https://github.com/team113/messenger/pull/1666
 
 

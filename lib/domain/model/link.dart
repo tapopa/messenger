@@ -23,6 +23,7 @@ import '/config.dart';
 import '/util/new_type.dart';
 import 'chat.dart';
 import 'precise_date_time/precise_date_time.dart';
+import 'price.dart';
 import 'user.dart';
 
 part 'link.g.dart';
@@ -35,7 +36,7 @@ class DirectLink implements Comparable<DirectLink> {
     required this.location,
     this.isEnabled = true,
     required this.createdAt,
-    this.visitors = 0,
+    required this.stats,
   });
 
   /// Constructs a [DirectLink] from the provided [json].
@@ -54,8 +55,8 @@ class DirectLink implements Comparable<DirectLink> {
   /// [PreciseDateTime] when this [DirectLink] was created.
   PreciseDateTime createdAt;
 
-  /// Count of unique visitors visited the [DirectLink].
-  final int visitors;
+  /// Statistics of this [DirectLink].
+  final DirectLinkStats stats;
 
   @override
   bool operator ==(Object other) =>
@@ -63,10 +64,11 @@ class DirectLink implements Comparable<DirectLink> {
       slug == other.slug &&
       isEnabled == other.isEnabled &&
       location == other.location &&
-      createdAt == other.createdAt;
+      createdAt == other.createdAt &&
+      stats == other.stats;
 
   @override
-  int get hashCode => Object.hash(slug, location, isEnabled, createdAt);
+  int get hashCode => Object.hash(slug, location, isEnabled, createdAt, stats);
 
   /// Returns a [Map] representing this [DirectLink].
   Map<String, dynamic> toJson() => _$DirectLinkToJson(this);
@@ -239,4 +241,51 @@ class DirectLinkSlug extends NewType<String> {
 
   /// Returns a [String] representing this [DirectLinkSlug].
   String toJson() => val;
+}
+
+@JsonSerializable()
+/// Statistics of a [DirectLink].
+class DirectLinkStats {
+  const DirectLinkStats({
+    this.visitors = 0,
+    this.visits = 0,
+    this.affiliations,
+    this.referrals,
+    this.income,
+  });
+
+  /// Constructs a [DirectLinkStats] from the provided [json].
+  factory DirectLinkStats.fromJson(Map<String, dynamic> json) =>
+      _$DirectLinkStatsFromJson(json);
+
+  /// Count of unique visitors visited the [DirectLink].
+  final int visitors;
+
+  /// Count of unique visits of the [DirectLink].
+  final int visits;
+
+  /// Count of affiliations happened by the [DirectLink].
+  final int? affiliations;
+
+  /// Count of referrals happened by the [DirectLink].
+  final int? referrals;
+
+  /// Total income of the [DirectLink].
+  final Price? income;
+
+  @override
+  bool operator ==(Object other) =>
+      other is DirectLinkStats &&
+      visitors == other.visitors &&
+      visits == other.visits &&
+      affiliations == other.affiliations &&
+      referrals == other.referrals &&
+      income == other.income;
+
+  @override
+  int get hashCode =>
+      Object.hash(visitors, visits, affiliations, referrals, income);
+
+  /// Returns a [Map] representing this [DirectLinkStats].
+  Map<String, dynamic> toJson() => _$DirectLinkStatsToJson(this);
 }

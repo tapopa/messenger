@@ -2042,6 +2042,24 @@ class SvgIcons {
     height: 50,
   );
 
+  static const SvgData menuPromoPlus = SvgData(
+    'assets/icons/menu/promo_plus.svg',
+    width: 50,
+    height: 50,
+  );
+
+  static const SvgData menuLinks = SvgData(
+    'assets/icons/menu/links.svg',
+    width: 50,
+    height: 50,
+  );
+
+  static const SvgData menuManagement = SvgData(
+    'assets/icons/menu/management.svg',
+    width: 50,
+    height: 50,
+  );
+
   static const SvgData menuMonetization = SvgData(
     'assets/icons/menu/monetization.svg',
     width: 50,
@@ -2370,5 +2388,23 @@ class SvgIcons {
     'assets/icons/button_unlink.svg',
     width: 20,
     height: 20,
+  );
+
+  static const SvgData actionCopy = SvgData(
+    'assets/icons/action_copy.svg',
+    width: 16,
+    height: 16,
+  );
+
+  static const SvgData actionQr = SvgData(
+    'assets/icons/action_qr.svg',
+    width: 16,
+    height: 16,
+  );
+
+  static const SvgData actionUnlink = SvgData(
+    'assets/icons/action_unlink.svg',
+    width: 16,
+    height: 16,
   );
 }

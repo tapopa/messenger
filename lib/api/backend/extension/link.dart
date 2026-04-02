@@ -18,6 +18,7 @@
 import '/api/backend/schema.dart';
 import '/domain/model/link.dart';
 import '/store/model/link.dart';
+import 'wallet.dart';
 
 /// Extension adding models construction from a [DirectLinkMixin].
 extension DirectLinkConversion on DirectLinkMixin {
@@ -39,7 +40,13 @@ extension DirectLinkConversion on DirectLinkMixin {
     },
     isEnabled: isEnabled,
     createdAt: createdAt,
-    visitors: stats.visitors,
+    stats: DirectLinkStats(
+      visits: stats.visits,
+      visitors: stats.visitors,
+      affiliations: stats.affiliations,
+      referrals: stats.referrals,
+      income: stats.income?.toModel(),
+    ),
   );
 
   /// Constructs a new [DtoDirectLink] from this [DirectLinkMixin].

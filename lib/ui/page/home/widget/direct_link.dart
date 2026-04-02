@@ -219,7 +219,7 @@ class _DirectLinkFieldState extends State<DirectLinkField> {
                                   const SvgIcon(SvgIcons.linkViews),
                                   const SizedBox(width: 4),
                                   Text(
-                                    '${e.visitors}',
+                                    '${e.stats.visitors}',
                                     style: style.fonts.small.regular.primary,
                                   ),
                                 ],

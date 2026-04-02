@@ -15,6 +15,8 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'package:get/get.dart';
+
 import '/domain/model/chat.dart';
 import '/domain/model/link.dart';
 import '/domain/model/user.dart';
@@ -22,6 +24,9 @@ import 'paginated.dart';
 
 /// [DirectLink] repository interface.
 abstract class AbstractLinkRepository {
+  /// Returns the total amount of [DirectLink] created by [MyUser].
+  RxInt get total;
+
   /// Returns [DirectLink]s owned by the authenticated [MyUser] or the specified
   /// [Chat]-group.
   Paginated<DirectLinkSlug, DirectLink> links({UserId? userId, ChatId? chatId});

@@ -17,6 +17,8 @@
 
 import 'dart:async';
 
+import 'package:get/get.dart';
+
 import '/domain/model/chat.dart';
 import '/domain/model/link.dart';
 import '/domain/model/user.dart';
@@ -31,6 +33,9 @@ class LinkService extends Dependency {
 
   /// [AbstractLinkRepository] maintaining the [DirectLink]s.
   final AbstractLinkRepository _linkRepository;
+
+  /// Returns the total amount of [DirectLink] created by [MyUser].
+  RxInt get total => _linkRepository.total;
 
   /// Listens to the updates of [DirectLink]s for the provided [ChatId] while
   /// the returned [Stream] is listened to.

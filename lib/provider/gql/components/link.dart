@@ -207,7 +207,7 @@ mixin LinkGraphQlMixin {
     DirectLinksPagination? pagination,
   }) async {
     Log.debug(
-      'updateGroupDirectLink(chatId: $chatId, by: $by, pagination: $pagination)',
+      'directLinks(chatId: $chatId, by: $by, pagination: $pagination)',
       '$runtimeType',
     );
 

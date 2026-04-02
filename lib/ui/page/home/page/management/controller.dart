@@ -28,6 +28,19 @@ import '/domain/service/auth.dart';
 import '/domain/service/link.dart';
 import '/domain/service/user.dart';
 
+/// Possible [DirectLink] columns to display in a [TableView].
+enum LinkColumn {
+  created,
+  slug,
+  leads,
+  percentage,
+  income,
+  clicks,
+  partners,
+  promotions,
+  actions,
+}
+
 /// Controller of a [ManagementView].
 class ManagementController extends GetxController {
   ManagementController(this._linkService, this._userService, this._authService);
@@ -41,6 +54,14 @@ class ManagementController extends GetxController {
   /// [ScrollController] controlling the vertical scrolling of a [TableView].
   final ScrollController vertical = ScrollController();
 
+  /// [GlobalKey]s of [LinkColumn]s.
+  final Map<LinkColumn, GlobalKey> keys = {
+    for (var e in LinkColumn.values) e: GlobalKey(),
+  };
+
+  /// [LinkColumn] sorted to be displayed in a specific order in [TableView].
+  final RxList<LinkColumn> headers = RxList(LinkColumn.values);
+
   /// [LinkService] managing the [DirectLink]s.
   final LinkService _linkService;
 
@@ -52,6 +73,9 @@ class ManagementController extends GetxController {
 
   /// Returns the [UserId] of the currently authenticated [MyUser].
   UserId? get me => _authService.userId;
+
+  /// Returns the total amount of [DirectLink] created by [MyUser].
+  RxInt get total => _linkService.total;
 
   @override
   void onInit() {

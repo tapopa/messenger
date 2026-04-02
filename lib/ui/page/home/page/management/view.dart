@@ -33,6 +33,7 @@ import '/ui/page/home/widget/avatar.dart';
 import '/ui/widget/future_or_builder.dart';
 import '/ui/widget/svg/svg.dart';
 import '/ui/widget/widget_button.dart';
+import '/util/log.dart';
 import '/util/message_popup.dart';
 import '/util/platform_utils.dart';
 import 'controller.dart';
@@ -49,119 +50,6 @@ class ManagementView extends StatelessWidget {
     return GetBuilder(
       init: ManagementController(Get.find(), Get.find(), Get.find()),
       builder: (ManagementController c) {
-        final List<TableBuilder<DirectLink>> builders = [
-          TableBuilder(
-            width: 1,
-            header: () => Text('label_created'.l10n),
-            builder: (e) =>
-                Text(e.createdAt.val.yMdHm, textAlign: TextAlign.center),
-          ),
-          TableBuilder(
-            width: 4,
-            header: () => Text(
-              'label_all_links_amount'.l10nfmt({'amount': c.links.length}),
-            ),
-            builder: (e) => Text('${Config.link}${e.slug}'),
-          ),
-          TableBuilder(
-            width: 2,
-            header: () => Text('label_leads_to'.l10n),
-            builder: (e) {
-              if (!e.isEnabled) {
-                return Text(
-                  'label_unlinked'.l10n,
-                  style: style.fonts.small.regular.secondary,
-                );
-              }
-
-              final DirectLinkLocation location = e.location;
-
-              if (location is DirectLinkLocationUser) {
-                return _locationAsUser(context, c, location);
-              }
-
-              return Text('label_unknown'.l10n);
-            },
-          ),
-          TableBuilder(
-            width: 1,
-            header: () => Text('label_promotional_percentage'.l10n),
-            builder: (e) => Text('0%'),
-          ),
-          TableBuilder(
-            width: 1,
-            header: () => Text('label_link_income'.l10n),
-            builder: (e) => Text(
-              Price.xxx(0).l10n,
-              style: style.fonts.small.regular.currencyPrimary,
-            ),
-          ),
-          TableBuilder(
-            width: 1,
-            header: () => Text('label_unique_clicks'.l10n),
-            builder: (e) => Text('${e.visitors}'),
-          ),
-          TableBuilder(
-            width: 1,
-            header: () => Text('label_partner_numbers_assigned'.l10n),
-            builder: (e) => Text('0'),
-          ),
-          TableBuilder(
-            width: 1,
-            header: () => Text('label_promotional_numbers_assigned'.l10n),
-            builder: (e) => Text('0'),
-          ),
-          TableBuilder(
-            width: 1,
-            header: () => Text('label_actions'.l10n),
-            builder: (e) {
-              return Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  WidgetButton(
-                    onPressed: () {},
-                    onPressedWithDetails: (u) {
-                      PlatformUtils.copy(text: '${Config.link}${e.slug}');
-                      MessagePopup.success(
-                        'label_copied'.l10n,
-                        at: u.globalPosition,
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: SvgIcon(SvgIcons.actionCopy),
-                    ),
-                  ),
-
-                  WidgetButton(
-                    onPressed: () async {
-                      await QrCodeView.show(
-                        context,
-                        data: '${Config.link}${e.slug}',
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: SvgIcon(SvgIcons.actionQr),
-                    ),
-                  ),
-
-                  if (e.isEnabled)
-                    WidgetButton(
-                      onPressed: () async {
-                        await c.unlinkLink(e.slug);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: SvgIcon(SvgIcons.actionUnlink),
-                      ),
-                    ),
-                ],
-              );
-            },
-          ),
-        ];
-
         return Scaffold(
           appBar: CustomAppBar(
             title: Text('btn_link_management'.l10n),
@@ -201,7 +89,7 @@ class ManagementView extends StatelessWidget {
                         interactive: true,
                         radius: Radius.circular(12),
                         thickness: 6,
-                        padding: EdgeInsets.fromLTRB(0, 8, 2, 8),
+                        padding: EdgeInsets.fromLTRB(0, 8 + 64, 2, 8),
                         controller: c.vertical,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(15),
@@ -213,8 +101,39 @@ class ManagementView extends StatelessWidget {
                               verticalDetails: ScrollableDetails.vertical(
                                 controller: c.vertical,
                               ),
+                              indicateLoading: c.links.hasNext.value,
+                              onReorder: (a, b) {
+                                Log.debug(
+                                  'onReorder(${a.identifier}, ${b.identifier})',
+                                  '$runtimeType',
+                                );
+
+                                final first = LinkColumn.values
+                                    .firstWhereOrNull(
+                                      (e) => e.name == a.identifier,
+                                    );
+
+                                final second = LinkColumn.values
+                                    .firstWhereOrNull(
+                                      (e) => e.name == b.identifier,
+                                    );
+
+                                if (first != null && second != null) {
+                                  int aIndex = c.headers.indexOf(first);
+                                  int bIndex = c.headers.indexOf(second);
+
+                                  if (aIndex != -1 && bIndex != -1) {
+                                    c.headers.insert(
+                                      bIndex,
+                                      c.headers.removeAt(aIndex),
+                                    );
+                                  }
+                                }
+                              },
                               items: c.links.values,
-                              builders: builders,
+                              builders: c.headers
+                                  .map((e) => _builder(context, c, e))
+                                  .toList(),
                             );
                           }),
                         ),
@@ -228,6 +147,150 @@ class ManagementView extends StatelessWidget {
         );
       },
     );
+  }
+
+  /// Builds a [TableBuilder] for the provided [column].
+  TableBuilder<DirectLink> _builder(
+    BuildContext context,
+    ManagementController c,
+    LinkColumn column,
+  ) {
+    final style = Theme.of(context).style;
+
+    return switch (column) {
+      LinkColumn.created => TableBuilder(
+        key: c.keys[column],
+        identifier: column.name,
+        width: 1.31,
+        header: () => Text('label_created'.l10n),
+        builder: (e) => Text(
+          '${e.createdAt.val.yyMd}\n${e.createdAt.val.hms}',
+          textAlign: TextAlign.center,
+        ),
+      ),
+      LinkColumn.slug => TableBuilder(
+        key: c.keys[column],
+        identifier: column.name,
+        width: 8,
+        header: () => Obx(() {
+          return Text(
+            'label_all_links_amount'.l10nfmt({'amount': c.total.value}),
+          );
+        }),
+        builder: (e) => Text('${Config.link}${e.slug}'),
+      ),
+      LinkColumn.leads => TableBuilder(
+        key: c.keys[column],
+        identifier: column.name,
+        width: 4,
+        header: () => Text('label_leads_to'.l10n),
+        builder: (e) {
+          if (!e.isEnabled) {
+            return Text(
+              'label_unlinked'.l10n,
+              style: style.fonts.small.regular.secondary,
+            );
+          }
+
+          final DirectLinkLocation location = e.location;
+
+          if (location is DirectLinkLocationUser) {
+            return _locationAsUser(context, c, location);
+          }
+
+          return Text('label_unknown'.l10n);
+        },
+      ),
+      LinkColumn.percentage => TableBuilder(
+        key: c.keys[column],
+        identifier: column.name,
+        width: 2,
+        header: () => Text('label_promotional_percentage'.l10n),
+        builder: (e) => Text('0%'),
+      ),
+      LinkColumn.income => TableBuilder(
+        key: c.keys[column],
+        identifier: column.name,
+        width: 2,
+        header: () => Text('label_link_income'.l10n),
+        builder: (e) => Text(
+          (e.stats.income ?? Price.xxx(0)).l10n,
+          style: style.fonts.small.regular.currencyPrimary,
+        ),
+      ),
+      LinkColumn.clicks => TableBuilder(
+        key: c.keys[column],
+        identifier: column.name,
+        width: 2,
+        header: () => Text('label_unique_clicks'.l10n),
+        builder: (e) => Text('${e.stats.visitors}'),
+      ),
+      LinkColumn.partners => TableBuilder(
+        key: c.keys[column],
+        identifier: column.name,
+        width: 2,
+        header: () => Text('label_partner_numbers_assigned'.l10n),
+        builder: (e) => Text('${e.stats.affiliations}'),
+      ),
+      LinkColumn.promotions => TableBuilder(
+        key: c.keys[column],
+        identifier: column.name,
+        width: 2,
+        header: () => Text('label_promotional_numbers_assigned'.l10n),
+        builder: (e) => Text('${e.stats.referrals}'),
+      ),
+      LinkColumn.actions => TableBuilder(
+        key: c.keys[column],
+        identifier: column.name,
+        width: 2,
+        header: () => Text('label_actions'.l10n),
+        builder: (e) {
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              WidgetButton(
+                onPressed: () {},
+                onPressedWithDetails: (u) {
+                  PlatformUtils.copy(text: '${Config.link}${e.slug}');
+                  MessagePopup.success(
+                    'label_copied'.l10n,
+                    at: u.globalPosition,
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: SvgIcon(SvgIcons.actionCopy),
+                ),
+              ),
+
+              WidgetButton(
+                onPressed: () async {
+                  await QrCodeView.show(
+                    context,
+                    data: '${Config.link}${e.slug}',
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: SvgIcon(SvgIcons.actionQr),
+                ),
+              ),
+
+              if (e.isEnabled)
+                WidgetButton(
+                  onPressed: () async {
+                    await c.unlinkLink(e.slug);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: SvgIcon(SvgIcons.actionUnlink),
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
+    };
   }
 
   /// Builds the [DirectLinkLocationUser] visually.

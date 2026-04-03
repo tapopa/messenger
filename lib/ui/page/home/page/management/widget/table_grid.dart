@@ -15,8 +15,6 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:two_dimensional_scrollables/two_dimensional_scrollables.dart';
 
@@ -74,10 +72,7 @@ class _TableGridState<E> extends State<TableGrid<E>> {
         verticalDetails: widget.verticalDetails,
         horizontalDetails: widget.horizontalDetails,
         delegate: TableCellBuilderDelegate(
-          rowCount:
-              max(1, widget.items.length) +
-              (widget.indicateLoading ? 1 : 0) +
-              1,
+          rowCount: (widget.indicateLoading ? 1 : 0) + 1,
           columnCount: widget.builders.length,
           cellBuilder: (BuildContext context, TableVicinity vicinity) {
             final int row = vicinity.row - 1;

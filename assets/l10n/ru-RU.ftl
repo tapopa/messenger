@@ -1064,6 +1064,7 @@ label_link_information_description3 =
 label_link_information_description4 = YOURLINKHERE
 label_link_to_chat = Ссылка на Вас
 label_linked_devices = Активные сессии
+label_links_amount = Ссылки: {$amount}
 label_loading = Загрузка...
 label_login = Логин
 label_login_example = your_unique_login

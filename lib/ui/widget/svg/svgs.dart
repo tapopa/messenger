@@ -2419,4 +2419,28 @@ class SvgIcons {
     width: 16,
     height: 16,
   );
+
+  static const SvgData linksViews = SvgData(
+    'assets/icons/links_views.svg',
+    width: 16,
+    height: 16,
+  );
+
+  static const SvgData linksAffiliations = SvgData(
+    'assets/icons/links_affiliations.svg',
+    width: 16,
+    height: 16,
+  );
+
+  static const SvgData linksReferrals = SvgData(
+    'assets/icons/links_referrals.svg',
+    width: 16,
+    height: 16,
+  );
+
+  static const SvgData linksMore = SvgData(
+    'assets/icons/links_more.svg',
+    width: 16,
+    height: 16,
+  );
 }

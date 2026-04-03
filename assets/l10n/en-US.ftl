@@ -1048,6 +1048,7 @@ label_link_information_description3 =
 label_link_information_description4 = YOURLINKHERE
 label_link_to_chat = Link to you
 label_linked_devices = Linked devices
+label_links_amount = Links: {$amount}
 label_loading = Loading...
 label_login = Login
 label_login_example = your_unique_login

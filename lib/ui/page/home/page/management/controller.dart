@@ -54,6 +54,10 @@ class ManagementController extends GetxController {
   /// [ScrollController] controlling the vertical scrolling of a [TableView].
   final ScrollController vertical = ScrollController();
 
+  /// [ScrollController] of a [ListView] displaying [DirectLink]s for narrow
+  /// screens.
+  final ScrollController listController = ScrollController();
+
   /// [GlobalKey]s of [LinkColumn]s.
   final Map<LinkColumn, GlobalKey> keys = {
     for (var e in LinkColumn.values) e: GlobalKey(),
@@ -80,6 +84,7 @@ class ManagementController extends GetxController {
   @override
   void onInit() {
     vertical.addListener(_scrollListener);
+    listController.addListener(_listListener);
 
     links = _linkService.links();
     links.ensureInitialized();
@@ -90,6 +95,7 @@ class ManagementController extends GetxController {
   @override
   void onClose() {
     vertical.removeListener(_scrollListener);
+    listController.removeListener(_listListener);
     super.onClose();
   }
 
@@ -107,6 +113,21 @@ class ManagementController extends GetxController {
     if (vertical.hasClients) {
       final position = vertical.position.pixels;
       final max = vertical.position.maxScrollExtent;
+
+      if (position >= max - 50) {
+        if (links.hasNext.value && !links.nextLoading.value) {
+          await links.next();
+        }
+      }
+    }
+  }
+
+  /// Invokes [Paginated.next] when [listController] hits the bottom scrolling
+  /// window, thus paginating the [links].
+  Future<void> _listListener() async {
+    if (listController.hasClients) {
+      final position = listController.position.pixels;
+      final max = listController.position.maxScrollExtent;
 
       if (position >= max - 50) {
         if (links.hasNext.value && !links.nextLoading.value) {

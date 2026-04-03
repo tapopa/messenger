@@ -67,12 +67,16 @@ class PricesView extends StatelessWidget {
                   Text.rich(
                     TextSpan(
                       children: [
-                        TextSpan(text: 'label_set_prices_description1'.l10n),
                         TextSpan(
-                          text: 'label_set_prices_description2'.l10n,
+                          text: 'label_set_prices_description1'.l10n,
                           style: style.fonts.small.regular.onBackground,
                         ),
-                        TextSpan(text: 'label_set_prices_description3'.l10n),
+                        TextSpan(text: 'label_set_prices_description2'.l10n),
+                        TextSpan(
+                          text: 'label_set_prices_description3'.l10n,
+                          style: style.fonts.small.regular.onBackground,
+                        ),
+                        TextSpan(text: 'label_set_prices_description4'.l10n),
                       ],
                     ),
                     style: style.fonts.small.regular.secondary,
@@ -81,8 +85,6 @@ class PricesView extends StatelessWidget {
               ),
               Block(
                 title: 'label_monetization_settings_by_default'.l10n,
-                folded: true,
-                foldedColor: style.colors.currencyPrimary,
                 children: [
                   Text(
                     'label_monetization_settings_description'.l10n,
@@ -141,8 +143,6 @@ class PricesView extends StatelessWidget {
               ),
               Block(
                 title: 'label_individual_monetization'.l10n,
-                folded: true,
-                foldedColor: style.colors.currencyPrimary,
                 children: [
                   Text(
                     'label_you_can_set_individual_monetization_in_profile'.l10n,

@@ -25,7 +25,8 @@ import '/api/backend/schema.dart'
         OperationDirection,
         OperationCancellationCode,
         OperationRewardCause,
-        OperationDepositFailureCode;
+        OperationDepositFailureCode,
+        OperationWithdrawFailureCode;
 import '/util/new_type.dart';
 import 'chat.dart';
 import 'chat_item.dart';
@@ -33,6 +34,7 @@ import 'country.dart';
 import 'donation.dart';
 import 'precise_date_time/precise_date_time.dart';
 import 'price.dart';
+import 'promo_share.dart';
 import 'user.dart';
 
 /// Billing operation.
@@ -692,4 +694,224 @@ class OperationDepositFailure {
 
   /// [PreciseDateTime] when the [OperationDeposit] failed.
   final PreciseDateTime at;
+}
+
+/// [Operation] of [MyUser] paying a `MonetizationSettingsReferral.fee` to a
+/// referrer [User].
+class OperationReferralFee extends Operation {
+  OperationReferralFee({
+    required super.id,
+    required super.num,
+    super.status = OperationStatus.completed,
+    required super.amount,
+    required super.createdAt,
+    super.canceled,
+    required super.origin,
+    required super.direction,
+    super.holdUntil,
+
+    required this.referrerId,
+    required this.earnId,
+    required this.percentage,
+  });
+
+  /// Referrer [User] this [OperationReferralFee] is paid to.
+  final UserId referrerId;
+
+  /// [OperationId] of the [OperationEarnDonation] this [OperationReferralFee]
+  /// is deducted from.
+  final OperationId earnId;
+
+  /// [Percentage] this [OperationReferralFee] deducts from its linked
+  /// [OperationEarnDonation].
+  final Percentage percentage;
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    this.num,
+    status,
+    amount,
+    createdAt,
+    canceled,
+    origin,
+    direction,
+    holdUntil,
+    referrerId,
+    earnId,
+    percentage,
+  );
+
+  @override
+  bool operator ==(Object other) {
+    return other is OperationReferralFee &&
+        id == other.id &&
+        this.num == other.num &&
+        status == other.status &&
+        amount == other.amount &&
+        createdAt == other.createdAt &&
+        canceled == other.canceled &&
+        direction == other.direction &&
+        holdUntil == other.holdUntil &&
+        referrerId == other.referrerId &&
+        earnId == other.earnId &&
+        percentage == other.percentage;
+  }
+}
+
+/// [Operation] of [MyUser] receiving a `MonetizationSettingsReferral.fee` from
+/// a `Vendor` as honorarium.
+class OperationReferralHonorarium extends Operation {
+  OperationReferralHonorarium({
+    required super.id,
+    required super.num,
+    super.status = OperationStatus.completed,
+    required super.amount,
+    required super.createdAt,
+    super.canceled,
+    required super.origin,
+    required super.direction,
+    super.holdUntil,
+
+    required this.vendorId,
+    required this.percentage,
+  });
+
+  /// `Vendor` paying this [OperationReferralHonorarium].
+  final UserId vendorId;
+
+  /// [Percentage] this [OperationReferralHonorarium] represents as the received
+  /// `MonetizationSettingsReferral.fee`.
+  final Percentage percentage;
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    this.num,
+    status,
+    amount,
+    createdAt,
+    canceled,
+    origin,
+    direction,
+    holdUntil,
+    vendorId,
+    percentage,
+  );
+
+  @override
+  bool operator ==(Object other) {
+    return other is OperationReferralHonorarium &&
+        id == other.id &&
+        this.num == other.num &&
+        status == other.status &&
+        amount == other.amount &&
+        createdAt == other.createdAt &&
+        canceled == other.canceled &&
+        direction == other.direction &&
+        holdUntil == other.holdUntil &&
+        vendorId == other.vendorId &&
+        percentage == other.percentage;
+  }
+}
+
+/// [Operation] of withdrawing money by [MyUser].
+class OperationWithdraw extends Operation {
+  OperationWithdraw({
+    required super.id,
+    required super.num,
+    super.status = OperationStatus.completed,
+    required super.amount,
+    required super.createdAt,
+    super.canceled,
+    required super.origin,
+    required super.direction,
+    super.holdUntil,
+
+    required this.price,
+    this.failed,
+  });
+
+  /// Pricing of this [OperationWithdraw].
+  final OperationWithdrawPricing price;
+
+  /// Information about why this [OperationWithdraw] failed, if it did.
+  final OperationWithdrawFailure? failed;
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    this.num,
+    status,
+    amount,
+    createdAt,
+    canceled,
+    origin,
+    direction,
+    holdUntil,
+    price,
+    failed,
+  );
+
+  @override
+  bool operator ==(Object other) {
+    return other is OperationWithdraw &&
+        id == other.id &&
+        this.num == other.num &&
+        status == other.status &&
+        amount == other.amount &&
+        createdAt == other.createdAt &&
+        canceled == other.canceled &&
+        direction == other.direction &&
+        holdUntil == other.holdUntil &&
+        price == other.price &&
+        failed == other.failed;
+  }
+}
+
+/// Pricing of an [OperationWithdraw].
+class OperationWithdrawPricing {
+  OperationWithdrawPricing({required this.nominal});
+
+  /// Nominal [Price] of the [OperationWithdraw].
+  final Price nominal;
+
+  @override
+  int get hashCode => nominal.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return other is OperationWithdrawPricing && nominal == other.nominal;
+  }
+}
+
+/// Reason of [Operation]'s failure.
+class OperationFailureReason extends NewType<String> {
+  const OperationFailureReason(super.val);
+}
+
+/// Information about [OperationWithdraw]'s failure.
+class OperationWithdrawFailure {
+  OperationWithdrawFailure({required this.code, this.reason, required this.at});
+
+  /// Code explaining why the [OperationWithdraw] failed.
+  final OperationWithdrawFailureCode code;
+
+  /// Additional reason explaining why the [OperationWithdraw] failed, if
+  /// provided.
+  final OperationFailureReason? reason;
+
+  /// DateTime when the OperationWithdraw failed.
+  final PreciseDateTime at;
+
+  @override
+  int get hashCode => Object.hash(code, reason, at);
+
+  @override
+  bool operator ==(Object other) {
+    return other is OperationWithdrawFailure &&
+        code == other.code &&
+        reason == other.reason &&
+        at == other.at;
+  }
 }

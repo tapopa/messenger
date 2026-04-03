@@ -226,7 +226,20 @@ class OperationWidget extends StatelessWidget {
                 'label_author'.l10n,
                 Text('${operation.affiliatedNum}'),
               ),
-              _row(context, 'label_details'.l10n, Text(operation.cause.name)),
+              _thanksTo(context, operation),
+              _row(
+                context,
+                'label_details'.l10n,
+                WidgetButton(
+                  onPressed: () {
+                    //
+                  },
+                  child: Text(
+                    'label_tapopa_partner'.l10n,
+                    style: style.fonts.normal.regular.primary,
+                  ),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -245,45 +258,7 @@ class OperationWidget extends StatelessWidget {
               _row(
                 context,
                 'label_author'.l10n,
-                FutureOrBuilder<RxUser?>(
-                  key: Key('${operation.id}_${operation.customerId}'),
-                  futureOr: () => getUser?.call(operation.customerId),
-                  builder: (context, user) {
-                    if (user == null) {
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AvatarWidget(radius: AvatarRadius.smaller),
-                          const SizedBox(width: 3),
-                          Flexible(child: Text('dot'.l10n * 3)),
-                        ],
-                      );
-                    }
-
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AvatarWidget.fromRxUser(
-                          user,
-                          radius: AvatarRadius.smaller,
-                        ),
-                        const SizedBox(width: 3),
-                        Flexible(
-                          child: WidgetButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              router.user(user.id, push: true);
-                            },
-                            child: Text(
-                              user.title(),
-                              style: style.fonts.normal.regular.primary,
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+                _user(context, operation, operation.customerId),
               ),
               _row(
                 context,
@@ -325,45 +300,7 @@ class OperationWidget extends StatelessWidget {
               _row(
                 context,
                 'label_author'.l10n,
-                FutureOrBuilder<RxUser?>(
-                  key: Key('${operation.id}_${operation.vendorId}'),
-                  futureOr: () => getUser?.call(operation.vendorId),
-                  builder: (context, user) {
-                    if (user == null) {
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AvatarWidget(radius: AvatarRadius.smaller),
-                          const SizedBox(width: 3),
-                          Flexible(child: Text('dot'.l10n * 3)),
-                        ],
-                      );
-                    }
-
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AvatarWidget.fromRxUser(
-                          user,
-                          radius: AvatarRadius.smaller,
-                        ),
-                        const SizedBox(width: 3),
-                        Flexible(
-                          child: WidgetButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              router.user(user.id, push: true);
-                            },
-                            child: Text(
-                              user.title(),
-                              style: style.fonts.normal.regular.primary,
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+                _user(context, operation, operation.vendorId),
               ),
               _row(
                 context,
@@ -388,6 +325,96 @@ class OperationWidget extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: 8),
+        ];
+        break;
+
+      case const (OperationReferralFee):
+        operation as OperationReferralFee;
+
+        more = [
+          Table(
+            columnWidths: {0: FlexColumnWidth(11), 1: FlexColumnWidth(20)},
+            children: [
+              _status(context, operation),
+              _id(context, operation),
+              _thanksTo(context, operation),
+              _row(
+                context,
+                'label_details'.l10n,
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'label_referral_fee_details1'.l10n,
+                        style: style.fonts.normal.regular.primary,
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            //
+                          },
+                      ),
+                      TextSpan(
+                        text: 'label_referral_fee_details2'.l10nfmt({
+                          'percent': operation.percentage.val,
+                        }),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+        ];
+        break;
+
+      case const (OperationReferralHonorarium):
+        operation as OperationReferralHonorarium;
+
+        more = [
+          Table(
+            columnWidths: {0: FlexColumnWidth(11), 1: FlexColumnWidth(20)},
+            children: [
+              _status(context, operation),
+              _id(context, operation),
+              _thanksTo(context, operation),
+              _row(
+                context,
+                'label_details'.l10n,
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'label_referral_honorarium_details1'.l10n,
+                        style: style.fonts.normal.regular.primary,
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            //
+                          },
+                      ),
+                      TextSpan(
+                        text: 'label_referral_honorarium_details2'.l10nfmt({
+                          'percent': operation.percentage.val,
+                        }),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+        ];
+        break;
+
+      case const (OperationWithdraw):
+        operation as OperationWithdraw;
+
+        more = [
+          Table(
+            columnWidths: {0: FlexColumnWidth(11), 1: FlexColumnWidth(20)},
+            children: [_status(context, operation), _id(context, operation)],
           ),
           const SizedBox(height: 8),
         ];
@@ -599,6 +626,89 @@ class OperationWidget extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  /// Returns a [TableRow] describing a [User] thanks to whom the [operation]
+  /// happened.
+  TableRow _thanksTo(BuildContext context, Operation operation) {
+    if (operation is OperationReward) {
+      return _row(
+        context,
+        'label_thanks_to'.l10n,
+        Text(switch (operation.cause) {
+          OperationRewardCause.earn => 'label_partner_num'.l10nfmt({
+            'num': operation.affiliatedNum,
+          }),
+          OperationRewardCause.purchase => 'label_user_num'.l10nfmt({
+            'num': operation.affiliatedNum,
+          }),
+          OperationRewardCause.reward => 'label_user_num'.l10nfmt({
+            'num': operation.affiliatedNum,
+          }),
+          OperationRewardCause.artemisUnknown => 'label_unknown'.l10n,
+        }),
+      );
+    } else if (operation is OperationReferralHonorarium) {
+      return _row(
+        context,
+        'label_thanks_to'.l10n,
+        _user(context, operation, operation.vendorId),
+      );
+    } else if (operation is OperationReferralFee) {
+      return _row(
+        context,
+        'label_your_promoter'.l10n,
+        _user(context, operation, operation.referrerId),
+      );
+    }
+
+    return _row(
+      context,
+      'label_thanks_to'.l10n,
+      Text('label_waiting_dots'.l10n),
+    );
+  }
+
+  /// Builds a [RxUser] visual representation of the provided [userId].
+  Widget _user(BuildContext context, Operation operation, UserId userId) {
+    final style = Theme.of(context).style;
+
+    return FutureOrBuilder<RxUser?>(
+      key: Key('${operation.id}_$userId'),
+      futureOr: () => getUser?.call(userId),
+      builder: (context, user) {
+        if (user == null) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AvatarWidget(radius: AvatarRadius.smaller),
+              const SizedBox(width: 3),
+              Flexible(child: Text('dot'.l10n * 3)),
+            ],
+          );
+        }
+
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AvatarWidget.fromRxUser(user, radius: AvatarRadius.smaller),
+            const SizedBox(width: 3),
+            Flexible(
+              child: WidgetButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  router.user(user.id, push: true);
+                },
+                child: Text(
+                  user.title(),
+                  style: style.fonts.normal.regular.primary,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

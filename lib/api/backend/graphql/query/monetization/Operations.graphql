@@ -49,8 +49,17 @@ query Operations(
                 ... on OperationPurchaseDonation {
                     ...OperationPurchaseDonation
                 }
+                ... on OperationReferralFee {
+                    ...OperationReferralFee
+                }
+                ... on OperationReferralHonorarium {
+                    ...OperationReferralHonorarium
+                }
                 ... on OperationReward {
                     ...OperationReward
+                }
+                ... on OperationWithdraw {
+                    ...OperationWithdraw
                 }
             }
             cursor

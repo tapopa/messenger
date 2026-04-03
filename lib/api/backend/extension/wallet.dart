@@ -87,8 +87,8 @@ extension OperationDepositConversion on OperationDepositMixin {
         'Unsupported `OperationDepositDetails` type: ${details.$$typename}',
       ),
     },
-    pricing: price?.toModel(),
-    failed: failed?.toModel(),
+    pricing: depositPrice?.toModel(),
+    failed: depositFailed?.toModel(),
   );
 
   /// Constructs a new [DtoOperation] from this [OperationDepositMixin].
@@ -368,6 +368,12 @@ DtoOperation _operation(dynamic node, OperationsCursor? cursor) {
     return node.toDto(cursor);
   } else if (node is OperationDividendMixin) {
     return node.toDto(cursor);
+  } else if (node is OperationReferralFeeMixin) {
+    return node.toDto(cursor);
+  } else if (node is OperationReferralHonorariumMixin) {
+    return node.toDto(cursor);
+  } else if (node is OperationWithdrawMixin) {
+    return node.toDto(cursor);
   }
 
   throw UnimplementedError('$node is not implemented');
@@ -398,4 +404,97 @@ extension MonetizationSettingsConversion on MonetizationSettingsMixin {
   /// [MonetizationSettingsMixin].
   DtoMonetizationSettings toDto({MonetizationSettingsCursor? cursor}) =>
       DtoMonetizationSettings(toModel(), ver, cursor);
+}
+
+/// Extension adding models construction from an [OperationReferralFeeMixin].
+extension OperationReferralFeeConversion on OperationReferralFeeMixin {
+  /// Constructs a new [OperationReferralFee] from this
+  /// [OperationReferralFeeMixin].
+  OperationReferralFee toModel() => OperationReferralFee(
+    id: id,
+    num: this.num,
+    status: status,
+    origin: origin,
+    direction: direction,
+    amount: amount.toModel(),
+    holdUntil: holdUntil,
+    createdAt: createdAt,
+    canceled: canceled?.toModel(),
+    referrerId: referrer.id,
+    earnId: earn.node.id,
+    percentage: percentage,
+  );
+
+  /// Constructs a new [DtoOperation] from this [OperationReferralFeeMixin].
+  DtoOperation toDto(OperationsCursor? cursor) =>
+      DtoOperation(toModel(), ver, cursor: cursor);
+}
+
+/// Extension adding models construction from an
+/// [OperationReferralHonorariumMixin].
+extension OperationReferralHonorariumConversion
+    on OperationReferralHonorariumMixin {
+  /// Constructs a new [OperationReferralHonorarium] from this
+  /// [OperationReferralHonorariumMixin].
+  OperationReferralHonorarium toModel() => OperationReferralHonorarium(
+    id: id,
+    num: this.num,
+    status: status,
+    origin: origin,
+    direction: direction,
+    amount: amount.toModel(),
+    holdUntil: holdUntil,
+    createdAt: createdAt,
+    canceled: canceled?.toModel(),
+    vendorId: switch (vendor.$$typename) {
+      'User' => (vendor as OperationReferralHonorariumMixin$Vendor$User).id,
+      (_) => throw Exception('Unknown `Vendor` -> $vendor'),
+    },
+    percentage: percentage,
+  );
+
+  /// Constructs a new [DtoOperation] from this
+  /// [OperationReferralHonorariumMixin].
+  DtoOperation toDto(OperationsCursor? cursor) =>
+      DtoOperation(toModel(), ver, cursor: cursor);
+}
+
+/// Extension adding models construction from an [OperationWithdrawMixin].
+extension OperationWithdrawConversion on OperationWithdrawMixin {
+  /// Constructs a new [OperationWithdraw] from this [OperationWithdrawMixin].
+  OperationWithdraw toModel() => OperationWithdraw(
+    id: id,
+    num: this.num,
+    status: status,
+    origin: origin,
+    direction: direction,
+    amount: amount.toModel(),
+    holdUntil: holdUntil,
+    createdAt: createdAt,
+    canceled: canceled?.toModel(),
+    price: withdrawPrice.toModel(),
+    failed: withdrawFailed?.toModel(),
+  );
+
+  /// Constructs a new [DtoOperation] from this [OperationWithdrawMixin].
+  DtoOperation toDto(OperationsCursor? cursor) =>
+      DtoOperation(toModel(), ver, cursor: cursor);
+}
+
+/// Extension adding models construction from an
+/// [OperationWithdrawPricingMixin].
+extension OperationWithdrawPricingConversion on OperationWithdrawPricingMixin {
+  /// Constructs a new [OperationWithdrawPricing] from this
+  /// [OperationWithdrawPricingMixin].
+  OperationWithdrawPricing toModel() =>
+      OperationWithdrawPricing(nominal: nominal.toModel());
+}
+
+/// Extension adding models construction from an
+/// [OperationWithdrawFailureMixin].
+extension OperationWithdrawFailureConversion on OperationWithdrawFailureMixin {
+  /// Constructs a new [OperationWithdrawFailure] from this
+  /// [OperationWithdrawFailureMixin].
+  OperationWithdrawFailure toModel() =>
+      OperationWithdrawFailure(code: code, reason: reason, at: at);
 }

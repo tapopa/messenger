@@ -72,7 +72,7 @@ class _TableGridState<E> extends State<TableGrid<E>> {
         verticalDetails: widget.verticalDetails,
         horizontalDetails: widget.horizontalDetails,
         delegate: TableCellBuilderDelegate(
-          rowCount: (widget.indicateLoading ? 1 : 0) + 1,
+          rowCount: widget.items.length + (widget.indicateLoading ? 1 : 0) + 1,
           columnCount: widget.builders.length,
           cellBuilder: (BuildContext context, TableVicinity vicinity) {
             final int row = vicinity.row - 1;

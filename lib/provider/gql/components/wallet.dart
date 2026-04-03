@@ -74,8 +74,12 @@ mixin WalletGraphQlMixin {
     OperationsCursor? after,
     int? last,
     OperationsCursor? before,
+    OperationsFilter? filter,
   }) async {
-    Log.debug('operations($first, $after, $last, $before)', '$runtimeType');
+    Log.debug(
+      'operations(${origin.name}, $first, $after, $last, $before, filter: $filter)',
+      '$runtimeType',
+    );
 
     final variables = OperationsArguments(
       origin: origin,
@@ -85,6 +89,7 @@ mixin WalletGraphQlMixin {
         last: last,
         before: before,
       ),
+      by: filter,
     );
     final QueryResult result = await client.query(
       QueryOptions(

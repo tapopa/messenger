@@ -2102,8 +2102,20 @@ class SvgIcons {
     height: 20.92,
   );
 
+  static const SvgData viewFullWhite = SvgData(
+    'assets/icons/view_full_white.svg',
+    width: 20.8,
+    height: 20.92,
+  );
+
   static const SvgData viewShort = SvgData(
     'assets/icons/view_short.svg',
+    width: 20.8,
+    height: 15.92,
+  );
+
+  static const SvgData viewShortWhite = SvgData(
+    'assets/icons/view_short_white.svg',
     width: 20.8,
     height: 15.92,
   );

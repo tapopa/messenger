@@ -162,11 +162,11 @@ class PartnerTabView extends StatelessWidget {
                         router.routes.lastOrNull == Routes.affiliate;
 
                     return MenuButton(
-                      title: 'btn_partner_programs'.l10n,
+                      title: 'btn_your_tapopa_partner'.l10n,
                       onPressed: router.affiliate,
                       leading: const SvgIcon(SvgIcons.menuPromoter),
                       inverted: enabled,
-                      subtitle: 'btn_partner_programs_subtitle'.l10n,
+                      subtitle: 'btn_your_tapopa_partner_subtitle'.l10n,
                     );
                   }),
                 ),

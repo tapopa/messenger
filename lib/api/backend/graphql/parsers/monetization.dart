@@ -1270,3 +1270,101 @@ fromDartListNullableMonetizationSettingsCursorNullableToGraphQLListNullableMonet
           ),
     )
     .toList();
+
+// OperationFailureReason
+
+OperationFailureReason
+fromGraphQLOperationFailureReasonToDartOperationFailureReason(String v) =>
+    OperationFailureReason(v);
+String fromDartOperationFailureReasonToGraphQLOperationFailureReason(
+  OperationFailureReason v,
+) => v.val;
+List<OperationFailureReason>
+fromGraphQLListOperationFailureReasonToDartListOperationFailureReason(
+  List<Object?> v,
+) => v
+    .map(
+      (e) => fromGraphQLOperationFailureReasonToDartOperationFailureReason(
+        e as String,
+      ),
+    )
+    .toList();
+List<String>
+fromDartListOperationFailureReasonToGraphQLListOperationFailureReason(
+  List<OperationFailureReason> v,
+) => v
+    .map(
+      (e) => fromDartOperationFailureReasonToGraphQLOperationFailureReason(e),
+    )
+    .toList();
+List<OperationFailureReason>?
+fromGraphQLListNullableOperationFailureReasonToDartListNullableOperationFailureReason(
+  List<Object?>? v,
+) => v
+    ?.map(
+      (e) => fromGraphQLOperationFailureReasonToDartOperationFailureReason(
+        e as String,
+      ),
+    )
+    .toList();
+List<String>?
+fromDartListNullableOperationFailureReasonToGraphQLListNullableOperationFailureReason(
+  List<OperationFailureReason>? v,
+) => v
+    ?.map(
+      (e) => fromDartOperationFailureReasonToGraphQLOperationFailureReason(e),
+    )
+    .toList();
+
+OperationFailureReason?
+fromGraphQLOperationFailureReasonNullableToDartOperationFailureReasonNullable(
+  String? v,
+) => v == null ? null : OperationFailureReason(v);
+String?
+fromDartOperationFailureReasonNullableToGraphQLOperationFailureReasonNullable(
+  OperationFailureReason? v,
+) => v?.val;
+List<OperationFailureReason?>
+fromGraphQLListOperationFailureReasonNullableToDartListOperationFailureReasonNullable(
+  List<Object?> v,
+) => v
+    .map(
+      (e) =>
+          fromGraphQLOperationFailureReasonNullableToDartOperationFailureReasonNullable(
+            e as String?,
+          ),
+    )
+    .toList();
+List<String?>
+fromDartListOperationFailureReasonNullableToGraphQLListOperationFailureReasonNullable(
+  List<OperationFailureReason?> v,
+) => v
+    .map(
+      (e) =>
+          fromDartOperationFailureReasonNullableToGraphQLOperationFailureReasonNullable(
+            e,
+          ),
+    )
+    .toList();
+List<OperationFailureReason?>?
+fromGraphQLListNullableOperationFailureReasonNullableToDartListNullableOperationFailureReasonNullable(
+  List<Object?>? v,
+) => v
+    ?.map(
+      (e) =>
+          fromGraphQLOperationFailureReasonNullableToDartOperationFailureReasonNullable(
+            e as String?,
+          ),
+    )
+    .toList();
+List<String?>?
+fromDartListNullableOperationFailureReasonNullableToGraphQLListNullableOperationFailureReasonNullable(
+  List<OperationFailureReason?>? v,
+) => v
+    ?.map(
+      (e) =>
+          fromDartOperationFailureReasonNullableToGraphQLOperationFailureReasonNullable(
+            e,
+          ),
+    )
+    .toList();

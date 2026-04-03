@@ -166,6 +166,7 @@ btn_download_tech_info_file = Download Tech-Info file
 btn_download_version = Download {$version}
 btn_edit = Edit
 btn_email = E-mail
+btn_expand_all = Expand all
 btn_file = Select file
 btn_find_in_chat = Find in chat
 btn_forgot_password = Forgot your password?
@@ -203,8 +204,6 @@ btn_participants = Members
 btn_participants_desc =
     Group
     members
-btn_partner_programs = Partner programs
-btn_partner_programs_subtitle = Share link & make money
 btn_password = Password
 btn_paste = Paste
 btn_proceed = Proceed
@@ -228,6 +227,7 @@ btn_save_and_copy = Save & Copy
 btn_save_my_credentials_for_one_click = Save my credentials for one-click sign in
 btn_save_to_gallery = Save to gallery
 btn_save_to_gallery_all = Save all to galley
+btn_search = Search
 btn_search_chat = Search in chat
 btn_select = Select
 btn_select_messages = Select messages
@@ -241,6 +241,7 @@ btn_share = Share
 btn_share_audio = Share audio
 btn_show_chat = Unhide chat
 btn_show_qr_code = Show QR code
+btn_shrink_all = Shrink all
 btn_sign_in = Sign in
 btn_sign_up = Create an account
 btn_skip = Skip
@@ -265,6 +266,8 @@ btn_your_links = Your links
 btn_your_links_subtitle = Belong to you
 btn_your_promo_plus = Your Promo+
 btn_your_promo_plus_subtitle = Cooperation with advertisers
+btn_your_tapopa_partner = Your Tapopa-Partner
+btn_your_tapopa_partner_subtitle = Income from each link
 colon_space = :{" "}
 comma_space = ,{" "}
 country_ac = Ascension Island
@@ -802,6 +805,7 @@ label_audio_call = Audio call{$by ->
 label_author = Author
 label_auto_gain_control = Automatic gain control
 label_auto_gain_control_subtitle = Automatically adjust microphone volume
+label_available = Available
 label_available_balance_amount = Available balance: {$amount}
 label_available_semicolon_amount = Available: {$amount}
 label_avatar_removed = {$author} removed avatar
@@ -851,7 +855,6 @@ label_call_title =
     }
 label_call_window = Call window
 label_camera = Camera
-label_change_history = History of changes
 label_change_password = Change password
 label_chat_call_declined = Declined call
 label_chat_call_ended = Ended call
@@ -959,9 +962,6 @@ label_forwarded_messages = {$count ->
   *[other] Forwarded messages
 }
 label_free = Free
-label_from_earnings_lowercase = from earnings
-label_from_purchases_lowercase = from purchases
-label_from_sales_lowercase = from sales
 label_full_name = Full name
 label_full_name_example = JOHN SMITH
 label_group_created = Group created
@@ -979,6 +979,7 @@ label_hide_chats = Hide chat(s)
 label_hide_chats_modal_description = The chats will be moved to the "Hidden chats" list
 label_high_pass_filter = High-pass filter
 label_high_pass_filter_subtitle = Cuts off low-frequencies to reduce noise level
+label_hold = Hold
 label_hotkey = Hotkey
 label_i_confirm_withdraw_details_are_correct_and_i_accept1 = I confirm that the details and data of the recipient of the funds are mine, correct, and I accept full responsibility in case of entering incorrect data, and I agree to the{" "}
 label_i_confirm_withdraw_details_are_correct_and_i_accept2 = Terms of Usage & Privacy Policy
@@ -1017,7 +1018,6 @@ label_introduction_description_email = No e-mail is added. Access to your accoun
 label_introduction_for_one_time = To save access to your account, set a password, login or e-mail in your profile settings.
 label_invite_to_chat_with_you = Invite to chat with you
 label_ios_android_windows_macos_linux = For mobile & desktop
-label_it_works_for_years = It works for years
 label_b = {$amount} B
 label_kb = {$amount} KB
 label_mb = {$amount} MB
@@ -1032,6 +1032,20 @@ label_latest_version_is_installed = Latest version is installed
 label_leads_to = Leads to
 label_leave_group = Leave group
 label_link_income = Link income
+label_link_information = Link information
+label_link_information_description1 =
+    Link cannot exceed 100 characters.
+
+    Link should contain alphanumeric characters, and symbols "-" and "_" only.
+
+    Links are not case-sensitive.
+    For example, same links:
+    - https://tapopa.com/
+label_link_information_description2 = yourlinkhere
+label_link_information_description3 =
+    {""}
+    - https://tapopa.com/
+label_link_information_description4 = YOURLINKHERE
 label_link_to_chat = Link to you
 label_linked_devices = Linked devices
 label_loading = Loading...
@@ -1104,6 +1118,15 @@ label_notifications = Notifications
 label_num = Tap ID
 label_num_semicolon = Tap ID:{" "}
 label_occupied_space = Occupied: {$amount}
+label_of_partners_earnings1 = of partners'
+label_of_partners_earnings2 = earnings
+label_of_partners_earnings3 = {""}
+label_of_users_expenses1 = of users'
+label_of_users_expenses2 = expenses
+label_of_users_expenses3 = {""}
+label_of_users_income1 = of users'
+label_of_users_income2 = income
+label_of_users_income3 = {""}
 label_offline = offline
 label_one_time_password = One-time code
 label_ongoing_audio_and_video_may_be_blocked = Outgoing audio and video may be blocked by your device's operating system when the app is in the background
@@ -1135,71 +1158,51 @@ label_order_payment = Order withdrawal
 label_outgoing_call = Calling
 label_participants = Members: {$count}
 label_participants_of = Members: {$a} of {$b}
-label_partner_links = Partner links
-label_partner_number_tapopa_author = Partner number Tapopa-Author
-label_partner_number_tapopa_author_description =
-    Partner number Tapopa-Author is the number of the promoter through which the user is invited to you.
+label_partner_link_tapopa_partner = Partner link Tapopa-Partner
+label_partner_link_tapopa_partner_description =
+    The partner link Tapopa-Partner is any link created in any user's profile.
 
-    The partner number Tapopa-Author is assigned to the visitor at the moment of the first visit to you and cannot be changed.
-
-    In order for Tapopa to recognize the partner number Tapopa-Author, it is necessary for the user to visit you via promoter's partner link.
+    The partner link allows to recognize that the user who created the account was invited by you.
+label_partner_num = Partner {$num}
 label_partner_number_tapopa_partner = Partner number Tapopa-Partner
 label_partner_numbers_assigned = Partner numbers assigned
-label_partner_percentage = Partner percentage
-label_partner_program_links_description1 =
-    You can create a partner link for any Tapopa user in their profile.
+label_partner_percentage_tapopa_partner = Partner percentage Tapopa-Partner
+label_partner_program_links_description1 = The links you create are{" "}
+label_partner_program_links_description2 = controlled by you
+label_partner_program_links_description3 =
+    {"."}
 
-    The partner link you create belongs to you and is controlled by you. You have the right to change where your partner link leads to.
-
-    A partner link makes it possible for Tapopa to recognize that a user who has created an account or visited an author has been invited by you. At the time of account creation and/or first author visit, the{" "}
-label_partner_program_links_description2 = partner number Tapopa-Partner
-label_partner_program_links_description3 = {" "}and/or{" "}
-label_partner_program_links_description4 = partner number Tapopa-Author
-label_partner_program_links_description5 = {" "}is assigned.
-label_partner_program_tapopa_author = Partner program Tapopa-Author
-label_partner_program_tapopa_author_number =
-    Partner number Tapopa-Author is the number of the promoter who invited the user to the author.
-
-    Your partner number Tapopa-Author is assigned to the visitor invited by you at the moment of the first visit to the author. It cannot be changed.
-
-    In order for Tapopa to recognize your partner number Tapopa-Author, it is necessary that the user invited by you visits the author using your partner link.
-label_partner_program_tapopa_author_percentage =
-    You are credited with the partner percentage of the amount of every purchase made by users invited by you.
-
-    The partner percentage is fixed for the visitor at the moment of the first visit to the author. It cannot be changed.
-
-    If the author decides to change his partner percentage, it will only affect sales to new visitors.
-label_partner_program_tapopa_partner = Partner program Tapopa-Partner
+    You can{" "}
+label_partner_program_links_description4 = change where your links lead
+label_partner_program_links_description5 = . To do this, simply copy and paste the link into the "Add link" field in the other user's profile.
+label_partner_program_tapopa_author = Your promotional program Promo+
 label_partner_program_tapopa_partner_description1 = You receive{" "}
 label_partner_program_tapopa_partner_description2 = {$percent}%
-label_partner_program_tapopa_partner_description3 =
-    {" "}of each purchase made by the client invited by you.
+label_partner_program_tapopa_partner_description3 = {" "}of the expenses{" "}
+label_partner_program_tapopa_partner_description4 =
+    of the user invited by you.
 
     You receive{" "}
-label_partner_program_tapopa_partner_description4 = {$percent}%
-label_partner_program_tapopa_partner_description5 =
-    {" "}of each sale of the author invited by you.
+label_partner_program_tapopa_partner_description5 = {$percent}%
+label_partner_program_tapopa_partner_description6 = {" "}of the income{" "}
+label_partner_program_tapopa_partner_description7 =
+    of the user invited by you.
 
     You receive{" "}
-label_partner_program_tapopa_partner_description6 = {$percent}%
-label_partner_program_tapopa_partner_description7 = {" "}of income received within the partner program Tapopa-Partner by the promoter invited by you.
+label_partner_program_tapopa_partner_description8 = {$percent}%
+label_partner_program_tapopa_partner_description9 = {" "}of the earnings{" "}
+label_partner_program_tapopa_partner_description10 =
+    of the partner invited by you.
+
+    Sooner or later, a user invited by you will send, receive, or earn money.
 label_partner_program_tapopa_partner_number =
-    An invited user is a user who has been assigned a partner number Tapopa-Partner.
+    Partner number Tapopa-Partner is a unique ID of the partner who invited a user to create an account.
 
-    The partner number Tapopa-Partner is the number of the promoter who invited the visitor.
+    Your partner number is assigned to a user you have invited the moment they create an account.
 
-    When a visitor clicks the “Guest” or “Create an account” button, Tapopa will assign them your partner number Tapopa-Partner.
+    For your partner number to be recognized, the user you have invited shall use your partner link.
 
-    In order for Tapopa to recognize your partner number Tapopa-Partner, it is necessary that the user invited by you visits the author using your partner link.
-label_partner_programs = Partner programs
-label_partner_programs_easy_description =
-    Share link & make money.
-
-    Percentage of purchases, percentage of sales, percentage of earnings. It does not matter whether your link invited a buyer, a seller or a promoter.
-
-    The user, invited by you, is linked to you forever. Sooner or later they will buy, sell or earn money.
-
-    The time, you spend on the internet, should not only be interesting but also profitable.
+    If no partner number is found, the user is assigned the partner number of the first contact they message or call.
 label_password = Password
 label_password_changed = Password has been changed
 label_password_not_set1 = The password is not set.{" "}
@@ -1238,13 +1241,28 @@ label_plasma = Plasma
 label_polygon = Polygon
 label_presence_away = Away
 label_presence_present = Online
-label_present_time = Present time
 label_privacy_policy = Privacy Policy
 label_processing_time = Processing time
 label_profile = Profile
-label_program_terms = Program terms
+label_promotional_link_promo = Promotional link Promo+
+label_promotional_link_promo_description =
+    The promotional link Promo+ is any partner link leading to a user (an advertiser) who pays you a promotional percentage.
+
+    The promotional link allows to recognize that the user who visited the advertiser was invited by you.
+label_promotional_number_promo = Promotional number Promo+
+label_promotional_number_promo_description =
+    Promotional number Promo+ is a unique ID of the promoter who has invited a user to an advertiser.
+
+    The promotional number is permanently assigned to a user you have invited the moment they first visit the advertiser's chat.
+
+    For the promotional number to be recognized, the user you have invited shall visit the advertiser's chat either from your chat or via your promotional link.
 label_promotional_numbers_assigned = Promotional numbers assigned
 label_promotional_percentage = Promotional percentage
+label_promotional_percentage_promo = Promotional percentage Promo+
+label_promotional_percentage_promo_description =
+    When someone you invite pays for a message, call, or donation, you get the promotional percentage Promo+ set by the advertiser.
+
+    The promotional percentage Promo+ is permanently assigned to a user you have invited the moment they first visit the advertiser's chat.
 label_public_section_hint = Avatar, name, about you, ...
 label_qr_code = QR code
 label_reason = Reason
@@ -1256,6 +1274,10 @@ label_recover_account_description = Specify your Tap ID, login or E-mail.
 label_recovery_code = Recovery code
 label_recovery_code_sent = The verification code has been sent to the verified E-mail added to this account. Enter the code below.
 label_recovery_enter_new_password = Enter the new password below.
+label_referral_fee_details1 = Promotional percentage Promo+.{" "}
+label_referral_fee_details2 = {$percent}%
+label_referral_honorarium_details1 = Promo+.{" "}
+label_referral_honorarium_details2 = {$percent}%
 label_remove_member = Remove from the group
 label_repeat_password = Repeat password
 label_repeat_password_optional = Repeat password (optional)
@@ -1292,15 +1314,25 @@ label_sessions_remain_active_for_one_year = Sessions remain active for one year 
 label_sessions_terminated = Session(s) terminated
 label_set_cache_limits = Set cache limits
 label_set_password = Set password
-label_set_prices_description1 =
-    Evaluate your attention and time. Set the cost of communication with you.
+label_set_prices_description1 = Evaluate your time.{" "}
+label_set_prices_description2 =
+    Set the cost of communication with you.
 
     You, your life, your observations, experience and knowledge are interesting to many. Different people, different cultures, different countries.
 
     Consultations, training, education, humor, creativity or just a conversation. Even{" "}
-label_set_prices_description2 = the ability to listen is expensive
-label_set_prices_description3 = .
+label_set_prices_description3 = the ability to listen is expensive
+label_set_prices_description4 = .
 label_set_your_prices = Set your prices
+label_set_your_promo_percentage_promo =
+    Set your promotional percentage
+    Promo+
+label_set_your_promo_percentage_promo_description =
+    You set a promotional percentage Promo+, which is credited to your promoter from every paid message, paid call, or donation received from users they invited to you.
+
+    The promotional percentage is assigned to a user invited by your promoter the moment they first visit your chat.
+
+    The promotional percentage is assigned to a user once and cannot be changed.
 label_show_call_window = Show call window
 label_show_chats = Unhide chat(s)
 label_show_chats_modal_description = The chats will be removed from the "Hidden chats" list.
@@ -1327,6 +1359,7 @@ label_tab_chats = Chats
 label_tab_menu = Menu
 label_tab_partner = Partner
 label_tab_wallet = Wallet
+label_tapopa_partner = Tapopa-Partner
 label_tapopa_will_be_grateful_for_reporting_problems_when_paying1 = Tapopa
 label_tapopa_will_be_grateful_for_reporting_problems_when_paying2 = {" "}would be very grateful if you reported any inconveniences or problems encountered when making a payment.
 label_terminate_sessions = Terminate session(s)
@@ -1334,6 +1367,7 @@ label_terms_and_privacy_policy = Terms & Conditions
 label_text_status = Text status
 label_text_status_description = 33 characters max
 label_text_status_hint = Text status. 33 symb. max
+label_thanks_to = Thanks to
 label_thats_easy = That's easy
 label_this_device = This session
 label_this_withdrawal_option_is_not_available_in_country = This withdrawal option is not available in the selected country
@@ -1347,6 +1381,8 @@ label_top_up_bonus_with_id = Top up bonus. Transaction ID: {$id}.
 label_top_up_by_paypal = Top up by PayPal
 label_top_up_option = Top up option
 label_top_up_paypal = Top up. PayPal.
+label_total_balance_amount1 = Total balance:{" "}
+label_total_balance_amount2 = {$amount}
 label_transaction = Transaction
 label_transaction_id = Transaction ID
 label_transaction_is_being_processed = Transaction is being processed.
@@ -1388,6 +1424,7 @@ label_user_added_user2 = added
 label_user_added_user3 = {" "}{$user}
 label_user_agent_dot_site = {$application} • {$site}
 label_user_is_blocked = User is blocked
+label_user_num = User {$num}
 label_user_profile = User profile
 label_user_removed_user = {$author} removed {$user}
 label_user_removed_user1 = {$author}{" "}
@@ -1427,9 +1464,7 @@ label_you = You
 label_you_can_set_individual_monetization_in_profile = You can set individual monetization in the each user's profile.
 label_you_have_disabled_incoming_donations = You have disabled incoming donations
 label_you_were_added_to_group = You have been added to the group
-label_your_author_partner_program_tapopa_author =
-    Your author partner program
-    Tapopa-Author
+label_your_author_partner_program_tapopa_author = Your promotional program Promo+
 label_your_balance_amount = Your balance: {$balance}
 label_your_direct_link = Your links to the chat with you
 label_your_monetization = Your monetization
@@ -1447,17 +1482,14 @@ label_your_monetization_settings_for_user_subtitle4 = default monetization setti
 label_your_monetization_settings_for_user_subtitle5 = .
 label_your_name = Your name
 label_your_num = Your Tap ID
+label_your_partner_and_promotional_links = Your partner and promotional links
 label_your_partner_income = Your partner income
+label_your_partner_program_tapopa_partner = Your partner program Tapopa-Partner
 label_your_password = Your password
+label_your_promoter = Your promoter
 label_your_promotion = Your promotion
-label_your_promotion_program_description =
-    You set a partner percentage, which is credited to your promoter automatically from each sale to a customer invited by this promoter to you.
-
-    The partner percentage set by you is fixed for the visitor at the moment of the first visit to you. It cannot be changed.
-
-    If you decide to change the partner percentage, it will only affect sales to new visitors.
-
-    The history of changes of your partner percentage is publicly available information. It is displayed in your profile.
+label_your_promotion_program_description1 = Increase your income{" "}
+label_your_promotion_program_description2 = with effective promotion. You can invite professional promoters to cooperate by sharing a percentage of your income.
 label_your_statistics = Your statistics
 label_your_status = Your status
 label_your_transactions = Your transactions

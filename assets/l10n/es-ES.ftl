@@ -166,6 +166,7 @@ btn_download_tech_info_file = Descargar el archivo Tech-Info
 btn_download_version = Descargar {$version}
 btn_edit = Editar
 btn_email = E-mail
+btn_expand_all = Expandir todo
 btn_file = Seleccionar archivo
 btn_find_in_chat = Encontrar en el chat
 btn_forgot_password = ¿Olvidó su contraseña?
@@ -203,8 +204,6 @@ btn_participants = Miembros
 btn_participants_desc =
     Miembros
     del grupo
-btn_partner_programs = Programas de partners
-btn_partner_programs_subtitle = Comparta enlace y gane dinero
 btn_password = Сontraseña
 btn_paste = Pegar
 btn_promote_yourself = Su promoción
@@ -227,6 +226,7 @@ btn_save_and_copy = Guardar y Copiar
 btn_save_to_gallery = Guardar en la galería
 btn_save_to_gallery_all = Guardar todo en la galería
 btn_save_my_credentials_for_one_click = Guardar mis credenciales para ingresar con un solo clic
+btn_search = Buscar
 btn_search_chat = Buscar en chat
 btn_select = Seleccionar
 btn_select_messages = Seleccionar mensajes
@@ -240,6 +240,7 @@ btn_share = Compartir
 btn_share_audio = Compartir audio
 btn_show_chat = Mostrar el chat
 btn_show_qr_code = Mostrar código QR
+btn_shrink_all = Reducir todo
 btn_sign_in = Ingresar
 btn_sign_up = Crear una cuenta
 btn_skip = Saltar
@@ -264,6 +265,8 @@ btn_your_links = Tus enlaces
 btn_your_links_subtitle = Te pertenecen
 btn_your_promo_plus = Tu Promo+
 btn_your_promo_plus_subtitle = Colaboración con anunciantes
+btn_your_tapopa_partner = Tu Tapopa-Partner
+btn_your_tapopa_partner_subtitle = Ingresos por cada enlace
 colon_space = :{" "}
 comma_space = ,{" "}
 country_ac = Isla Ascencion
@@ -804,6 +807,7 @@ label_audio_call =
 label_author = Autor
 label_auto_gain_control = Auto gain control
 label_auto_gain_control_subtitle = Ajusta automáticamente el volumen del micrófono
+label_available = Disponible
 label_available_balance_amount = Saldo disponible: {$amount}
 label_available_semicolon_amount = Disponible: {$amount}
 label_avatar_removed = {$author} eliminó el avatar
@@ -853,7 +857,6 @@ label_call_title =
     }
 label_call_window = Ventana de llamada
 label_camera = Cámara
-label_change_history = Historial de cambios
 label_change_password = Cambiar la contrseña
 label_chat_call_declined = Llamada rechazada
 label_chat_call_ended = Llamada terminada
@@ -962,9 +965,6 @@ label_forwarded_messages =
        *[other] Mensajes reenviados
     }
 label_free = Gratis
-label_from_earnings_lowercase = de ganancias
-label_from_purchases_lowercase = de compras
-label_from_sales_lowercase = de ventas
 label_full_name = Nombre completo
 label_full_name_example = JOHN SMITH
 label_group_created = Grupo creado
@@ -982,6 +982,7 @@ label_hide_chats = Ocultar chat(s)
 label_hide_chats_modal_description = El chat será movido a la lista de "Chats ocultos"
 label_high_pass_filter = Filtro paso alto
 label_high_pass_filter_subtitle = Corta las frecuencias bajas para reducir el nivel de ruido
+label_hold = Mantener
 label_hotkey = Tecla de acceso rápido
 label_i_confirm_withdraw_details_are_correct_and_i_accept1 = Confirmo que los datos del beneficiario de los fondos son míos, correctos y acepto plena responsabilidad en caso de ingresar información errónea. Además, acepto los{" "}
 label_i_confirm_withdraw_details_are_correct_and_i_accept2 = Términos de Uso y Política de Privacidad
@@ -1020,7 +1021,6 @@ label_introduction_description_email = E-mail no agregado. El acceso a su cuenta
 label_introduction_for_one_time = Para guardar el acceso a su cuenta, establezca una contraseña, un nombre de usuario o un correo electrónico en la configuración de su perfil.
 label_invite_to_chat_with_you = Invitar a chatear contigo
 label_ios_android_windows_macos_linux = Para móviles y computadoras
-label_it_works_for_years = Sus ganancias durante años
 label_b = {$amount} B
 label_kb = {$amount} KB
 label_mb = {$amount} MB
@@ -1035,6 +1035,21 @@ label_latest_version_is_installed = La última versión está instalada
 label_leads_to = Conduce a
 label_leave_group = Salir del grupo
 label_link_income = Ingresos del enlace
+label_link_information = Información del enlace
+label_link_information_description1 =
+    El enlace no puede exceder los 100 caracteres.
+
+    El enlace debe contener únicamente caracteres alfanuméricos y los símbolos "-" y "_".
+
+    Los enlaces no distinguen entre mayúsculas y minúsculas.
+
+    Por ejemplo, enlaces idénticos:
+    - https://tapopa.com/
+label_link_information_description2 = yourlinkhere
+label_link_information_description3 =
+    {""}
+    - https://tapopa.com/
+label_link_information_description4 = YOURLINKHERE
 label_link_to_chat = Enlace hacia Usted
 label_linked_devices = Sesiones activas
 label_loading = Cargando...
@@ -1110,6 +1125,15 @@ label_notifications = Notificaciones
 label_num = Tap ID
 label_num_semicolon = Tap ID:{" "}
 label_occupied_space = Ocupado: {$amount}
+label_of_partners_earnings1 = {""}
+label_of_partners_earnings2 = de ganancias
+label_of_partners_earnings3 = de socios
+label_of_users_expenses1 = {""}
+label_of_users_expenses2 = de gastos
+label_of_users_expenses3 = de usuarios
+label_of_users_income1 = {""}
+label_of_users_income2 = de ingresos
+label_of_users_income3 = de usuarios
 label_offline = fuera de línea
 label_one_time_password = Código desechable
 label_ongoing_audio_and_video_may_be_blocked = El sistema operativo de su dispositivo puede bloquear el audio y el video salientes cuando la aplicación está en segundo plano
@@ -1141,71 +1165,51 @@ label_order_payment = Ordene su retiro
 label_outgoing_call = Llamando
 label_participants = Miembros: {$count}
 label_participants_of = Miembros: {$a} de {$b}
-label_partner_links = Enlaces de partner
-label_partner_number_tapopa_author = Número de partner Tapopa-Author
-label_partner_number_tapopa_author_description =
-    El número de partner Tapopa-Author es el número del promotor que invitó el usuario al autor.
+label_partner_link_tapopa_partner = Enlace de socio Tapopa-Partner
+label_partner_link_tapopa_partner_description =
+    El enlace de socio Tapopa-Partner es cualquier enlace creado en el perfil de un usuario.
 
-    Su número de partner Tapopa-Author se asigna al visitante, que Usted invitó, en el momento de la primera visita al autor. No puede ser cambiado.
-
-    Para que Tapopa reconozca su número de partner Tapopa-Author, es necesario que el usuario invitado por Usted visite al autor a través de su enlace de partner.
+    El enlace de socio permite reconocer que el usuario que creó la cuenta fue invitado por ti.
+label_partner_num = Partner {$num}
 label_partner_number_tapopa_partner = Número de partner Tapopa-Partner
 label_partner_numbers_assigned = Números de partner asignados
-label_partner_percentage = Porcentaje del partner
-label_partner_program_links_description1 =
-    Puede crear un enlace de partner para cualquier usuario de Tapopa desde su perfil.
+label_partner_percentage_tapopa_partner = Porcentaje de socios Tapopa-Partner
+label_partner_program_links_description1 = {""}
+label_partner_program_links_description2 = Tú controlas
+label_partner_program_links_description3 =
+    los enlaces que creas.
 
-    El enlace de partner que crea pertenece a Usted y está bajo su control. Tiene derecho a cambiar el destino de su enlace de partner.
-
-    Un enlace de partner permite que Tapopa reconozca que un usuario que ha creado una cuenta o ha visitado a un autor fue invitado por Usted. Al momento de crear la cuenta y/o en la primera visita al autor,{" "}
-label_partner_program_links_description2 = número de partner Tapopa-Partner
-label_partner_program_links_description3 = {" "}y/o{" "}
-label_partner_program_links_description4 = número de partner Tapopa-Author
-label_partner_program_links_description5 = {" "}se asigna.
-label_partner_program_tapopa_author = Programa de partners Tapopa-Author
-label_partner_program_tapopa_author_number =
-    El número de partner Tapopa-Author es el número del promotor que invitó el usuario al autor.
-
-    Su número de partner Tapopa-Author se asigna al visitante, que Usted invitó, en el momento de la primera visita al autor. No puede ser cambiado.
-
-    Para que Tapopa reconozca su número de partner Tapopa-Author, es necesario que el usuario invitado por Usted visite al autor a través de su enlace de partner.
-label_partner_program_tapopa_author_percentage =
-    A Usted se le acredita un porcentaje de partner por cada compra realizada por los usuarios que ha invitado.
-
-    El porcentaje de partner se fija para el visitante en el momento de la primera visita al autor. No puede ser cambiado.
-
-    Si el autor decide cambiar el porcentaje de partner, esto solo afectará las ventas a visitantes nuevos.
-label_partner_program_tapopa_partner = Programa de partners Tapopa-Partner
-label_partner_program_tapopa_partner_description1 = Usted recibe{" "}
+    Puedes cambiar{" "}
+label_partner_program_links_description4 = a dónde dirigen tus enlaces
+label_partner_program_links_description5 = . Para ello, simplemente copia y pega el enlace en el campo "Añadir enlace" del perfil del otro usuario.
+label_partner_program_tapopa_author = Tu programa promocional Promo+
+label_partner_program_tapopa_partner_description1 = Recibes el{" "}
 label_partner_program_tapopa_partner_description2 = {$percent}%
-label_partner_program_tapopa_partner_description3 =
-    {" "}de cada compra realizada por el cliente que Usted invitó.
+label_partner_program_tapopa_partner_description3 = {" "}de los gastos{" "}
+label_partner_program_tapopa_partner_description4 =
+    del usuario que invitaste.
 
-    Usted recibe{" "}
-label_partner_program_tapopa_partner_description4 = {$percent}%
-label_partner_program_tapopa_partner_description5 =
-    {" "}de cada venta realizada por el autor que Usted invitó.
+    Recibes el{" "}
+label_partner_program_tapopa_partner_description5 = {$percent}%
+label_partner_program_tapopa_partner_description6 = {" "}de los ingresos{" "}
+label_partner_program_tapopa_partner_description7 =
+    del usuario que invitaste.
 
-    Usted recibe{" "}
-label_partner_program_tapopa_partner_description6 = {$percent}%
-label_partner_program_tapopa_partner_description7 = {" "}de las ganancias obtenidas por el promotor que Usted invitó, dentro del programa de partners Tapopa-Partner.
+    Recibes el{" "}
+label_partner_program_tapopa_partner_description8 = {$percent}%
+label_partner_program_tapopa_partner_description9 = {" "}de las ganancias{" "}
+label_partner_program_tapopa_partner_description10 =
+    del socio que invitaste.
+
+    Tarde o temprano, un usuario invitado por ti enviará, recibirá o ganará dinero..
 label_partner_program_tapopa_partner_number =
-    "Un usuario invitado es un usuario al que se le ha asignado un número de partner Tapopa-Partner.
+    El número de socio Tapopa-Partner es un identificador único del socio que invitó a un usuario a crear una cuenta.
 
-    El número de partner Tapopa-Partner es el número del promotor que invitó al visitante.
+    Tu número de socio se asigna al usuario que has invitado en el momento en que crea una cuenta.
 
-    Cuando un visitante hace clic en el botón “Invitado” o “Crear una cuenta”, Tapopa le asignará su número de partner Tapopa-Partner.
+    Para que se reconozca tu número de socio, el usuario invitado debe usar tu enlace de socio.
 
-    Para que Tapopa reconozca su número de partner Tapopa-Partner, es necesario que el usuario invitado por Usted visite al autor a través de su enlace de partner."
-label_partner_programs = Programas de partners
-label_partner_programs_easy_description =
-    Comparte enlace y gana dinero.
-
-    Porcentaje de compras, porcentaje de ventas, porcentaje de ganancias. No importa si su enlace invitó a un comprador, un vendedor o un promotor.
-
-    El usuario que Usted invitó queda vinculado a Usted para siempre. Tarde o temprano comprará, venderá o ganará dinero.
-
-    El tiempo que Usted pasa en internet no solo debe ser interesante, sino también rentable.
+    Si no se encuentra ningún número de socio, se le asignará al usuario el número de socio del primer contacto al que envíe un mensaje o llame.
 label_password = Сontraseña
 label_password_changed = Contraseña cambiada
 label_password_not_set1 = La contraseña no esta configurada.{" "}
@@ -1244,13 +1248,28 @@ label_plasma = Plasma
 label_polygon = Polygon
 label_presence_away = Away
 label_presence_present = En línea
-label_present_time = Presente
 label_privacy_policy = Política de Privacidad
 label_processing_time = Tiempo de procesamiento
 label_profile = Perfil
-label_program_terms = Condiciones del programa
+label_promotional_link_promo = Enlace promocional Promo+
+label_promotional_link_promo_description =
+    El enlace promocional Promo+ es cualquier enlace de socio que dirige a un usuario (un anunciante) que te paga un porcentaje de promoción.
+
+    El enlace promocional permite reconocer que el usuario que visitó al anunciante fue invitado por ti.
+label_promotional_number_promo = Número promocional Promo+
+label_promotional_number_promo_description =
+    El número promocional Promo+ es un identificador único del promotor que ha invitado a un usuario al chat de un anunciante.
+
+    El número promocional se asigna permanentemente al usuario invitado en el momento en que visita el chat del anunciante por primera vez.
+
+    Para que se reconozca el número promocional, el usuario invitado debe visitar el chat del anunciante desde tu chat o a través de tu enlace promocional.
 label_promotional_numbers_assigned = Números promocionales asignados
 label_promotional_percentage = Porcentaje promocional
+label_promotional_percentage_promo = Porcentaje promocional Promo+
+label_promotional_percentage_promo_description =
+    Cuando alguien que invitas paga por un mensaje, una llamada o una donación, recibes el porcentaje promocional Promo+ establecido por el anunciante.
+
+    El porcentaje promocional Promo+ se asigna permanentemente a un usuario que has invitado desde el momento en que visita el chat del anunciante por primera vez.
 label_public_section_hint = Avatar, nombre, a cerca de Usted, ...
 label_qr_code = Código QR
 label_reason = Motivo
@@ -1262,6 +1281,10 @@ label_recover_account_description = Ingrese su Tap ID, usuario o e-mail
 label_recovery_code = Código de recuperación
 label_recovery_code_sent = El código de recuperación ha sido enviado al e-mail agregado a esta cuenta. Ingrese el código a continuación.
 label_recovery_enter_new_password = Ingrese la nueva contraseña a continuación
+label_referral_fee_details1 = Porcentaje promocional Promo+.{" "}
+label_referral_fee_details2 = {$percent}%
+label_referral_honorarium_details1 = Promo+.{" "}
+label_referral_honorarium_details2 = {$percent}%
 label_remove_member = Eliminar del grupo
 label_repeat_password = Repita la contraseña
 label_repeat_password_optional = Repita la contraseña (opcional)
@@ -1298,15 +1321,25 @@ label_sessions_remain_active_for_one_year = Las sesiones permanecen activas dura
 label_sessions_terminated = Sesión(es) terminada(s)
 label_set_cache_limits = Configurar límites del caché
 label_set_password = Configurar la contraseña
-label_set_prices_description1 =
-    "Evalúe su atención y tiempo. Establezca el costo de la comunicación con Ud.
+label_set_prices_description1 = Evalúe su tiempo.
+label_set_prices_description2 =
+    Establezca el costo de la comunicación con Ud.
 
     Ud., su vida, sus observaciones, su experiencia y conocimientos son interesantes para muchas personas. Personas diferentes, culturas diferentes, países diferentes.
 
     Opiniones, educación, humor, creatividad o simplemente una conversación. Incluso{" "}
-label_set_prices_description2 = la capacidad de escuchar es apreciada
-label_set_prices_description3 = .
+label_set_prices_description3 = la capacidad de escuchar es apreciada
+label_set_prices_description4 = .
 label_set_your_prices = Establezca sus precios
+label_set_your_promo_percentage_promo =
+    Establece tu porcentaje promocional
+    Promo+
+label_set_your_promo_percentage_promo_description =
+    Puedes establecer un porcentaje promocional (Promo+), que se le acredita a tu promotor por cada mensaje, llamada o donación recibida de usuarios que él haya invitado.
+
+    El porcentaje promocional se asigna a un usuario invitado por tu promotor en el momento en que visita tu chat por primera vez.
+
+    El porcentaje promocional se asigna a un usuario una sola vez y no se puede modificar.
 label_show_call_window = Mostrar la ventana de llamada
 label_show_chats = Mostrar chat(s)
 label_show_chats_modal_description = Los chats se eliminarán de la lista "Chats ocultos".
@@ -1334,6 +1367,7 @@ label_tab_chats = Chats
 label_tab_menu = Menú
 label_tab_partner = Partner
 label_tab_wallet = Monedero
+label_tapopa_partner = Tapopa-Partner
 label_tapopa_will_be_grateful_for_reporting_problems_when_paying1 = Tapopa
 label_tapopa_will_be_grateful_for_reporting_problems_when_paying2 = {" "}le agradecerá mucho si informa sobre cualquier inconveniente o problema encontrado al realizar pago.
 label_terminate_sessions = Terminar sesión(es)
@@ -1341,6 +1375,7 @@ label_terms_and_privacy_policy = Términos y Condiciones
 label_text_status = Estatus del texto
 label_text_status_description = Hasta 33 caracteres
 label_text_status_hint = Estatus del texto. Máximo 33 símbolos.
+label_thanks_to = Gracias a
 label_thats_easy = Es fácil
 label_this_device = Esta sesión
 label_this_withdrawal_option_is_not_available_in_country = Esta opción de retiro no está disponible en el país seleccionado
@@ -1354,6 +1389,8 @@ label_top_up_bonus_with_id = Bono de recarga. ID de transacción: {$id}.
 label_top_up_by_paypal = Recargar por PayPal
 label_top_up_option = Opción de recarga
 label_top_up_paypal = Bono de recarga. PayPal.
+label_total_balance_amount1 = Saldo total:{" "}
+label_total_balance_amount2 = {$amount}
 label_transaction = Transacción
 label_transaction_id = Transacción ID
 label_transaction_is_being_processed = La transacción se está procesando.
@@ -1396,6 +1433,7 @@ label_user_added_user2 = agregó
 label_user_added_user3 = {" "}{$user}
 label_user_agent_dot_site = {$application} • {$site}
 label_user_is_blocked = Usuario bloqueado
+label_user_num = Usuario {$num}
 label_user_profile = Perfil de usuario
 label_user_removed_user = {$author} eliminó {$user}
 label_user_removed_user1 = {$author}{" "}
@@ -1436,9 +1474,7 @@ label_you = Usted
 label_you_can_set_individual_monetization_in_profile = Usted puede configurar la monetización individual en el perfil de cada usuario.
 label_you_have_disabled_incoming_donations = Has desactivado las donaciones entrantes
 label_you_were_added_to_group = Usted ha sido agregado(a) al grupo
-label_your_author_partner_program_tapopa_author =
-    Su programa de partner de autor
-    Tapopa-Author
+label_your_author_partner_program_tapopa_author = Tu programa promocional Promo+
 label_your_balance_amount = Su saldo: {$balance}
 label_your_direct_link = Tus enlaces al chat contigo
 label_your_monetization = Tu monetización
@@ -1456,17 +1492,14 @@ label_your_monetization_settings_for_user_subtitle4 = configuración de monetiza
 label_your_monetization_settings_for_user_subtitle5 = .
 label_your_name = Su nombre
 label_your_num = Su Tap ID
+label_your_partner_and_promotional_links = Tus enlaces de socios y promocionales
 label_your_partner_income = Ingresos de tu pareja
+label_your_partner_program_tapopa_partner = Tu programa de socios Tapopa-Partner
 label_your_password = Su contraseña
+label_your_promoter = Tu promotor
 label_your_promotion = Su promoción
-label_your_promotion_program_description =
-    "Usted establece un porcentaje de partner, que se acredita automáticamente a su promotor por cada venta realizada a un cliente invitado por este promotor.
-
-    El porcentaje de partner que Usted estableció queda fijado para el visitante en el momento de su primera visita. No puede ser cambiado.
-
-    Si Usted decide cambiar el porcentaje de partner, solo afectará las ventas a los visitantes nuevos.
-
-    El historial de cambios de su porcentaje de partner es información pública. Se muestra en su perfil."
+label_your_promotion_program_description1 = Aumenta tus ingresos{" "}
+label_your_promotion_program_description2 = con una promoción eficaz. Puedes invitar a promotores profesionales a colaborar compartiendo un porcentaje de tus ingresos.
 label_your_statistics = Su estadística
 label_your_status = Su estatus
 label_your_transactions = Sus transacciones

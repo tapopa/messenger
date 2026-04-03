@@ -15,39 +15,8 @@
 # along with this program. If not, see
 # <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-fragment OperationDeposit on OperationDeposit {
-    id
-    num
-    status
-    origin
-    direction
-    amount {
-        __typename
-        ...Price
-    }
-    holdUntil
-    createdAt
-    canceled {
-        __typename
-        ...OperationCancellation
-    }
-    ver
-
-    kind
-    billingCountry
-    invoice
-    details {
-        __typename
-        ... on OperationDepositPayPalDetails {
-            processingUrl
-        }
-    }
-    depositPrice: price {
-        __typename
-        ...OperationDepositPricing
-    }
-    depositFailed: failed {
-        __typename
-        ...OperationDepositFailure
-    }
+fragment OperationWithdrawFailure on OperationWithdrawFailure {
+    code
+    reason
+    at
 }

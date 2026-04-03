@@ -67,7 +67,12 @@ part 'themes.g.dart';
     'bold': ['onPrimary'],
   },
   'normal': {
-    'bold': ['onBackground', 'onPrimary'],
+    'bold': [
+      'onBackground',
+      'onPrimary',
+      'currencySecondary',
+      'currencyPrimary',
+    ],
     'regular': [
       'danger',
       'onBackground',
@@ -75,6 +80,8 @@ part 'themes.g.dart';
       'primary',
       'secondary',
       'secondaryHighlightDarkest',
+      'currencyPrimary',
+      'currencySecondary',
     ],
   },
   'small': {
@@ -217,6 +224,7 @@ class Themes {
       onPrimaryOpacity50: colors.onPrimaryOpacity50,
       danger: colors.danger,
       currencyPrimary: colors.currencyPrimary,
+      currencySecondary: colors.currencySecondary,
       onDonatePrimary: colors.onDonatePrimary,
       onDonateSecondary: colors.onDonateSecondary,
       bold: FontWeight.w700,

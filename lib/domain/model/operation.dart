@@ -696,7 +696,7 @@ class OperationDepositFailure {
   final PreciseDateTime at;
 }
 
-/// [Operation] of [MyUser] paying a [MonetizationSettingsReferral.fee] to a
+/// [Operation] of [MyUser] paying a `MonetizationSettingsReferral.fee` to a
 /// referrer [User].
 class OperationReferralFee extends Operation {
   OperationReferralFee({
@@ -759,7 +759,7 @@ class OperationReferralFee extends Operation {
   }
 }
 
-/// [Operation] of [MyUser] receiving a [MonetizationSettingsReferral.fee] from
+/// [Operation] of [MyUser] receiving a `MonetizationSettingsReferral.fee` from
 /// a `Vendor` as honorarium.
 class OperationReferralHonorarium extends Operation {
   OperationReferralHonorarium({
@@ -781,7 +781,7 @@ class OperationReferralHonorarium extends Operation {
   final UserId vendorId;
 
   /// [Percentage] this [OperationReferralHonorarium] represents as the received
-  /// [MonetizationSettingsReferral.fee].
+  /// `MonetizationSettingsReferral.fee`.
   final Percentage percentage;
 
   @override

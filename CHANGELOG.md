@@ -20,7 +20,7 @@ All user visible changes to this project will be documented in this file. This p
         - Tapping on Tap ID sent in message opens chat with user. ([#46])
     - Monetization tab:
         - Updated icons and texts. ([#47])
-        - Links statistics page. ([#47])
+        - Links statistics page. ([#48], [#47])
 
 ### Fixed
 
@@ -32,6 +32,7 @@ All user visible changes to this project will be documented in this file. This p
 
 [#46]: /../../pull/46
 [#47]: /../../pull/47
+[#48]: /../../pull/48
 [team113/messenger#1666]: https://github.com/team113/messenger/pull/1666
 
 

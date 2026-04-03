@@ -1037,6 +1037,7 @@ label_leave_group = Salir del grupo
 label_link_income = Ingresos del enlace
 label_link_to_chat = Enlace hacia Usted
 label_linked_devices = Sesiones activas
+label_links_amount = Enlaces: {$amount}
 label_loading = Cargando...
 label_login = Usuario
 label_login_example = nombre_de_usuario_unico

@@ -1050,6 +1050,7 @@ label_leave_group = Покинуть группу
 label_link_income = Доход ссылки
 label_link_to_chat = Ссылка на Вас
 label_linked_devices = Активные сессии
+label_links_amount = Ссылки: {$amount}
 label_loading = Загрузка...
 label_login = Логин
 label_login_example = your_unique_login

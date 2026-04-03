@@ -75,10 +75,14 @@ class _TableGridState<E> extends State<TableGrid<E>> {
         horizontalDetails: widget.horizontalDetails,
         delegate: TableCellBuilderDelegate(
           rowCount:
-              max(1, widget.items.length) + (widget.indicateLoading ? 1 : 0),
+              max(1, widget.items.length) +
+              (widget.indicateLoading ? 1 : 0) +
+              1,
           columnCount: widget.builders.length,
           cellBuilder: (BuildContext context, TableVicinity vicinity) {
-            final builder = widget.builders[vicinity.column];
+            final int row = vicinity.row - 1;
+            final int column = vicinity.column;
+            final TableBuilder<E> builder = widget.builders[column];
 
             final int target = _target ?? 0;
             final int dragged = _dragged ?? 0;
@@ -88,7 +92,7 @@ class _TableGridState<E> extends State<TableGrid<E>> {
               width: 2,
             );
 
-            if (vicinity.row == 0) {
+            if (row == -1) {
               final header = KeyedSubtree(
                 key: builder.key,
                 child: DragTarget<TableBuilder<E>>(
@@ -97,13 +101,13 @@ class _TableGridState<E> extends State<TableGrid<E>> {
                     setState(() => _target = null);
                   },
                   onLeave: (_) {
-                    if (_target == vicinity.column) {
+                    if (_target == column) {
                       setState(() => _target = null);
                     }
                   },
                   onWillAcceptWithDetails: (_) {
-                    if (_target != vicinity.column) {
-                      setState(() => _target = vicinity.column);
+                    if (_target != column) {
+                      setState(() => _target = column);
                     }
 
                     return true;
@@ -111,8 +115,7 @@ class _TableGridState<E> extends State<TableGrid<E>> {
                   builder: (context, candidates, rejected) {
                     return Container(
                       decoration: BoxDecoration(
-                        border:
-                            _dragged != _target && _target == vicinity.column
+                        border: _dragged != _target && _target == column
                             ? Border(
                                 left: target < dragged ? side : BorderSide.none,
                                 right: target >= dragged
@@ -140,8 +143,7 @@ class _TableGridState<E> extends State<TableGrid<E>> {
                 child: SelectionContainer.disabled(
                   child: Draggable<TableBuilder<E>>(
                     data: builder,
-                    onDragStarted: () =>
-                        setState(() => _dragged = vicinity.column),
+                    onDragStarted: () => setState(() => _dragged = column),
                     onDragCompleted: () => setState(() => _dragged = null),
                     onDragEnd: (_) => setState(() => _dragged = null),
                     onDraggableCanceled: (_, _) =>
@@ -163,7 +165,7 @@ class _TableGridState<E> extends State<TableGrid<E>> {
               );
             }
 
-            if (vicinity.row >= widget.items.length) {
+            if (row >= widget.items.length) {
               return const TableViewCell(
                 child: Padding(
                   padding: EdgeInsets.all(4.0),
@@ -177,12 +179,12 @@ class _TableGridState<E> extends State<TableGrid<E>> {
               child: Center(
                 child: DefaultTextStyle(
                   style: style.fonts.small.regular.onBackground,
-                  child: builder.builder(widget.items.elementAt(vicinity.row)),
+                  child: builder.builder(widget.items.elementAt(row)),
                 ),
               ),
             );
 
-            if (_dragged == vicinity.column) {
+            if (_dragged == column) {
               return TableViewCell(
                 child: Stack(
                   children: [
@@ -200,7 +202,7 @@ class _TableGridState<E> extends State<TableGrid<E>> {
             return TableViewCell(
               child: Container(
                 decoration: BoxDecoration(
-                  border: _target == vicinity.column
+                  border: _target == column
                       ? Border(
                           left: target < dragged ? side : BorderSide.none,
                           right: target >= dragged ? side : BorderSide.none,

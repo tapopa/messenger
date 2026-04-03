@@ -28,6 +28,7 @@ import '/domain/model/link.dart';
 import '/domain/model/user.dart';
 import '/domain/repository/link.dart';
 import '/domain/repository/paginated.dart';
+import '/domain/service/disposable_service.dart';
 import '/provider/drift/version.dart';
 import '/provider/gql/exceptions.dart';
 import '/provider/gql/graphql.dart';
@@ -43,13 +44,13 @@ import 'pagination.dart';
 import 'pagination/graphql.dart';
 
 /// [DirectLink] repository.
-class LinkRepository extends DisposableInterface
+class LinkRepository extends IdentityDependency
     implements AbstractLinkRepository {
-  LinkRepository(this._graphQlProvider, this._versionLocal, {required this.me});
-
-  /// [UserId] of the currently authenticated [MyUser] this repository is bound
-  /// to.
-  final UserId me;
+  LinkRepository(
+    this._graphQlProvider,
+    this._versionLocal, {
+    required super.me,
+  });
 
   @override
   final RxInt total = RxInt(0);
@@ -83,9 +84,6 @@ class LinkRepository extends DisposableInterface
   @override
   void onInit() {
     Log.debug('onInit', '$runtimeType');
-
-    _initRemoteSubscription();
-
     super.onInit();
   }
 
@@ -101,6 +99,35 @@ class LinkRepository extends DisposableInterface
     _paginates.clear();
 
     super.onClose();
+  }
+
+  @override
+  void onIdentityChanged(UserId me) {
+    super.onIdentityChanged(me);
+
+    Log.debug('onIdentityChanged($me)', '$runtimeType');
+
+    for (var e in _paginates.values) {
+      e.dispose();
+    }
+    _paginates.clear();
+
+    for (var e in _subscriptions.values) {
+      e.close(immediate: true);
+    }
+    _subscriptions.clear();
+
+    _remoteSubscription?.close(immediate: true);
+    _remoteSubscription = null;
+
+    for (var e in _updates.values) {
+      e.close();
+    }
+    _updates.clear();
+
+    if (!me.isLocal) {
+      _initRemoteSubscription();
+    }
   }
 
   @override

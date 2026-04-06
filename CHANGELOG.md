@@ -14,6 +14,23 @@ All user visible changes to this project will be documented in this file. This p
 ### Changed
 
 - UI:
+    - Prices page:
+        - Incoming messages price setting. ([#51])
+        - Incoming messages enabling and disabling. ([#51])
+
+[#51]: /../../pull/51
+
+
+
+
+## [0.4.1] · 2026-04-06
+[0.4.1]: /../../tree/v0.4.1
+
+[Diff](/../../compare/v0.4.0...v0.4.1) | [Milestone](/../../milestone/13)
+
+### Changed
+
+- UI:
     - Currency symbol. ([#46])
     - Tap ID visual appearance. ([#46])
     - Chat page:

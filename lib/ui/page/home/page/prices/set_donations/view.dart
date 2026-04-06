@@ -17,6 +17,7 @@
 
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '/domain/model/monetization_settings.dart';
@@ -32,18 +33,28 @@ import '/ui/widget/text_field.dart';
 import 'controller.dart';
 
 /// View for setting the incoming [Donation]s settings.
-class SetDonationsView extends StatelessWidget {
-  const SetDonationsView({super.key, this.userId});
+class SetMonetizationView extends StatelessWidget {
+  const SetMonetizationView({
+    super.key,
+    this.userId,
+    this.mode = SetMonetizationMode.donation,
+  });
+
+  final SetMonetizationMode mode;
 
   /// [UserId] of a [User] for whom the [MonetizationSettings] are being
   /// changed.
   final UserId? userId;
 
-  /// Displays a [SetDonationsView] wrapped in a [ModalPopup].
-  static Future<T?> show<T>(BuildContext context, {UserId? userId}) {
+  /// Displays a [SetMonetizationView] wrapped in a [ModalPopup].
+  static Future<T?> show<T>(
+    BuildContext context, {
+    UserId? userId,
+    SetMonetizationMode mode = SetMonetizationMode.donation,
+  }) {
     return ModalPopup.show(
       context: context,
-      child: SetDonationsView(userId: userId),
+      child: SetMonetizationView(userId: userId, mode: mode),
     );
   }
 
@@ -52,12 +63,17 @@ class SetDonationsView extends StatelessWidget {
     final style = Theme.of(context).style;
 
     return GetBuilder(
-      init: SetDonationsController(Get.find(), userId: userId),
+      init: SetDonationsController(Get.find(), userId: userId, mode: mode),
       builder: (SetDonationsController c) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ModalPopupHeader(text: 'label_donations'.l10n),
+            ModalPopupHeader(
+              text: switch (mode) {
+                SetMonetizationMode.donation => 'label_donations'.l10n,
+                SetMonetizationMode.message => 'label_messages'.l10n,
+              },
+            ),
             Flexible(
               child: ListView(
                 padding: ModalPopup.padding(context),
@@ -65,7 +81,12 @@ class SetDonationsView extends StatelessWidget {
                 children: [
                   Obx(() {
                     return SwitchField(
-                      text: 'btn_accept_donations'.l10n,
+                      text: switch (mode) {
+                        SetMonetizationMode.donation =>
+                          'btn_accept_donations'.l10n,
+                        SetMonetizationMode.message =>
+                          'btn_accept_messages'.l10n,
+                      },
                       value: c.enabled.value,
                       onChanged: (b) => c.enabled.value = b,
                     );
@@ -77,8 +98,14 @@ class SetDonationsView extends StatelessWidget {
                       'a': Price.xxx(1).l10n,
                       'b': Price.xxx(9999).l10n,
                     }),
-                    label: 'label_minimum_amount'.l10n,
+                    label: switch (mode) {
+                      SetMonetizationMode.donation =>
+                        'label_minimum_amount'.l10n,
+                      SetMonetizationMode.message =>
+                        'label_per_one_message'.l10n,
+                    },
                     floatingLabelBehavior: FloatingLabelBehavior.always,
+                    formatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
                   const SizedBox(height: 8),
                   Padding(
@@ -91,13 +118,23 @@ class SetDonationsView extends StatelessWidget {
                       } else if (!c.enabled.value) {
                         subtitle = Text(
                           key: const Key('Disabled'),
-                          'label_you_have_disabled_incoming_donations'.l10n,
+                          switch (mode) {
+                            SetMonetizationMode.donation =>
+                              'label_you_have_disabled_incoming_donations'.l10n,
+                            SetMonetizationMode.message =>
+                              'label_you_have_disabled_incoming_messages'.l10n,
+                          },
                           style: style.fonts.small.regular.secondary,
                         );
                       } else {
                         subtitle = Text(
                           key: const Key('Enabled'),
-                          'label_donations_described_subtitle'.l10n,
+                          switch (mode) {
+                            SetMonetizationMode.donation =>
+                              'label_minimum_amount'.l10n,
+                            SetMonetizationMode.message =>
+                              'label_per_one_incoming_message'.l10n,
+                          },
                           style: style.fonts.small.regular.secondary,
                         );
                       }
@@ -130,13 +167,22 @@ class SetDonationsView extends StatelessWidget {
                             monetization = c.individual[userId]?.value;
                           }
 
-                          final bool enabledDiffer =
+                          final bool enabledDiffer = switch (mode) {
+                            SetMonetizationMode.donation =>
                               monetization?.donation?.enabled !=
-                              c.enabled.value;
+                                  c.enabled.value,
+                            SetMonetizationMode.message =>
+                              monetization?.message?.enabled != c.enabled.value,
+                          };
 
-                          final bool amountDiffer =
+                          final bool amountDiffer = switch (mode) {
+                            SetMonetizationMode.donation =>
                               monetization?.donation?.min.sum.val !=
-                              (c.amount.value ?? 1);
+                                  (c.amount.value ?? 1),
+                            SetMonetizationMode.message =>
+                              monetization?.message?.price?.sum.val !=
+                                  c.amount.value,
+                          };
 
                           return PrimaryButton(
                             title: 'btn_save'.l10n,

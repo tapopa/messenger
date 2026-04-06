@@ -35,6 +35,7 @@ alert_user_will_be_reported2 = {" "}will be reported
 alert_you_will_leave_group = You will leave the group
 btn_accept = Accept
 btn_accept_donations = Accept donations
+btn_accept_messages = Accept messages
 btn_add = Add
 btn_add_account = Add account
 btn_add_account_with_desc =
@@ -1066,6 +1067,7 @@ label_message_status_not_sent = Not sent
 label_message_status_read = Read
 label_message_status_sent = Sent
 label_message_will_deleted_for_you = The message will be deleted only for you
+label_messages = Messages
 label_messages_will_deleted_for_you = The messages will be deleted only for you
 label_messenger1 = Messenger
 label_messenger2 = by Tapopa
@@ -1083,7 +1085,7 @@ label_monetization_settings_description =
     Your contacts will have to pay you for the privilege of sending you messages and making calls.
 label_monetization_settings_subtitle_description1 = These settings apply to all users, except for those for whom you have set{" "}
 label_monetization_settings_subtitle_description2 = individual monetization settings
-label_monetization_settings_subtitle_description3 = {" "}.
+label_monetization_settings_subtitle_description3 = .
 label_monobank = Monobank
 label_monolog_created = Chat created
 label_mute_or_unmute_chats = Mute or unmute chats
@@ -1221,6 +1223,8 @@ label_paypal_popup_window_instruction =
     To make the payment a pop-up window of the processing service will open.
 
     If the pop-up window does not open, check your browser settings. It's possible that your browser is blocking pop-up windows from opening.
+label_per_one_incoming_message = Per 1 incoming message
+label_per_one_message = Per 1 message
 label_personal_data_deletion = Delete account
 label_personal_data_deletion_description1 = This process is{" "}
 label_personal_data_deletion_description2 = IRREVERSIBLE
@@ -1466,6 +1470,7 @@ label_withdrawal_option = Withdrawal option
 label_you = You
 label_you_can_set_individual_monetization_in_profile = You can set individual monetization in the each user's profile.
 label_you_have_disabled_incoming_donations = You have disabled incoming donations
+label_you_have_disabled_incoming_messages = You have disabled incoming messages
 label_you_were_added_to_group = You have been added to the group
 label_your_author_partner_program_tapopa_author = Your promotional program Promo+
 label_your_balance_amount = Your balance: {$balance}

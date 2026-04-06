@@ -24,8 +24,8 @@ import '/domain/model/balance.dart';
 import '/domain/model/monetization_settings.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
-import '/domain/model/price.dart';
 import '/domain/model/user.dart';
+import '/util/new_type.dart';
 import 'paginated.dart';
 
 /// [MyUser] partner repository interface.
@@ -73,8 +73,9 @@ abstract class AbstractPartnerRepository {
   /// [MonetizationSettings].
   Future<void> updateMonetizationSettings({
     UserId? userId,
-    bool? donationsEnabled,
-    Sum? donationsMinimum,
+    NewType<MonetizationSettingsDonation?>? donation,
+    NewType<MonetizationSettingsMessage?>? message,
+    NewType<MonetizationSettingsReferral?>? referral,
   });
 
   /// Searches the [Operation]s by the provided filters.

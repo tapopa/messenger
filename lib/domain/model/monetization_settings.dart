@@ -19,6 +19,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'precise_date_time/precise_date_time.dart';
 import 'price.dart';
+import 'promo_share.dart';
 import 'user.dart';
 
 part 'monetization_settings.g.dart';
@@ -26,7 +27,13 @@ part 'monetization_settings.g.dart';
 /// Monetization settings of an [User].
 @JsonSerializable()
 class MonetizationSettings implements Comparable<MonetizationSettings> {
-  MonetizationSettings({this.donation, this.user, required this.createdAt});
+  MonetizationSettings({
+    this.donation,
+    this.message,
+    this.referral,
+    this.user,
+    required this.createdAt,
+  });
 
   /// Constructs a [MonetizationSettings] from the provided [json].
   factory MonetizationSettings.fromJson(Map<String, dynamic> json) =>
@@ -34,6 +41,12 @@ class MonetizationSettings implements Comparable<MonetizationSettings> {
 
   /// Monetization settings of [Donation]s.
   final MonetizationSettingsDonation? donation;
+
+  /// Monetization settings of [ChatMessage]s/[ChatForward]s.
+  final MonetizationSettingsMessage? message;
+
+  /// Monetization settings of a referral program.
+  final MonetizationSettingsReferral? referral;
 
   /// [User] these [MonetizationSettings] are specified individually for.
   final UserId? user;
@@ -46,7 +59,7 @@ class MonetizationSettings implements Comparable<MonetizationSettings> {
 
   @override
   String toString() =>
-      'MonetizationSettings(donation: ${donation?.enabled} at ${donation?.min})';
+      'MonetizationSettings(user: $user, donation: $donation, message: $message, referral: $referral)';
 
   @override
   int compareTo(MonetizationSettings other) {
@@ -84,4 +97,50 @@ class MonetizationSettingsDonation {
 
   /// Returns a [Map] representing this [MonetizationSettingsDonation].
   Map<String, dynamic> toJson() => _$MonetizationSettingsDonationToJson(this);
+
+  @override
+  String toString() => 'MonetizationSettingsDonation($enabled, $min)';
+}
+
+/// Monetization settings of [ChatMessage]s and [ChatForward]s.
+@JsonSerializable()
+class MonetizationSettingsMessage {
+  MonetizationSettingsMessage({this.enabled = true, this.price});
+
+  /// Constructs a [MonetizationSettingsMessage] from the provided [json].
+  factory MonetizationSettingsMessage.fromJson(Map<String, dynamic> json) =>
+      _$MonetizationSettingsMessageFromJson(json);
+
+  /// Indicator whether the [User] accepts [ChatMessage]s/[ChatForward]s or not.
+  final bool enabled;
+
+  /// [Price] that should be paid for each [ChatMessage]/[ChatForward] sent to
+  /// the [User].
+  final Price? price;
+
+  /// Returns a [Map] representing this [MonetizationSettingsMessage].
+  Map<String, dynamic> toJson() => _$MonetizationSettingsMessageToJson(this);
+
+  @override
+  String toString() => 'MonetizationSettingsMessage($enabled, $price)';
+}
+
+/// Monetization settings of a referral program.
+@JsonSerializable()
+class MonetizationSettingsReferral {
+  MonetizationSettingsReferral({this.fee});
+
+  /// Constructs a [MonetizationSettingsReferral] from the provided [json].
+  factory MonetizationSettingsReferral.fromJson(Map<String, dynamic> json) =>
+      _$MonetizationSettingsReferralFromJson(json);
+
+  /// [Percentage] that the referee [User] pays to a referrer [User] for each
+  /// received [OperationEarnDonation] caused by some referral [User].
+  final Percentage? fee;
+
+  /// Returns a [Map] representing this [MonetizationSettingsReferral].
+  Map<String, dynamic> toJson() => _$MonetizationSettingsReferralToJson(this);
+
+  @override
+  String toString() => 'MonetizationSettingsReferral($fee)';
 }

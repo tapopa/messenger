@@ -26,6 +26,11 @@ enum MonetizationSettingsEventKind {
   donationDeleted,
   donationMinPriceUpdated,
   donationToggled,
+  messageDeleted,
+  messagePriceUpdated,
+  messageToggled,
+  referralDeleted,
+  referralFeeUpdated,
 }
 
 /// Tag representing a [MonetizationSettingsEvents] kind.
@@ -172,4 +177,74 @@ class MonetizationSettingsDonationToggledEvent
   @override
   MonetizationSettingsEventKind get kind =>
       MonetizationSettingsEventKind.donationToggled;
+}
+
+/// Event of [MonetizationSettingsMessage] being deleted.
+class MonetizationSettingsMessageDeletedEvent
+    extends MonetizationSettingsEvent {
+  const MonetizationSettingsMessageDeletedEvent(
+    super.monetizationSettings,
+    super.userId,
+    super.at,
+  );
+
+  @override
+  MonetizationSettingsEventKind get kind =>
+      MonetizationSettingsEventKind.messageDeleted;
+}
+
+/// Event of a [MonetizationSettingsMessage.price] being updated.
+class MonetizationSettingsMessagePriceUpdatedEvent
+    extends MonetizationSettingsEvent {
+  const MonetizationSettingsMessagePriceUpdatedEvent(
+    super.monetizationSettings,
+    super.userId,
+    super.at,
+  );
+
+  @override
+  MonetizationSettingsEventKind get kind =>
+      MonetizationSettingsEventKind.messagePriceUpdated;
+}
+
+/// Event of a [MonetizationSettingsMessage.enabled] state being updated.
+class MonetizationSettingsMessageToggledEvent
+    extends MonetizationSettingsEvent {
+  const MonetizationSettingsMessageToggledEvent(
+    super.monetizationSettings,
+    super.userId,
+    super.at,
+  );
+
+  @override
+  MonetizationSettingsEventKind get kind =>
+      MonetizationSettingsEventKind.messageToggled;
+}
+
+/// Event of [MonetizationSettingsReferral] being deleted.
+class MonetizationSettingsReferralDeletedEvent
+    extends MonetizationSettingsEvent {
+  const MonetizationSettingsReferralDeletedEvent(
+    super.monetizationSettings,
+    super.userId,
+    super.at,
+  );
+
+  @override
+  MonetizationSettingsEventKind get kind =>
+      MonetizationSettingsEventKind.donationToggled;
+}
+
+/// Event of a [MonetizationSettingsReferral.fee] being updated.
+class MonetizationSettingsReferralFeeUpdatedEvent
+    extends MonetizationSettingsEvent {
+  const MonetizationSettingsReferralFeeUpdatedEvent(
+    super.monetizationSettings,
+    super.userId,
+    super.at,
+  );
+
+  @override
+  MonetizationSettingsEventKind get kind =>
+      MonetizationSettingsEventKind.referralFeeUpdated;
 }

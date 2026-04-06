@@ -56,6 +56,7 @@ import '/provider/gql/exceptions.dart'
 import '/routes.dart';
 import '/ui/widget/text_field.dart';
 import '/util/message_popup.dart';
+import '/util/new_type.dart';
 import '/util/platform_utils.dart';
 
 export 'view.dart';
@@ -435,8 +436,14 @@ class UserController extends GetxController {
   }) async {
     await _partnerService.updateMonetizationSettings(
       userId: id,
-      donationsEnabled: donationsEnabled,
-      donationsMinimum: donationsMinimum,
+      donation: NewType(
+        donationsEnabled == null && donationsMinimum == null
+            ? null
+            : MonetizationSettingsDonation(
+                enabled: donationsEnabled ?? true,
+                min: Price.xxx(donationsMinimum?.val ?? 1),
+              ),
+      ),
     );
   }
 

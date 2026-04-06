@@ -52,4 +52,10 @@ class PromoShare {
 /// Percentage value in range between 1 and 100 inclusively.
 class Percentage extends NewType<String> {
   const Percentage(super.val);
+
+  /// Constructs a [Percentage] from the provided [val].
+  factory Percentage.fromJson(String val) = Percentage;
+
+  /// Returns a [String] representing this [Percentage].
+  String toJson() => val;
 }

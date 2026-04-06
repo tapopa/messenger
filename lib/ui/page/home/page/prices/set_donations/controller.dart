@@ -24,21 +24,41 @@ import '/domain/service/partner.dart';
 import '/l10n/l10n.dart';
 import '/ui/widget/text_field.dart';
 import '/util/message_popup.dart';
+import '/util/new_type.dart';
+
+/// [MonetizationSettings] parameter that should be changed.
+enum SetMonetizationMode { donation, message }
 
 /// Controller of a [SetDonationsView].
 class SetDonationsController extends GetxController {
-  SetDonationsController(this._partnerService, {this.userId});
+  SetDonationsController(
+    this._partnerService, {
+    this.userId,
+    this.mode = SetMonetizationMode.donation,
+  });
 
   /// [UserId] of a [User] for whom the [MonetizationSettings] are being
   /// changed.
   final UserId? userId;
 
-  /// [TextFieldState] for setting the minimum [Sum] of incoming [Donation]s.
+  /// [SetMonetizationMode] this controller should set.
+  final SetMonetizationMode mode;
+
+  /// [TextFieldState] for setting a [Sum] of the [mode].
   late final TextFieldState state = TextFieldState(
     onFocus: (s) {
       if (s.text == '') {
         s.error.value = null;
-        amount.value = 1;
+
+        switch (mode) {
+          case SetMonetizationMode.donation:
+            amount.value = 1;
+            break;
+
+          case SetMonetizationMode.message:
+            amount.value = 0;
+            break;
+        }
         return;
       }
 
@@ -48,11 +68,17 @@ class SetDonationsController extends GetxController {
         s.error.value = null;
 
         if (parsed < 1) {
-          s.error.value = 'label_minimum_amount_cannot_be_less_than'.l10nfmt({
-            'amount': Price.xxx(1).l10n,
-          });
+          switch (mode) {
+            case SetMonetizationMode.donation:
+              s.error.value = 'label_minimum_amount_cannot_be_less_than'
+                  .l10nfmt({'amount': Price.xxx(1).l10n});
 
-          return;
+              return;
+
+            case SetMonetizationMode.message:
+              // No-op.
+              break;
+          }
         } else if (parsed > 9999) {
           s.error.value = 'label_minimum_amount_cannot_be_more_than'.l10nfmt({
             'amount': Price.xxx(9999).l10n,
@@ -66,10 +92,10 @@ class SetDonationsController extends GetxController {
     },
   );
 
-  /// Indicator whether incoming [Donation]s should be enabled.
+  /// Indicator whether incoming [mode] should be enabled.
   final RxBool enabled = RxBool(false);
 
-  /// [Sum] of minimum incoming [Donation]s parsed from [state].
+  /// [Sum] of [mode] parsed from [state].
   final RxnDouble amount = RxnDouble(null);
 
   /// [PartnerService] controlling the [MonetizationSettings].
@@ -92,8 +118,18 @@ class SetDonationsController extends GetxController {
       monetization = individual[userId]?.value;
     }
 
-    enabled.value = monetization?.donation?.enabled == true;
-    amount.value = monetization?.donation?.min.sum.val;
+    switch (mode) {
+      case SetMonetizationMode.donation:
+        enabled.value = monetization?.donation?.enabled == true;
+        amount.value = monetization?.donation?.min.sum.val;
+        break;
+
+      case SetMonetizationMode.message:
+        enabled.value = monetization?.message?.enabled == true;
+        amount.value = monetization?.message?.price?.sum.val;
+        break;
+    }
+
     state.text = amount.value == null
         ? ''
         : '${amount.value?.toStringAsFixed(2)}';
@@ -104,11 +140,34 @@ class SetDonationsController extends GetxController {
   /// Sets the [enabled] and [amount] to the [MonetizationSettings].
   Future<void> save() async {
     try {
-      await _partnerService.updateMonetizationSettings(
-        userId: userId,
-        donationsEnabled: enabled.value,
-        donationsMinimum: Sum(amount.value ?? 1),
-      );
+      switch (mode) {
+        case SetMonetizationMode.donation:
+          await _partnerService.updateMonetizationSettings(
+            userId: userId,
+            donation: NewType(
+              MonetizationSettingsDonation(
+                enabled: enabled.value,
+                min: Price.xxx(amount.value ?? 1),
+              ),
+            ),
+          );
+          break;
+
+        case SetMonetizationMode.message:
+          print('==== amount.value -> ${amount.value}');
+          await _partnerService.updateMonetizationSettings(
+            userId: userId,
+            message: NewType(
+              MonetizationSettingsMessage(
+                enabled: enabled.value,
+                price: amount.value == null
+                    ? null
+                    : Price.xxx(amount.value ?? 1),
+              ),
+            ),
+          );
+          break;
+      }
     } catch (e) {
       MessagePopup.error(e);
       rethrow;

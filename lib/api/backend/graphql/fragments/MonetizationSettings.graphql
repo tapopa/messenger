@@ -23,6 +23,16 @@ fragment MonetizationSettings on MonetizationSettings {
             ...Price
         }
     }
+    message {
+        enabled
+        price {
+            __typename
+            ...Price
+        }
+    }
+    referral {
+        fee
+    }
     user {
         id
     }

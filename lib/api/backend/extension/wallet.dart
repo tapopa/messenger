@@ -393,9 +393,18 @@ extension MonetizationSettingsConversion on MonetizationSettingsMixin {
     donation: donation == null
         ? null
         : MonetizationSettingsDonation(
-            min: donation!.min.toModel(),
             enabled: donation!.enabled,
+            min: donation!.min.toModel(),
           ),
+    message: message == null
+        ? null
+        : MonetizationSettingsMessage(
+            enabled: message!.enabled,
+            price: message!.price?.toModel(),
+          ),
+    referral: referral == null
+        ? null
+        : MonetizationSettingsReferral(fee: referral!.fee),
     user: user?.id,
     createdAt: createdAt,
   );

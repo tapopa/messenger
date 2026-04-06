@@ -35,6 +35,7 @@ import '/domain/repository/partner.dart';
 import '/domain/service/disposable_service.dart';
 import '/provider/gql/graphql.dart';
 import '/util/log.dart';
+import '/util/new_type.dart';
 import '/util/stream_utils.dart';
 import '/util/web/web_utils.dart';
 import 'event/balance.dart';
@@ -285,27 +286,33 @@ class PartnerRepository extends IdentityDependency
   @override
   Future<void> updateMonetizationSettings({
     UserId? userId,
-    bool? donationsEnabled,
-    Sum? donationsMinimum,
+    NewType<MonetizationSettingsDonation?>? donation,
+    NewType<MonetizationSettingsMessage?>? message,
+    NewType<MonetizationSettingsReferral?>? referral,
   }) async {
     Log.debug(
-      'updateMonetizationSettings(userId: $userId, donationsEnabled: $donationsEnabled, donationsMinimum: $donationsMinimum)',
+      'updateMonetizationSettings(userId: $userId, donation: $donation, message: $message, referral: $referral)',
       '$runtimeType',
     );
 
-    final bool hasAny = donationsEnabled != null || donationsMinimum != null;
+    final bool hasAny = donation != null || message != null || referral != null;
 
     if (userId != null) {
       final Rx<MonetizationSettings>? existing = individual[userId];
 
       // If any setting is provided, then apply the [MonetizationSettings].
       if (hasAny) {
+        final MonetizationSettingsDonation? donations =
+            existing?.value.donation;
+        final MonetizationSettingsMessage? messages = existing?.value.message;
+        final MonetizationSettingsReferral? referrals =
+            existing?.value.referral;
+
         final settings = MonetizationSettings(
           createdAt: PreciseDateTime.now(),
-          donation: MonetizationSettingsDonation(
-            enabled: donationsEnabled ?? true,
-            min: Price.xxx(donationsMinimum?.val ?? 1),
-          ),
+          donation: donation == null ? donations : donation.val,
+          message: message == null ? messages : message.val,
+          referral: referral == null ? referrals : referral.val,
         );
 
         if (existing != null) {
@@ -324,22 +331,43 @@ class PartnerRepository extends IdentityDependency
     final mixin = await _graphQlProvider.updateMonetizationSettings(
       userId: userId,
       settings: MonetizationSettingsInput(
-        donation: MonetizationSettingsDonationInput(
-          // `null` provided in the `new` argument resets the settings to use
-          // the default one set by [MyUser].
-          kw$new: donationsEnabled == null && donationsMinimum == null
-              ? null
-              : MonetizationSettingsDonationSettingsInput(
-                  enabled:
-                      donationsEnabled ??
-                      settings.value.donation?.enabled ??
-                      true,
-                  min:
-                      donationsMinimum ??
-                      settings.value.donation?.min.sum ??
-                      Sum(1),
-                ),
-        ),
+        donation: donation == null
+            ? null
+            : MonetizationSettingsDonationInput(
+                // `null` provided in the `new` argument resets the settings to
+                // use the default one set by [MyUser].
+                kw$new: donation.val == null
+                    ? null
+                    : MonetizationSettingsDonationSettingsInput(
+                        enabled: donation.val?.enabled ?? true,
+                        min: donation.val?.min.sum ?? Sum(1),
+                      ),
+              ),
+        message: message == null
+            ? null
+            : MonetizationSettingsMessageInput(
+                // `null` provided in the `new` argument resets the settings to
+                // use the default one set by [MyUser].
+                kw$new: message.val == null
+                    ? null
+                    : MonetizationSettingsMessageSettingsInput(
+                        enabled: message.val?.enabled ?? true,
+                        price: message.val?.price?.sum.val == 0
+                            ? null
+                            : message.val?.price?.sum,
+                      ),
+              ),
+        referral: referral == null
+            ? null
+            : MonetizationSettingsReferralInput(
+                // `null` provided in the `new` argument resets the settings to
+                // use the default one set by [MyUser].
+                kw$new: referral.val == null
+                    ? null
+                    : MonetizationSettingsReferralSettingsInput(
+                        fee: referral.val?.fee,
+                      ),
+              ),
       ),
     );
 
@@ -809,6 +837,26 @@ class PartnerRepository extends IdentityDependency
             case MonetizationSettingsEventKind.donationToggled:
               event as MonetizationSettingsDonationToggledEvent;
               break;
+
+            case MonetizationSettingsEventKind.messageDeleted:
+              event as MonetizationSettingsMessageDeletedEvent;
+              break;
+
+            case MonetizationSettingsEventKind.messagePriceUpdated:
+              event as MonetizationSettingsMessagePriceUpdatedEvent;
+              break;
+
+            case MonetizationSettingsEventKind.messageToggled:
+              event as MonetizationSettingsMessageToggledEvent;
+              break;
+
+            case MonetizationSettingsEventKind.referralDeleted:
+              event as MonetizationSettingsReferralDeletedEvent;
+              break;
+
+            case MonetizationSettingsEventKind.referralFeeUpdated:
+              event as MonetizationSettingsReferralFeeUpdatedEvent;
+              break;
           }
 
           final UserId? userId = event.userId;
@@ -909,6 +957,26 @@ class PartnerRepository extends IdentityDependency
             case MonetizationSettingsEventKind.donationToggled:
               event as MonetizationSettingsDonationToggledEvent;
               break;
+
+            case MonetizationSettingsEventKind.messageDeleted:
+              event as MonetizationSettingsMessageDeletedEvent;
+              break;
+
+            case MonetizationSettingsEventKind.messagePriceUpdated:
+              event as MonetizationSettingsMessagePriceUpdatedEvent;
+              break;
+
+            case MonetizationSettingsEventKind.messageToggled:
+              event as MonetizationSettingsMessageToggledEvent;
+              break;
+
+            case MonetizationSettingsEventKind.referralDeleted:
+              event as MonetizationSettingsReferralDeletedEvent;
+              break;
+
+            case MonetizationSettingsEventKind.referralFeeUpdated:
+              event as MonetizationSettingsReferralFeeUpdatedEvent;
+              break;
           }
 
           final MonetizationSettings? monetization =
@@ -1002,6 +1070,36 @@ class PartnerRepository extends IdentityDependency
       );
     } else if (e.$$typename == 'MonetizationSettingsDonationToggledEvent') {
       return MonetizationSettingsDonationToggledEvent(
+        e.monetizationSettings?.node.toDto(),
+        e.user?.id,
+        e.at,
+      );
+    } else if (e.$$typename == 'MonetizationSettingsMessageDeletedEvent') {
+      return MonetizationSettingsMessageDeletedEvent(
+        e.monetizationSettings?.node.toDto(),
+        e.user?.id,
+        e.at,
+      );
+    } else if (e.$$typename == 'MonetizationSettingsMessagePriceUpdatedEvent') {
+      return MonetizationSettingsMessagePriceUpdatedEvent(
+        e.monetizationSettings?.node.toDto(),
+        e.user?.id,
+        e.at,
+      );
+    } else if (e.$$typename == 'MonetizationSettingsMessageToggledEvent') {
+      return MonetizationSettingsMessageToggledEvent(
+        e.monetizationSettings?.node.toDto(),
+        e.user?.id,
+        e.at,
+      );
+    } else if (e.$$typename == 'MonetizationSettingsReferralDeletedEvent') {
+      return MonetizationSettingsReferralDeletedEvent(
+        e.monetizationSettings?.node.toDto(),
+        e.user?.id,
+        e.at,
+      );
+    } else if (e.$$typename == 'MonetizationSettingsReferralFeeUpdatedEvent') {
+      return MonetizationSettingsReferralFeeUpdatedEvent(
         e.monetizationSettings?.node.toDto(),
         e.user?.id,
         e.at,

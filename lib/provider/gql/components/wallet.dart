@@ -562,7 +562,9 @@ mixin WalletGraphQlMixin {
   /// success:
   /// - [MonetizationSettingsDonationDeletedEvent];
   /// - [MonetizationSettingsDonationMinPriceUpdatedEvent];
-  /// - [MonetizationSettingsDonationToggledEvent].
+  /// - [MonetizationSettingsDonationToggledEvent];
+  /// - [MonetizationSettingsReferralDeletedEvent];
+  /// - [MonetizationSettingsReferralFeeUpdatedEvent].
   ///
   /// ### Idempotent
   ///

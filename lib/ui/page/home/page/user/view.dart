@@ -37,6 +37,7 @@ import '/routes.dart';
 import '/themes.dart';
 import '/ui/page/home/page/chat/widget/back_button.dart';
 import '/ui/page/home/page/my_profile/widget/switch_field.dart';
+import '/ui/page/home/page/prices/set_donations/controller.dart';
 import '/ui/page/home/page/prices/set_donations/view.dart';
 import '/ui/page/home/page/prices/widget/price_row.dart';
 import '/ui/page/home/widget/action.dart';
@@ -503,7 +504,11 @@ class UserView extends StatelessWidget {
             onChange: individual == null
                 ? null
                 : () async {
-                    await SetDonationsView.show(context, userId: c.id);
+                    await SetMonetizationView.show(
+                      context,
+                      userId: c.id,
+                      mode: SetMonetizationMode.donation,
+                    );
                   },
           );
         }),

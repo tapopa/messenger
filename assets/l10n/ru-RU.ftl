@@ -35,6 +35,7 @@ alert_user_will_be_reported2 = {" "}будет отправлена жалоба
 alert_you_will_leave_group = Вы покинете группу
 btn_accept = Принять
 btn_accept_donations = Принимать донаты
+btn_accept_messages = Принимать сообщения
 btn_add = Добавить
 btn_add_account = Добавить аккаунт
 btn_add_account_with_desc =
@@ -1082,6 +1083,7 @@ label_message_status_not_sent = Не отправлено
 label_message_status_read = Прочитано
 label_message_status_sent = Отправлено
 label_message_will_deleted_for_you = Сообщение будет удалено только для Вас
+label_messages = Сообщения
 label_messages_will_deleted_for_you = Сообщения будут удалены только для Вас
 label_messenger1 = Мессенджер
 label_messenger2 = от Tapopa
@@ -1241,6 +1243,8 @@ label_paypal_popup_window_instruction =
     Для совершения платежа будет открыто всплывающее окно процессора.
 
     Если всплывающее окно не открылось, проверьте настройки Вашего браузера. Возможно, Ваш бразуер блокирует открытие всплывающих окон.
+label_per_one_incoming_message = За 1 входящее сообщение
+label_per_one_message = За 1 сообщение
 label_personal_data_deletion = Удалить аккаунт
 label_personal_data_deletion_description1 = Данный процесс{" "}
 label_personal_data_deletion_description2 = НЕОБРАТИМ
@@ -1490,6 +1494,7 @@ label_withdrawal_option = Способ вывода
 label_you = Вы
 label_you_can_set_individual_monetization_in_profile = Вы можете настроить индивидуальную монетизацию в профиле каждого пользователя.
 label_you_have_disabled_incoming_donations = Вы отключили входящие донаты
+label_you_have_disabled_incoming_messages = Вы отключили входящие сообщения
 label_you_were_added_to_group = Вы добавлены в группу
 label_your_author_partner_program_tapopa_author = Ваша промоутерская программа Promo+
 label_your_balance_amount = Ваш баланс: {$balance}

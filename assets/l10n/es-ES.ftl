@@ -35,6 +35,7 @@ alert_user_will_be_reported2 = {" "}será reportado
 alert_you_will_leave_group = Usted va a salir del grupo
 btn_accept = Aceptar
 btn_accept_donations = Aceptar donaciones
+btn_accept_messages = Aceptar mensajes
 btn_add = Agregar
 btn_add_account = Agregar cuenta
 btn_add_account_with_desc =
@@ -1070,6 +1071,7 @@ label_message_status_not_sent = No enviado
 label_message_status_read = Leído
 label_message_status_sent = Enviado
 label_message_will_deleted_for_you = El mensaje será eliminado solo para Usted
+label_messages = Mensajes
 label_messages_will_deleted_for_you = Los mensajes serán eliminados solo para Usted
 label_messenger1 = Messenger
 label_messenger2 = de Tapopa
@@ -1228,6 +1230,8 @@ label_paypal_popup_window_instruction =
     Para realizar el pago, se abrirá una ventana emergente del procesador.
 
     Si la ventana emergente no se abre, revise la configuración de su navegador. Es posible que su navegador esté bloqueando la apertura de ventanas emergentes.
+label_per_one_incoming_message = Por 1 mensaje entrante
+label_per_one_message = Por 1 mensaje
 label_personal_data_deletion = Eliminar la cuenta
 label_personal_data_deletion_description1 = Este proceso es{" "}
 label_personal_data_deletion_description2 = IRREVERSIBLE
@@ -1476,6 +1480,7 @@ label_withdrawal_option = Método de retiro
 label_you = Usted
 label_you_can_set_individual_monetization_in_profile = Usted puede configurar la monetización individual en el perfil de cada usuario.
 label_you_have_disabled_incoming_donations = Has desactivado las donaciones entrantes
+label_you_have_disabled_incoming_messages = Has deshabilitado los mensajes entrantes
 label_you_were_added_to_group = Usted ha sido agregado(a) al grupo
 label_your_author_partner_program_tapopa_author = Tu programa promocional Promo+
 label_your_balance_amount = Su saldo: {$balance}

@@ -24,11 +24,11 @@ import '/domain/model/balance.dart';
 import '/domain/model/monetization_settings.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
-import '/domain/model/price.dart';
 import '/domain/model/user.dart';
 import '/domain/repository/paginated.dart';
 import '/domain/repository/partner.dart';
 import '/util/log.dart';
+import '/util/new_type.dart';
 import 'disposable_service.dart';
 
 /// Service responsible for [MyUser] partner functionality.
@@ -91,18 +91,20 @@ class PartnerService extends Dependency {
   /// [MonetizationSettings].
   Future<void> updateMonetizationSettings({
     UserId? userId,
-    bool? donationsEnabled,
-    Sum? donationsMinimum,
-  }) async {
+    NewType<MonetizationSettingsDonation?>? donation,
+    NewType<MonetizationSettingsMessage?>? message,
+    NewType<MonetizationSettingsReferral?>? referral,
+  }) {
     Log.debug(
-      'updateMonetizationSettings(userId: $userId, donationsEnabled: $donationsEnabled, donationsMinimum: $donationsMinimum)',
+      'updateMonetizationSettings(userId: $userId, donation: $donation, message: $message, referral: $referral)',
       '$runtimeType',
     );
 
     return _partnerRepository.updateMonetizationSettings(
       userId: userId,
-      donationsEnabled: donationsEnabled,
-      donationsMinimum: donationsMinimum,
+      donation: donation,
+      message: message,
+      referral: referral,
     );
   }
 

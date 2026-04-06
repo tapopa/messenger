@@ -1,4 +1,10 @@
 - Added support service to context menu options on chats tab.
 - Added ability to create multiple direct links to any user.
+- Added links management and statistics page.
+- Updated currency symbol visuals.
+- Updated Tap ID visual appearance.
+- Updated icons and texts on monetization tab.
+- Updated monetization transactions page to display total balance.
+- Updated your prices, your promotion and your partner program pages.
 - Updated users searching to display users' welcome message.
 - Bug fixes and performance improvements.

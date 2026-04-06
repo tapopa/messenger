@@ -1,4 +1,10 @@
 - Se agregó el servicio de soporte a las opciones del menú contextual en la pestaña de chats.
 - Se agregó la posibilidad de crear múltiples enlaces directos a cualquier usuario.
+- Se agregó la página de administración de enlaces y estadísticas.
+- Se actualizó la apariencia visual de los símbolos de moneda.
+- Se actualizó la apariencia visual del ID de toque.
+- Se actualizaron los íconos y textos en la pestaña de monetización.
+- Se actualizó la página de transacciones de monetización para mostrar el saldo total.
+- Se actualizaron las páginas de precios, promociones y programa de socios.
 - Se actualizó la búsqueda de usuarios para mostrar el mensaje de bienvenida.
 - Corrección de errores y mejoras de rendimiento.

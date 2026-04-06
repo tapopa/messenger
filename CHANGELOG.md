@@ -6,10 +6,10 @@ All user visible changes to this project will be documented in this file. This p
 
 
 
-## [0.5.0] · 2026-??-??
-[0.5.0]: /../../tree/v0.5.0
+## [0.4.1] · 2026-04-06
+[0.4.1]: /../../tree/v0.4.1
 
-[Diff](/../../compare/v0.4.0...v0.5.0) | [Milestone](/../../milestone/13)
+[Diff](/../../compare/v0.4.0...v0.4.1) | [Milestone](/../../milestone/13)
 
 ### Changed
 
@@ -30,23 +30,21 @@ All user visible changes to this project will be documented in this file. This p
         - Support service in chats context menu. ([team113/messenger#1677])
     - User page:
         - Allow creating multiple direct links to chat. ([team113/messenger#1674])
-    - Media panel:
-        - Context menu missing from dialog calls on mobiles. ([team113/messenger#1666])
-        - Outgoing ringtone sometimes being played for less than 2 seconds. ([team113/messenger#1676])
-    - Chat page:
-        - Gaps between selected messages. ([team113/messenger#1666])
-        - Notes being present two times in forwarding modal. ([team113/messenger#1668])
-    - Profile page:
-        - Session termination opening with an error. ([team113/messenger#1675])
-        - Grey rectangle displayed in cache block on native platforms. ([team113/messenger#1678])
 
 ### Fixed
 
 - UI:
     - Media panel:
         - Context menu missing from dialog calls on mobiles. ([team113/messenger#1666])
+        - Context menu missing from dialog calls on mobiles. ([team113/messenger#1666])
+        - Outgoing ringtone sometimes being played for less than 2 seconds. ([team113/messenger#1676])
     - Chat page:
         - Gaps between selected messages. ([team113/messenger#1666])
+        - Gaps between selected messages. ([team113/messenger#1666])
+        - Notes being present two times in forwarding modal. ([team113/messenger#1668])
+    - Profile page:
+        - Session termination opening with an error. ([team113/messenger#1675])
+        - Grey rectangle displayed in cache block on native platforms. ([team113/messenger#1678])
 
 [#46]: /../../pull/46
 [#47]: /../../pull/47

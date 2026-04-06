@@ -15,7 +15,7 @@
 # along with this program. If not, see
 # <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-fragment OperationDeposit on OperationDeposit {
+fragment OperationWithdraw on OperationWithdraw {
     id
     num
     status
@@ -33,21 +33,16 @@ fragment OperationDeposit on OperationDeposit {
     }
     ver
 
-    kind
-    billingCountry
-    invoice
     details {
         __typename
-        ... on OperationDepositPayPalDetails {
-            processingUrl
-        }
+        # ... on OperationWithdrawSwiftDetails { TODO }
     }
-    depositPrice: price {
+    withdrawPrice: price {
         __typename
-        ...OperationDepositPricing
+        ...OperationWithdrawPricing
     }
-    depositFailed: failed {
+    withdrawFailed: failed {
         __typename
-        ...OperationDepositFailure
+        ...OperationWithdrawFailure
     }
 }

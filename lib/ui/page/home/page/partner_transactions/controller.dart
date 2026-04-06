@@ -20,6 +20,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
+import '/domain/model/balance.dart';
 import '/domain/model/operation.dart';
 import '/domain/model/user.dart';
 import '/domain/repository/paginated.dart';
@@ -37,6 +38,9 @@ class PartnerTransactionsController extends GetxController {
 
   /// [OperationId]s of the [Operation]s that are should be expanded only.
   final RxSet<OperationId> ids = RxSet();
+
+  /// Indicator whether searching is toggled on or off.
+  final RxBool searching = RxBool(false);
 
   /// [TextFieldState] of a search field for filtering the [operations].
   final TextFieldState search = TextFieldState();
@@ -60,6 +64,9 @@ class PartnerTransactionsController extends GetxController {
   Paginated<OperationId, Rx<Operation>> get operations =>
       _partnerService.operations;
 
+  /// [Paginated] of [Operation]s being searched via [PartnerService].
+  final Rx<Paginated<OperationId, Rx<Operation>>?> searched = Rx(null);
+
   /// Indicator whether [operations] have next page.
   RxBool get hasNext => _partnerService.operations.hasNext;
 
@@ -72,10 +79,17 @@ class PartnerTransactionsController extends GetxController {
   /// Indicator whether [operations] have previous page loading.
   RxBool get previousLoading => _partnerService.operations.previousLoading;
 
+  /// Returns the balance [MyUser] has in their partner available wallet.
+  Rx<Balance> get available => _partnerService.available;
+
+  /// Returns the balance [MyUser] has in their partner hold wallet.
+  Rx<Balance> get hold => _partnerService.hold;
+
   @override
   void onInit() {
     _queryWorker = debounce(query, (String? query) {
-      // TODO: Searching.
+      // TODO: Do the search.
+      // searched.value = _partnerService.search();
     });
 
     scrollController.addListener(_scrollListener);
@@ -93,6 +107,14 @@ class PartnerTransactionsController extends GetxController {
 
   /// Returns a reactive [User] from [UserService] by the provided [id].
   FutureOr<RxUser?> getUser(UserId id) => _userService.get(id);
+
+  /// Toggles [searching] enabled and disabled.
+  void toggleSearch([bool? enabled]) {
+    enabled ??= searching.value;
+    searching.value = !enabled;
+    search.clear();
+    query.value = null;
+  }
 
   /// Requests the next page of [Operation]s based on the
   /// [ScrollController.position] value.

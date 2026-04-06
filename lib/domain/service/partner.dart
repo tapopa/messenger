@@ -19,9 +19,11 @@ import 'dart:async';
 
 import 'package:get/get.dart';
 
+import '/api/backend/schema.dart';
 import '/domain/model/balance.dart';
 import '/domain/model/monetization_settings.dart';
 import '/domain/model/operation.dart';
+import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/price.dart';
 import '/domain/model/user.dart';
 import '/domain/repository/paginated.dart';
@@ -101,6 +103,27 @@ class PartnerService extends Dependency {
       userId: userId,
       donationsEnabled: donationsEnabled,
       donationsMinimum: donationsMinimum,
+    );
+  }
+
+  /// Searches the [Operation]s by the provided filters.
+  Paginated<OperationId, Rx<Operation>> search({
+    OperationId? id,
+    OperationNum? num,
+    PreciseDateTime? from,
+    PreciseDateTime? to,
+    OperationStatus? status,
+    OperationsFilterHold? hold,
+    OperationDirection? direction,
+  }) {
+    return _partnerRepository.search(
+      id: id,
+      num: num,
+      from: from,
+      to: to,
+      status: status,
+      hold: hold,
+      direction: direction,
     );
   }
 }

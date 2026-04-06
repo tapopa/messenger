@@ -116,7 +116,6 @@ class PartnerRepository extends IdentityDependency
 
   @override
   late final OperationsPaginated operations = OperationsPaginated(
-    initial: [],
     pagination: Pagination(
       onKey: (e) => e.id,
       perPage: 15,
@@ -361,14 +360,66 @@ class PartnerRepository extends IdentityDependency
     }
   }
 
+  @override
+  OperationsPaginated search({
+    OperationId? id,
+    OperationNum? num,
+    PreciseDateTime? from,
+    PreciseDateTime? to,
+    OperationStatus? status,
+    OperationsFilterHold? hold,
+    OperationDirection? direction,
+  }) {
+    return OperationsPaginated(
+      pagination: Pagination(
+        onKey: (e) => e.id,
+        perPage: 15,
+        provider: GraphQlPageProvider(
+          fetch: ({after, before, first, last}) async {
+            final Page<DtoOperation, OperationsCursor> page = await _operations(
+              after: after,
+              before: before,
+              first: first,
+              last: last,
+              filter: OperationsFilter(
+                id: id,
+                num: num,
+                status: status,
+                hold: hold,
+                direction: direction,
+                createdAt: from == null && to == null
+                    ? null
+                    : DateTimeRange(from: from, to: to),
+              ),
+            );
+
+            return page;
+          },
+        ),
+      ),
+      transform: ({required DtoOperation data, Rx<Operation>? previous}) {
+        if (previous != null) {
+          return previous..value = data.value;
+        }
+
+        return Rx(data.value);
+      },
+      compare: (a, b) => a.value.compareTo(b.value),
+    );
+  }
+
   /// Fetches purse operations with pagination.
   Future<Page<DtoOperation, OperationsCursor>> _operations({
     int? first,
     OperationsCursor? after,
     int? last,
     OperationsCursor? before,
+    OperationsFilter? filter,
   }) async {
-    Log.debug('_operations($first, $after, $last, $before)', '$runtimeType');
+    Log.debug(
+      '_operations($first, $after, $last, $before, $filter)',
+      '$runtimeType',
+    );
 
     if (me.isLocal) {
       return Page([], PageInfo());
@@ -380,6 +431,7 @@ class PartnerRepository extends IdentityDependency
       after: after,
       last: last,
       before: before,
+      filter: filter,
     );
 
     return Page(

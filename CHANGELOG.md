@@ -25,6 +25,20 @@ All user visible changes to this project will be documented in this file. This p
         - Your prices page texts, blocks and illustrations. ([#49])
         - Your promotion page texts, blocks and illustrations. ([#49])
         - Your partner page texts, blocks and illustrations. ([#49])
+    - Chats tab:
+        - Display welcome message when searching users. ([team113/messenger#1671])
+        - Support service in chats context menu. ([team113/messenger#1677])
+    - User page:
+        - Allow creating multiple direct links to chat. ([team113/messenger#1674])
+    - Media panel:
+        - Context menu missing from dialog calls on mobiles. ([team113/messenger#1666])
+        - Outgoing ringtone sometimes being played for less than 2 seconds. ([team113/messenger#1676])
+    - Chat page:
+        - Gaps between selected messages. ([team113/messenger#1666])
+        - Notes being present two times in forwarding modal. ([team113/messenger#1668])
+    - Profile page:
+        - Session termination opening with an error. ([team113/messenger#1675])
+        - Grey rectangle displayed in cache block on native platforms. ([team113/messenger#1678])
 
 ### Fixed
 
@@ -39,6 +53,13 @@ All user visible changes to this project will be documented in this file. This p
 [#48]: /../../pull/48
 [#49]: /../../pull/49
 [team113/messenger#1666]: https://github.com/team113/messenger/pull/1666
+[team113/messenger#1668]: https://github.com/team113/messenger/pull/1668
+[team113/messenger#1671]: https://github.com/team113/messenger/pull/1671
+[team113/messenger#1674]: https://github.com/team113/messenger/pull/1674
+[team113/messenger#1675]: https://github.com/team113/messenger/pull/1675
+[team113/messenger#1676]: https://github.com/team113/messenger/pull/1676
+[team113/messenger#1677]: https://github.com/team113/messenger/pull/1677
+[team113/messenger#1678]: https://github.com/team113/messenger/pull/1678
 
 
 

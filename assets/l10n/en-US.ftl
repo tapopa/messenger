@@ -1334,6 +1334,8 @@ label_set_your_promo_percentage_promo_description =
     The promotional percentage is assigned to a user invited by your promoter the moment they first visit your chat.
 
     The promotional percentage is assigned to a user once and cannot be changed.
+label_share_your_links_to_user = Share your links to the user {$user}
+label_share_your_links_to_user_description = You can move a link to another user. To do this, simply copy and paste the link into the "Add link" field in the user's profile.
 label_show_call_window = Show call window
 label_show_chats = Unhide chat(s)
 label_show_chats_modal_description = The chats will be removed from the "Hidden chats" list.

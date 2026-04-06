@@ -620,6 +620,7 @@ class ChatRepository extends IdentityDependency
         retries: 10,
       ),
     );
+
     final RxChatImpl chat = await _putEntry(chatData);
 
     if (!isClosed) {

@@ -1341,6 +1341,8 @@ label_set_your_promo_percentage_promo_description =
     El porcentaje promocional se asigna a un usuario invitado por tu promotor en el momento en que visita tu chat por primera vez.
 
     El porcentaje promocional se asigna a un usuario una sola vez y no se puede modificar.
+label_share_your_links_to_user = Comparte tus enlaces con el usuario {$user}
+label_share_your_links_to_user_description = Puedes transferir un enlace a otro usuario. Para ello, simplemente copia y pega el enlace en el campo "Añadir enlace" del perfil del usuario.
 label_show_call_window = Mostrar la ventana de llamada
 label_show_chats = Mostrar chat(s)
 label_show_chats_modal_description = Los chats se eliminarán de la lista "Chats ocultos".

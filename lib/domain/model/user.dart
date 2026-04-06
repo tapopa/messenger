@@ -190,6 +190,7 @@ class UserNum extends NewType<String> {
   /// Constructs a [UserNum] from the provided [val].
   factory UserNum.fromJson(String val) = UserNum.unchecked;
 
+  /// Parses a [UserNum] from the provided [val].
   factory UserNum(String val) {
     val = val.replaceAll(_nonDigitsRegExp, '');
 

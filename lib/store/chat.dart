@@ -3407,8 +3407,16 @@ class ChatRepository extends IdentityDependency
   Future<void> _initMonolog() async {
     Log.debug('_initMonolog()', '$runtimeType');
 
+    if (isClosed) {
+      return;
+    }
+
     if (me.isLocal) {
       Log.debug('_initMonolog() -> `me.isLocal` is `true`', '$runtimeType');
+
+      if (isClosed) {
+        return;
+      }
 
       final RxChatImpl entry = _add(
         DtoChat(
@@ -3522,7 +3530,7 @@ class ChatRepository extends IdentityDependency
   Future<void> _initSupport() async {
     Log.debug('_initSupport()', '$runtimeType');
 
-    if (_supportId.val.isEmpty) {
+    if (isClosed || _supportId.val.isEmpty) {
       return;
     }
 

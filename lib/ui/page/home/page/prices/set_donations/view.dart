@@ -63,8 +63,8 @@ class SetMonetizationView extends StatelessWidget {
     final style = Theme.of(context).style;
 
     return GetBuilder(
-      init: SetDonationsController(Get.find(), userId: userId, mode: mode),
-      builder: (SetDonationsController c) {
+      init: SetMonetizationController(Get.find(), userId: userId, mode: mode),
+      builder: (SetMonetizationController c) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [

@@ -928,7 +928,6 @@ label_direct_chat_link_in_chat_description = Users, who follow the group link, b
 label_disabled = Disabled
 label_discard_changes_question = Discard changes
 label_donations = Donations
-label_donations_described_subtitle = This is the minimum donation amount that your contacts will be able to send you
 label_download = Download
 label_download_and_update = Install application
 label_download_path = Download path

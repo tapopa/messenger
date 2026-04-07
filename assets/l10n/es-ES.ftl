@@ -930,7 +930,6 @@ label_direct_chat_link_in_chat_description = Los usuarios que siguen el enlace d
 label_disabled = Deshabilitado
 label_discard_changes_question = Descartar los cambios
 label_donations = Donaciones
-label_donations_described_subtitle = Este es el monto mínimo de donación que tus contactos podrán enviarte
 label_download = Descargar
 label_download_and_update = Instalar aplicación
 label_download_path = Ruta de descarga

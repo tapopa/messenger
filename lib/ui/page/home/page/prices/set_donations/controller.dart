@@ -29,9 +29,9 @@ import '/util/new_type.dart';
 /// [MonetizationSettings] parameter that should be changed.
 enum SetMonetizationMode { donation, message }
 
-/// Controller of a [SetDonationsView].
-class SetDonationsController extends GetxController {
-  SetDonationsController(
+/// Controller of a [SetMonetizationView].
+class SetMonetizationController extends GetxController {
+  SetMonetizationController(
     this._partnerService, {
     this.userId,
     this.mode = SetMonetizationMode.donation,

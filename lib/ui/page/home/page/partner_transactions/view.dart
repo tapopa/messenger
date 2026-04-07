@@ -68,7 +68,7 @@ class PartnerTransactionsView extends StatelessWidget {
                           child: ReactiveTextField(
                             dense: true,
                             state: c.search,
-                            hint: 'label_search_dots'.l10n,
+                            hint: 'label_search'.l10n,
                             style: style.fonts.medium.regular.onBackground,
                             onChanged: () {
                               c.query.value = c.search.text.isEmpty
@@ -100,7 +100,7 @@ class PartnerTransactionsView extends StatelessWidget {
                       actions: [
                         if (c.expanded.value)
                           ContextMenuButton(
-                            label: 'btn_shrink_all'.l10n,
+                            label: 'btn_collapse_all'.l10n,
                             trailing: SvgIcon(SvgIcons.viewFull),
                             inverted: SvgIcon(SvgIcons.viewFullWhite),
                             onPressed: () {

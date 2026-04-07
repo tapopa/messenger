@@ -2738,13 +2738,15 @@ class ChatController extends GetxController with IdentityAware {
   /// Displays a [MessagePopup.error] visually representing a donations disabled
   /// message.
   Future<void> _showDonationsMinimum() async {
-    final UserId? userId = user?.id;
-    if (userId != null) {
+    final RxUser? user = this.user;
+
+    if (user != null) {
       final MonetizationSettings? settings =
-          _partnerService.monetization[userId]?.value;
+          _partnerService.monetization[user.id]?.value;
       if (settings != null) {
         await MessagePopup.alert(
           'err_donations_has_minimum'.l10nfmt({
+            'user': user.title(),
             'amount': '${settings.donation?.min.l10n}',
           }),
         );

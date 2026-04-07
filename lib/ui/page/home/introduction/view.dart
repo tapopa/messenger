@@ -37,6 +37,7 @@ import '/ui/page/login/widget/sign_button.dart';
 import '/ui/widget/line_divider.dart';
 import '/ui/widget/modal_popup.dart';
 import '/ui/widget/primary_button.dart';
+import '/ui/widget/progress_indicator.dart';
 import '/ui/widget/svg/svg.dart';
 import '/ui/widget/text_field.dart';
 import '/ui/widget/widget_button.dart';
@@ -44,7 +45,6 @@ import '/util/message_popup.dart';
 import '/util/platform_utils.dart';
 import '/util/web/web_utils.dart';
 import 'controller.dart';
-import 'widget/animated_pulsing.dart';
 
 /// View of a introduction overlay with sign in and sign up options.
 class IntroductionView extends StatelessWidget {
@@ -196,14 +196,7 @@ class IntroductionView extends StatelessWidget {
                           color: style.colors.onPrimary,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Center(
-                          child: AnimatedPulsing(
-                            child: Text(
-                              'label_loading'.l10n,
-                              style: style.fonts.big.regular.onBackground,
-                            ),
-                          ),
-                        ),
+                        child: Center(child: CustomProgressIndicator()),
                       ),
                     );
                   } else {
@@ -734,49 +727,19 @@ class IntroductionView extends StatelessWidget {
               );
               children = [
                 const SizedBox(height: 12),
+                _name(c, context),
+                const SizedBox(height: 16),
                 _num(c, context),
-                SizedBox(height: 16),
-                ContactTile(
-                  myUser: c.myUser.value,
-                  subtitle: [
-                    SizedBox(height: 6),
-                    Text(
-                      'Welcome to Tapopa',
-                      style: style.fonts.normal.regular.secondary,
-                    ),
-                  ],
-                ),
                 SizedBox(height: 16),
                 Text(
                   'label_account_created_description'.l10n,
                   style: style.fonts.small.regular.secondary,
                 ),
-                const SizedBox(height: 16),
-                Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'alert_by_proceeding_you_accept_terms1'.l10n,
-                        style: style.fonts.small.regular.secondary,
-                      ),
-                      TextSpan(
-                        text: 'alert_by_proceeding_you_accept_terms2'.l10n,
-                        style: style.fonts.small.regular.primary,
-                        recognizer: TapGestureRecognizer()..onTap = () {},
-                      ),
-                      TextSpan(
-                        text: 'alert_by_proceeding_you_accept_terms3'.l10n,
-                        style: style.fonts.small.regular.secondary,
-                      ),
-                    ],
-                  ),
-                ),
-
                 const SizedBox(height: 25),
                 PrimaryButton(
                   key: const Key('ProceedButton'),
                   onPressed: c.dismiss,
-                  title: 'btn_ok'.l10n,
+                  title: 'btn_proceed'.l10n,
                 ),
                 const SizedBox(height: 25),
               ];
@@ -827,7 +790,7 @@ class IntroductionView extends StatelessWidget {
 
             case IntroductionStage.guestCreated:
               header = ModalPopupHeader(
-                text: 'label_guest_account_created'.l10n,
+                text: 'label_account_creating_done'.l10n,
                 close: false,
               );
 

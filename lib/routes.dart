@@ -1295,7 +1295,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
           break;
 
         case HomeTab.partner:
-          WebUtils.title('$prefix${'label_tab_partner'.l10n}');
+          WebUtils.title('$prefix${'label_tab_monetization'.l10n}');
           break;
 
         case HomeTab.chats:

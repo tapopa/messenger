@@ -64,7 +64,7 @@ class SelectCountryView extends StatelessWidget {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ModalPopupHeader(text: 'label_country_selection'.l10n),
+            ModalPopupHeader(text: 'label_choose_country'.l10n),
             Padding(
               padding: ModalPopup.padding(
                 context,

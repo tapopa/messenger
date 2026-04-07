@@ -166,7 +166,7 @@ class PricesView extends StatelessWidget {
                 ],
               ),
               Block(
-                title: 'label_individual_monetization'.l10n,
+                title: 'label_users_with_individual_monetization_settings'.l10n,
                 children: [
                   Text(
                     'label_you_can_set_individual_monetization_in_profile'.l10n,

@@ -159,7 +159,7 @@ class WalletTransactionsView extends StatelessWidget {
               child: ReactiveTextField(
                 dense: true,
                 state: c.search,
-                hint: 'label_search_dots'.l10n,
+                hint: 'label_search'.l10n,
                 style: style.fonts.medium.regular.onBackground,
                 onChanged: () {
                   c.query.value = c.search.text.isEmpty ? null : c.search.text;

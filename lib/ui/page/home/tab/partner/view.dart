@@ -49,7 +49,7 @@ class PartnerTabView extends StatelessWidget {
                 const SizedBox(width: 21),
                 Flexible(
                   child: Text(
-                    'btn_monetization'.l10n,
+                    'label_monetization'.l10n,
                     textAlign: TextAlign.left,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

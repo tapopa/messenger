@@ -17,6 +17,7 @@
 
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '/l10n/l10n.dart';
@@ -26,6 +27,7 @@ import '/ui/page/home/widget/app_bar.dart';
 import '/ui/page/home/widget/block.dart';
 import '/ui/widget/line_divider.dart';
 import '/ui/widget/svg/svg.dart';
+import '/ui/widget/text_field.dart';
 import '/ui/widget/widget_button.dart';
 import 'controller.dart';
 
@@ -38,7 +40,7 @@ class PromotionView extends StatelessWidget {
     final style = Theme.of(context).style;
 
     return GetBuilder(
-      init: PromotionController(),
+      init: PromotionController(Get.find()),
       builder: (PromotionController c) {
         return Scaffold(
           appBar: CustomAppBar(
@@ -85,8 +87,50 @@ class PromotionView extends StatelessWidget {
 
                     if (c.percentEditing.value) {
                       children = [
+                        const SizedBox(height: 4),
+                        Stack(
+                          children: [
+                            ReactiveTextField(
+                              state: c.percentage,
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                              label: 'label_promotional_percentage'.l10n,
+                              hint: '0',
+                              formatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(2),
+                              ],
+                              trailing: SvgIcon(SvgIcons.acceptAudioCall),
+                            ),
+                            Positioned(
+                              top: 5,
+                              right: 2,
+                              child: Theme(
+                                data: ThemeData(platform: TargetPlatform.macOS),
+
+                                child: Obx(() {
+                                  return Switch.adaptive(
+                                    activeTrackColor: style.colors.primary,
+                                    activeThumbColor: style.colors.onPrimary,
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    value: c.expected.value != 0,
+                                    onChanged: (e) async {
+                                      if (e) {
+                                        c.percentage.text = '5';
+                                      } else {
+                                        c.percentage.text = '0';
+                                      }
+                                    },
+                                  );
+                                }),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
                         WidgetButton(
-                          onPressed: () => c.percentEditing.value = false,
+                          onPressed: c.savePercentage,
                           child: Text(
                             'btn_save'.l10n,
                             style: style.fonts.small.regular.primary,
@@ -95,13 +139,18 @@ class PromotionView extends StatelessWidget {
                       ];
                     } else {
                       children = [
-                        Text(
-                          '5%',
-                          style: style.fonts.giant.regular.onBackground,
-                        ),
+                        const SizedBox(width: double.infinity),
+                        Obx(() {
+                          final settings = c.settings.value;
+
+                          return Text(
+                            '${settings.referral?.fee?.val ?? '0'}%',
+                            style: style.fonts.giant.regular.onBackground,
+                          );
+                        }),
                         const SizedBox(height: 12),
                         WidgetButton(
-                          onPressed: () => c.percentEditing.value = true,
+                          onPressed: c.editPercentage,
                           child: Text(
                             'btn_change'.l10n,
                             style: style.fonts.small.regular.primary,
@@ -110,15 +159,12 @@ class PromotionView extends StatelessWidget {
                       ];
                     }
 
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(32 - 4, 0, 32 - 4, 0),
-                      child: AnimatedSizeAndFade(
-                        sizeDuration: const Duration(milliseconds: 300),
-                        fadeDuration: const Duration(milliseconds: 300),
-                        child: Column(
-                          key: Key(c.percentEditing.value.toString()),
-                          children: children,
-                        ),
+                    return AnimatedSizeAndFade(
+                      sizeDuration: const Duration(milliseconds: 300),
+                      fadeDuration: const Duration(milliseconds: 300),
+                      child: Column(
+                        key: Key(c.percentEditing.value.toString()),
+                        children: children,
                       ),
                     );
                   }),

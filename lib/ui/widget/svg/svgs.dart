@@ -494,6 +494,12 @@ class SvgIcons {
     height: 22,
   );
 
+  static const SvgData chatMoreDisabled = SvgData(
+    'assets/icons/chat_more_disabled.svg',
+    width: 22,
+    height: 22,
+  );
+
   static const SvgData menuSigning = SvgData(
     'assets/icons/menu/signing.svg',
     width: 50,
@@ -2454,5 +2460,11 @@ class SvgIcons {
     'assets/icons/links_more.svg',
     width: 16,
     height: 16,
+  );
+
+  static const SvgData arrowUp = SvgData(
+    'assets/icons/arrow_up.svg',
+    width: 12,
+    height: 7,
   );
 }

@@ -446,6 +446,14 @@ extension BalanceL10nExtention on Balance {
       (_) => '${currency.l10n}${sum.val.toStringAsDigits(2)}',
     };
   }
+
+  /// Returns a localized string of this [Balance] with [digits] configurable.
+  String l10next({int digits = 2}) {
+    return switch (currency.val) {
+      'USDT' => '${sum.val.toStringAsFixed(digits)} ${currency.l10n}',
+      (_) => '${currency.l10n}${sum.val.toStringAsFixed(digits)}',
+    };
+  }
 }
 
 /// Extension adding ability to get [double] formatted as [String] with only

@@ -667,4 +667,37 @@ mixin WalletGraphQlMixin {
       result.data!,
     ).myMonetizationSettings;
   }
+
+  /// Returns [MonetizationSettings] set by the specified [User] for the
+  /// authenticated [MyUser].
+  ///
+  /// If the specified [User] is the authenticated [MyUser], then effectively
+  /// returns common [MonetizationSettings] of the authenticated [MyUser]
+  /// (applied to all [User]s).
+  ///
+  /// ### Authentication
+  ///
+  /// Mandatory.
+  ///
+  /// ### Result
+  ///
+  /// Query returns `null` when no [User] exists with the provided [userId].
+  Future<MonetizationSettingsMixin?> getMonetizationSettings(
+    UserId userId,
+  ) async {
+    Log.debug('getMonetizationSettings($userId)', '$runtimeType');
+
+    final variables = GetMonetizationSettingsArguments(userId: userId);
+    final QueryResult result = await client.query(
+      QueryOptions(
+        operationName: 'GetMonetizationSettings',
+        document: GetMonetizationSettingsQuery(variables: variables).document,
+        variables: variables.toJson(),
+      ),
+    );
+
+    return GetMonetizationSettings$Query.fromJson(
+      result.data!,
+    ).monetizationSettings;
+  }
 }

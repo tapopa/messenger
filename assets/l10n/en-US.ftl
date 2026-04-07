@@ -878,6 +878,7 @@ label_commission = Commission
 label_commission_from_value = Commission: from {$value}
 label_commission_up_to_amount_usdt = Commission: up to {$amount} USDT
 label_commission_value = Commission: {$value}
+label_communication_options = Communication options
 label_confidentiality = Confidentiality
 label_confirm_password = Confirm password
 label_connection_lost = Connection lost
@@ -996,6 +997,7 @@ label_identifier = Identifier
 label_identifiers = Identifiers
 label_image_downloaded = Image downloaded
 label_image_saved_to_gallery = Image saved to gallery
+label_important = Important
 label_important_semicolon = Important:
 label_in_case_crypto_platform_no_identifier1 = In case your crypto exchange platform does not require any additional payment and/or recipient identifier write "
 label_in_case_crypto_platform_no_identifier2 = NO
@@ -1268,6 +1270,20 @@ label_promotional_percentage_promo_description =
     When someone you invite pays for a message, call, or donation, you get the promotional percentage Promo+ set by the advertiser.
 
     The promotional percentage Promo+ is permanently assigned to a user you have invited the moment they first visit the advertiser's chat.
+label_promotional_program_promo_plus = Promotional program Promo+
+label_promotional_program_promo_plus_description1 = User{" "}
+label_promotional_program_promo_plus_description2 = {$user}
+label_promotional_program_promo_plus_description3 =
+    {" "}offers you {$percent} of paid messages, paid calls, and donations made by users invited by you.
+
+    The{" "}
+label_promotional_program_promo_plus_description4 = promotional percentage Promo+
+label_promotional_program_promo_plus_description5 =
+    {" "}will be credited to your account automatically.
+
+    For the user to be recognized as invited by you, they shall visit the advertiser's chat either from your chat or via your{" "}
+label_promotional_program_promo_plus_description6 = promotional link Promo+
+label_promotional_program_promo_plus_description7 = .
 label_public_section_hint = Avatar, name, about you, ...
 label_qr_code = QR code
 label_reason = Reason

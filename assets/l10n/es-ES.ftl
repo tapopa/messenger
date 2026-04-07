@@ -880,6 +880,7 @@ label_commission = Comisión
 label_commission_from_value = Comisión: desde {$value}
 label_commission_up_to_amount_usdt = Comisión: hasta {$amount} USDT
 label_commission_value = Comisión: {$value}
+label_communication_options = Opciones de comunicación
 label_confidentiality = Privacidad
 label_confirm_password = Confirmar la contraseña
 label_connection_lost = Conexión perdida
@@ -999,6 +1000,7 @@ label_identifier = Identificador
 label_identifiers = Identificadores
 label_image_downloaded = Imagen descargada
 label_image_saved_to_gallery = Imagen guardada en la galería
+label_important = Importante
 label_important_semicolon = Importante:
 label_in_case_crypto_platform_no_identifier1 = En caso de que su plataforma de criptomonedas no requiera ningún identificador adicional de pago y/o del destinatario, escriba "
 label_in_case_crypto_platform_no_identifier2 = NO
@@ -1275,6 +1277,20 @@ label_promotional_percentage_promo_description =
     Cuando alguien que invitas paga por un mensaje, una llamada o una donación, recibes el porcentaje promocional Promo+ establecido por el anunciante.
 
     El porcentaje promocional Promo+ se asigna permanentemente a un usuario que has invitado desde el momento en que visita el chat del anunciante por primera vez.
+label_promotional_program_promo_plus = Programa promocional Promo+
+label_promotional_program_promo_plus_description1 = El usuario{" "}
+label_promotional_program_promo_plus_description2 = {$user}
+label_promotional_program_promo_plus_description3 =
+    {" "}te ofrece el {$percent} de los mensajes, llamadas y donaciones pagadas realizadas por los usuarios que invites.
+
+    El{" "}
+label_promotional_program_promo_plus_description4 = porcentaje promocional Promo+
+label_promotional_program_promo_plus_description5 =
+    {" "}se abonará automáticamente en tu cuenta.
+
+    Para que el usuario sea reconocido como invitado por ti, deberá acceder al chat del anunciante desde tu chat o mediante tu{" "}
+label_promotional_program_promo_plus_description6 = enlace promocional Promo+
+label_promotional_program_promo_plus_description7 = .
 label_public_section_hint = Avatar, nombre, a cerca de Usted, ...
 label_qr_code = Código QR
 label_reason = Motivo

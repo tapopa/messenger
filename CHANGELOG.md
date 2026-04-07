@@ -11,12 +11,16 @@ All user visible changes to this project will be documented in this file. This p
 
 [Diff](/../../compare/v0.4.0...v0.4.1) | [Milestone](/../../milestone/13)
 
-### Changed
+### Added
 
 - UI:
     - Prices page:
         - Incoming messages price setting. ([#51])
         - Incoming messages enabling and disabling. ([#51])
+    - Promotion page:
+        - Promotional percentage setting. ([#51])
+    - User page:
+        - Promotional program information block ([#51])
 
 [#51]: /../../pull/51
 

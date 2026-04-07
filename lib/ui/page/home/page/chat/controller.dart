@@ -547,19 +547,15 @@ class ChatController extends GetxController with IdentityAware {
             return _showBalanceExceeded();
           }
 
-          final UserId? userId = user?.id;
-          if (userId != null) {
-            final MonetizationSettings? settings =
-                _partnerService.monetization[userId]?.value;
-            if (settings != null) {
-              if (settings.donation?.enabled != true) {
-                return _showDonationsDisabled();
-              }
+          final MonetizationSettings? settings = resolveMonetization()?.value;
+          if (settings != null) {
+            if (settings.donation?.enabled != true) {
+              return _showDonationsDisabled();
+            }
 
-              final double minimum = settings.donation?.min.sum.val ?? 1;
-              if (donation < minimum) {
-                return _showDonationsMinimum();
-              }
+            final double minimum = settings.donation?.min.sum.val ?? 1;
+            if (donation < minimum) {
+              return _showDonationsMinimum();
             }
           }
         }
@@ -2001,6 +1997,19 @@ class ChatController extends GetxController with IdentityAware {
       search.focus.requestFocus();
       search.focus.addListener(_disableSearchFocusListener);
     }
+  }
+
+  /// Returns the [MonetizationSettings] a [User] of this [Chat] has applied.
+  ///
+  /// Only relevant to [Chat]-dialogs.
+  Rx<MonetizationSettings>? resolveMonetization() {
+    final UserId? userId = user?.id;
+
+    if (userId != null) {
+      return _partnerService.monetization[userId];
+    }
+
+    return null;
   }
 
   /// Keeps the [ChatService.keepTyping] subscription up indicating the ongoing

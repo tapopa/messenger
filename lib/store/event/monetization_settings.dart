@@ -232,7 +232,7 @@ class MonetizationSettingsReferralDeletedEvent
 
   @override
   MonetizationSettingsEventKind get kind =>
-      MonetizationSettingsEventKind.donationToggled;
+      MonetizationSettingsEventKind.referralDeleted;
 }
 
 /// Event of a [MonetizationSettingsReferral.fee] being updated.

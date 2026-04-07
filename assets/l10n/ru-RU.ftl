@@ -894,6 +894,7 @@ label_commission = Комиссия
 label_commission_from_value = Комиссия: от {$value}
 label_commission_up_to_amount_usdt = Комиссия: до {$amount} USDT
 label_commission_value = Комиссия: {$value}
+label_communication_options = Способы общения
 label_confidentiality = Конфиденциальность
 label_confirm_password = Подтвердить пароль
 label_connection_lost = Связь потеряна
@@ -1012,6 +1013,7 @@ label_identifier = Идентификатор
 label_identifiers = Идентификаторы
 label_image_downloaded = Изображение загружено
 label_image_saved_to_gallery = Изображение сохранено в галерею
+label_important = Важно
 label_important_semicolon = Важно:
 label_in_case_crypto_platform_no_identifier1 = Если Ваша криптовалютная платформа не требует дополнительной идентификации получателя и/или платежа, напишите "
 label_in_case_crypto_platform_no_identifier2 = NO
@@ -1288,6 +1290,20 @@ label_promotional_percentage_promo_description =
     Когда приглашенный Вами пользователь оплачивает сообщение, звонок или пожертвование, Вы получаете Промоутерский номер Promo+, установленный рекламодателем.
 
     Промоутерский номер Promo+ навсегда присваивается приглашенному вами пользователю в момент его первого посещения чата рекламодателя.
+label_promotional_program_promo_plus = Промоутерская программа Promo+
+label_promotional_program_promo_plus_description1 = Пользователь{" "}
+label_promotional_program_promo_plus_description2 = {$user}
+label_promotional_program_promo_plus_description3 =
+    {" "}предлагает Вам {$percent} от планых сообщений, платных звонков и донатов, совершённых приглашёнными Вами пользователями.
+
+    {""}
+label_promotional_program_promo_plus_description4 = Промоутерский процент Promo+
+label_promotional_program_promo_plus_description5 =
+    {" "}будет зачислен на Ваш аккаунт автоматически.
+
+    Для того, чтобы пользователь считался приглашённым Вами, он должен посетить чат рекламодателя напрямую из Вашего чата или по{" "}
+label_promotional_program_promo_plus_description6 = промоутерской ссылке Promo+
+label_promotional_program_promo_plus_description7 = .
 label_public_section_hint = Аватар, имя, о Вас, ...
 label_qr_code = QR код
 label_reason = Причина

@@ -50,12 +50,18 @@ class PromoShare {
 }
 
 /// Percentage value in range between 1 and 100 inclusively.
-class Percentage extends NewType<String> {
+class Percentage extends NewType<int> {
   const Percentage(super.val);
 
+  /// Parses a [Percentage] from the provided [String].
+  Percentage.parse(String val) : super(int.parse(val.replaceFirst('%', '')));
+
   /// Constructs a [Percentage] from the provided [val].
-  factory Percentage.fromJson(String val) = Percentage;
+  factory Percentage.fromJson(String val) = Percentage.parse;
 
   /// Returns a [String] representing this [Percentage].
-  String toJson() => val;
+  String toJson() => '$val';
+
+  @override
+  String toString() => '$val%';
 }

@@ -474,8 +474,9 @@ fromDartListNullableOperationsCursorNullableToGraphQLListNullableOperationsCurso
 
 // Percentage
 
-Percentage fromGraphQLPercentageToDartPercentage(String v) => Percentage(v);
-String fromDartPercentageToGraphQLPercentage(Percentage v) => v.val;
+Percentage fromGraphQLPercentageToDartPercentage(String v) =>
+    Percentage.parse(v);
+String fromDartPercentageToGraphQLPercentage(Percentage v) => v.toString();
 List<Percentage> fromGraphQLListPercentageToDartListPercentage(
   List<Object?> v,
 ) => v.map((e) => fromGraphQLPercentageToDartPercentage(e as String)).toList();
@@ -490,9 +491,9 @@ List<String>? fromDartListNullablePercentageToGraphQLListNullablePercentage(
 ) => v?.map((e) => fromDartPercentageToGraphQLPercentage(e)).toList();
 
 Percentage? fromGraphQLPercentageNullableToDartPercentageNullable(String? v) =>
-    v == null ? null : Percentage(v);
+    v == null ? null : Percentage.parse(v);
 String? fromDartPercentageNullableToGraphQLPercentageNullable(Percentage? v) =>
-    v?.val;
+    v?.toString();
 List<Percentage?> fromGraphQLListPercentageNullableToDartListPercentageNullable(
   List<Object?> v,
 ) => v

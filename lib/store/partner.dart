@@ -18,6 +18,7 @@
 import 'dart:async';
 
 import 'package:async/async.dart';
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:graphql/client.dart' show QueryResult;
 import 'package:mutex/mutex.dart';
@@ -34,6 +35,7 @@ import '/domain/model/user.dart';
 import '/domain/repository/partner.dart';
 import '/domain/service/disposable_service.dart';
 import '/provider/gql/graphql.dart';
+import '/util/backoff.dart';
 import '/util/log.dart';
 import '/util/new_type.dart';
 import '/util/stream_utils.dart';
@@ -175,6 +177,9 @@ class PartnerRepository extends IdentityDependency
   final Map<UserId, StreamQueue<MonetizationSettingsEvents>> _subscriptions =
       {};
 
+  /// [CancelToken] cancelling the [_initMyMonetizationSettings] request.
+  CancelToken? _myMonetizationCancel;
+
   @override
   void onInit() {
     Log.debug('onInit()', '$runtimeType');
@@ -206,6 +211,8 @@ class PartnerRepository extends IdentityDependency
     _holdSubscription?.close(immediate: true);
     _operationsSubscription?.close(immediate: true);
     _myMonetizationSettingsSubscription?.close(immediate: true);
+    _myMonetizationCancel?.cancel();
+    _myMonetizationCancel = CancelToken();
 
     for (var e in _updates.values) {
       e.close();
@@ -224,6 +231,7 @@ class PartnerRepository extends IdentityDependency
       _initHoldSubscription();
       _initOperationsSubscription();
       _initMyMonetizationSettingsSubscription();
+      _initMyMonetizationSettings();
     }
   }
 
@@ -749,7 +757,29 @@ class PartnerRepository extends IdentityDependency
     }
   }
 
-  /// Initializes [operations] subscription.
+  /// Fetches the common [MonetizationSettings] set by the [MyUser], if any.
+  Future<void> _initMyMonetizationSettings() async {
+    await Backoff.run(
+      () async {
+        if (isClosed || me.isLocal) {
+          return;
+        }
+
+        final mixin = await _graphQlProvider.getMonetizationSettings(me);
+        if (mixin == null) {
+          settings.value = MonetizationSettings(
+            createdAt: PreciseDateTime.now(),
+          );
+        } else {
+          settings.value = mixin.toModel();
+        }
+      },
+      cancel: _myMonetizationCancel,
+      retryIf: (e) => e.isNetworkRelated,
+    );
+  }
+
+  /// Initializes common [MonetizationSettings] set by [MyUser] subscription.
   Future<void> _initMyMonetizationSettingsSubscription() async {
     Log.debug('_initMyMonetizationSettingsSubscription()', '$runtimeType');
 
@@ -797,7 +827,6 @@ class PartnerRepository extends IdentityDependency
           '$runtimeType',
         );
 
-        settings.value = events.myMonetizationSettings?.value ?? settings.value;
         total.value = events.myMonetizationSettingsTotalCount;
         _monetizationSettingsVer = events.myMonetizationSettingsVer;
         break;
@@ -896,7 +925,8 @@ class PartnerRepository extends IdentityDependency
 
   /// Handles [MonetizationSettingsEvents].
   ///
-  /// If [of] is `null`, then these [events] are [MyUser] related.
+  /// If [of] is `null` or equals [me], then these [events] are [MyUser]
+  /// related.
   void _monetizationSettingsEvent(
     MonetizationSettingsEvents events,
     UserId of,
@@ -922,14 +952,24 @@ class PartnerRepository extends IdentityDependency
 
         _updates[of]?.add(settings);
 
-        if (settings == null) {
-          monetization.remove(of);
-        } else {
-          final existing = monetization[of];
-          if (existing == null) {
-            monetization[of] = Rx(settings);
+        if (of == me) {
+          if (settings == null) {
+            this.settings.value = MonetizationSettings(
+              createdAt: PreciseDateTime.now(),
+            );
           } else {
-            existing.value = settings;
+            this.settings.value = settings;
+          }
+        } else {
+          if (settings == null) {
+            monetization.remove(of);
+          } else {
+            final existing = monetization[of];
+            if (existing == null) {
+              monetization[of] = Rx(settings);
+            } else {
+              existing.value = settings;
+            }
           }
         }
         break;

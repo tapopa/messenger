@@ -154,7 +154,6 @@ class SetDonationsController extends GetxController {
           break;
 
         case SetMonetizationMode.message:
-          print('==== amount.value -> ${amount.value}');
           await _partnerService.updateMonetizationSettings(
             userId: userId,
             message: NewType(

@@ -1291,7 +1291,7 @@ label_promotional_program_promo_plus = Промоутерская програм
 label_promotional_program_promo_plus_description1 = Пользователь{" "}
 label_promotional_program_promo_plus_description2 = {$user}
 label_promotional_program_promo_plus_description3 =
-    {" "}предлагает Вам {$percent} от планых сообщений, платных звонков и донатов, совершённых приглашёнными Вами пользователями.
+    {" "}предлагает Вам {$percent} от платных сообщений, платных звонков и донатов, совершённых приглашёнными Вами пользователями.
 
     {""}
 label_promotional_program_promo_plus_description4 = Промоутерский процент Promo+

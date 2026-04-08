@@ -6,6 +6,22 @@ All user visible changes to this project will be documented in this file. This p
 
 
 
+## [0.4.2] · 2026-??-??
+[0.4.2]: /../../tree/v0.4.2
+
+[Diff](/../../compare/v0.4.1...v0.4.2) | [Milestone](/../../milestone/14)
+
+### Changed
+
+- UI:
+    - Wallet tab:
+        - Searching and transactions order on transactions page. ([#54])
+
+[#54]: /../../pull/54
+
+
+
+
 ## [0.4.1] · 2026-04-08
 [0.4.1]: /../../tree/v0.4.1
 

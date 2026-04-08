@@ -38,6 +38,9 @@ class WalletTransactionsController extends GetxController {
   /// [OperationId]s of the [Operation]s that are should be expanded only.
   final RxSet<OperationId> ids = RxSet();
 
+  /// Indicator whether searching is toggled on or off.
+  final RxBool searching = RxBool(false);
+
   /// [TextFieldState] of a search field for filtering the [operations].
   final TextFieldState search = TextFieldState();
 
@@ -93,6 +96,14 @@ class WalletTransactionsController extends GetxController {
 
   /// Returns a reactive [User] from [UserService] by the provided [id].
   FutureOr<RxUser?> getUser(UserId id) => _userService.get(id);
+
+  /// Toggles [searching] enabled and disabled.
+  void toggleSearch([bool? enabled]) {
+    enabled ??= searching.value;
+    searching.value = !enabled;
+    search.clear();
+    query.value = null;
+  }
 
   /// Requests the next page of [Operation]s based on the
   /// [ScrollController.position] value.

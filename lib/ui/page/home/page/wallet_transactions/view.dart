@@ -15,6 +15,7 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -25,7 +26,8 @@ import '/ui/page/home/page/chat/message_field/view.dart';
 import '/ui/page/home/page/chat/widget/back_button.dart';
 import '/ui/page/home/widget/app_bar.dart';
 import '/ui/page/home/widget/operation.dart';
-import '/ui/widget/animated_button.dart';
+import '/ui/widget/context_menu/menu.dart';
+import '/ui/widget/context_menu/region.dart';
 import '/ui/widget/progress_indicator.dart';
 import '/ui/widget/svg/svg.dart';
 import '/ui/widget/text_field.dart';
@@ -42,133 +44,174 @@ class WalletTransactionsView extends StatelessWidget {
       init: WalletTransactionsController(Get.find(), Get.find()),
       builder: (WalletTransactionsController c) {
         return Scaffold(
-          appBar: CustomAppBar(
-            leading: const [SizedBox(width: 4), StyledBackButton()],
-            title: Text('label_your_transactions'.l10n),
-            actions: [
-              AnimatedButton(
-                onPressed: () {
-                  c.expanded.toggle();
-                  c.ids.clear();
-                },
-                decorator: (child) => Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 8, 20, 8),
-                  child: child,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 4, 0, 4),
-                  child: Obx(() {
-                    return SvgIcon(
-                      c.expanded.value ? SvgIcons.viewFull : SvgIcons.viewShort,
-                    );
-                  }),
-                ),
-              ),
-            ],
+          appBar: PreferredSize(
+            preferredSize: Size(double.infinity, CustomAppBar.height),
+            child: _bar(context, c),
           ),
-          body: Column(
-            children: [
-              Expanded(
-                child: Obx(() {
-                  return ListView.builder(
-                    controller: c.scrollController,
-                    reverse: true,
-                    padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                    itemCount: c.operations.length,
-                    itemBuilder: (context, i) {
-                      final Rx<Operation> e = c.operations.values.elementAt(i);
+          body: Obx(() {
+            Iterable<Rx<Operation>> filtered = c.operations.values;
 
-                      final Widget child = Center(
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(maxWidth: 400),
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 3, 10, 3),
-                            child: WidgetButton(
-                              onPressed: () {
-                                if (c.ids.contains(e.value.id)) {
-                                  c.ids.remove(e.value.id);
-                                } else {
-                                  c.ids.add(e.value.id);
-                                }
-                              },
-                              child: Obx(() {
-                                final bool expanded = c.expanded.value;
+            final String? query = c.query.value;
 
-                                return OperationWidget(
-                                  e.value,
-                                  expanded:
-                                      (expanded &&
-                                          !c.ids.contains(e.value.id)) ||
-                                      (!expanded && c.ids.contains(e.value.id)),
-                                  getUser: c.getUser,
-                                );
-                              }),
-                            ),
-                          ),
-                        ),
-                      );
+            if (query != null && query.isNotEmpty) {
+              filtered = filtered.where((e) {
+                final Operation operation = e.value;
 
-                      if (i == c.operations.length - 1) {
-                        return Column(
-                          children: [
-                            if (c.hasNext.value) ...[
-                              const SizedBox(height: 8),
-                              const CustomProgressIndicator.small(),
-                              const SizedBox(height: 8),
-                            ],
-                            child,
-                          ],
-                        );
-                      }
+                return query.contains(operation.id.val) ||
+                    query.contains(operation.num.toString());
+              });
+            }
 
-                      return child;
-                    },
+            return ListView.builder(
+              controller: c.scrollController,
+              padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+              itemCount: filtered.length,
+              itemBuilder: (context, i) {
+                final Rx<Operation> e = filtered.elementAt(i);
+
+                final Widget child = Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: 400),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 3, 10, 3),
+                      child: WidgetButton(
+                        onPressed: () {
+                          if (c.ids.contains(e.value.id)) {
+                            c.ids.remove(e.value.id);
+                          } else {
+                            c.ids.add(e.value.id);
+                          }
+                        },
+                        child: Obx(() {
+                          final bool expanded = c.expanded.value;
+
+                          return OperationWidget(
+                            e.value,
+                            expanded:
+                                (expanded && !c.ids.contains(e.value.id)) ||
+                                (!expanded && c.ids.contains(e.value.id)),
+                            getUser: c.getUser,
+                          );
+                        }),
+                      ),
+                    ),
+                  ),
+                );
+
+                if (i == c.operations.length - 1) {
+                  return Column(
+                    children: [
+                      if (c.hasNext.value) ...[
+                        const SizedBox(height: 8),
+                        const CustomProgressIndicator.small(),
+                        const SizedBox(height: 8),
+                      ],
+                      child,
+                    ],
                   );
-                }),
-              ),
-              _search(context, c),
-            ],
-          ),
+                }
+
+                return child;
+              },
+            );
+          }),
         );
       },
     );
   }
 
-  /// Returns the search field for transactions filtering.
-  Widget _search(BuildContext context, WalletTransactionsController c) {
+  /// Builds the contents of an [AppBar].
+  Widget _bar(BuildContext context, WalletTransactionsController c) {
     final style = Theme.of(context).style;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: style.cardColor,
-        boxShadow: [
-          CustomBoxShadow(
-            blurRadius: 8,
-            color: style.colors.onBackgroundOpacity13,
+    return Obx(() {
+      final Widget child;
+
+      if (c.searching.value) {
+        child = CustomAppBar(
+          key: const Key('Search'),
+          border: Border.all(color: style.colors.primary, width: 2),
+          title: Row(
+            children: [
+              const SizedBox(width: 16),
+              const SvgIcon(SvgIcons.search),
+              Expanded(
+                child: Theme(
+                  data: MessageFieldView.theme(context),
+                  child: ReactiveTextField(
+                    dense: true,
+                    state: c.search,
+                    hint: 'label_search'.l10n,
+                    style: style.fonts.medium.regular.onBackground,
+                    onChanged: () {
+                      c.query.value = c.search.text.isEmpty
+                          ? null
+                          : c.search.text;
+                    },
+                  ),
+                ),
+              ),
+              WidgetButton(
+                onPressed: c.toggleSearch,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 16, 16, 16),
+                  child: const SvgIcon(SvgIcons.closePrimary),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-      constraints: const BoxConstraints(minHeight: 57),
-      child: Row(
-        children: [
-          const SizedBox(width: 16),
-          const SvgIcon(SvgIcons.search),
-          Expanded(
-            child: Theme(
-              data: MessageFieldView.theme(context),
-              child: ReactiveTextField(
-                dense: true,
-                state: c.search,
-                hint: 'label_search'.l10n,
-                style: style.fonts.medium.regular.onBackground,
-                onChanged: () {
-                  c.query.value = c.search.text.isEmpty ? null : c.search.text;
-                },
+        );
+      } else {
+        child = CustomAppBar(
+          leading: const [SizedBox(width: 4), StyledBackButton()],
+          title: Text('label_your_transactions'.l10n),
+          actions: [
+            ContextMenuRegion(
+              enablePrimaryTap: true,
+              enableLongTap: false,
+              enableSecondaryTap: false,
+              actions: [
+                if (c.expanded.value)
+                  ContextMenuButton(
+                    label: 'btn_collapse_all'.l10n,
+                    trailing: SvgIcon(SvgIcons.viewFull),
+                    inverted: SvgIcon(SvgIcons.viewFullWhite),
+                    onPressed: () {
+                      c.expanded.toggle();
+                      c.ids.clear();
+                    },
+                  )
+                else
+                  ContextMenuButton(
+                    label: 'btn_expand_all'.l10n,
+                    trailing: SvgIcon(SvgIcons.viewShort),
+                    inverted: SvgIcon(SvgIcons.viewShortWhite),
+                    onPressed: () {
+                      c.expanded.toggle();
+                      c.ids.clear();
+                    },
+                  ),
+                ContextMenuButton(
+                  label: 'btn_search'.l10n,
+                  trailing: SvgIcon(SvgIcons.search),
+                  inverted: SvgIcon(SvgIcons.searchWhite),
+                  onPressed: c.toggleSearch,
+                ),
+              ],
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 20, 8),
+                child: SvgIcon(SvgIcons.more),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        );
+      }
+
+      return AnimatedSizeAndFade(
+        fadeDuration: const Duration(milliseconds: 250),
+        sizeDuration: const Duration(milliseconds: 250),
+        child: child,
+      );
+    });
   }
 }

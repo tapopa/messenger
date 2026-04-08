@@ -709,15 +709,17 @@ class UserView extends StatelessWidget {
       padding: Block.defaultPadding.copyWith(right: 0, left: 0),
       children: [
         Obx(() {
-          return IgnorePointer(
-            ignoring: c.isSupport,
-            child: DirectLinkField(
-              c.links.values,
-              onAdded: c.linkLink,
-              onRemoved: c.unlinkLink,
-              onMore: c.links.hasNext.value && !c.links.nextLoading.value
-                  ? c.links.next
-                  : null,
+          return SelectionContainer.disabled(
+            child: IgnorePointer(
+              ignoring: c.isSupport,
+              child: DirectLinkField(
+                c.links.values,
+                onAdded: c.linkLink,
+                onRemoved: c.unlinkLink,
+                onMore: c.links.hasNext.value && !c.links.nextLoading.value
+                    ? c.links.next
+                    : null,
+              ),
             ),
           );
         }),

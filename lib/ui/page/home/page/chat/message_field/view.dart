@@ -81,6 +81,7 @@ class MessageFieldView extends StatelessWidget {
     this.sendKey,
     this.canForward = false,
     this.canAttach = true,
+    this.canSend = true,
     this.constraints,
     this.applySafeArea = false,
     this.rounded = false,
@@ -101,6 +102,9 @@ class MessageFieldView extends StatelessWidget {
   /// Indicator whether [Attachment]s can be attached to this
   /// [MessageFieldView].
   final bool canAttach;
+
+  /// Indicator whether [MessageFieldView] is enabled or not at all.
+  final bool canSend;
 
   /// Callback, called when a [ChatItem] being a reply or edited is pressed.
   final Future<void> Function(ChatItem item)? onItemPressed;
@@ -495,6 +499,7 @@ class MessageFieldView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               AnimatedButton(
+                enabled: canAttach,
                 onPressed: canAttach ? c.toggleMore : null,
                 child: SizedBox(
                   width: 46,
@@ -507,8 +512,10 @@ class MessageFieldView extends StatelessWidget {
                           duration: const Duration(milliseconds: 150),
                           curve: Curves.bounceInOut,
                           scale: c.moreOpened.value ? 1.1 : 1,
-                          child: const SvgIcon(
-                            SvgIcons.chatMore,
+                          child: SvgIcon(
+                            canAttach
+                                ? SvgIcons.chatMore
+                                : SvgIcons.chatMoreDisabled,
                             width: 22,
                             height: 22,
                           ),
@@ -528,6 +535,7 @@ class MessageFieldView extends StatelessWidget {
                     offset: Offset(0, PlatformUtils.isMobile ? 6 : 1),
                     child: ReactiveTextField(
                       onChanged: onChanged,
+                      enabled: canSend,
                       key: fieldKey ?? const Key('MessageField'),
                       state: c.field,
                       hint: 'label_send_message_hint'.l10n,
@@ -563,7 +571,7 @@ class MessageFieldView extends StatelessWidget {
                   children = [
                     ChatButtonWidget.send(
                       key: sendKey ?? Key('Send'),
-                      onPressed: c.field.submittable.isTrue
+                      onPressed: c.field.submittable.isTrue && canSend
                           ? () => c.submit(explicit: true)
                           : null,
                     ),

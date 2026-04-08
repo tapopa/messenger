@@ -33,6 +33,7 @@ import '/domain/model/chat_item_quote_input.dart';
 import '/domain/model/chat_item.dart';
 import '/domain/model/chat.dart';
 import '/domain/model/file.dart';
+import '/domain/model/monetization_settings.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/user.dart';
 import '/domain/repository/paginated.dart';
@@ -1344,6 +1345,8 @@ class ChatView extends StatelessWidget {
         );
       }
 
+      final Rx<MonetizationSettings>? monetization = c.resolveMonetization();
+
       return MessageFieldView(
         key: const Key('SendField'),
         controller: c.send,
@@ -1353,6 +1356,8 @@ class ChatView extends StatelessWidget {
         canForward: true,
         onAttachmentError: c.chat?.updateAttachments,
         applySafeArea: true,
+        canAttach: monetization?.value.message?.enabled != false,
+        canSend: monetization?.value.message?.enabled != false,
       );
     });
   }

@@ -128,21 +128,6 @@ class ConfirmLogoutView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                if (!c.hasPassword.value) ...[
-                  RichText(
-                    text: TextSpan(
-                      style: style.fonts.small.regular.secondary,
-                      children: [
-                        TextSpan(
-                          text: 'label_password_not_set1'.l10n,
-                          style: style.fonts.small.regular.onBackground,
-                        ),
-                        TextSpan(text: 'label_password_not_set2'.l10n),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
                 if (!c.canRecover) ...[
                   RichText(
                     text: TextSpan(

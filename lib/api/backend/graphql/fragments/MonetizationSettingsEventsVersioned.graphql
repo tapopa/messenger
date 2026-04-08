@@ -31,6 +31,11 @@ fragment MonetizationSettingsEventsVersioned on MonetizationSettingsEventsVersio
         # ... on MonetizationSettingsDonationDeletedEvent
         # ... on MonetizationSettingsDonationMinPriceUpdatedEvent
         # ... on MonetizationSettingsDonationToggledEvent
+        # ... on MonetizationSettingsMessageDeletedEvent
+        # ... on MonetizationSettingsMessagePriceUpdatedEvent
+        # ... on MonetizationSettingsMessageToggledEvent
+        # ... on MonetizationSettingsReferralDeletedEvent
+        # ... on MonetizationSettingsReferralFeeUpdatedEvent
     }
     ver
     listVer

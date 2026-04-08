@@ -221,11 +221,6 @@ class OperationWidget extends StatelessWidget {
             children: [
               _status(context, operation),
               _id(context, operation),
-              _row(
-                context,
-                'label_author'.l10n,
-                Text('${operation.affiliatedNum}'),
-              ),
               _thanksTo(context, operation),
               _row(
                 context,
@@ -638,13 +633,13 @@ class OperationWidget extends StatelessWidget {
         'label_thanks_to'.l10n,
         Text(switch (operation.cause) {
           OperationRewardCause.earn => 'label_partner_num'.l10nfmt({
-            'num': operation.affiliatedNum,
+            'num': operation.affiliatedNum.val,
           }),
           OperationRewardCause.purchase => 'label_user_num'.l10nfmt({
-            'num': operation.affiliatedNum,
+            'num': operation.affiliatedNum.val,
           }),
           OperationRewardCause.reward => 'label_user_num'.l10nfmt({
-            'num': operation.affiliatedNum,
+            'num': operation.affiliatedNum.val,
           }),
           OperationRewardCause.artemisUnknown => 'label_unknown'.l10n,
         }),

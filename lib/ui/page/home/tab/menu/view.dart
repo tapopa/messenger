@@ -266,7 +266,10 @@ class MenuTabView extends StatelessWidget {
             ProfileTab.danger => () => router.erase(push: true),
             ProfileTab.support => router.support,
             ProfileTab.logout => () async {
-              await ConfirmLogoutView.show(router.context!);
+              // Don't show a confirmation when e-mail is set.
+              if (c.myUser.value?.emails.confirmed.isNotEmpty != true) {
+                await ConfirmLogoutView.show(router.context!);
+              }
             },
             (_) => () {
               if (router.profileSection.value == tab) {

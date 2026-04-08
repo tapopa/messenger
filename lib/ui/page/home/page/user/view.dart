@@ -17,6 +17,7 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +38,7 @@ import '/routes.dart';
 import '/themes.dart';
 import '/ui/page/home/page/chat/widget/back_button.dart';
 import '/ui/page/home/page/my_profile/widget/switch_field.dart';
+import '/ui/page/home/page/prices/set_donations/controller.dart';
 import '/ui/page/home/page/prices/set_donations/view.dart';
 import '/ui/page/home/page/prices/widget/price_row.dart';
 import '/ui/page/home/widget/action.dart';
@@ -53,6 +55,7 @@ import '/ui/widget/primary_button.dart';
 import '/ui/widget/progress_indicator.dart';
 import '/ui/widget/svg/svg.dart';
 import '/ui/widget/text_field.dart';
+import '/ui/widget/widget_button.dart';
 import '/util/message_popup.dart';
 import '/util/platform_utils.dart';
 import 'controller.dart';
@@ -109,8 +112,9 @@ class UserView extends StatelessWidget {
             _avatar(c, context),
             _name(c, context, index: c.isBlocked != null ? 2 : 1),
             if (!c.isSupport) ...[
-              _monetization(c, context),
+              _promo(c, context),
               _links(c, context),
+              _monetization(c, context),
             ],
             SelectionContainer.disabled(
               child: Block(children: [_actions(c, context)]),
@@ -282,6 +286,32 @@ class UserView extends StatelessWidget {
             onUrlTap: (url) => launchUrlString(url),
           ),
         ],
+
+        Obx(() {
+          final Rx<MonetizationSettings>? settings = c.monetization[id];
+          final MonetizationSettingsMessage? message = settings?.value.message;
+          final bool enabled = message?.enabled ?? true;
+          final Price? price = message?.price;
+
+          if (!enabled || price == null) {
+            return const SizedBox();
+          }
+
+          return Column(
+            children: [
+              const SizedBox(height: 16),
+              LineDivider('label_communication_options'.l10n),
+              const SizedBox(height: 20),
+              PriceRow(
+                label: 'label_messages'.l10n,
+                subtitle: 'label_per_one_incoming_message'.l10n,
+                enabled: enabled,
+                price: price,
+              ),
+            ],
+          );
+        }),
+
         const SizedBox(height: 8),
       ],
     );
@@ -467,9 +497,18 @@ class UserView extends StatelessWidget {
             onChanged: (b) async {
               if (b) {
                 await c.updateMonetizationSettings(
-                  donationsEnabled: c.settings.value.donation?.enabled ?? true,
-                  donationsMinimum:
-                      c.settings.value.donation?.min.sum ?? Sum(0),
+                  donation:
+                      c.settings.value.donation ??
+                      MonetizationSettingsDonation(
+                        enabled: true,
+                        min: Price.xxx(1),
+                      ),
+                  message:
+                      c.settings.value.message ??
+                      MonetizationSettingsMessage(enabled: true, price: null),
+                  referral:
+                      c.settings.value.referral ??
+                      MonetizationSettingsReferral(),
                 );
               } else {
                 await c.updateMonetizationSettings();
@@ -496,20 +535,163 @@ class UserView extends StatelessWidget {
           return PriceRow(
             label: 'label_donations'.l10n,
             subtitle: enabled
-                ? 'label_donations_described_subtitle'.l10n
+                ? 'label_minimum_amount'.l10n
                 : 'label_you_have_disabled_incoming_donations'.l10n,
             enabled: enabled,
             price: settings.donation?.min ?? Price.zero,
             onChange: individual == null
                 ? null
                 : () async {
-                    await SetDonationsView.show(context, userId: c.id);
+                    await SetMonetizationView.show(
+                      context,
+                      userId: c.id,
+                      mode: SetMonetizationMode.donation,
+                    );
+                  },
+          );
+        }),
+        const SizedBox(height: 20),
+        Obx(() {
+          final Rx<MonetizationSettings>? individual = c.individual[c.id];
+          final MonetizationSettings settings =
+              individual?.value ?? c.settings.value;
+
+          final bool enabled = settings.message?.enabled == true;
+
+          return PriceRow(
+            label: 'label_messages'.l10n,
+            subtitle: enabled
+                ? 'label_per_one_incoming_message'.l10n
+                : 'label_you_have_disabled_incoming_messages'.l10n,
+            enabled: enabled,
+            price: settings.message?.price ?? Price.zero,
+            onChange: individual == null
+                ? null
+                : () async {
+                    await SetMonetizationView.show(
+                      context,
+                      userId: c.id,
+                      mode: SetMonetizationMode.message,
+                    );
                   },
           );
         }),
         const SizedBox(height: 8),
       ],
     );
+  }
+
+  /// Builds a visual representation of a promo program, if any is enabled by
+  /// this [User].
+  Widget _promo(UserController c, BuildContext context) {
+    final style = Theme.of(context).style;
+
+    return Obx(() {
+      final Rx<MonetizationSettings>? settings = c.monetization[id];
+      final MonetizationSettingsReferral? referral = settings?.value.referral;
+      final int percent = referral?.fee?.val ?? 0;
+
+      if (percent == 0) {
+        return const SizedBox();
+      }
+
+      final Widget description;
+
+      if (c.promoExpanded.value) {
+        description = Column(
+          key: const Key('Expanded'),
+          children: [
+            const SizedBox(height: 20),
+            Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'label_promotional_program_promo_plus_description1'
+                        .l10n,
+                  ),
+                  TextSpan(
+                    text: 'label_promotional_program_promo_plus_description2'
+                        .l10nfmt({'user': c.user?.title()}),
+                    style: style.fonts.small.regular.onBackground,
+                  ),
+                  TextSpan(
+                    text: 'label_promotional_program_promo_plus_description3'
+                        .l10nfmt({'percent': '$percent%'}),
+                  ),
+                  TextSpan(
+                    text: 'label_promotional_program_promo_plus_description4'
+                        .l10n,
+                    style: style.fonts.small.regular.primary,
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () => router.promotion(push: true),
+                  ),
+                  TextSpan(
+                    text: 'label_promotional_program_promo_plus_description5'
+                        .l10n,
+                  ),
+                  TextSpan(
+                    text: 'label_promotional_program_promo_plus_description6'
+                        .l10n,
+                    style: style.fonts.small.regular.primary,
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () => router.affiliate(push: true),
+                  ),
+                  TextSpan(
+                    text: 'label_promotional_program_promo_plus_description7'
+                        .l10n,
+                  ),
+                ],
+                style: style.fonts.small.regular.secondary,
+              ),
+            ),
+          ],
+        );
+      } else {
+        description = const SizedBox(width: double.infinity);
+      }
+
+      return Block(
+        title: 'label_promotional_program_promo_plus'.l10n,
+        children: [
+          Text('$percent%', style: style.fonts.giant.bold.currencyPrimary),
+          const SizedBox(height: 16),
+          WidgetButton(
+            onPressed: c.promoExpanded.toggle,
+            child: SelectionContainer.disabled(
+              child: LineDivider.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(text: 'label_important'.l10n),
+                    WidgetSpan(
+                      alignment: PlaceholderAlignment.middle,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: AnimatedRotation(
+                          duration: const Duration(milliseconds: 250),
+                          curve: Curves.ease,
+                          turns: c.promoExpanded.value ? 0 : 0.5,
+                          child: SvgIcon(SvgIcons.arrowUp),
+                        ),
+                      ),
+                    ),
+                  ],
+                  style: style.fonts.small.regular.primary,
+                ),
+              ),
+            ),
+          ),
+          AnimatedSizeAndFade(
+            fadeDuration: const Duration(milliseconds: 250),
+            sizeDuration: const Duration(milliseconds: 250),
+            fadeInCurve: Curves.ease,
+            fadeOutCurve: Curves.ease,
+            sizeCurve: Curves.ease,
+            child: description,
+          ),
+          const SizedBox(height: 8),
+        ],
+      );
+    });
   }
 
   /// Returns the [Block] displaying a [DirectLinkField].

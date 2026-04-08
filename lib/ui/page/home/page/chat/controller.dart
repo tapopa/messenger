@@ -547,19 +547,15 @@ class ChatController extends GetxController with IdentityAware {
             return _showBalanceExceeded();
           }
 
-          final UserId? userId = user?.id;
-          if (userId != null) {
-            final MonetizationSettings? settings =
-                _partnerService.monetization[userId]?.value;
-            if (settings != null) {
-              if (settings.donation?.enabled != true) {
-                return _showDonationsDisabled();
-              }
+          final MonetizationSettings? settings = resolveMonetization()?.value;
+          if (settings != null) {
+            if (settings.donation?.enabled != true) {
+              return _showDonationsDisabled();
+            }
 
-              final double minimum = settings.donation?.min.sum.val ?? 1;
-              if (donation < minimum) {
-                return _showDonationsMinimum();
-              }
+            final double minimum = settings.donation?.min.sum.val ?? 1;
+            if (donation < minimum) {
+              return _showDonationsMinimum();
             }
           }
         }
@@ -2003,6 +1999,19 @@ class ChatController extends GetxController with IdentityAware {
     }
   }
 
+  /// Returns the [MonetizationSettings] a [User] of this [Chat] has applied.
+  ///
+  /// Only relevant to [Chat]-dialogs.
+  Rx<MonetizationSettings>? resolveMonetization() {
+    final UserId? userId = user?.id;
+
+    if (userId != null) {
+      return _partnerService.monetization[userId];
+    }
+
+    return null;
+  }
+
   /// Keeps the [ChatService.keepTyping] subscription up indicating the ongoing
   /// typing in this [chat].
   Future<void> _keepTyping() async {
@@ -2729,13 +2738,15 @@ class ChatController extends GetxController with IdentityAware {
   /// Displays a [MessagePopup.error] visually representing a donations disabled
   /// message.
   Future<void> _showDonationsMinimum() async {
-    final UserId? userId = user?.id;
-    if (userId != null) {
+    final RxUser? user = this.user;
+
+    if (user != null) {
       final MonetizationSettings? settings =
-          _partnerService.monetization[userId]?.value;
+          _partnerService.monetization[user.id]?.value;
       if (settings != null) {
         await MessagePopup.alert(
           'err_donations_has_minimum'.l10nfmt({
+            'user': user.title(),
             'amount': '${settings.donation?.min.l10n}',
           }),
         );

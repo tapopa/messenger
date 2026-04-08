@@ -59,7 +59,7 @@ class PriceRow extends StatelessWidget {
             Expanded(
               child: Text(
                 label,
-                style: style.fonts.medium.regular.onBackground,
+                style: style.fonts.normal.regular.onBackground,
               ),
             ),
             const SizedBox(width: 8),
@@ -67,17 +67,17 @@ class PriceRow extends StatelessWidget {
               if (price.isZero)
                 Text(
                   'label_free'.l10n,
-                  style: style.fonts.medium.regular.currencyPrimary,
+                  style: style.fonts.normal.regular.currencyPrimary,
                 )
               else
                 Text(
                   price.l10n,
-                  style: style.fonts.medium.regular.currencyPrimary,
+                  style: style.fonts.normal.regular.currencyPrimary,
                 ),
             ] else
               Text(
                 'label_disabled'.l10n,
-                style: style.fonts.medium.regular.secondary,
+                style: style.fonts.normal.regular.secondary,
               ),
           ],
         ),
@@ -89,7 +89,7 @@ class PriceRow extends StatelessWidget {
               Expanded(
                 child: Text(
                   subtitle!,
-                  style: style.fonts.small.regular.secondary,
+                  style: style.fonts.smaller.regular.secondary,
                 ),
               )
             else
@@ -100,7 +100,7 @@ class PriceRow extends StatelessWidget {
                 onPressed: onChange,
                 child: Text(
                   'btn_change'.l10n,
-                  style: style.fonts.small.regular.primary,
+                  style: style.fonts.smaller.regular.primary,
                 ),
               ),
             ],

@@ -32,7 +32,6 @@ import '/domain/model/link.dart';
 import '/domain/model/mute_duration.dart';
 import '/domain/model/my_user.dart';
 import '/domain/model/precise_date_time/precise_date_time.dart';
-import '/domain/model/price.dart';
 import '/domain/model/user.dart';
 import '/domain/repository/contact.dart';
 import '/domain/repository/paginated.dart';
@@ -56,6 +55,7 @@ import '/provider/gql/exceptions.dart'
 import '/routes.dart';
 import '/ui/widget/text_field.dart';
 import '/util/message_popup.dart';
+import '/util/new_type.dart';
 import '/util/platform_utils.dart';
 
 export 'view.dart';
@@ -137,6 +137,9 @@ class UserController extends GetxController {
   /// [Paginated] containing the [DirectLink] leading to this [MyUser].
   late final Paginated<DirectLinkSlug, DirectLink> links;
 
+  /// Indicator whether a [Block] describing promo program should be expanded.
+  final RxBool promoExpanded = RxBool(true);
+
   /// [UserService] fetching the [user].
   final UserService _userService;
 
@@ -195,6 +198,11 @@ class UserController extends GetxController {
   /// Returns the individual [MonetizationSettings] for separate [UserId]s.
   RxMap<UserId, Rx<MonetizationSettings>> get individual =>
       _partnerService.individual;
+
+  /// Returns the [MonetizationSettings] that the [UserId]s have for our
+  /// [MyUser].
+  RxMap<UserId, Rx<MonetizationSettings>> get monetization =>
+      _partnerService.monetization;
 
   @override
   void onInit() {
@@ -430,13 +438,15 @@ class UserController extends GetxController {
 
   /// Updates the [MonetizationSettings] for the current [User].
   Future<void> updateMonetizationSettings({
-    bool? donationsEnabled,
-    Sum? donationsMinimum,
+    MonetizationSettingsDonation? donation,
+    MonetizationSettingsMessage? message,
+    MonetizationSettingsReferral? referral,
   }) async {
     await _partnerService.updateMonetizationSettings(
       userId: id,
-      donationsEnabled: donationsEnabled,
-      donationsMinimum: donationsMinimum,
+      donation: NewType(donation),
+      message: NewType(message),
+      referral: NewType(referral),
     );
   }
 

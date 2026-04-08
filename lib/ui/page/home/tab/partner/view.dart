@@ -49,7 +49,7 @@ class PartnerTabView extends StatelessWidget {
                 const SizedBox(width: 21),
                 Flexible(
                   child: Text(
-                    'btn_monetization'.l10n,
+                    'label_monetization'.l10n,
                     textAlign: TextAlign.left,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -69,7 +69,7 @@ class PartnerTabView extends StatelessWidget {
                       sum: Sum(
                         c.available.value.sum.val + c.hold.value.sum.val,
                       ),
-                    ).l10n,
+                    ).l10next(digits: 2),
                     style: style.fonts.big.regular.onBackground.copyWith(
                       color: style.colors.primary,
                     ),
@@ -174,6 +174,7 @@ class PartnerTabView extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 1.5),
                   child: MenuButton(
                     title: 'btn_your_promo_plus'.l10n,
+                    onPressed: router.affiliate,
                     leading: const SvgIcon(SvgIcons.menuPromoPlus),
                     subtitle: 'btn_your_promo_plus_subtitle'.l10n,
                   ),
@@ -182,6 +183,7 @@ class PartnerTabView extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 1.5),
                   child: MenuButton(
                     title: 'btn_your_links'.l10n,
+                    onPressed: router.affiliate,
                     leading: const SvgIcon(SvgIcons.menuLinks),
                     subtitle: 'btn_your_links_subtitle'.l10n,
                   ),

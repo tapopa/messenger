@@ -15,27 +15,9 @@
 # along with this program. If not, see
 # <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-fragment MonetizationSettings on MonetizationSettings {
-    donation {
-        enabled
-        min {
-            __typename
-            ...Price
-        }
+query GetMonetizationSettings($userId: UserId!) {
+    monetizationSettings(userId: $userId) {
+        __typename
+        ...MonetizationSettings
     }
-    message {
-        enabled
-        price {
-            __typename
-            ...Price
-        }
-    }
-    referral {
-        fee
-    }
-    user {
-        id
-    }
-    createdAt
-    ver
 }

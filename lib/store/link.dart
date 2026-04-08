@@ -188,6 +188,7 @@ class LinkRepository extends IdentityDependency
         onKey: (e) => e.slug,
         compare: (a, b) => a.compareTo(b),
       ),
+      compare: (a, b) => a.compareTo(b),
     );
   }
 

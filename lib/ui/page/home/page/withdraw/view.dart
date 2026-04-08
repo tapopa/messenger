@@ -727,8 +727,8 @@ class WithdrawView extends StatelessWidget {
         const SizedBox(height: 16),
         ReactiveTextField(
           state: c.billingZip,
-          label: 'label_zip'.l10n,
-          hint: 'label_zip_example'.l10n,
+          label: 'label_postal_code'.l10n,
+          hint: 'label_postal_code_example'.l10n,
           floatingLabelBehavior: .always,
           formatters: [
             FilteringTextInputFormatter.allow(RegExp('[0-9]*')),

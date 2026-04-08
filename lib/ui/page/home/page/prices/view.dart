@@ -33,6 +33,7 @@ import '/ui/widget/line_divider.dart';
 import '/ui/widget/svg/svg.dart';
 import 'controller.dart';
 import 'individual_users/view.dart';
+import 'set_donations/controller.dart';
 import 'set_donations/view.dart';
 import 'widget/price_row.dart';
 
@@ -101,12 +102,35 @@ class PricesView extends StatelessWidget {
                     return PriceRow(
                       label: 'label_donations'.l10n,
                       subtitle: enabled
-                          ? 'label_donations_described_subtitle'.l10n
+                          ? 'label_minimum_amount'.l10n
                           : 'label_you_have_disabled_incoming_donations'.l10n,
                       enabled: enabled,
                       price: settings.donation?.min ?? Price.zero,
                       onChange: () async {
-                        await SetDonationsView.show(context);
+                        await SetMonetizationView.show(
+                          context,
+                          mode: SetMonetizationMode.donation,
+                        );
+                      },
+                    );
+                  }),
+                  const SizedBox(height: 20),
+                  Obx(() {
+                    final MonetizationSettings settings = c.settings.value;
+                    final bool enabled = settings.message?.enabled == true;
+
+                    return PriceRow(
+                      label: 'label_messages'.l10n,
+                      subtitle: enabled
+                          ? 'label_per_one_incoming_message'.l10n
+                          : 'label_you_have_disabled_incoming_messages'.l10n,
+                      enabled: enabled,
+                      price: settings.message?.price ?? Price.zero,
+                      onChange: () async {
+                        await SetMonetizationView.show(
+                          context,
+                          mode: SetMonetizationMode.message,
+                        );
                       },
                     );
                   }),
@@ -142,7 +166,7 @@ class PricesView extends StatelessWidget {
                 ],
               ),
               Block(
-                title: 'label_individual_monetization'.l10n,
+                title: 'label_users_with_individual_monetization_settings'.l10n,
                 children: [
                   Text(
                     'label_you_can_set_individual_monetization_in_profile'.l10n,

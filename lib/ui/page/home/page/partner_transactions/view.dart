@@ -43,103 +43,13 @@ class PartnerTransactionsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = Theme.of(context).style;
-
     return GetBuilder(
       init: PartnerTransactionsController(Get.find(), Get.find()),
       builder: (PartnerTransactionsController c) {
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: Size(double.infinity, CustomAppBar.height),
-            child: Obx(() {
-              final Widget child;
-
-              if (c.searching.value) {
-                child = CustomAppBar(
-                  key: const Key('Search'),
-                  border: Border.all(color: style.colors.primary, width: 2),
-                  title: Row(
-                    children: [
-                      const SizedBox(width: 16),
-                      const SvgIcon(SvgIcons.search),
-                      Expanded(
-                        child: Theme(
-                          data: MessageFieldView.theme(context),
-                          child: ReactiveTextField(
-                            dense: true,
-                            state: c.search,
-                            hint: 'label_search'.l10n,
-                            style: style.fonts.medium.regular.onBackground,
-                            onChanged: () {
-                              c.query.value = c.search.text.isEmpty
-                                  ? null
-                                  : c.search.text;
-                            },
-                          ),
-                        ),
-                      ),
-                      WidgetButton(
-                        onPressed: c.toggleSearch,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(8, 16, 16, 16),
-                          child: const SvgIcon(SvgIcons.closePrimary),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                child = CustomAppBar(
-                  leading: const [SizedBox(width: 4), StyledBackButton()],
-                  title: Text('label_your_transactions'.l10n),
-                  actions: [
-                    ContextMenuRegion(
-                      enablePrimaryTap: true,
-                      enableLongTap: false,
-                      enableSecondaryTap: false,
-                      actions: [
-                        if (c.expanded.value)
-                          ContextMenuButton(
-                            label: 'btn_collapse_all'.l10n,
-                            trailing: SvgIcon(SvgIcons.viewFull),
-                            inverted: SvgIcon(SvgIcons.viewFullWhite),
-                            onPressed: () {
-                              c.expanded.toggle();
-                              c.ids.clear();
-                            },
-                          )
-                        else
-                          ContextMenuButton(
-                            label: 'btn_expand_all'.l10n,
-                            trailing: SvgIcon(SvgIcons.viewShort),
-                            inverted: SvgIcon(SvgIcons.viewShortWhite),
-                            onPressed: () {
-                              c.expanded.toggle();
-                              c.ids.clear();
-                            },
-                          ),
-                        ContextMenuButton(
-                          label: 'btn_search'.l10n,
-                          trailing: SvgIcon(SvgIcons.search),
-                          inverted: SvgIcon(SvgIcons.searchWhite),
-                          onPressed: c.toggleSearch,
-                        ),
-                      ],
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 8, 20, 8),
-                        child: SvgIcon(SvgIcons.more),
-                      ),
-                    ),
-                  ],
-                );
-              }
-
-              return AnimatedSizeAndFade(
-                fadeDuration: const Duration(milliseconds: 250),
-                sizeDuration: const Duration(milliseconds: 250),
-                child: child,
-              );
-            }),
+            child: _bar(context, c),
           ),
           body: Column(
             children: [
@@ -231,6 +141,101 @@ class PartnerTransactionsView extends StatelessWidget {
         );
       },
     );
+  }
+
+  /// Builds the contents of an [AppBar].
+  Widget _bar(BuildContext context, PartnerTransactionsController c) {
+    final style = Theme.of(context).style;
+
+    return Obx(() {
+      final Widget child;
+
+      if (c.searching.value) {
+        child = CustomAppBar(
+          key: const Key('Search'),
+          border: Border.all(color: style.colors.primary, width: 2),
+          title: Row(
+            children: [
+              const SizedBox(width: 16),
+              const SvgIcon(SvgIcons.search),
+              Expanded(
+                child: Theme(
+                  data: MessageFieldView.theme(context),
+                  child: ReactiveTextField(
+                    dense: true,
+                    state: c.search,
+                    hint: 'label_search'.l10n,
+                    style: style.fonts.medium.regular.onBackground,
+                    onChanged: () {
+                      c.query.value = c.search.text.isEmpty
+                          ? null
+                          : c.search.text;
+                    },
+                  ),
+                ),
+              ),
+              WidgetButton(
+                onPressed: c.toggleSearch,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 16, 16, 16),
+                  child: const SvgIcon(SvgIcons.closePrimary),
+                ),
+              ),
+            ],
+          ),
+        );
+      } else {
+        child = CustomAppBar(
+          leading: const [SizedBox(width: 4), StyledBackButton()],
+          title: Text('label_your_transactions'.l10n),
+          actions: [
+            ContextMenuRegion(
+              enablePrimaryTap: true,
+              enableLongTap: false,
+              enableSecondaryTap: false,
+              actions: [
+                if (c.expanded.value)
+                  ContextMenuButton(
+                    label: 'btn_collapse_all'.l10n,
+                    trailing: SvgIcon(SvgIcons.viewFull),
+                    inverted: SvgIcon(SvgIcons.viewFullWhite),
+                    onPressed: () {
+                      c.expanded.toggle();
+                      c.ids.clear();
+                    },
+                  )
+                else
+                  ContextMenuButton(
+                    label: 'btn_expand_all'.l10n,
+                    trailing: SvgIcon(SvgIcons.viewShort),
+                    inverted: SvgIcon(SvgIcons.viewShortWhite),
+                    onPressed: () {
+                      c.expanded.toggle();
+                      c.ids.clear();
+                    },
+                  ),
+                ContextMenuButton(
+                  label: 'btn_search'.l10n,
+                  trailing: SvgIcon(SvgIcons.search),
+                  inverted: SvgIcon(SvgIcons.searchWhite),
+                  onPressed: c.toggleSearch,
+                ),
+              ],
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 20, 8),
+                child: SvgIcon(SvgIcons.more),
+              ),
+            ),
+          ],
+        );
+      }
+
+      return AnimatedSizeAndFade(
+        fadeDuration: const Duration(milliseconds: 250),
+        sizeDuration: const Duration(milliseconds: 250),
+        child: child,
+      );
+    });
   }
 
   /// Returns [Container] displaying available and hold [Balance]s.

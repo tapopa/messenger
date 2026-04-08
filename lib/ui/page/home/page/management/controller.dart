@@ -21,12 +21,15 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 import '/domain/model/link.dart';
+import '/domain/model/monetization_settings.dart';
 import '/domain/model/user.dart';
 import '/domain/repository/paginated.dart';
 import '/domain/repository/user.dart';
 import '/domain/service/auth.dart';
 import '/domain/service/link.dart';
+import '/domain/service/partner.dart';
 import '/domain/service/user.dart';
+import '/util/obs/obs.dart';
 
 /// Possible [DirectLink] columns to display in a [TableView].
 enum LinkColumn {
@@ -43,7 +46,12 @@ enum LinkColumn {
 
 /// Controller of a [ManagementView].
 class ManagementController extends GetxController {
-  ManagementController(this._linkService, this._userService, this._authService);
+  ManagementController(
+    this._linkService,
+    this._userService,
+    this._authService,
+    this._partnerService,
+  );
 
   /// [Paginated] containing the [DirectLink]s of the current [MyUser].
   late final Paginated<DirectLinkSlug, DirectLink> links;
@@ -75,11 +83,22 @@ class ManagementController extends GetxController {
   /// [AuthService] used to retrieve the [me].
   final AuthService _authService;
 
+  /// [PartnerService] used to retrieve the [MonetizationSettings].
+  final PartnerService _partnerService;
+
+  StreamSubscription? _linksSubscription;
+  final Map<UserId, StreamSubscription> _monetizationSubscriptions = {};
+
   /// Returns the [UserId] of the currently authenticated [MyUser].
   UserId? get me => _authService.userId;
 
   /// Returns the total amount of [DirectLink] created by [MyUser].
   RxInt get total => _linkService.total;
+
+  /// Returns the [MonetizationSettings] that the [UserId]s have for our
+  /// [MyUser].
+  RxMap<UserId, Rx<MonetizationSettings>> get monetization =>
+      _partnerService.monetization;
 
   @override
   void onInit() {
@@ -88,6 +107,20 @@ class ManagementController extends GetxController {
 
     links = _linkService.links();
     links.ensureInitialized();
+    links.values.forEach(_handle);
+
+    _linksSubscription = links.items.changes.listen((e) {
+      switch (e.op) {
+        case OperationKind.added:
+        case OperationKind.updated:
+          _handle(e.value);
+          break;
+
+        case OperationKind.removed:
+          // No-op.
+          break;
+      }
+    });
 
     super.onInit();
   }
@@ -96,6 +129,13 @@ class ManagementController extends GetxController {
   void onClose() {
     vertical.removeListener(_scrollListener);
     listController.removeListener(_listListener);
+
+    _linksSubscription?.cancel();
+    for (var e in _monetizationSubscriptions.values) {
+      e.cancel();
+    }
+    _monetizationSubscriptions.clear();
+
     super.onClose();
   }
 
@@ -133,6 +173,23 @@ class ManagementController extends GetxController {
         if (links.hasNext.value && !links.nextLoading.value) {
           await links.next();
         }
+      }
+    }
+  }
+
+  /// Adds a [StreamSubscription] to [_monetizationSubscriptions] listening for
+  /// updates of [User] this [link] leads to, if any.
+  void _handle(DirectLink? link) {
+    if (link == null) {
+      return;
+    }
+
+    final location = link.location;
+    if (location is DirectLinkLocationUser) {
+      if (!_monetizationSubscriptions.containsKey(location.responder)) {
+        _monetizationSubscriptions[location.responder] = _partnerService
+            .updatesFor(location.responder)
+            .listen((_) {});
       }
     }
   }

@@ -99,6 +99,7 @@ class HomeRouterDelegate extends RouterDelegate<RouteConfiguration>
               ChatId(id),
               itemId: router.arguments?['itemId'] as ChatItemId?,
               search: router.arguments?['search'] == true,
+              referrerId: router.arguments?['referrerId'] as UserId?,
             ),
           ),
         );
@@ -117,7 +118,10 @@ class HomeRouterDelegate extends RouterDelegate<RouteConfiguration>
           CustomPage(
             key: ValueKey('UserPage$id'),
             name: '${Routes.user}/$id',
-            child: UserView(UserId(id)),
+            child: UserView(
+              UserId(id),
+              referrerId: router.arguments?['referrerId'] as UserId?,
+            ),
           ),
         );
       } else if (route.startsWith(Routes.erase)) {

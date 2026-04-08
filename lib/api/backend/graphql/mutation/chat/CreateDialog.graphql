@@ -15,8 +15,14 @@
 # along with this program. If not, see
 # <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-mutation CreateDialog($responderId: UserId!) {
-    createDialogChat(responderId: $responderId) {
+mutation CreateDialog(
+    $responderId: UserId!
+    $referrer: ReferralInput
+) {
+    createDialogChat(
+        responderId: $responderId
+        referrer: $referrer
+    ) {
         __typename
         ... on Chat {
             ...Chat

@@ -51,6 +51,7 @@ import 'geolocation.dart';
 import 'locks.dart';
 import 'monolog.dart';
 import 'my_user.dart';
+import 'referrals.dart';
 import 'secret.dart';
 import 'session.dart';
 import 'settings.dart';
@@ -74,6 +75,7 @@ part 'drift.g.dart';
     GeoLocations,
     Locks,
     MyUsers,
+    Referrals,
     RefreshSecrets,
     Settings,
     SkippedVersions,

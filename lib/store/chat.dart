@@ -58,6 +58,7 @@ import '/provider/drift/chat_member.dart';
 import '/provider/drift/chat.dart';
 import '/provider/drift/draft.dart';
 import '/provider/drift/monolog.dart';
+import '/provider/drift/referrals.dart';
 import '/provider/drift/slugs.dart';
 import '/provider/drift/version.dart';
 import '/provider/gql/exceptions.dart'
@@ -121,7 +122,8 @@ class ChatRepository extends IdentityDependency
     this._userRepo,
     this._sessionLocal,
     this._monologLocal,
-    this._slugProvider, {
+    this._slugProvider,
+    this._referralProvider, {
     required super.me,
   });
 
@@ -237,6 +239,9 @@ class ChatRepository extends IdentityDependency
 
   /// [SlugDriftProvider] for retrieving affiliate [DirectLinkSlug].
   final SlugDriftProvider _slugProvider;
+
+  /// [ReferralDriftProvider] for storing and retrieving referral [UserId]s.
+  final ReferralDriftProvider _referralProvider;
 
   /// [CombinedPagination] loading [chats] with pagination.
   CombinedPagination<DtoChat, ChatId>? _pagination;
@@ -575,9 +580,29 @@ class ChatRepository extends IdentityDependency
         }
       }
 
+      UserId? referrerId;
+
+      try {
+        referrerId = await _referralProvider.read(userId);
+        Log.debug(
+          'ensureRemoteDialog() -> using `referrerId`: $referrerId',
+          '$runtimeType',
+        );
+      } catch (e) {
+        Log.warning(
+          'ensureRemoteDialog() -> unable to read referrer due to: $e',
+          '$runtimeType',
+        );
+      }
+
       try {
         final ChatData chat = _chat(
-          await _graphQlProvider.createDialogChat(chatId.userId),
+          await _graphQlProvider.createDialogChat(
+            chatId.userId,
+            referrer: referrerId == null
+                ? null
+                : ReferralInput(userId: referrerId),
+          ),
         );
 
         if (chat.chat.value.isSupport) {
@@ -2023,6 +2048,11 @@ class ChatRepository extends IdentityDependency
     );
 
     return response.chat.id;
+  }
+
+  @override
+  Future<void> useReferral(UserId forId, UserId referrerId) async {
+    await _referralProvider.upsert(forId, referrerId);
   }
 
   /// Constructs a [ChatEvent] from the [ChatEventsVersionedMixin$Events].

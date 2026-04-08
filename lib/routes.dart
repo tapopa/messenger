@@ -672,6 +672,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
                       Get.find(),
                       Get.find(),
                       Get.find(),
+                      Get.find(),
                       me: me,
                     ),
                   );
@@ -850,6 +851,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
                       callRepository,
                       Get.find(),
                       userRepository,
+                      Get.find(),
                       Get.find(),
                       Get.find(),
                       Get.find(),
@@ -1094,6 +1096,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
             userRepository,
             versionProvider,
             monologProvider,
+            Get.find(),
             Get.find(),
             me: me,
           );
@@ -1343,8 +1346,10 @@ extension RouteLinks on RouterState {
   /// Changes router location to the [Routes.user] page.
   ///
   /// If [push] is `true`, then location is pushed to the router location stack.
-  void user(UserId id, {bool push = false}) =>
-      (push ? this.push : go)('${Routes.user}/$id');
+  void user(UserId id, {bool push = false, UserId? referrerId}) {
+    (push ? this.push : go)('${Routes.user}/$id');
+    arguments = {'referrerId': referrerId};
+  }
 
   /// Changes router location to the [Routes.chats] page.
   ///
@@ -1355,6 +1360,7 @@ extension RouteLinks on RouterState {
     ChatItemId? itemId,
     DirectLinkSlug? link,
     bool search = false,
+    UserId? referrerId,
   }) {
     switch (mode) {
       case RouteAs.insteadOfLast:
@@ -1371,7 +1377,12 @@ extension RouteLinks on RouterState {
         break;
     }
 
-    arguments = {'itemId': itemId, 'link': link, 'search': search};
+    arguments = {
+      'itemId': itemId,
+      'link': link,
+      'search': search,
+      'referrerId': referrerId,
+    };
 
     // TODO: Might not be the best thing to do it.
     if (search) {

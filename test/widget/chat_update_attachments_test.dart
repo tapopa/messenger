@@ -67,6 +67,7 @@ import 'package:messenger/provider/drift/geolocation.dart';
 import 'package:messenger/provider/drift/locks.dart';
 import 'package:messenger/provider/drift/monolog.dart';
 import 'package:messenger/provider/drift/my_user.dart';
+import 'package:messenger/provider/drift/referrals.dart';
 import 'package:messenger/provider/drift/secret.dart';
 import 'package:messenger/provider/drift/session.dart';
 import 'package:messenger/provider/drift/settings.dart';
@@ -455,6 +456,7 @@ void main() async {
   final locksProvider = Get.put(LockDriftProvider(common));
   final secretsProvider = Get.put(RefreshSecretDriftProvider(common));
   final slugProvider = Get.put(SlugDriftProvider(common));
+  final referralProvider = Get.put(ReferralDriftProvider(common));
   final sessionProvider = Get.put(SessionDriftProvider(common, scoped));
   final geoProvider = Get.put(GeoLocationDriftProvider(common));
 
@@ -542,6 +544,7 @@ void main() async {
         versionProvider,
         monologProvider,
         slugProvider,
+        referralProvider,
         me: const UserId('me'),
       ),
     );

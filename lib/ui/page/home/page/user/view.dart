@@ -64,10 +64,13 @@ import 'widget/quick_button.dart';
 
 /// View of the [Routes.user] page.
 class UserView extends StatelessWidget {
-  const UserView(this.id, {super.key});
+  const UserView(this.id, {super.key, this.referrerId});
 
   /// ID of the [User] this [UserView] represents.
   final UserId id;
+
+  /// [UserId] who triggered this [ChatView] to be opened.
+  final UserId? referrerId;
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +82,7 @@ class UserView extends StatelessWidget {
         Get.find(),
         Get.find(),
         Get.find(),
+        referrerId: referrerId,
       ),
       tag: id.val,
       global: !Get.isRegistered<UserController>(tag: id.val),

@@ -82,7 +82,13 @@ import 'widget/with_global_key.dart';
 
 /// View of the [Routes.chats] page.
 class ChatView extends StatelessWidget {
-  const ChatView(this.id, {super.key, this.itemId, this.search = false});
+  const ChatView(
+    this.id, {
+    super.key,
+    this.itemId,
+    this.search = false,
+    this.referrerId,
+  });
 
   /// ID of this [Chat].
   final ChatId id;
@@ -92,6 +98,9 @@ class ChatView extends StatelessWidget {
 
   /// Indicator whether searching mode should be enabled by default or not.
   final bool search;
+
+  /// [UserId] who triggered this [ChatView] to be opened.
+  final UserId? referrerId;
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +124,7 @@ class ChatView extends StatelessWidget {
         itemId: itemId,
         onContext: () => context,
         search: search,
+        referrerId: referrerId,
       ),
       tag: id.val,
       global: !Get.isRegistered<ChatController>(tag: id.val),
@@ -893,7 +903,13 @@ class ChatView extends StatelessWidget {
                       chatId = c.monolog;
                     }
 
-                    router.chat(chatId, mode: RouteAs.push);
+                    router.chat(
+                      chatId,
+                      mode: RouteAs.push,
+                      referrerId: e.value.author.id == c.me
+                          ? null
+                          : e.value.author.id,
+                    );
                   },
                   onDragging: (e) => c.isDraggingItem.value = e,
                 ),
@@ -1053,6 +1069,9 @@ class ChatView extends StatelessWidget {
                           item.quote.original!.chatId,
                           itemId: item.quote.original!.id,
                           mode: RouteAs.push,
+                          referrerId: item.quote.original?.author.id == c.me
+                              ? null
+                              : item.quote.original?.author.id,
                         );
                       }
                     }

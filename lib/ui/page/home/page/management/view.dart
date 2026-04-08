@@ -21,6 +21,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '/config.dart';
 import '/domain/model/link.dart';
+import '/domain/model/monetization_settings.dart';
 import '/domain/model/price.dart';
 import '/domain/repository/user.dart';
 import '/l10n/l10n.dart';
@@ -54,7 +55,12 @@ class ManagementView extends StatelessWidget {
     final style = Theme.of(context).style;
 
     return GetBuilder(
-      init: ManagementController(Get.find(), Get.find(), Get.find()),
+      init: ManagementController(
+        Get.find(),
+        Get.find(),
+        Get.find(),
+        Get.find(),
+      ),
       builder: (ManagementController c) {
         return Scaffold(
           appBar: CustomAppBar(
@@ -225,7 +231,25 @@ class ManagementView extends StatelessWidget {
         identifier: column.name,
         width: 2,
         header: () => Text('label_promotional_percentage'.l10n),
-        builder: (e) => Text(e.isEnabled ? '0%' : '---'),
+        builder: (e) {
+          if (e.isEnabled) {
+            final DirectLinkLocation location = e.location;
+            if (location is DirectLinkLocationUser) {
+              return Obx(() {
+                final Rx<MonetizationSettings>? settings =
+                    c.monetization[location.responder];
+
+                if (settings != null) {
+                  return Text('${settings.value.referral?.fee?.val ?? 0}%');
+                }
+
+                return Text('---');
+              });
+            }
+          }
+
+          return Text('---');
+        },
       ),
       LinkColumn.income => TableBuilder(
         key: c.keys[column],

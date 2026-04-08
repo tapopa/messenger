@@ -200,10 +200,19 @@ mixin ChatGraphQlMixin {
   ///
   /// Succeeds as no-op if a [Chat] with the given responder [User] exists
   /// already, and returns this [Chat].
-  Future<ChatMixin> createDialogChat(UserId responderId) async {
-    Log.debug('createDialogChat($responderId)', '$runtimeType');
+  Future<ChatMixin> createDialogChat(
+    UserId responderId, {
+    ReferralInput? referrer,
+  }) async {
+    Log.debug(
+      'createDialogChat($responderId, referral: $referrer)',
+      '$runtimeType',
+    );
 
-    final variables = CreateDialogArguments(responderId: responderId);
+    final variables = CreateDialogArguments(
+      responderId: responderId,
+      referrer: referrer,
+    );
     final QueryResult result = await client.mutate(
       MutationOptions(
         operationName: 'CreateDialog',

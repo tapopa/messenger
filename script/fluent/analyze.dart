@@ -82,8 +82,6 @@ Future<void> main(List<String> argv) async {
         'label_account',
         'label_operation_label_failed',
         'label_paypal_popup_window_instruction',
-        'label_tapopa_will_be_grateful_for_reporting_problems_when_paying1',
-        'label_tapopa_will_be_grateful_for_reporting_problems_when_paying2',
         'label_to_be_paid',
         'label_to_make_payment_secure_paypal_page_will_open',
         'label_top_up_option',

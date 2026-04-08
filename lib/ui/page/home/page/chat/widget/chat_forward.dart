@@ -342,8 +342,11 @@ class _ChatForwardWidgetState extends State<ChatForwardWidget> {
                             TextSpan(
                               text: widget.user?.title() ?? 'dot'.l10n * 3,
                               recognizer: TapGestureRecognizer()
-                                ..onTap = () =>
-                                    router.user(widget.authorId, push: true),
+                                ..onTap = () => router.user(
+                                  widget.authorId,
+                                  push: true,
+                                  referrerId: _fromMe ? null : widget.authorId,
+                                ),
                             ),
                             selectable:
                                 widget.selectable &&
@@ -443,7 +446,11 @@ class _ChatForwardWidgetState extends State<ChatForwardWidget> {
                         style.colors.userColors.length];
 
               return WidgetButton(
-                onPressed: () => router.user(quote.author, push: true),
+                onPressed: () => router.user(
+                  quote.author,
+                  push: true,
+                  referrerId: _fromMe ? null : widget.authorId,
+                ),
                 child: Row(
                   children: [
                     SizedBox(width: 6),
@@ -744,8 +751,11 @@ class _ChatForwardWidgetState extends State<ChatForwardWidget> {
                       TextSpan(
                         text: widget.user?.title() ?? 'dot'.l10n * 3,
                         recognizer: TapGestureRecognizer()
-                          ..onTap = () =>
-                              router.user(widget.authorId, push: true),
+                          ..onTap = () => router.user(
+                            widget.authorId,
+                            push: true,
+                            referrerId: _fromMe ? null : widget.authorId,
+                          ),
                       ),
                       selectable:
                           widget.selectable &&
@@ -1007,7 +1017,11 @@ class _ChatForwardWidgetState extends State<ChatForwardWidget> {
                   child: widget.withAvatar
                       ? InkWell(
                           customBorder: const CircleBorder(),
-                          onTap: () => router.user(widget.authorId, push: true),
+                          onTap: () => router.user(
+                            widget.authorId,
+                            push: true,
+                            referrerId: _fromMe ? null : widget.authorId,
+                          ),
                           child: AvatarWidget.fromRxUser(
                             widget.user,
                             radius: avatarRadius,
@@ -1307,9 +1321,10 @@ class _ChatForwardWidgetState extends State<ChatForwardWidget> {
         if (string?.isNotEmpty == true) {
           _text[forward.value.id] = string!.parseLinks(
             _recognizers,
-            router.context == null
+            style: router.context == null
                 ? null
                 : Theme.of(router.context!).style.linkStyle,
+            authorId: _fromMe ? null : widget.authorId,
           );
         }
       }
@@ -1321,9 +1336,10 @@ class _ChatForwardWidgetState extends State<ChatForwardWidget> {
       if (string?.isNotEmpty == true) {
         _text[item.id] = string!.parseLinks(
           _recognizers,
-          router.context == null
+          style: router.context == null
               ? null
               : Theme.of(router.context!).style.linkStyle,
+          authorId: _fromMe ? null : widget.authorId,
         );
       }
     }

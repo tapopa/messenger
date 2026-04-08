@@ -128,6 +128,7 @@ class ChatController extends GetxController with IdentityAware {
     this.itemId,
     this.onContext,
     bool search = false,
+    this.referrerId,
   }) {
     if (search) {
       toggleSearch(true);
@@ -254,6 +255,9 @@ class ChatController extends GetxController with IdentityAware {
 
   /// Indicator whether [search]ing is being active right now.
   final RxBool searching = RxBool(false);
+
+  /// [UserId] who triggered this [ChatView] to be opened.
+  final UserId? referrerId;
 
   /// Subscription for [Paginated.updates] of the [search].
   StreamSubscription? _searchSubscription;
@@ -1152,6 +1156,19 @@ class ChatController extends GetxController with IdentityAware {
         unreadMessages = chat!.chat.value.unreadCount;
 
         send.toggleLogs(isMonolog || isSupport);
+
+        if (referrerId != null) {
+          final UserId? userId = chat?.chat.value.isDialog == true
+              ? chat?.chat.value.members
+                    .firstWhereOrNull((e) => e.user.id != me)
+                    ?.user
+                    .id
+              : null;
+
+          if (userId != null) {
+            _chatService.useReferral(userId, referrerId!);
+          }
+        }
 
         await chat!.ensureDraft();
         final ChatMessage? draft = chat!.draft.value;

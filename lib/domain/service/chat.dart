@@ -490,6 +490,12 @@ class ChatService extends Dependency {
     Log.debug('useDirectLink($slug)', '$runtimeType');
     return await _chatRepository.useDirectLink(slug);
   }
+
+  /// Sets the [referrerId] to be the one who referred to the [forId] dialog.
+  Future<void> useReferral(UserId forId, UserId referrerId) {
+    Log.debug('useReferral($forId, $referrerId)', '$runtimeType');
+    return _chatRepository.useReferral(forId, referrerId);
+  }
 }
 
 /// Extension adding a route from the [router] comparison with a [Chat].

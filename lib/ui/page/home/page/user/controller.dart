@@ -68,8 +68,13 @@ class UserController extends GetxController {
     this._chatService,
     this._callService,
     this._partnerService,
-    this._linkService,
-  );
+    this._linkService, {
+    UserId? referrerId,
+  }) {
+    if (referrerId != null) {
+      _chatService.useReferral(id, referrerId);
+    }
+  }
 
   /// ID of the [User] this [UserController] represents.
   final UserId id;

@@ -20,9 +20,16 @@ All user visible changes to this project will be documented in this file. This p
     - Promotion page:
         - Promotional percentage setting. ([#51])
     - User page:
-        - Promotional program information block ([#51])
+        - Promotional program information block. ([#51])
+
+### Changed
+
+- UI:
+    - Links statistics page:
+        - Promotional percentage displaying. ([#53])
 
 [#51]: /../../pull/51
+[#53]: /../../pull/53
 
 
 

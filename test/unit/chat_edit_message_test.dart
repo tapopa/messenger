@@ -45,6 +45,7 @@ import 'package:messenger/provider/drift/drift.dart';
 import 'package:messenger/provider/drift/locks.dart';
 import 'package:messenger/provider/drift/monolog.dart';
 import 'package:messenger/provider/drift/my_user.dart';
+import 'package:messenger/provider/drift/referrals.dart';
 import 'package:messenger/provider/drift/secret.dart';
 import 'package:messenger/provider/drift/settings.dart';
 import 'package:messenger/provider/drift/slugs.dart';
@@ -99,6 +100,7 @@ void main() async {
   final locksProvider = Get.put(LockDriftProvider(common));
   final secretsProvider = Get.put(RefreshSecretDriftProvider(common));
   final slugProvider = Get.put(SlugDriftProvider(common));
+  final referralProvider = Get.put(ReferralDriftProvider(common));
 
   when(graphQlProvider.disconnect()).thenAnswer((_) => () {});
 
@@ -269,6 +271,7 @@ void main() async {
             sessionProvider,
             monologProvider,
             slugProvider,
+            referralProvider,
             me: const UserId('me'),
           ),
         );
@@ -368,6 +371,7 @@ void main() async {
               sessionProvider,
               monologProvider,
               slugProvider,
+              referralProvider,
               me: const UserId('me'),
             ),
           );

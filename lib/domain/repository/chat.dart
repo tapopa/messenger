@@ -230,6 +230,9 @@ abstract class AbstractChatRepository {
   /// Uses the specified [DirectLink] by the authenticated [MyUser] creating a
   /// new [Chat]-dialog or joining an existing [Chat]-group.
   Future<ChatId> useDirectLink(DirectLinkSlug slug);
+
+  /// Sets the [referrerId] to be the one who referred to the [forId] dialog.
+  Future<void> useReferral(UserId forId, UserId referrerId);
 }
 
 /// Unified reactive [Chat] entity with its [ChatItem]s.

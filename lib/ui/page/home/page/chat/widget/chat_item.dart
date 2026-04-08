@@ -1807,7 +1807,7 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
     }
   }
 
-  /// Populates the [_text] with the [ChatMessage.text] of the provided [item]
+  /// Populates the [_text] with the [ChatMessage.text] of the provided [msg]
   /// parsed through a [LinkParsingExtension.parseLinks] method.
   void _populateSpans(ChatItem msg) {
     if (msg is ChatMessage) {
@@ -1822,9 +1822,10 @@ class _ChatItemWidgetState extends State<ChatItemWidget> {
       } else {
         _text = string?.parseLinks(
           _recognizers,
-          router.context == null
+          style: router.context == null
               ? null
               : Theme.of(router.context!).style.linkStyle,
+          authorId: _fromMe ? null : msg.author.id,
         );
       }
     } else if (msg is ChatForward) {
@@ -2119,9 +2120,10 @@ extension LinkParsingExtension on String {
   /// [recognizers] are [TapGestureRecognizer]s constructed, so ensure to
   /// dispose them properly.
   TextSpan parseLinks(
-    List<TapGestureRecognizer> recognizers, [
+    List<TapGestureRecognizer> recognizers, {
     TextStyle? style,
-  ]) {
+    UserId? authorId,
+  }) {
     final Iterable<RegExpMatch> matches = [
       ..._regex.allMatches(this),
       ...UserNum.sourceExp.allMatches(this),
@@ -2172,7 +2174,11 @@ extension LinkParsingExtension on String {
               if (isNum) {
                 final UserNum? parsed = UserNum.tryParse(link);
                 if (parsed != null) {
-                  return router.chat(ChatId(link), mode: RouteAs.push);
+                  return router.chat(
+                    ChatId(link),
+                    mode: RouteAs.push,
+                    referrerId: authorId,
+                  );
                 }
               } else if (link.isEmail) {
                 uri = Uri(scheme: 'mailto', path: link);

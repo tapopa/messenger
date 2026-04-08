@@ -66,6 +66,7 @@ import 'package:messenger/provider/drift/geolocation.dart';
 import 'package:messenger/provider/drift/locks.dart';
 import 'package:messenger/provider/drift/monolog.dart';
 import 'package:messenger/provider/drift/my_user.dart';
+import 'package:messenger/provider/drift/referrals.dart';
 import 'package:messenger/provider/drift/secret.dart';
 import 'package:messenger/provider/drift/session.dart';
 import 'package:messenger/provider/drift/settings.dart';
@@ -450,6 +451,7 @@ void main() async {
   final slugProvider = Get.put(SlugDriftProvider(common));
   final sessionProvider = Get.put(SessionDriftProvider(common, scoped));
   final geoProvider = Get.put(GeoLocationDriftProvider(common));
+  final referralProvider = Get.put(ReferralDriftProvider(common));
 
   Widget createWidgetForTesting({required Widget child}) {
     return MaterialApp(
@@ -531,6 +533,7 @@ void main() async {
             versionProvider,
             monologProvider,
             slugProvider,
+            referralProvider,
             me: const UserId('me'),
           ),
         );

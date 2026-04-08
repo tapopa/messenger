@@ -56,6 +56,7 @@ import 'provider/drift/drift.dart';
 import 'provider/drift/geolocation.dart';
 import 'provider/drift/locks.dart';
 import 'provider/drift/my_user.dart';
+import 'provider/drift/referrals.dart';
 import 'provider/drift/secret.dart';
 import 'provider/drift/settings.dart';
 import 'provider/drift/skipped_version.dart';
@@ -280,6 +281,7 @@ Future<void> _runApp() async {
   Get.put(RefreshSecretDriftProvider(Get.find()));
   Get.put(CallKitCallsDriftProvider(Get.find()));
   Get.put(SlugDriftProvider(Get.find()));
+  Get.put(ReferralDriftProvider(Get.find()));
 
   if (!PlatformUtils.isWeb) {
     Get.put(WindowRectDriftProvider(Get.find()));

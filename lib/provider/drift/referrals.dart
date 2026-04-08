@@ -33,7 +33,8 @@ class Referrals extends Table {
   TextColumn get referrerId => text()();
 }
 
-/// [DriftProviderBase] for manipulating the persisted [DirectLinkSlug]s.
+/// [DriftProviderBase] for manipulating the persisted [UserId]s as the
+/// referrals.
 class ReferralDriftProvider extends DriftProviderBase {
   ReferralDriftProvider(super.common);
 

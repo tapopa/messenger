@@ -19,9 +19,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../../../domain/model/monetization_settings.dart';
 import '/config.dart';
 import '/domain/model/link.dart';
+import '/domain/model/monetization_settings.dart';
 import '/domain/model/price.dart';
 import '/domain/repository/user.dart';
 import '/l10n/l10n.dart';

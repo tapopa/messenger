@@ -64,7 +64,7 @@ class WalletRepository extends IdentityDependency
   });
 
   @override
-  final Rx<Balance> balance = Rx(Balance.zero);
+  final Rx<Balance?> balance = Rx(null);
 
   @override
   late final OperationsPaginated operations = OperationsPaginated(
@@ -155,7 +155,7 @@ class WalletRepository extends IdentityDependency
     _queryToken = null;
 
     operations.clear();
-    balance.value = Balance.zero;
+    balance.value = null;
 
     _balanceSubscription?.close(immediate: true);
     _operationsSubscription?.close(immediate: true);

@@ -80,10 +80,10 @@ class PartnerTransactionsController extends GetxController {
   RxBool get previousLoading => _partnerService.operations.previousLoading;
 
   /// Returns the balance [MyUser] has in their partner available wallet.
-  Rx<Balance> get available => _partnerService.available;
+  Rx<Balance?> get available => _partnerService.available;
 
   /// Returns the balance [MyUser] has in their partner hold wallet.
-  Rx<Balance> get hold => _partnerService.hold;
+  Rx<Balance?> get hold => _partnerService.hold;
 
   @override
   void onInit() {

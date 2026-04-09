@@ -90,6 +90,11 @@ class Sum extends NewType<double> implements Comparable<Sum> {
   @override
   int get hashCode => val.hashCode;
 
+  /// Sums this [Sum] with the [other].
+  Sum operator +(Sum other) {
+    return Sum(val + other.val);
+  }
+
   /// Returns a [String] representing this [Sum].
   String toJson() => val.toString();
 }

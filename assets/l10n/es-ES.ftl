@@ -1148,10 +1148,12 @@ label_ongoing_audio_and_video_may_be_blocked = El sistema operativo de su dispos
 label_online = en línea
 label_open_calls_in_app = En la misma ventana
 label_open_calls_in_window = En una ventana separada
+label_operation_available = Disponible
 label_operation_canceled = Cancelado
 label_operation_completed = Completado
 label_operation_declined = Inconclusa
 label_operation_failed = Falló
+label_operation_hold_days = Mantener. {$days} días.
 label_operation_in_progress = En progreso...
 label_operation_label_cannot_processed_automatically =
     Lamentablemente, la transacción no se puede procesar automáticamente. Se revisará y procesará manualmente en 24 horas.

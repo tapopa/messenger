@@ -27,6 +27,7 @@ import '/ui/widget/line_divider.dart';
 import '/ui/widget/menu_button.dart';
 import '/ui/widget/svg/svg.dart';
 import 'controller.dart';
+import 'widget/balance_placeholder.dart';
 import 'widget/deposit_expandable.dart';
 
 /// View of the `HomeTab.wallet` tab.
@@ -73,12 +74,13 @@ class WalletTabView extends StatelessWidget {
               ],
             ),
             actions: [
-              Obx(() {
-                return Text(
-                  c.balance.value.l10n,
+              BalancePlaceholderBuilder(
+                builder: (b) => Text(
+                  b.l10next(digits: 2),
                   style: style.fonts.big.regular.currencyPrimary,
-                );
-              }),
+                ),
+                value: c.balance,
+              ),
               const SizedBox(width: 16),
             ],
           ),

@@ -1160,10 +1160,12 @@ label_ongoing_audio_and_video_may_be_blocked = Микрофон и камера 
 label_online = онлайн
 label_open_calls_in_app = В том же окне
 label_open_calls_in_window = В отдельном окне
+label_operation_available = Доступно
 label_operation_canceled = Отменено
 label_operation_completed = Завершено
 label_operation_declined = Не завершено
 label_operation_failed = Неуспешно
+label_operation_hold_days = Обработка. {$days} дней.
 label_operation_in_progress = В процессе...
 label_operation_label_cannot_processed_automatically =
     К сожалению, транзакция не может быть обработана автоматически. Транзакция будет проверена и обработана вручную в течение 24 часов.

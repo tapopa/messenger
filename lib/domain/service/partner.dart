@@ -39,10 +39,10 @@ class PartnerService extends Dependency {
   final AbstractPartnerRepository _partnerRepository;
 
   /// Returns the balance [MyUser] has in their partner available wallet.
-  Rx<Balance> get available => _partnerRepository.available;
+  Rx<Balance?> get available => _partnerRepository.available;
 
   /// Returns the balance [MyUser] has in their partner hold wallet.
-  Rx<Balance> get hold => _partnerRepository.hold;
+  Rx<Balance?> get hold => _partnerRepository.hold;
 
   /// Returns the [Operation]s happening in [MyUser]'s partner wallet.
   Paginated<OperationId, Rx<Operation>> get operations =>

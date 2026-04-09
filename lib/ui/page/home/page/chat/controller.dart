@@ -43,6 +43,7 @@ import '/api/backend/schema.dart'
 import '/config.dart';
 import '/domain/model/application_settings.dart';
 import '/domain/model/attachment.dart';
+import '/domain/model/balance.dart';
 import '/domain/model/chat_call.dart';
 import '/domain/model/chat_info.dart';
 import '/domain/model/chat_item_quote.dart';
@@ -547,7 +548,8 @@ class ChatController extends GetxController with IdentityAware {
         }
 
         if (donation != 0) {
-          if (_walletService.balance.value.sum.val < donation) {
+          final Balance? balance = _walletService.balance.value;
+          if (balance != null && balance.sum.val < donation) {
             return _showBalanceExceeded();
           }
 
@@ -865,7 +867,8 @@ class ChatController extends GetxController with IdentityAware {
         );
 
         if (donation != 0) {
-          if (_walletService.balance.value.sum.val < donation) {
+          final Balance? balance = _walletService.balance.value;
+          if (balance != null && balance.sum.val < donation) {
             return _showBalanceExceeded();
           }
         }
@@ -2730,7 +2733,7 @@ class ChatController extends GetxController with IdentityAware {
       description: [
         TextSpan(
           text: 'label_your_balance_amount'.l10nfmt({
-            'balance': _walletService.balance.value.l10n,
+            'balance': (_walletService.balance.value ?? Balance.zero).l10n,
           }),
         ),
       ],

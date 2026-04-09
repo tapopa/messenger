@@ -571,7 +571,28 @@ class OperationWidget extends StatelessWidget {
     }
 
     return _row(context, 'label_status'.l10n, switch (operation.status) {
-      OperationStatus.completed => Text('label_operation_completed'.l10n),
+      OperationStatus.completed =>
+        operation.holdUntil != null
+            ? Text(
+                'label_operation_hold_days'.l10nfmt({
+                  'days': DateTime.now()
+                      .difference(operation.holdUntil?.val ?? DateTime.now())
+                      .abs()
+                      .inDays,
+                }),
+              )
+            : switch (operation.origin) {
+                OperationOrigin.income => Text(switch (operation.direction) {
+                  OperationDirection.incoming =>
+                    'label_operation_available'.l10n,
+                  OperationDirection.outgoing ||
+                  OperationDirection.artemisUnknown =>
+                    'label_operation_completed'.l10n,
+                }),
+                OperationOrigin.purse || OperationOrigin.artemisUnknown => Text(
+                  'label_operation_completed'.l10n,
+                ),
+              },
       OperationStatus.inProgress => Text('label_operation_in_progress'.l10n),
       OperationStatus.failed => Text(
         'label_operation_failed'.l10n,

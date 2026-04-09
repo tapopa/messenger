@@ -15,13 +15,16 @@ All user visible changes to this project will be documented in this file. This p
 
 - UI:
     - Withdraw page:
-        - Dummy USDC withdraw method skeleton. ([#55])
+        - Dummy USDC and SWIFT withdrawal methods. ([#55])
 
 ### Changed
 
 - UI:
     - Wallet tab:
         - Searching and transactions order on transactions page. ([#54])
+        - Balance placeholder skeleton animation. ([#55])
+    - Monetization tab:
+        - Balance placeholder skeleton animation. ([#55])
 
 [#54]: /../../pull/54
 [#55]: /../../pull/55

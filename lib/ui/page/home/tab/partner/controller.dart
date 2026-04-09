@@ -29,10 +29,10 @@ class PartnerTabController extends GetxController {
   final ScrollController scrollController = ScrollController();
 
   /// Returns the balance [MyUser] has in their partner available wallet.
-  Rx<Balance> get available => _partnerService.available;
+  Rx<Balance?> get available => _partnerService.available;
 
   /// Returns the balance [MyUser] has in their partner hold wallet.
-  Rx<Balance> get hold => _partnerService.hold;
+  Rx<Balance?> get hold => _partnerService.hold;
 
   /// [PartnerService] used to query [available] and [hold] balances.
   final PartnerService _partnerService;

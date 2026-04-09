@@ -54,7 +54,7 @@ class WalletTabController extends GetxController {
   RxList<OperationDepositMethod> get methods => _walletService.methods;
 
   /// Balance [MyUser] has in its wallet to display.
-  Rx<Balance> get balance => _walletService.balance;
+  Rx<Balance?> get balance => _walletService.balance;
 
   @override
   void onInit() {

@@ -653,13 +653,13 @@ class OperationWidget extends StatelessWidget {
         context,
         'label_thanks_to'.l10n,
         Text(switch (operation.cause) {
-          OperationRewardCause.earn => 'label_partner_num'.l10nfmt({
+          OperationRewardCause.earn => 'label_user_num'.l10nfmt({
             'num': operation.affiliatedNum.val,
           }),
           OperationRewardCause.purchase => 'label_user_num'.l10nfmt({
             'num': operation.affiliatedNum.val,
           }),
-          OperationRewardCause.reward => 'label_user_num'.l10nfmt({
+          OperationRewardCause.reward => 'label_partner_num'.l10nfmt({
             'num': operation.affiliatedNum.val,
           }),
           OperationRewardCause.artemisUnknown => 'label_unknown'.l10n,

@@ -286,8 +286,8 @@ class WithdrawView extends StatelessWidget {
 
           final String? title = switch (network) {
             .base => 'label_usdc_base'.l10n,
-            .optimism => 'label_usdt_optimism'.l10n,
-            .ethereum => 'label_usdt_ethereum'.l10n,
+            .optimism => 'label_usdc_optimism'.l10n,
+            .ethereum => 'label_usdc_ethereum'.l10n,
             null => null,
           };
 
@@ -671,8 +671,8 @@ class WithdrawView extends StatelessWidget {
             const SizedBox(height: 16),
             ReactiveTextField(
               state: c.usdcPlatform,
-              label: 'label_usdt_crypto_exchange_platform'.l10n,
-              hint: 'label_usdt_crypto_exchange_platform_example'.l10n,
+              label: 'label_usdc_crypto_exchange_platform'.l10n,
+              hint: 'label_usdc_crypto_exchange_platform_example'.l10n,
               floatingLabelBehavior: .always,
             ),
             const SizedBox(height: 8),

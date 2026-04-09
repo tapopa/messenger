@@ -819,7 +819,7 @@ label_audio_call = Аудиозвонок{$by ->
         [x]{""}
         *[other] {" "}от {$by}
     }
-label_author = Author
+label_author = Автор
 label_auto_gain_control = Авторегулировка громкости
 label_auto_gain_control_subtitle = Автоматическая регулировка громкости микрофона
 label_available = Доступно

@@ -245,7 +245,17 @@ class WithdrawView extends StatelessWidget {
                     CenteredRow(
                       Text('label_commission'.l10n),
                       Text(
-                        'label_up_to_amount_usdt'.l10nfmt({'amount': '0.10'}),
+                        'label_up_to_amount_usdt'.l10nfmt({
+                          'amount': switch (network) {
+                            .arbitrumOne => '0.80',
+                            .optimism => '0.15',
+                            .plasma => '0.0001',
+                            .polygon => '0.80',
+                            .solana => '1.00',
+                            .ton => '0.15',
+                            .tron => '2.50',
+                          },
+                        }),
                       ),
                     ),
                     CenteredRow(
@@ -322,7 +332,13 @@ class WithdrawView extends StatelessWidget {
                     CenteredRow(
                       Text('label_commission'.l10n),
                       Text(
-                        'label_up_to_amount_usdc'.l10nfmt({'amount': '0.10'}),
+                        'label_up_to_amount_usdc'.l10nfmt({
+                          'amount': switch (network) {
+                            .base => '0.10',
+                            .ethereum => '2.00',
+                            .optimism => '2.00',
+                          },
+                        }),
                       ),
                     ),
                     CenteredRow(

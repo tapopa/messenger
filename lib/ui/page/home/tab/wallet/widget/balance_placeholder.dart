@@ -33,7 +33,10 @@ class BalancePlaceholder extends StatelessWidget {
     return Container(
       width: 42,
       height: 20,
-      color: style.colors.secondaryHighlight,
+      decoration: BoxDecoration(
+        color: style.colors.secondaryHighlight,
+        borderRadius: BorderRadius.circular(6),
+      ),
     );
   }
 }

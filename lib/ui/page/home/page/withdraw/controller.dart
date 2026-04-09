@@ -39,6 +39,9 @@ class WithdrawController extends GetxController {
   /// Selected [UsdtNetwork] for [WithdrawalOption.usdt] option selected.
   final Rx<UsdtNetwork?> usdtNetwork = Rx(null);
 
+  /// Selected [UsdcNetwork] for [WithdrawalOption.usdc] option selected.
+  final Rx<UsdcNetwork?> usdcNetwork = Rx(null);
+
   /// [TextFieldState] for withdrawal amount input.
   final TextFieldState amountToWithdraw = TextFieldState();
 
@@ -55,6 +58,15 @@ class WithdrawController extends GetxController {
 
   /// [TextFieldState] for inputting a [WithdrawalOption.usdt] crypto platform.
   final TextFieldState usdtPlatform = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.usdc] wallet number.
+  final TextFieldState usdcWallet = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.usdc] memo/tag/etc.
+  final TextFieldState usdcMemo = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.usdc] crypto platform.
+  final TextFieldState usdcPlatform = TextFieldState();
 
   /// [TextFieldState] for inputting a [WithdrawalOption.paypal] e-mail.
   final TextFieldState payPalEmail = TextFieldState();
@@ -159,6 +171,7 @@ class WithdrawController extends GetxController {
 /// Available withdrawal options.
 enum WithdrawalOption {
   usdt,
+  usdc,
   paypal,
   monobank,
   sepa;
@@ -166,6 +179,7 @@ enum WithdrawalOption {
   /// Returns a [l10n] key label associated with this [WithdrawalOption].
   String get l10n => switch (this) {
     .usdt => 'label_usdt'.l10n,
+    .usdc => 'label_usdc'.l10n,
     .paypal => 'label_paypal'.l10n,
     .monobank => 'label_monobank'.l10n,
     .sepa => 'label_sepa_transfer'.l10n,
@@ -174,6 +188,7 @@ enum WithdrawalOption {
   /// Returns a [l10n] key label associated with this [WithdrawalOption].
   SvgData get icon => switch (this) {
     .usdt => SvgIcons.withdrawUsdt,
+    .usdc => SvgIcons.withdrawUsdc,
     .paypal => SvgIcons.withdrawPayPal,
     .monobank => SvgIcons.withdrawMonobank,
     .sepa => SvgIcons.withdrawSepa,
@@ -182,6 +197,7 @@ enum WithdrawalOption {
   /// Returns whether this [WithdrawalOption] is available in the [IsoCode].
   bool available(IsoCode? code) => switch (this) {
     .usdt => IsoCode.values.toSet(),
+    .usdc => IsoCode.values.toSet(),
     .paypal => {
       IsoCode.DZ,
       IsoCode.AO,
@@ -465,5 +481,26 @@ enum UsdtNetwork {
     .solana => SvgIcons.usdtNetworkSolanaIcon,
     .ton => SvgIcons.usdtNetworkTonIcon,
     .tron => SvgIcons.usdtNetworkTronIcon,
+  };
+}
+
+/// Available [WithdrawalOption.usdc] network withdrawal options.
+enum UsdcNetwork {
+  base,
+  ethereum,
+  optimism;
+
+  /// Returns a [l10n] key label associated with this [UsdcNetwork].
+  String get l10n => switch (this) {
+    .base => 'label_base'.l10n,
+    .ethereum => 'label_ethereum'.l10n,
+    .optimism => 'label_optimism_op_mainnet'.l10n,
+  };
+
+  /// Returns a [l10n] key label associated with this [UsdcNetwork].
+  SvgData get icon => switch (this) {
+    .base => SvgIcons.usdcNetworkBaseIcon,
+    .ethereum => SvgIcons.usdcNetworkEthereumIcon,
+    .optimism => SvgIcons.usdcNetworkOptimismIcon,
   };
 }

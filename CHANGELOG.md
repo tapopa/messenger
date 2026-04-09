@@ -11,6 +11,12 @@ All user visible changes to this project will be documented in this file. This p
 
 [Diff](/../../compare/v0.4.1...v0.4.2) | [Milestone](/../../milestone/14)
 
+### Added
+
+- UI:
+    - Withdraw page:
+        - Dummy USDC withdraw method skeleton. ([#55])
+
 ### Changed
 
 - UI:
@@ -18,6 +24,7 @@ All user visible changes to this project will be documented in this file. This p
         - Searching and transactions order on transactions page. ([#54])
 
 [#54]: /../../pull/54
+[#55]: /../../pull/55
 
 
 

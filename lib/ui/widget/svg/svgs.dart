@@ -2186,6 +2186,12 @@ class SvgIcons {
     height: 27,
   );
 
+  static const SvgData withdrawUsdc = SvgData(
+    'assets/icons/withdraw_usdc.svg',
+    width: 31,
+    height: 27,
+  );
+
   static const SvgData withdrawPayPal = SvgData(
     'assets/icons/withdraw_paypal.svg',
     width: 24,
@@ -2206,6 +2212,30 @@ class SvgIcons {
 
   static const SvgData withdrawInfoTether = SvgData(
     'assets/icons/withdraw_info_tether.svg',
+    width: 154,
+    height: 40,
+  );
+
+  static const SvgData withdrawInfoUsdCoin = SvgData(
+    'assets/icons/withdraw_info_usd_coin.svg',
+    width: 154,
+    height: 40,
+  );
+
+  static const SvgData withdrawInfoUsdCoinBase = SvgData(
+    'assets/icons/withdraw_info_usd_coin_base.svg',
+    width: 154,
+    height: 40,
+  );
+
+  static const SvgData withdrawInfoUsdCoinOptimism = SvgData(
+    'assets/icons/withdraw_info_usd_coin_optimism.svg',
+    width: 154,
+    height: 40,
+  );
+
+  static const SvgData withdrawInfoUsdCoinEthereum = SvgData(
+    'assets/icons/withdraw_info_usd_ethereum.svg',
     width: 154,
     height: 40,
   );
@@ -2253,43 +2283,61 @@ class SvgIcons {
   );
 
   static const SvgData usdtNetworkArbitrumIcon = SvgData(
-    'assets/icons/usdt_network_arbitrum_icon.svg',
+    'assets/icons/usdt_network_arbitrum.svg',
     width: 23,
     height: 23,
   );
 
   static const SvgData usdtNetworkOptimismIcon = SvgData(
-    'assets/icons/usdt_network_optimism_icon.svg',
+    'assets/icons/usdt_network_optimism.svg',
     width: 23,
     height: 23,
   );
 
   static const SvgData usdtNetworkPlasmaIcon = SvgData(
-    'assets/icons/usdt_network_plasma_icon.svg',
+    'assets/icons/usdt_network_plasma.svg',
     width: 23,
     height: 23,
   );
 
   static const SvgData usdtNetworkPolygonIcon = SvgData(
-    'assets/icons/usdt_network_polygon_icon.svg',
+    'assets/icons/usdt_network_polygon.svg',
     width: 23,
     height: 23,
   );
 
   static const SvgData usdtNetworkSolanaIcon = SvgData(
-    'assets/icons/usdt_network_solana_icon.svg',
+    'assets/icons/usdt_network_solana.svg',
     width: 23,
     height: 23,
   );
 
   static const SvgData usdtNetworkTonIcon = SvgData(
-    'assets/icons/usdt_network_ton_icon.svg',
+    'assets/icons/usdt_network_ton.svg',
     width: 23,
     height: 23,
   );
 
   static const SvgData usdtNetworkTronIcon = SvgData(
-    'assets/icons/usdt_network_tron_icon.svg',
+    'assets/icons/usdt_network_tron.svg',
+    width: 23,
+    height: 23,
+  );
+
+  static const SvgData usdcNetworkBaseIcon = SvgData(
+    'assets/icons/usdc_network_base.svg',
+    width: 23,
+    height: 23,
+  );
+
+  static const SvgData usdcNetworkEthereumIcon = SvgData(
+    'assets/icons/usdc_network_ethereum.svg',
+    width: 23,
+    height: 23,
+  );
+
+  static const SvgData usdcNetworkOptimismIcon = SvgData(
+    'assets/icons/usdc_network_optimism.svg',
     width: 23,
     height: 23,
   );

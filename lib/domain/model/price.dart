@@ -36,6 +36,9 @@ class Price {
   /// Constructs a [Price] with `USDT` currency of the provided [amount].
   Price.usdt(double amount) : sum = Sum(amount), currency = Currency('USDT');
 
+  /// Constructs a [Price] with `USDC` currency of the provided [amount].
+  Price.usdc(double amount) : sum = Sum(amount), currency = Currency('USDC');
+
   /// Constructs a [Price] with `USD` currency of the provided [amount].
   Price.usd(double amount) : sum = Sum(amount), currency = Currency('USD');
 

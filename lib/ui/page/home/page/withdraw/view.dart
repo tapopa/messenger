@@ -36,6 +36,7 @@ import '/ui/widget/primary_button.dart';
 import '/ui/widget/svg/svg.dart';
 import '/ui/widget/text_field.dart';
 import 'controller.dart';
+import 'usdc_network/view.dart';
 import 'usdt_network/view.dart';
 import 'widget/checkbox_button.dart';
 import 'widget/uploadable_passport.dart';
@@ -89,6 +90,9 @@ class WithdrawView extends StatelessWidget {
                               subtitle: switch (e) {
                                 .usdt => 'label_commission_from_value'.l10nfmt({
                                   'value': Price.usdt(0.0001).l10n,
+                                }),
+                                .usdc => 'label_commission_from_value'.l10nfmt({
+                                  'value': Price.usdc(0.10).l10n,
                                 }),
                                 .paypal => 'label_commission_value'.l10nfmt({
                                   'value': 'n_percent'.l10nfmt({'n': 0}),
@@ -234,6 +238,83 @@ class WithdrawView extends StatelessWidget {
                       Text('label_commission'.l10n),
                       Text(
                         'label_up_to_amount_usdt'.l10nfmt({'amount': '0.10'}),
+                      ),
+                    ),
+                    CenteredRow(
+                      Text('label_minimum_amount'.l10n),
+                      Text(Price.xxx(10).l10n),
+                    ),
+                    CenteredRow(
+                      Text('label_processing_time'.l10n),
+                      Text('label_n_business_days'.l10nfmt({'n': 3})),
+                    ),
+                  ],
+                ),
+              ],
+            ],
+          );
+        });
+
+      case .usdc:
+        final IsoCode? country = c.country.value;
+        final bool available = option.available(country);
+
+        if (!available) {
+          return Block(
+            title: option.l10n,
+            children: [
+              SvgIcon(SvgIcons.withdrawInfoUsdCoin),
+              const SizedBox(height: 16),
+              Text(
+                'label_this_withdrawal_option_is_not_available_in_country'.l10n,
+                style: style.fonts.small.regular.secondary,
+              ),
+            ],
+          );
+        }
+
+        return Obx(() {
+          final UsdcNetwork? network = c.usdcNetwork.value;
+
+          final String? title = switch (network) {
+            .base => 'label_usdc_base'.l10n,
+            .optimism => 'label_usdt_optimism'.l10n,
+            .ethereum => 'label_usdt_ethereum'.l10n,
+            null => null,
+          };
+
+          return Block(
+            title: title ?? option.l10n,
+            children: [
+              SvgIcon(switch (network) {
+                .base => SvgIcons.withdrawInfoUsdCoinBase,
+                .optimism => SvgIcons.withdrawInfoUsdCoinOptimism,
+                .ethereum => SvgIcons.withdrawInfoUsdCoinEthereum,
+                null => SvgIcons.withdrawInfoUsdCoin,
+              }),
+              const SizedBox(height: 24),
+              FieldButton(
+                onPressed: () async {
+                  final network = await UsdcNetworkView.show(context);
+                  if (network is UsdcNetwork) {
+                    c.usdcNetwork.value = network;
+                  }
+                },
+                headline: Text('label_network_type'.l10n),
+                child: Text(
+                  title ?? 'btn_select_network_type'.l10n,
+                  style: style.fonts.normal.regular.primary,
+                ),
+              ),
+              const SizedBox(height: 8),
+              if (network != null) ...[
+                const SizedBox(height: 8),
+                CenteredTable(
+                  children: [
+                    CenteredRow(
+                      Text('label_commission'.l10n),
+                      Text(
+                        'label_up_to_amount_usdc'.l10nfmt({'amount': '0.10'}),
                       ),
                     ),
                     CenteredRow(
@@ -451,6 +532,77 @@ class WithdrawView extends StatelessWidget {
             const SizedBox(height: 16),
             ReactiveTextField(
               state: c.usdtPlatform,
+              label: 'label_usdt_crypto_exchange_platform'.l10n,
+              hint: 'label_usdt_crypto_exchange_platform_example'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 8),
+          ],
+        );
+
+      case .usdc:
+        return Block(
+          title: 'label_details'.l10n,
+          children: [
+            Text(
+              'label_amount_sent_depends_on_crypto_exchange_platform'.l10n,
+              style: style.fonts.small.regular.secondary,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.amountToWithdraw,
+              label: 'label_amount_to_withdraw_currency'.l10nfmt({
+                'currency': Currency('G').l10n,
+              }),
+              hint: 'label_available_semicolon_amount'.l10nfmt({
+                'amount': Price.zero.l10n,
+              }),
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.amountToSend,
+              label: 'label_amount_to_be_sent_approximate_currency'.l10nfmt({
+                'currency': 'USDC',
+              }),
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.usdcWallet,
+              label: 'label_usdc_wallet_number'.l10n,
+              hint: 'label_usdc_wallet_number_example'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.usdcMemo,
+              label: 'label_usdc_tag_memo_etc'.l10n,
+              hint: 'label_usdc_tag_memo_etc_example'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'label_in_case_crypto_platform_no_identifier1'.l10n,
+                  ),
+                  TextSpan(
+                    text: 'label_in_case_crypto_platform_no_identifier2'.l10n,
+                    style: style.fonts.small.regular.onBackground,
+                  ),
+                  TextSpan(
+                    text: 'label_in_case_crypto_platform_no_identifier3'.l10n,
+                  ),
+                ],
+              ),
+              style: style.fonts.small.regular.secondary,
+            ),
+            const SizedBox(height: 8),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.usdcPlatform,
               label: 'label_usdt_crypto_exchange_platform'.l10n,
               hint: 'label_usdt_crypto_exchange_platform_example'.l10n,
               floatingLabelBehavior: .always,
@@ -822,6 +974,17 @@ class WithdrawView extends StatelessWidget {
                     c.usdtPlatform.error.value == null &&
                     !c.usdtWallet.isEmpty.value &&
                     c.usdtWallet.error.value == null &&
+                    !c.amountToWithdraw.isEmpty.value &&
+                    c.amountToWithdraw.error.value == null,
+
+              .usdc =>
+                c.usdcNetwork.value != null &&
+                    !c.usdcMemo.isEmpty.value &&
+                    c.usdcMemo.error.value == null &&
+                    !c.usdcPlatform.isEmpty.value &&
+                    c.usdcPlatform.error.value == null &&
+                    !c.usdcWallet.isEmpty.value &&
+                    c.usdcWallet.error.value == null &&
                     !c.amountToWithdraw.isEmpty.value &&
                     c.amountToWithdraw.error.value == null,
 

@@ -20,6 +20,7 @@ import 'package:get/get.dart';
 
 import '/domain/model/country.dart';
 import '/domain/model/native_file.dart';
+import '/domain/model/price.dart';
 import '/domain/model/session.dart';
 import '/domain/service/session.dart';
 import '/l10n/l10n.dart';
@@ -130,6 +131,37 @@ class WithdrawController extends GetxController {
   /// Indicator whether all the conditions were approved by the user.
   final RxBool confirmed = RxBool(false);
 
+  /// [Currency] of a [WithdrawalOption.swift] withdraw.
+  final Rx<Currency?> swiftCurrency = Rx(null);
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.swift] account.
+  final TextFieldState swiftAccount = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.swift] bank SWIFT code.
+  final TextFieldState swiftSwiftCode = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.swift] bank name.
+  final TextFieldState swiftBankName = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.swift] bank address.
+  final TextFieldState swiftBankAddress = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.swift] intermediary
+  /// bank number.
+  final TextFieldState swiftIntermediaryBankNumber = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.swift] intermediary
+  /// bank number.
+  final TextFieldState swiftIntermediaryBankSwiftCode = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.swift] intermediary
+  /// bank number.
+  final TextFieldState swiftIntermediaryBankName = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.swift] intermediary
+  /// bank number.
+  final TextFieldState swiftIntermediaryBankAddress = TextFieldState();
+
   /// [SessionService] used for [IpGeoLocation] retrieving.
   final SessionService _sessionService;
 
@@ -174,7 +206,8 @@ enum WithdrawalOption {
   usdc,
   paypal,
   monobank,
-  sepa;
+  sepa,
+  swift;
 
   /// Returns a [l10n] key label associated with this [WithdrawalOption].
   String get l10n => switch (this) {
@@ -183,6 +216,7 @@ enum WithdrawalOption {
     .paypal => 'label_paypal'.l10n,
     .monobank => 'label_monobank'.l10n,
     .sepa => 'label_sepa_transfer'.l10n,
+    .swift => 'label_swift_transfer'.l10n,
   };
 
   /// Returns a [l10n] key label associated with this [WithdrawalOption].
@@ -192,6 +226,7 @@ enum WithdrawalOption {
     .paypal => SvgIcons.withdrawPayPal,
     .monobank => SvgIcons.withdrawMonobank,
     .sepa => SvgIcons.withdrawSepa,
+    .swift => SvgIcons.withdrawSwift,
   };
 
   /// Returns whether this [WithdrawalOption] is available in the [IsoCode].
@@ -448,6 +483,7 @@ enum WithdrawalOption {
       IsoCode.SM,
       IsoCode.VA,
     },
+    .swift => IsoCode.values.toSet().difference({IsoCode.RU, IsoCode.BY}),
   }.contains(code);
 }
 

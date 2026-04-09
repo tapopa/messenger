@@ -2210,6 +2210,12 @@ class SvgIcons {
     height: 9,
   );
 
+  static const SvgData withdrawSwift = SvgData(
+    'assets/icons/withdraw_swift.svg',
+    width: 31,
+    height: 31,
+  );
+
   static const SvgData withdrawInfoTether = SvgData(
     'assets/icons/withdraw_info_tether.svg',
     width: 154,
@@ -2357,6 +2363,12 @@ class SvgIcons {
   static const SvgData withdrawInfoSepa = SvgData(
     'assets/icons/withdraw_info_sepa.svg',
     width: 109,
+    height: 40,
+  );
+
+  static const SvgData withdrawInfoSwift = SvgData(
+    'assets/icons/withdraw_info_swift.svg',
+    width: 118,
     height: 40,
   );
 

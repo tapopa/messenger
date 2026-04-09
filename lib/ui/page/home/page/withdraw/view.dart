@@ -36,6 +36,7 @@ import '/ui/widget/primary_button.dart';
 import '/ui/widget/svg/svg.dart';
 import '/ui/widget/text_field.dart';
 import 'controller.dart';
+import 'currency_of_account/view.dart';
 import 'usdc_network/view.dart';
 import 'usdt_network/view.dart';
 import 'widget/checkbox_button.dart';
@@ -103,6 +104,13 @@ class WithdrawView extends StatelessWidget {
                                 .sepa => 'label_commission_value'.l10nfmt({
                                   'value': Price.eur(7).l10n,
                                 }),
+                                .swift =>
+                                  'label_commission_value_plus_percent'.l10nfmt(
+                                    {
+                                      'value': Price.usd(3).l10n,
+                                      'percent': 0.4,
+                                    },
+                                  ),
                               },
                               leading: Container(
                                 decoration: BoxDecoration(
@@ -457,6 +465,66 @@ class WithdrawView extends StatelessWidget {
             ),
           ],
         );
+
+      case .swift:
+        final IsoCode? country = c.country.value;
+        final bool available = option.available(country);
+
+        if (!available) {
+          return Block(
+            title: option.l10n,
+            children: [
+              SvgIcon(SvgIcons.withdrawInfoSwift),
+              const SizedBox(height: 16),
+              Text(
+                'label_this_withdrawal_option_is_not_available_in_country'.l10n,
+                style: style.fonts.small.regular.secondary,
+              ),
+            ],
+          );
+        }
+
+        return Block(
+          title: option.l10n,
+          children: [
+            SvgIcon(SvgIcons.withdrawInfoSwift),
+            const SizedBox(height: 16),
+            CenteredTable(
+              children: [
+                CenteredRow(
+                  Text('label_commission'.l10n),
+                  Text(Price.eur(0.25).l10n),
+                ),
+                CenteredRow(
+                  Text('label_currency'.l10n),
+                  Text(
+                    [
+                      'USD',
+                      'EUR',
+                      'GBP',
+                      'JPY',
+                      'CAD',
+                      'AUD',
+                      'NZD',
+                      'CNH',
+                      'SGD',
+                      'CHF',
+                      'DKK',
+                      'NOK',
+                      'SEK',
+                      'IDR',
+                      'MXN',
+                    ].join('comma_space'.l10n),
+                  ),
+                ),
+                CenteredRow(
+                  Text('label_processing_time'.l10n),
+                  Text('label_n_business_days'.l10nfmt({'n': 3})),
+                ),
+              ],
+            ),
+          ],
+        );
     }
   }
 
@@ -751,6 +819,105 @@ class WithdrawView extends StatelessWidget {
             const SizedBox(height: 8),
           ],
         );
+
+      case .swift:
+        return Block(
+          title: 'label_details'.l10n,
+          children: [
+            ReactiveTextField(
+              state: c.amountToWithdraw,
+              label: 'label_amount_to_withdraw_currency'.l10nfmt({
+                'currency': Currency('G').l10n,
+              }),
+              hint: 'label_available_semicolon_amount'.l10nfmt({
+                'amount': Price.zero.l10n,
+              }),
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.amountToSend,
+              label: 'label_amount_to_be_sent_approximate_currency'.l10nfmt({
+                'currency': c.swiftCurrency.value?.l10n ?? 'question_mark'.l10n,
+              }),
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.swiftAccount,
+              label: 'label_beneficiary_account_number'.l10n,
+              hint: 'label_beneficiary_account_number_example'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            FieldButton(
+              onPressed: () async {
+                final currency = await CurrencyOfAccountView.show(context);
+                if (currency is Currency) {
+                  c.swiftCurrency.value = currency;
+                }
+              },
+              headline: Text('label_currency_of_account'.l10n),
+              child: Text(
+                c.swiftCurrency.value?.title ??
+                    'btn_select_currency_of_account'.l10n,
+                style: style.fonts.normal.regular.primary,
+              ),
+            ),
+
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.swiftSwiftCode,
+              label: 'label_beneficiary_bank_swift_code'.l10n,
+              hint: 'label_beneficiary_bank_swift_code_example'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.swiftBankName,
+              label: 'label_beneficiary_bank_name'.l10n,
+              hint: 'label_beneficiary_bank_name_example'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.swiftBankAddress,
+              label: 'label_beneficiary_bank_address'.l10n,
+              hint: 'label_beneficiary_bank_address_example'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.swiftIntermediaryBankNumber,
+              label: 'label_intermediary_bank_account_number'.l10n,
+              hint: 'label_intermediary_bank_account_number_example'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.swiftIntermediaryBankSwiftCode,
+              label: 'label_intermediary_bank_swift_code'.l10n,
+              hint: 'label_intermediary_bank_swift_code_example'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.swiftIntermediaryBankName,
+              label: 'label_intermediary_bank_name'.l10n,
+              hint: 'label_intermediary_bank_name_example'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 16),
+            ReactiveTextField(
+              state: c.swiftIntermediaryBankAddress,
+              label: 'label_intermediary_bank_address'.l10n,
+              hint: 'label_intermediary_bank_address_example'.l10n,
+              floatingLabelBehavior: .always,
+            ),
+            const SizedBox(height: 8),
+          ],
+        );
     }
   }
 
@@ -1007,6 +1174,10 @@ class WithdrawView extends StatelessWidget {
                     c.amountToWithdraw.error.value == null,
 
               .sepa =>
+                !c.amountToWithdraw.isEmpty.value &&
+                    c.amountToWithdraw.error.value == null,
+
+              .swift =>
                 !c.amountToWithdraw.isEmpty.value &&
                     c.amountToWithdraw.error.value == null,
 

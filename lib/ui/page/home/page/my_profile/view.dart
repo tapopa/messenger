@@ -1529,7 +1529,8 @@ Widget _downloads(BuildContext context, MyProfileController c) {
             if (PWAInstall().installPromptEnabled) {
               PWAInstall().promptInstall_();
             } else {
-              if (PlatformUtils.isMacOS || PlatformUtils.isIOS) {
+              if ((PlatformUtils.isMacOS && WebUtils.isSafari) ||
+                  PlatformUtils.isIOS) {
                 return await PwaInstructionView.show(context);
               }
 

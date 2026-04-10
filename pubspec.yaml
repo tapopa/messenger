@@ -227,6 +227,7 @@ flutter:
     - assets/images/country/
     - assets/images/currency/
     - assets/images/logo/
+    - assets/images/pwa/
     - assets/isrgrootx1.pem
     - assets/l10n/
     - assets/privacy.html

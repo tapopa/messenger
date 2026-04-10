@@ -2527,4 +2527,22 @@ class SvgIcons {
     width: 12,
     height: 7,
   );
+
+  static const SvgData shareBig = SvgData(
+    'assets/icons/share_big.svg',
+    width: 23,
+    height: 29,
+  );
+
+  static const SvgData addToDock = SvgData(
+    'assets/icons/add_to_dock.svg',
+    width: 21,
+    height: 17,
+  );
+
+  static const SvgData addToHomeScreen = SvgData(
+    'assets/icons/add_to_home_screen.svg',
+    width: 17,
+    height: 17,
+  );
 }

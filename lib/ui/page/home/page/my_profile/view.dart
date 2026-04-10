@@ -85,6 +85,7 @@ import 'microphone_switch/view.dart';
 import 'muted_chats/view.dart';
 import 'output_switch/view.dart';
 import 'password/view.dart';
+import 'pwa_instruction/view.dart';
 import 'session/controller.dart';
 import 'welcome_field/view.dart';
 import 'widget/background_preview.dart';
@@ -420,6 +421,11 @@ Widget _block(BuildContext context, MyProfileController c, int i) {
       return Block(
         title: 'btn_help'.l10n,
         children: [
+          Text(
+            'label_tapopa_would_be_grateful'.l10n,
+            style: style.fonts.small.regular.secondary,
+          ),
+          const SizedBox(height: 16),
           FieldButton(
             onPressed: () async {
               await launchUrlString(Config.repository);
@@ -1439,6 +1445,8 @@ Widget _devices(BuildContext context, MyProfileController c) {
 
 /// Returns the contents of a [ProfileTab.download] section.
 Widget _downloads(BuildContext context, MyProfileController c) {
+  final style = Theme.of(context).style;
+
   final Widget latestButton = Obx(() {
     final latest =
         c.latestRelease.value == null ||
@@ -1461,65 +1469,86 @@ Widget _downloads(BuildContext context, MyProfileController c) {
     );
   });
 
+  // ignore: unused_local_variable
+  final List<Widget> platforms = [
+    if (Config.appStoreUrl.isNotEmpty || Config.googlePlayUrl.isNotEmpty) ...[
+      const SizedBox(height: 20),
+      LineDivider('label_mobile_apps'.l10n),
+      const SizedBox(height: 16),
+    ],
+    if (Config.appStoreUrl.isNotEmpty) ...[
+      DownloadButton.appStore(),
+      const SizedBox(height: 8),
+    ],
+    const DownloadButton.ios(),
+    const SizedBox(height: 8),
+    if (Config.googlePlayUrl.isNotEmpty) ...[
+      DownloadButton.googlePlay(),
+      const SizedBox(height: 8),
+    ],
+    const DownloadButton.android(),
+    const SizedBox(height: 20),
+    LineDivider('label_desktop_apps'.l10n),
+    const SizedBox(height: 16),
+    const DownloadButton.windows(),
+    const SizedBox(height: 8),
+    const DownloadButton.macos(),
+    const SizedBox(height: 8),
+    const DownloadButton.linux(),
+    const SizedBox(height: 8),
+  ];
+
   return Column(
     children: [
-      WidgetButton(
-        onPressed: () {},
-        onPressedWithDetails: (u) {
-          PlatformUtils.copy(text: Pubspec.ref);
-          MessagePopup.success('label_copied'.l10n, at: u.globalPosition);
-        },
-        child: LineDivider(
-          'label_version_semicolon'.l10nfmt({'version': Pubspec.ref}),
+      if (PlatformUtils.isWeb) ...[
+        Text(
+          PlatformUtils.isWindows
+              ? 'label_add_application_to_desktop'.l10n
+              : PlatformUtils.isMacOS
+              ? 'label_add_application_to_dock'.l10n
+              : 'label_add_application_to_home_screen'.l10n,
+          style: style.fonts.small.regular.secondary,
         ),
-      ),
-      SizedBox(height: 16),
-      if (!PlatformUtils.isWeb)
-        latestButton
-      else
-        FieldButton(
-          text: 'btn_install_web_app'.l10n,
+        const SizedBox(height: 16),
+        Image.asset(
+          PlatformUtils.isWindows
+              ? 'assets/images/pwa/windows.jpg'
+              : PlatformUtils.isMacOS
+              ? 'assets/images/pwa/macos.jpg'
+              : PlatformUtils.isAndroid
+              ? 'assets/images/pwa/android.jpg'
+              : 'assets/images/pwa/ios.jpg',
+          width: 324,
+          height: 148,
+          fit: BoxFit.cover,
+        ),
+        const SizedBox(height: 16),
+        PrimaryButton(
+          title: 'btn_install'.l10n,
           onPressed: () async {
             if (PWAInstall().installPromptEnabled) {
               PWAInstall().promptInstall_();
             } else {
-              MessagePopup.error(
-                'label_installation_error_description'.l10n,
-                title: 'label_installation_error'.l10n,
+              if (PlatformUtils.isMacOS || PlatformUtils.isIOS) {
+                return await PwaInstructionView.show(context);
+              }
+
+              MessagePopup.alert(
+                'label_installation_error'.l10n,
+                description: [
+                  TextSpan(text: 'label_installation_error_description'.l10n),
+                ],
+                button: (context) =>
+                    MessagePopup.primaryButton(context, label: 'btn_ok'.l10n),
               );
             }
           },
-          trailing: Padding(
-            padding: const EdgeInsets.only(left: 4),
-            child: SvgIcon(SvgIcons.logo, height: 21),
-          ),
         ),
-      if (Config.appStoreUrl.isNotEmpty || Config.googlePlayUrl.isNotEmpty) ...[
-        SizedBox(height: 20),
-        LineDivider('label_mobile_apps'.l10n),
-        SizedBox(height: 16),
-      ],
-      if (Config.appStoreUrl.isNotEmpty) ...[
-        DownloadButton.appStore(),
-        const SizedBox(height: 8),
-      ],
+      ] else
+        latestButton,
+
       // TODO: Uncomment when ready to ship the provided platforms.
-      // const DownloadButton.ios(),
-      // const SizedBox(height: 8),
-      if (Config.googlePlayUrl.isNotEmpty) ...[
-        DownloadButton.googlePlay(),
-        const SizedBox(height: 8),
-      ],
-      // const DownloadButton.android(),
-      // SizedBox(height: 20),
-      // LineDivider('label_desktop_apps'.l10n),
-      // SizedBox(height: 16),
-      // const DownloadButton.windows(),
-      // const SizedBox(height: 8),
-      // const DownloadButton.macos(),
-      // const SizedBox(height: 8),
-      // const DownloadButton.linux(),
-      // const SizedBox(height: 8),
+      // ...platforms,
     ],
   );
 }

@@ -16,6 +16,8 @@ All user visible changes to this project will be documented in this file. This p
 - UI:
     - Withdraw page:
         - Dummy USDC and SWIFT withdrawal methods. ([#55])
+    - Profile page:
+        - [Progressive Web Application (PWA)](PWA) installation instructions for macOS and iOS. ([#56])
 
 ### Changed
 
@@ -28,6 +30,7 @@ All user visible changes to this project will be documented in this file. This p
 
 [#54]: /../../pull/54
 [#55]: /../../pull/55
+[#56]: /../../pull/56
 
 
 

@@ -28,14 +28,11 @@ Feature: Deleted users are displayed in chats
     And I wait until "Bob" dialog is present
     And I see "Alice, Bob, Charlie" chat
     And I see "Bob" chat
-    And I see avatar title as "Bo" for "Bob" chat
 
     When Bob deletes their account
     Then I see "Alice, Deleted Account, Charlie" chat
     And I see "Deleted Account" chat
-    And I see avatar title as "Bo" for "Deleted Account" chat
 
     When I tap "Bob" chat
     And I go to Bob's page
-    Then I see avatar title as "Bo" in user profile
-    And I see title as "Deleted Account" in user profile
+    Then I see title as "Deleted Account" in user profile

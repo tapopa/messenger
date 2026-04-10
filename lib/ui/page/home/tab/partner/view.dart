@@ -19,10 +19,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '/domain/model/balance.dart';
-import '/domain/model/price.dart';
 import '/l10n/l10n.dart';
 import '/routes.dart';
 import '/themes.dart';
+import '/ui/page/home/tab/wallet/widget/balance_placeholder.dart';
 import '/ui/page/home/widget/app_bar.dart';
 import '/ui/widget/line_divider.dart';
 import '/ui/widget/menu_button.dart';
@@ -30,7 +30,7 @@ import '/ui/widget/svg/svg.dart';
 import '/ui/widget/widget_button.dart';
 import 'controller.dart';
 
-/// View of the `HomeTab.partner` tab.
+/// View of the [HomeTab.partner] tab.
 class PartnerTabView extends StatelessWidget {
   const PartnerTabView({super.key});
 
@@ -60,22 +60,19 @@ class PartnerTabView extends StatelessWidget {
               ],
             ),
             actions: [
-              Obx(() {
-                return WidgetButton(
-                  onPressed: router.partnerTransactions,
-                  child: Text(
-                    Balance(
-                      currency: c.available.value.currency,
-                      sum: Sum(
-                        c.available.value.sum.val + c.hold.value.sum.val,
-                      ),
-                    ).l10next(digits: 2),
-                    style: style.fonts.big.regular.onBackground.copyWith(
-                      color: style.colors.primary,
+              BalancePlaceholderBuilder(
+                builder: (available) => BalancePlaceholderBuilder(
+                  builder: (hold) => WidgetButton(
+                    onPressed: router.partnerTransactions,
+                    child: Text(
+                      (available + hold).l10next(digits: 2),
+                      style: style.fonts.big.regular.primary,
                     ),
                   ),
-                );
-              }),
+                  value: c.hold,
+                ),
+                value: c.available,
+              ),
               const SizedBox(width: 16),
             ],
           ),
@@ -94,13 +91,17 @@ class PartnerTabView extends StatelessWidget {
                     final bool enabled =
                         router.routes.lastOrNull == Routes.withdraw;
 
+                    final Balance? available = c.available.value;
+
                     return MenuButton(
                       title: 'label_order_payment'.l10n,
                       onPressed: router.withdraw,
                       leading: const SvgIcon(SvgIcons.menuOrderMoney),
                       inverted: enabled,
                       subtitle: 'label_available_balance_amount'.l10nfmt({
-                        'amount': c.available.value.l10n,
+                        'amount': available == null
+                            ? ('dot'.l10n * 3)
+                            : available.l10n,
                       }),
                     );
                   }),

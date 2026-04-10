@@ -15,31 +15,7 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '/domain/model/balance.dart';
-import '/domain/service/partner.dart';
-
-/// Controller of the `HomeTab.partner` tab.
-class PartnerTabController extends GetxController {
-  PartnerTabController(this._partnerService);
-
-  /// [ScrollController] to pass to a [Scrollbar].
-  final ScrollController scrollController = ScrollController();
-
-  /// Returns the balance [MyUser] has in their partner available wallet.
-  Rx<Balance?> get available => _partnerService.available;
-
-  /// Returns the balance [MyUser] has in their partner hold wallet.
-  Rx<Balance?> get hold => _partnerService.hold;
-
-  /// [PartnerService] used to query [available] and [hold] balances.
-  final PartnerService _partnerService;
-
-  @override
-  void onClose() {
-    scrollController.dispose();
-    super.onClose();
-  }
-}
+/// Controller for a [Currency] select modal.
+class CurrencyOfAccountController extends GetxController {}

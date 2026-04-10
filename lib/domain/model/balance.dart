@@ -32,4 +32,9 @@ class Balance {
 
   @override
   String toString() => 'Balance(${currency.val} -> ${sum.val})';
+
+  /// Sums this [Balance] with the [other] keeping the [currency].
+  Balance operator +(Balance other) {
+    return Balance(sum: sum + other.sum, currency: currency);
+  }
 }

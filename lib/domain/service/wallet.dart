@@ -37,7 +37,7 @@ class WalletService extends Dependency {
   final AbstractWalletRepository _walletRepository;
 
   /// Returns the balance [MyUser] has in their wallet.
-  Rx<Balance> get balance => _walletRepository.balance;
+  Rx<Balance?> get balance => _walletRepository.balance;
 
   /// Returns the [Operation]s happening in [MyUser]'s wallet.
   Paginated<OperationId, Rx<Operation>> get operations =>

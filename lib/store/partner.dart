@@ -66,10 +66,10 @@ class PartnerRepository extends IdentityDependency
   PartnerRepository(this._graphQlProvider, {required super.me});
 
   @override
-  final Rx<Balance> available = Rx(Balance.zero);
+  final Rx<Balance?> available = Rx(null);
 
   @override
-  final Rx<Balance> hold = Rx(Balance.zero);
+  final Rx<Balance?> hold = Rx(null);
 
   @override
   final Rx<MonetizationSettings> settings = Rx(
@@ -205,8 +205,8 @@ class PartnerRepository extends IdentityDependency
     Log.debug('onIdentityChanged($me)', '$runtimeType');
 
     operations.clear();
-    available.value = Balance.zero;
-    hold.value = Balance.zero;
+    available.value = null;
+    hold.value = null;
     _availableSubscription?.close(immediate: true);
     _holdSubscription?.close(immediate: true);
     _operationsSubscription?.close(immediate: true);

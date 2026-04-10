@@ -433,6 +433,9 @@ class IntroductionController extends GetxController with IdentityAware {
   /// [Worker] reacting on [RouterState.routes] changes to [_scheduleChat].
   Worker? _routesWorker;
 
+  /// [Worker] reacting on [MyUser] changes to account [name] state.
+  Worker? _myUserWorker;
+
   /// Returns the [UserId] of the currently authenticated account.
   UserId get me => _authService.userId;
 
@@ -507,6 +510,12 @@ class IntroductionController extends GetxController with IdentityAware {
       }
     });
 
+    _myUserWorker = ever(myUser, (MyUser? myUser) {
+      if (!name.focus.hasFocus) {
+        name.unchecked = myUser?.name?.val;
+      }
+    });
+
     super.onInit();
   }
 
@@ -515,6 +524,7 @@ class IntroductionController extends GetxController with IdentityAware {
     super.onClose();
     _opacityWorker?.dispose();
     _routesWorker?.dispose();
+    _myUserWorker?.dispose();
   }
 
   @override

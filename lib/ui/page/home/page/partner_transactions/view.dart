@@ -21,11 +21,11 @@ import 'package:get/get.dart';
 
 import '/domain/model/balance.dart';
 import '/domain/model/operation.dart';
-import '/domain/model/price.dart';
 import '/l10n/l10n.dart';
 import '/themes.dart';
 import '/ui/page/home/page/chat/message_field/view.dart';
 import '/ui/page/home/page/chat/widget/back_button.dart';
+import '/ui/page/home/tab/wallet/widget/balance_placeholder.dart';
 import '/ui/page/home/widget/app_bar.dart';
 import '/ui/page/home/widget/operation.dart';
 import '/ui/widget/context_menu/menu.dart';
@@ -252,29 +252,32 @@ class PartnerTransactionsView extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 20),
-          Obx(() {
-            return Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text: 'label_total_balance_amount1'.l10n,
-                    style: style.fonts.big.regular.secondary,
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: 'label_total_balance_amount1'.l10n,
+                  style: style.fonts.big.regular.secondary,
+                ),
+                WidgetSpan(
+                  alignment: PlaceholderAlignment.middle,
+                  child: BalancePlaceholderBuilder(
+                    builder: (available) => BalancePlaceholderBuilder(
+                      builder: (hold) => Text(
+                        'label_total_balance_amount2'.l10nfmt({
+                          'amount': (available + hold).l10next(digits: 2),
+                        }),
+                        style: style.fonts.big.regular.primary,
+                      ),
+                      value: c.hold,
+                    ),
+                    value: c.available,
                   ),
-                  TextSpan(
-                    text: 'label_total_balance_amount2'.l10nfmt({
-                      'amount': Balance(
-                        currency: c.available.value.currency,
-                        sum: Sum(
-                          c.available.value.sum.val + c.hold.value.sum.val,
-                        ),
-                      ).l10n,
-                    }),
-                    style: style.fonts.big.regular.primary,
-                  ),
-                ],
-              ),
-            );
-          }),
+                ),
+              ],
+            ),
+          ),
+
           const SizedBox(height: 12),
           LineDivider('label_information'.l10n),
           const SizedBox(height: 16),
@@ -322,12 +325,13 @@ class PartnerTransactionsView extends StatelessWidget {
     return _row(
       context,
       'label_hold'.l10n,
-      Obx(() {
-        return Text(
-          c.hold.value.l10n,
+      BalancePlaceholderBuilder(
+        builder: (b) => Text(
+          b.l10next(digits: 2),
           style: style.fonts.normal.bold.currencySecondary,
-        );
-      }),
+        ),
+        value: c.hold,
+      ),
     );
   }
 
@@ -338,12 +342,13 @@ class PartnerTransactionsView extends StatelessWidget {
     return _row(
       context,
       'label_available'.l10n,
-      Obx(() {
-        return Text(
-          c.available.value.l10n,
+      BalancePlaceholderBuilder(
+        builder: (b) => Text(
+          b.l10next(digits: 2),
           style: style.fonts.normal.bold.currencyPrimary,
-        );
-      }),
+        ),
+        value: c.available,
+      ),
     );
   }
 }

@@ -20,6 +20,7 @@ import 'package:get/get.dart';
 
 import '/domain/model/country.dart';
 import '/domain/model/native_file.dart';
+import '/domain/model/price.dart';
 import '/domain/model/session.dart';
 import '/domain/service/session.dart';
 import '/l10n/l10n.dart';
@@ -39,6 +40,9 @@ class WithdrawController extends GetxController {
   /// Selected [UsdtNetwork] for [WithdrawalOption.usdt] option selected.
   final Rx<UsdtNetwork?> usdtNetwork = Rx(null);
 
+  /// Selected [UsdcNetwork] for [WithdrawalOption.usdc] option selected.
+  final Rx<UsdcNetwork?> usdcNetwork = Rx(null);
+
   /// [TextFieldState] for withdrawal amount input.
   final TextFieldState amountToWithdraw = TextFieldState();
 
@@ -55,6 +59,15 @@ class WithdrawController extends GetxController {
 
   /// [TextFieldState] for inputting a [WithdrawalOption.usdt] crypto platform.
   final TextFieldState usdtPlatform = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.usdc] wallet number.
+  final TextFieldState usdcWallet = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.usdc] memo/tag/etc.
+  final TextFieldState usdcMemo = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.usdc] crypto platform.
+  final TextFieldState usdcPlatform = TextFieldState();
 
   /// [TextFieldState] for inputting a [WithdrawalOption.paypal] e-mail.
   final TextFieldState payPalEmail = TextFieldState();
@@ -118,6 +131,37 @@ class WithdrawController extends GetxController {
   /// Indicator whether all the conditions were approved by the user.
   final RxBool confirmed = RxBool(false);
 
+  /// [Currency] of a [WithdrawalOption.swift] withdraw.
+  final Rx<Currency?> swiftCurrency = Rx(null);
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.swift] account.
+  final TextFieldState swiftAccount = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.swift] bank SWIFT code.
+  final TextFieldState swiftSwiftCode = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.swift] bank name.
+  final TextFieldState swiftBankName = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.swift] bank address.
+  final TextFieldState swiftBankAddress = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.swift] intermediary
+  /// bank number.
+  final TextFieldState swiftIntermediaryBankNumber = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.swift] intermediary
+  /// bank number.
+  final TextFieldState swiftIntermediaryBankSwiftCode = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.swift] intermediary
+  /// bank number.
+  final TextFieldState swiftIntermediaryBankName = TextFieldState();
+
+  /// [TextFieldState] for inputting a [WithdrawalOption.swift] intermediary
+  /// bank number.
+  final TextFieldState swiftIntermediaryBankAddress = TextFieldState();
+
   /// [SessionService] used for [IpGeoLocation] retrieving.
   final SessionService _sessionService;
 
@@ -159,29 +203,36 @@ class WithdrawController extends GetxController {
 /// Available withdrawal options.
 enum WithdrawalOption {
   usdt,
+  usdc,
   paypal,
   monobank,
-  sepa;
+  sepa,
+  swift;
 
   /// Returns a [l10n] key label associated with this [WithdrawalOption].
   String get l10n => switch (this) {
     .usdt => 'label_usdt'.l10n,
+    .usdc => 'label_usdc'.l10n,
     .paypal => 'label_paypal'.l10n,
     .monobank => 'label_monobank'.l10n,
     .sepa => 'label_sepa_transfer'.l10n,
+    .swift => 'label_swift_transfer'.l10n,
   };
 
   /// Returns a [l10n] key label associated with this [WithdrawalOption].
   SvgData get icon => switch (this) {
     .usdt => SvgIcons.withdrawUsdt,
+    .usdc => SvgIcons.withdrawUsdc,
     .paypal => SvgIcons.withdrawPayPal,
     .monobank => SvgIcons.withdrawMonobank,
     .sepa => SvgIcons.withdrawSepa,
+    .swift => SvgIcons.withdrawSwift,
   };
 
   /// Returns whether this [WithdrawalOption] is available in the [IsoCode].
   bool available(IsoCode? code) => switch (this) {
     .usdt => IsoCode.values.toSet(),
+    .usdc => IsoCode.values.toSet(),
     .paypal => {
       IsoCode.DZ,
       IsoCode.AO,
@@ -432,6 +483,7 @@ enum WithdrawalOption {
       IsoCode.SM,
       IsoCode.VA,
     },
+    .swift => IsoCode.values.toSet().difference({IsoCode.RU, IsoCode.BY}),
   }.contains(code);
 }
 
@@ -465,5 +517,26 @@ enum UsdtNetwork {
     .solana => SvgIcons.usdtNetworkSolanaIcon,
     .ton => SvgIcons.usdtNetworkTonIcon,
     .tron => SvgIcons.usdtNetworkTronIcon,
+  };
+}
+
+/// Available [WithdrawalOption.usdc] network withdrawal options.
+enum UsdcNetwork {
+  base,
+  ethereum,
+  optimism;
+
+  /// Returns a [l10n] key label associated with this [UsdcNetwork].
+  String get l10n => switch (this) {
+    .base => 'label_base'.l10n,
+    .ethereum => 'label_ethereum'.l10n,
+    .optimism => 'label_optimism_op_mainnet'.l10n,
+  };
+
+  /// Returns a [l10n] key label associated with this [UsdcNetwork].
+  SvgData get icon => switch (this) {
+    .base => SvgIcons.usdcNetworkBaseIcon,
+    .ethereum => SvgIcons.usdcNetworkEthereumIcon,
+    .optimism => SvgIcons.usdcNetworkOptimismIcon,
   };
 }

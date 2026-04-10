@@ -416,6 +416,27 @@ extension CurrencyL10nExtension on Currency {
     'EUR' => '€',
     (_) => val,
   };
+
+  /// Returns a name of this [Currency].
+  String get title => switch (val) {
+    'XXX' => 'label_tapopa'.l10n,
+    'USD' => 'label_us_dollar'.l10n,
+    'EUR' => 'label_euro'.l10n,
+    'AUD' => 'label_australian_dollar'.l10n,
+    'CAD' => 'label_canadian_dollar'.l10n,
+    'CHF' => 'label_swiss_franc'.l10n,
+    'CNH' => 'label_chinese_yuan_renminbi_offshore'.l10n,
+    'DKK' => 'label_danish_krone'.l10n,
+    'GBP' => 'label_pound_sterling'.l10n,
+    'IDR' => 'label_indonesian_rupiah'.l10n,
+    'JPY' => 'label_japanese_yen'.l10n,
+    'MXN' => 'label_mexican_peso'.l10n,
+    'NOK' => 'label_norwegian_krone'.l10n,
+    'NZD' => 'label_new_zealand_dollar'.l10n,
+    'SEK' => 'label_swedish_krona'.l10n,
+    'SGD' => 'label_singapore_dollar'.l10n,
+    (_) => val,
+  };
 }
 
 /// Extension adding ability to retrieve a localized string of a [Price].
@@ -423,7 +444,7 @@ extension PriceL10nExtention on Price {
   /// Returns a localized string of this [Price].
   String get l10n {
     return switch (currency.val) {
-      'USDT' => '${sum.val.toStringAsDigits(2)} ${currency.l10n}',
+      'USDT' || 'USDC' => '${sum.val.toStringAsDigits(2)} ${currency.l10n}',
       (_) => '${currency.l10n}${sum.val.toStringAsDigits(2)}',
     };
   }
@@ -431,7 +452,7 @@ extension PriceL10nExtention on Price {
   /// Returns a localized string of this [Price] with [digits] configurable.
   String l10next({int digits = 2}) {
     return switch (currency.val) {
-      'USDT' => '${sum.val.toStringAsFixed(digits)} ${currency.l10n}',
+      'USDT' || 'USDC' => '${sum.val.toStringAsFixed(digits)} ${currency.l10n}',
       (_) => '${currency.l10n}${sum.val.toStringAsFixed(digits)}',
     };
   }
@@ -442,7 +463,7 @@ extension BalanceL10nExtention on Balance {
   /// Returns a localized string of this [Balance].
   String get l10n {
     return switch (currency.val) {
-      'USDT' => '${sum.val.toStringAsDigits(2)} ${currency.l10n}',
+      'USDT' || 'USDC' => '${sum.val.toStringAsDigits(2)} ${currency.l10n}',
       (_) => '${currency.l10n}${sum.val.toStringAsDigits(2)}',
     };
   }
@@ -450,7 +471,7 @@ extension BalanceL10nExtention on Balance {
   /// Returns a localized string of this [Balance] with [digits] configurable.
   String l10next({int digits = 2}) {
     return switch (currency.val) {
-      'USDT' => '${sum.val.toStringAsFixed(digits)} ${currency.l10n}',
+      'USDT' || 'USDC' => '${sum.val.toStringAsFixed(digits)} ${currency.l10n}',
       (_) => '${currency.l10n}${sum.val.toStringAsFixed(digits)}',
     };
   }

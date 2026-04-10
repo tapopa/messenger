@@ -27,10 +27,12 @@ All user visible changes to this project will be documented in this file. This p
         - Balance placeholder skeleton animation. ([#55])
     - Monetization tab:
         - Balance placeholder skeleton animation. ([#55])
+    - Updated default users and groups avatar. ([#57])
 
 [#54]: /../../pull/54
 [#55]: /../../pull/55
 [#56]: /../../pull/56
+[#57]: /../../pull/57
 
 
 

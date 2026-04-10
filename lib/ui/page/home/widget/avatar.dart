@@ -1,5 +1,7 @@
 // Copyright © 2022-2026 IT ENGINEERING MANAGEMENT INC,
 //                       <https://github.com/team113>
+// Copyright © 2025-2026 Ideas Networks Solutions S.A.,
+//                       <https://github.com/tapopa>
 //
 // This program is free software: you can redistribute it and/or modify it under
 // the terms of the GNU Affero General Public License v3.0 as published by the
@@ -297,6 +299,17 @@ class AvatarWidget extends StatelessWidget {
     key: key,
     avatar: avatar,
     title: title,
+    label: chat?.isGroup == true
+        ? LayoutBuilder(
+            builder: (context, constraints) {
+              return SvgIcon(
+                SvgIcons.avatarGroup,
+                width: constraints.maxWidth,
+                height: constraints.maxWidth / 1.8,
+              );
+            },
+          )
+        : null,
     color: chat?.colorDiscriminant(me).sum(),
     radius: radius,
     opacity: opacity,
@@ -351,6 +364,17 @@ class AvatarWidget extends StatelessWidget {
         isAway: isAway,
         avatar: chat.avatar.value,
         title: chat.title(withDeletedLabel: false),
+        label: chat.chat.value.isGroup
+            ? LayoutBuilder(
+                builder: (context, constraints) {
+                  return SvgIcon(
+                    SvgIcons.avatarGroup,
+                    width: constraints.maxWidth,
+                    height: constraints.maxWidth / 1.8,
+                  );
+                },
+              )
+            : null,
         color: chat.chat.value.colorDiscriminant(chat.me).sum(),
         radius: radius,
         opacity: opacity,
@@ -538,11 +562,11 @@ class AvatarWidget extends StatelessWidget {
             label ??
             SelectionContainer.disabled(
               child: Text(
-                (title ?? '??').initials(),
+                'Ⓣ',
                 key: Key('AvatarTitleKey'),
                 style: style.fonts.normal.bold.onPrimary.copyWith(
                   fontSize:
-                      style.fonts.normal.bold.onPrimary.fontSize! *
+                      style.fonts.large.regular.onBackground.fontSize! *
                       (maxWidth / 40.0),
                 ),
                 // Disable the accessibility size settings for this [Text].

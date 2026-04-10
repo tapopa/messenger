@@ -2539,4 +2539,10 @@ class SvgIcons {
     width: 17,
     height: 17,
   );
+
+  static const SvgData avatarGroup = SvgData(
+    'assets/icons/avatar_group.svg',
+    width: 270,
+    height: 209,
+  );
 }

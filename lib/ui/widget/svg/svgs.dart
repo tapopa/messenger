@@ -1592,12 +1592,6 @@ class SvgIcons {
     height: 19,
   );
 
-  static const SvgData logo = SvgData(
-    'assets/icons/logo.svg',
-    width: 21.78,
-    height: 25,
-  );
-
   static const SvgData workRust = SvgData(
     'assets/icons/work_rust.svg',
     width: 32,

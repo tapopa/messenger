@@ -27,6 +27,7 @@ import '/domain/model/precise_date_time/precise_date_time.dart';
 import '/domain/model/price.dart';
 import '/l10n/l10n.dart';
 import '/themes.dart';
+import '/ui/page/home/tab/wallet/widget/deposit_expandable.dart';
 import '/ui/page/home/widget/operation.dart';
 import '/ui/widget/line_divider.dart';
 import '/ui/widget/modal_popup.dart';
@@ -41,6 +42,7 @@ class PayPalDepositView extends StatelessWidget {
   const PayPalDepositView({
     super.key,
     required this.method,
+    this.subkind,
     required this.country,
     required this.nominal,
     this.id,
@@ -48,6 +50,9 @@ class PayPalDepositView extends StatelessWidget {
 
   /// [OperationDepositMethod] to deposit with.
   final OperationDepositMethod method;
+
+  /// [OperationDepositSubKind] of the [method], if any.
+  final OperationDepositSubKind? subkind;
 
   /// [CountryCode] of the deposit.
   final CountryCode country;
@@ -62,6 +67,7 @@ class PayPalDepositView extends StatelessWidget {
   static Future<T?> show<T>(
     BuildContext context, {
     required OperationDepositMethod method,
+    OperationDepositSubKind? subkind,
     required CountryCode country,
     required Price nominal,
     OperationId? id,
@@ -74,6 +80,7 @@ class PayPalDepositView extends StatelessWidget {
       child: PayPalDepositView(
         country: country,
         method: method,
+        subkind: subkind,
         nominal: nominal,
         id: id,
       ),
@@ -90,6 +97,7 @@ class PayPalDepositView extends StatelessWidget {
         Get.find(),
         country: country,
         method: method,
+        subkind: subkind,
         nominal: nominal,
         id: id,
       ),
@@ -175,7 +183,11 @@ class PayPalDepositView extends StatelessWidget {
                 children: [
                   const SizedBox(height: 16),
                   Text(
-                    'label_top_up_by_paypal'.l10n,
+                    switch (subkind) {
+                      OperationDepositSubKind.paymentCard =>
+                        'label_top_up_by_payment_card'.l10n,
+                      null => 'label_top_up_by_paypal'.l10n,
+                    },
                     style: style.fonts.big.regular.onBackground,
                     textAlign: TextAlign.center,
                   ),

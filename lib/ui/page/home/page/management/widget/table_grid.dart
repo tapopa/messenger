@@ -227,7 +227,7 @@ class _TableGridState<E> extends State<TableGrid<E>> {
           pinnedRowCount: 1,
           rowBuilder: (int index) {
             return Span(
-              extent: FixedSpanExtent(64),
+              extent: FixedSpanExtent(widget.builders[index].height),
               foregroundDecoration: SpanDecoration(
                 border: SpanBorder(
                   trailing: BorderSide(
@@ -254,6 +254,7 @@ class TableBuilder<E> {
     required this.header,
     required this.builder,
     this.width = 1,
+    this.height = 64,
     this.identifier,
   });
 
@@ -268,6 +269,9 @@ class TableBuilder<E> {
 
   /// Width in flex units this column should occupy.
   final double width;
+
+  /// Height in pixels this row should occupy.
+  final double height;
 
   /// Meta information embedded into this [TableBuilder].
   final String? identifier;

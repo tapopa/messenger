@@ -18,6 +18,8 @@ All user visible changes to this project will be documented in this file. This p
         - Dummy USDC and SWIFT withdrawal methods. ([#55])
     - Profile page:
         - [Progressive Web Application (PWA)](PWA) installation instructions for macOS and iOS. ([#56])
+    - Wallet tab:
+        - Payment card top up method.
 
 ### Changed
 

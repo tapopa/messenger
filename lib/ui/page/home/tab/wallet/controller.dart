@@ -31,6 +31,28 @@ import '/util/message_popup.dart';
 import 'paypal/view.dart';
 import 'widget/deposit_expandable.dart';
 
+/// Unique identifier of a single [OperationDepositMethod] along with its
+/// possible [OperationDepositSubKind].
+class OperationDepositId {
+  OperationDepositId(this.id, [this.subkind]);
+
+  /// [OperationDepositMethodId] itself.
+  final OperationDepositMethodId id;
+
+  /// Possible [OperationDepositSubKind] of the [id], if any.
+  final OperationDepositSubKind? subkind;
+
+  @override
+  bool operator ==(Object other) {
+    return other is OperationDepositId &&
+        id == other.id &&
+        subkind == other.subkind;
+  }
+
+  @override
+  int get hashCode => Object.hash(id, subkind);
+}
+
 /// Controller of the `HomeTab.wallet` tab.
 class WalletTabController extends GetxController {
   WalletTabController(this._sessionService, this._walletService);
@@ -38,8 +60,8 @@ class WalletTabController extends GetxController {
   /// [ScrollController] to pass to a [Scrollbar].
   final ScrollController scrollController = ScrollController();
 
-  /// [OperationDepositMethodId]s being expanded currently.
-  final RxSet<OperationDepositMethodId> expanded = RxSet();
+  /// [OperationDepositId]s being expanded currently.
+  final RxSet<OperationDepositId> expanded = RxSet();
 
   /// [DepositFields] to pass to a [DepositExpandable].
   final Rx<DepositFields> fields = Rx(DepositFields());
@@ -77,6 +99,7 @@ class WalletTabController extends GetxController {
   /// [nominal] and [pricing].
   Future<void> createDeposit(
     OperationDepositMethod method,
+    OperationDepositSubKind? subkind,
     CountryCode country,
     Price nominal,
     Price? pricing,
@@ -87,6 +110,7 @@ class WalletTabController extends GetxController {
           await PayPalDepositView.show(
             router.context!,
             method: method,
+            subkind: subkind,
             country: country,
             nominal: nominal,
           );

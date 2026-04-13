@@ -60,11 +60,15 @@ class PayPalDepositFields {
   final Rx<IsoCode?> country = Rx(null);
 }
 
+/// Optional override over [OperationDepositKind] to act like something else.
+enum OperationDepositSubKind { paymentCard }
+
 /// Widget for rendering deposit information.
 class DepositExpandable extends StatelessWidget {
   const DepositExpandable({
     super.key,
     required this.provider,
+    this.subkind,
     this.expanded = false,
     this.onPressed,
     required this.fields,
@@ -74,6 +78,9 @@ class DepositExpandable extends StatelessWidget {
 
   /// [OperationDepositMethod] to display.
   final OperationDepositMethod provider;
+
+  /// [OperationDepositSubKind] of the [provider], if any.
+  final OperationDepositSubKind? subkind;
 
   /// Indicator whether this tile should be expanded.
   final bool expanded;
@@ -95,12 +102,18 @@ class DepositExpandable extends StatelessWidget {
     final style = Theme.of(context).style;
 
     final title = switch (provider.kind) {
-      OperationDepositKind.paypal => 'label_paypal'.l10n,
+      OperationDepositKind.paypal => switch (subkind) {
+        OperationDepositSubKind.paymentCard => 'label_payment_card'.l10n,
+        null => 'label_paypal'.l10n,
+      },
       OperationDepositKind.artemisUnknown => 'label_unknown'.l10n,
     };
 
     final asset = switch (provider.kind) {
-      OperationDepositKind.paypal => SvgIcons.payPal,
+      OperationDepositKind.paypal => switch (subkind) {
+        OperationDepositSubKind.paymentCard => SvgIcons.paymentCard,
+        null => SvgIcons.payPal,
+      },
       OperationDepositKind.artemisUnknown => SvgIcons.menuMonetization,
     };
 

@@ -144,6 +144,8 @@ class _HomeViewState extends State<HomeView> {
         Get.find(),
         Get.find(),
         Get.find(),
+        Get.find(),
+        Get.find(),
         link: widget.link,
         context: context,
       ),
@@ -297,14 +299,32 @@ class _HomeViewState extends State<HomeView> {
                     case HomeTab.wallet:
                       return Obx(() {
                         return CustomNavigationBarItem.wallet(
-                          balance: c.purse.value,
+                          selector: c.walletKey,
+                          balance: c.settings.value?.walletBalance != false
+                              ? c.wallet.value?.sum.val
+                              : null,
+                          onBalance: c.setWalletVisible,
                         );
                       });
 
                     case HomeTab.partner:
-                      return CustomNavigationBarItem.partner(
-                        balance: c.income.value,
-                      );
+                      return Obx(() {
+                        final double? available = c.available.value?.sum.val;
+                        final double? hold = c.hold.value?.sum.val;
+
+                        double? sum;
+                        if (available != null && hold != null) {
+                          sum = available + hold;
+                        }
+
+                        return CustomNavigationBarItem.partner(
+                          selector: c.partnerKey,
+                          balance: c.settings.value?.partnerBalance != false
+                              ? sum
+                              : null,
+                          onBalance: c.setPartnerVisible,
+                        );
+                      });
 
                     case HomeTab.chats:
                       return Obx(() {

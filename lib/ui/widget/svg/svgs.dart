@@ -2575,4 +2575,28 @@ class SvgIcons {
     width: 50,
     height: 50,
   );
+
+  static const SvgData contextShow = SvgData(
+    'assets/icons/context_show.svg',
+    width: 22,
+    height: 22,
+  );
+
+  static const SvgData contextShowWhite = SvgData(
+    'assets/icons/context_show_white.svg',
+    width: 22,
+    height: 22,
+  );
+
+  static const SvgData contextHide = SvgData(
+    'assets/icons/context_hide.svg',
+    width: 22,
+    height: 22,
+  );
+
+  static const SvgData contextHideWhite = SvgData(
+    'assets/icons/context_hide_white.svg',
+    width: 22,
+    height: 22,
+  );
 }

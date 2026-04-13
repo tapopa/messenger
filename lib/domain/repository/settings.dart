@@ -104,4 +104,10 @@ abstract class AbstractSettingsRepository {
 
   /// Sets the [ApplicationSettings.logLevel] value.
   Future<void> setLogLevel(int level);
+
+  /// Sets the [ApplicationSettings.walletBalance] value.
+  Future<void> setWalletBalance(bool value);
+
+  /// Sets the [ApplicationSettings.partnerBalance] value.
+  Future<void> setPartnerBalance(bool value);
 }

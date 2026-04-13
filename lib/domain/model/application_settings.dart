@@ -27,6 +27,8 @@ class ApplicationSettings {
     this.muteKeys,
     this.videoVolume = 1,
     this.logLevel = 1,
+    this.walletBalance = true,
+    this.partnerBalance = true,
   });
 
   /// Indicator whether [OngoingCall]s are preferred to be displayed in the
@@ -58,6 +60,12 @@ class ApplicationSettings {
   /// Level of [Log]s that should be printed to the console.
   int logLevel;
 
+  /// Indicator whether [HomeTab.wallet] balance should be visible.
+  bool walletBalance;
+
+  /// Indicator whether [HomeTab.partner] balance should be visible.
+  bool partnerBalance;
+
   @override
   bool operator ==(Object other) {
     return other is ApplicationSettings &&
@@ -69,7 +77,9 @@ class ApplicationSettings {
         pinnedActions.toString() == other.pinnedActions.toString() &&
         muteKeys?.toString() == other.muteKeys?.toString() &&
         videoVolume == other.videoVolume &&
-        logLevel == other.logLevel;
+        logLevel == other.logLevel &&
+        walletBalance == other.walletBalance &&
+        partnerBalance == other.partnerBalance;
   }
 
   @override
@@ -83,9 +93,11 @@ class ApplicationSettings {
     muteKeys.toString(),
     videoVolume,
     logLevel,
+    walletBalance,
+    partnerBalance,
   );
 
   @override
   String toString() =>
-      'ApplicationSettings(enablePopups: $enablePopups, locale: $locale, showIntroduction: $showIntroduction, sideBarWidth: $sideBarWidth, callButtons: $callButtons, pinnedActions: $pinnedActions, muteKeys: $muteKeys, videoVolume: $videoVolume, logLevel: $logLevel)';
+      'ApplicationSettings(enablePopups: $enablePopups, locale: $locale, showIntroduction: $showIntroduction, sideBarWidth: $sideBarWidth, callButtons: $callButtons, pinnedActions: $pinnedActions, muteKeys: $muteKeys, videoVolume: $videoVolume, logLevel: $logLevel, walletBalance: $walletBalance, partnerBalance: $partnerBalance)';
 }

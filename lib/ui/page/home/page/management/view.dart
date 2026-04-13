@@ -15,6 +15,8 @@
 // along with this program. If not, see
 // <https://www.gnu.org/licenses/agpl-3.0.html>.
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
@@ -89,7 +91,11 @@ class ManagementView extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                      child: _table(context, c),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return _table(context, c, constraints);
+                        },
+                      ),
                     ),
                   ),
                 // const SizedBox(height: 16),
@@ -102,7 +108,11 @@ class ManagementView extends StatelessWidget {
   }
 
   /// Builds a [TableGrid] representing the [DirectLink]s.
-  Widget _table(BuildContext context, ManagementController c) {
+  Widget _table(
+    BuildContext context,
+    ManagementController c,
+    BoxConstraints constraints,
+  ) {
     final style = Theme.of(context).style;
 
     return Container(
@@ -158,6 +168,23 @@ class ManagementView extends StatelessWidget {
                       c.headers.insert(bIndex, c.headers.removeAt(aIndex));
                     }
                   }
+                },
+                onHeight: (i) {
+                  if (i == 0) {
+                    return 64;
+                  }
+
+                  final link = c.links.values.elementAtOrNull(i - 1);
+                  if (link == null) {
+                    return 64;
+                  }
+
+                  return max(
+                    64,
+                    16 *
+                        (9 * '${Config.link}${link.slug}'.length) /
+                        max(constraints.maxWidth * 0.25, 108),
+                  );
                 },
                 items: c.links.values,
                 builders: c.headers

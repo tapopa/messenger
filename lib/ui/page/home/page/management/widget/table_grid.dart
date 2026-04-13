@@ -31,6 +31,7 @@ class TableGrid<E> extends StatefulWidget {
     this.verticalDetails = const ScrollableDetails.vertical(),
     this.indicateLoading = false,
     this.onReorder,
+    this.onHeight = _defaultHeight,
   });
 
   /// [TableBuilder] to build in the [TableView].
@@ -50,6 +51,12 @@ class TableGrid<E> extends StatefulWidget {
 
   /// Callback, called when the provided [TableBuilder]s are reordered.
   final void Function(TableBuilder<E>, TableBuilder<E>)? onReorder;
+
+  /// Function, returning height in pixels specific row should occupy.
+  final double Function(int) onHeight;
+
+  /// Returns hardcoded const 64 value.
+  static double _defaultHeight(int _) => 64;
 
   @override
   State<TableGrid<E>> createState() => _TableGridState<E>();
@@ -227,7 +234,7 @@ class _TableGridState<E> extends State<TableGrid<E>> {
           pinnedRowCount: 1,
           rowBuilder: (int index) {
             return Span(
-              extent: FixedSpanExtent(widget.builders[index].height),
+              extent: FixedSpanExtent(widget.onHeight(index)),
               foregroundDecoration: SpanDecoration(
                 border: SpanBorder(
                   trailing: BorderSide(
@@ -254,7 +261,6 @@ class TableBuilder<E> {
     required this.header,
     required this.builder,
     this.width = 1,
-    this.height = 64,
     this.identifier,
   });
 
@@ -269,9 +275,6 @@ class TableBuilder<E> {
 
   /// Width in flex units this column should occupy.
   final double width;
-
-  /// Height in pixels this row should occupy.
-  final double height;
 
   /// Meta information embedded into this [TableBuilder].
   final String? identifier;

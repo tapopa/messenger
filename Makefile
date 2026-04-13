@@ -181,7 +181,7 @@ else
 	flutter build $(or $(platform),apk) \
 		--build-number=$(flutter-build-number) \
 		$(if $(call eq,$(profile),yes),--profile,--release) \
-		$(if $(call eq,$(platform),web),--wasm --source-maps \
+		$(if $(call eq,$(platform),web),--source-maps \
 			--web-define=build_ver=$(shell git describe --tags --match='v*' \
 			                               | sed 's/-/+/') \
 			--web-define=medea_ver=$(flutter-build-medea-ver),) \

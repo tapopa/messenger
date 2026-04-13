@@ -17,7 +17,14 @@ All user visible changes to this project will be documented in this file. This p
     - Wallet tab:
         - Payment card top up method. ([#59])
 
+### Fixed
+
+- UI:
+    - Links statistics page:
+        - Long links being clipped in table. ([#60])
+
 [#59]: /../../pull/59
+[#60]: /../../pull/60
 
 
 

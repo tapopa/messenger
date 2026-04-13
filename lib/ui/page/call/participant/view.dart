@@ -30,6 +30,7 @@ import '/ui/widget/member_tile.dart';
 import '/ui/widget/modal_popup.dart';
 import '/ui/widget/primary_button.dart';
 import '/ui/widget/progress_indicator.dart';
+import '/ui/widget/svg/svg.dart';
 import '/util/platform_utils.dart';
 import 'controller.dart';
 
@@ -114,6 +115,7 @@ class ParticipantView extends StatelessWidget {
                         onSubmit: c.addMembers,
                         enabled: c.status.value.isEmpty,
                         chat: c.chat.value,
+                        excludeSupports: true,
                       ),
                     ),
                   ],
@@ -148,7 +150,21 @@ class ParticipantView extends StatelessWidget {
                           'b': c.chat.value?.chat.value.membersCount ?? 1,
                         }),
                       ),
-                      const SizedBox(height: 6),
+
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                        child: PrimaryButton(
+                          onPressed: c.isSupport
+                              ? null
+                              : () {
+                                  c.status.value = RxStatus.empty();
+                                  c.stage.value = ParticipantsFlowStage.search;
+                                },
+                          title: 'btn_add_participants'.l10n,
+                          leading: SvgIcon(SvgIcons.addMember),
+                        ),
+                      ),
+
                       Flexible(
                         child: Scrollbar(
                           controller: c.scrollController,
@@ -215,19 +231,7 @@ class ParticipantView extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 18),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-                        child: PrimaryButton(
-                          onPressed: c.isSupport
-                              ? null
-                              : () {
-                                  c.status.value = RxStatus.empty();
-                                  c.stage.value = ParticipantsFlowStage.search;
-                                },
-                          title: 'btn_add_participants'.l10n,
-                        ),
-                      ),
+                      const SizedBox(height: 8),
                     ],
                   ),
                 );

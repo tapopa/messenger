@@ -1,10 +1,11 @@
-- Added support service to context menu options on chats tab.
-- Added ability to create multiple direct links to any user.
-- Added links management and statistics page.
-- Updated currency symbol visuals.
-- Updated Tap ID visual appearance.
-- Updated icons and texts on monetization tab.
-- Updated monetization transactions page to display total balance.
-- Updated your prices, your promotion and your partner program pages.
-- Updated users searching to display users' welcome message.
+- Added dummy USDC and SWIFT withdraw methods.
+- Added Progressive Web Application (PWA) installation instructions for macOS and iOS.
+- Added balance placeholder skeleton animation to wallet and monetization tabs.
+- Added "Service chats" context submenu to chats tab.
+- Updated searching and transactions order on transactions page.
+- Updated default avatars of users and groups.
+- Updated low connection icons in call.
+- Updated participants list design in call.
+- Updated last message preview in chats list to display stack of attachments when there's multiple attachments in last message.
+- Prevent logout confirmation from displaying when any e-mail is set.
 - Bug fixes and performance improvements.

@@ -1306,7 +1306,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
           break;
 
         case HomeTab.menu:
-          WebUtils.title('$prefix${'label_tab_menu'.l10n}');
+          WebUtils.title('$prefix${'label_tab_settings'.l10n}');
           break;
       }
     } else {
@@ -1485,10 +1485,12 @@ extension RouteLinks on RouterState {
       (push ? this.push : go)(Routes.walletTransactions);
 
   /// Changes router location to the [Config.supportId] page.
-  void support({bool push = false}) => chat(
-    ChatId.local(UserId(Config.supportId)),
-    mode: push ? RouteAs.push : RouteAs.replace,
-  );
+  void support({bool push = false}) {
+    chat(
+      ChatId.local(UserId(Config.supportId)),
+      mode: push ? RouteAs.push : RouteAs.replace,
+    );
+  }
 }
 
 /// Extension adding helper methods to an [AppLifecycleState].

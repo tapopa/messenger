@@ -743,18 +743,6 @@ class SvgIcons {
     height: 19,
   );
 
-  static const SvgData muted22 = SvgData(
-    'assets/icons/muted22.svg',
-    width: 21.65,
-    height: 22,
-  );
-
-  static const SvgData unmuted22 = SvgData(
-    'assets/icons/unmuted22.svg',
-    width: 21.65,
-    height: 22,
-  );
-
   static const SvgData more = SvgData(
     'assets/icons/more.svg',
     width: 4,
@@ -996,16 +984,22 @@ class SvgIcons {
     height: 16,
   );
 
+  static const SvgData midSignalSmall = SvgData(
+    'assets/icons/mid_signal.svg',
+    width: 15,
+    height: 15,
+  );
+
   static const SvgData lowSignalSmall = SvgData(
     'assets/icons/low_signal.svg',
     width: 15,
-    height: 16,
+    height: 15,
   );
 
   static const SvgData noSignalSmall = SvgData(
     'assets/icons/no_signal.svg',
     width: 15,
-    height: 16,
+    height: 15,
   );
 
   static const SvgData screenShareSmall = SvgData(
@@ -1542,18 +1536,6 @@ class SvgIcons {
     'assets/icons/report19.svg',
     width: 20,
     height: 20,
-  );
-
-  static const SvgData reportWhite = SvgData(
-    'assets/icons/report_white.svg',
-    width: 18,
-    height: 18,
-  );
-
-  static const SvgData reportGrey = SvgData(
-    'assets/icons/report_grey.svg',
-    width: 18,
-    height: 18,
   );
 
   static const SvgData delete19 = SvgData(
@@ -2440,26 +2422,26 @@ class SvgIcons {
 
   static const SvgData contextQr = SvgData(
     'assets/icons/context_qr.svg',
-    width: 18,
-    height: 18,
+    width: 22,
+    height: 22,
   );
 
   static const SvgData contextQrWhite = SvgData(
     'assets/icons/context_qr_white.svg',
-    width: 18,
-    height: 18,
+    width: 22,
+    height: 22,
   );
 
   static const SvgData contextUnlink = SvgData(
     'assets/icons/context_unlink.svg',
-    width: 18,
-    height: 18,
+    width: 22,
+    height: 22,
   );
 
   static const SvgData contextUnlinkWhite = SvgData(
     'assets/icons/context_unlink_white.svg',
-    width: 18,
-    height: 18,
+    width: 22,
+    height: 22,
   );
 
   static const SvgData addLink = SvgData(
@@ -2538,6 +2520,54 @@ class SvgIcons {
     'assets/icons/add_to_home_screen.svg',
     width: 17,
     height: 17,
+  );
+
+  static const SvgData avatarGroup = SvgData(
+    'assets/icons/avatar_group.svg',
+    width: 270,
+    height: 209,
+  );
+
+  static const SvgData addMember = SvgData(
+    'assets/icons/add_member.svg',
+    width: 20,
+    height: 20,
+  );
+
+  static const SvgData serviceChats = SvgData(
+    'assets/icons/service_chats.svg',
+    width: 19,
+    height: 19,
+  );
+
+  static const SvgData serviceChatsWhite = SvgData(
+    'assets/icons/service_chats_white.svg',
+    width: 19,
+    height: 19,
+  );
+
+  static const SvgData contextMute = SvgData(
+    'assets/icons/context_mute.svg',
+    width: 22,
+    height: 22,
+  );
+
+  static const SvgData contextMuteWhite = SvgData(
+    'assets/icons/context_mute_white.svg',
+    width: 22,
+    height: 22,
+  );
+
+  static const SvgData contextUnmute = SvgData(
+    'assets/icons/context_unmute.svg',
+    width: 22,
+    height: 22,
+  );
+
+  static const SvgData contextUnmuteWhite = SvgData(
+    'assets/icons/context_unmute_white.svg',
+    width: 22,
+    height: 22,
   );
 
   static const SvgData paymentCard = SvgData(

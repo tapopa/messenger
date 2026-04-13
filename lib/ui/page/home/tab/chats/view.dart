@@ -337,18 +337,41 @@ class ChatsTabView extends StatelessWidget {
           if (!c.isSupport) ...[
             ContextMenuDivider(),
             ContextMenuButton(
-              key: const Key('SupportChatButton'),
-              label: 'label_support_service'.l10n,
-              onPressed: () => router.support(),
-              trailing: const SvgIcon(SvgIcons.supportSmall),
-              inverted: const SvgIcon(SvgIcons.supportSmallWhite),
-            ),
-            ContextMenuButton(
-              key: const Key('MonologChatButton'),
-              label: 'label_chat_monolog'.l10n,
-              onPressed: () => router.chat(c.monolog),
-              trailing: const SvgIcon(SvgIcons.notesSmall),
-              inverted: const SvgIcon(SvgIcons.notesSmallWhite),
+              label: 'btn_service_chats'.l10n,
+              trailing: const SvgIcon(SvgIcons.serviceChats),
+              inverted: const SvgIcon(SvgIcons.serviceChatsWhite),
+              actions: [
+                ContextMenuButton(
+                  key: const Key('SupportChatButton'),
+                  label: 'label_support_service'.l10n,
+                  onPressed: () => router.support(),
+                  trailing: const SvgIcon(SvgIcons.supportSmall),
+                  inverted: const SvgIcon(SvgIcons.supportSmallWhite),
+                ),
+                ContextMenuButton(
+                  key: const Key('MonologChatButton'),
+                  label: 'label_chat_monolog'.l10n,
+                  // onPressed: () => router.chat(c.monolog),
+                  actions: [
+                    ContextMenuButton(
+                      key: const Key('SupportChatButton'),
+                      label: 'label_support_service'.l10n,
+                      onPressed: () => router.support(),
+                      trailing: const SvgIcon(SvgIcons.supportSmall),
+                      inverted: const SvgIcon(SvgIcons.supportSmallWhite),
+                    ),
+                    ContextMenuButton(
+                      key: const Key('MonologChatButton'),
+                      label: 'label_chat_monolog'.l10n,
+                      onPressed: () => router.chat(c.monolog),
+                      trailing: const SvgIcon(SvgIcons.notesSmall),
+                      inverted: const SvgIcon(SvgIcons.notesSmallWhite),
+                    ),
+                  ],
+                  trailing: const SvgIcon(SvgIcons.notesSmall),
+                  inverted: const SvgIcon(SvgIcons.notesSmallWhite),
+                ),
+              ],
             ),
           ],
         ],
@@ -1045,12 +1068,18 @@ class ChatsTabView extends StatelessWidget {
     ChatsTabController c,
   ) async {
     final bool? result = await MessagePopup.alert(
-      c.archivedOnly.value ? 'label_show_chats'.l10n : 'label_hide_chats'.l10n,
+      c.archivedOnly.value
+          ? 'label_show_chats'.l10nfmt({'amount': c.selectedChats.length})
+          : 'label_hide_chats'.l10nfmt({'amount': c.selectedChats.length}),
       description: [
         TextSpan(
           text: c.archivedOnly.value
-              ? 'label_show_chats_modal_description'.l10n
-              : 'label_hide_chats_modal_description'.l10n,
+              ? 'label_show_chats_modal_description'.l10nfmt({
+                  'amount': c.selectedChats.length,
+                })
+              : 'label_hide_chats_modal_description'.l10nfmt({
+                  'amount': c.selectedChats.length,
+                }),
         ),
       ],
       button: (context) => MessagePopup.primaryButton(
@@ -1073,8 +1102,14 @@ class ChatsTabView extends StatelessWidget {
     ChatsTabController c,
   ) async {
     final bool? result = await MessagePopup.alert(
-      'label_delete_chats'.l10n,
-      description: [TextSpan(text: 'label_to_restore_chats_use_search'.l10n)],
+      'label_delete_chats'.l10nfmt({'amount': c.selectedChats.length}),
+      description: [
+        TextSpan(
+          text: 'label_to_restore_chats_use_search'.l10nfmt({
+            'amount': c.selectedChats.length,
+          }),
+        ),
+      ],
       button: MessagePopup.deleteButton,
     );
 

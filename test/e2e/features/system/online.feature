@@ -30,7 +30,6 @@ Feature: MyUser's online status is correctly updated
     When I tap `MenuButton` button
     And I scroll `MenuListView` until `LogoutButton` is present
     And I tap `LogoutButton` button
-    And I tap `KeepCredentialsSwitch` button
     And I tap `ConfirmLogoutButton` button
     Then I wait until `IntroductionView` is present
     And Bob sees Alice as offline

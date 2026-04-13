@@ -915,7 +915,7 @@ Widget _media(BuildContext context, MyProfileController c) {
           }),
           const SizedBox(height: 20),
           LineDivider('label_noise_suppression'.l10n),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Obx(() {
             NoiseSuppressionLevelWithOff? level =
                 c.media.value?.noiseSuppression != true
@@ -954,9 +954,9 @@ Widget _media(BuildContext context, MyProfileController c) {
           }),
         ],
 
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         LineDivider('label_hotkey'.l10n),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         Obx(() {
           final HotKey key =
               c.settings.value?.muteHotKey ?? MuteHotKeyExtension.defaultHotKey;
@@ -1717,9 +1717,11 @@ Widget _bar(MyProfileController c, BuildContext context) {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
             child: Center(
-              child: Text(
-                router.profileSection.value?.l10n ?? 'label_profile'.l10n,
-              ),
+              child: Obx(() {
+                return Text(
+                  router.profileSection.value?.l10n ?? 'label_profile'.l10n,
+                );
+              }),
             ),
           ),
         ),

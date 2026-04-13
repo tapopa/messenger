@@ -1954,8 +1954,8 @@ class ChatController extends GetxController with IdentityAware {
         attachments.length > 1
             ? 'label_files_saved_to_gallery'.l10n
             : attachments.first is ImageAttachment
-            ? 'label_image_saved_to_gallery'.l10n
-            : 'label_video_saved_to_gallery'.l10n,
+            ? 'label_image_downloaded'.l10n
+            : 'label_video_downloaded'.l10n,
       );
     }
 

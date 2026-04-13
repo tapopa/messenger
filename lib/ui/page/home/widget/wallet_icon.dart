@@ -21,30 +21,31 @@ import '/ui/widget/svg/svg.dart';
 
 /// Widget displaying [SvgIcons.wallet] with the provided [balance].
 class WalletIcon extends StatelessWidget {
-  const WalletIcon({super.key, this.balance = 0, this.visible = true});
+  const WalletIcon({super.key, this.balance = 0});
 
   /// Number to display over the icon.
-  final double balance;
-
-  /// Indicator whether [balance] should be visible at all.
-  final bool visible;
+  ///
+  /// If `null`, then no balance is displayed.
+  final double? balance;
 
   @override
   Widget build(BuildContext context) {
     final Widget icon;
     final Widget overlay;
 
-    if (visible) {
-      if (balance > 0) {
+    final int? value = balance?.toInt();
+
+    if (value != null) {
+      if (value > 0) {
         icon = const SvgIcon(SvgIcons.wallet);
 
         overlay = Transform.translate(
-          offset: Offset(0, balance > 0 ? 2 : 0),
+          offset: Offset(0, value > 0 ? 2 : 0),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(2, 0, 2, 0),
             child: FittedBox(
               child: Text(
-                _balance(balance),
+                _balance(value),
                 style: const TextStyle(color: Colors.white, fontSize: 13),
                 textAlign: TextAlign.center,
                 textScaler: TextScaler.noScaling,
@@ -62,7 +63,7 @@ class WalletIcon extends StatelessWidget {
     }
 
     return Transform.translate(
-      offset: Offset(0, -1 + balance > 0 ? -2 : 0),
+      offset: Offset(0, -1 + (balance ?? 0) > 0 ? -2 : 0),
       child: Stack(
         children: [
           icon,
@@ -78,9 +79,9 @@ class WalletIcon extends StatelessWidget {
   /// - 1 000.0 -> "1k"
   /// - 92 000.0 -> "92k"
   /// - 52 100 000.0 -> "52M"
-  String _balance(double balance) {
+  String _balance(int balance) {
     if (balance < 1000) {
-      return balance.toInt().toString();
+      return balance.toString();
     } else if (balance < 1000000) {
       return '${balance ~/ 1000}k';
     } else {

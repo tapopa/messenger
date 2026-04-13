@@ -17,6 +17,12 @@ All user visible changes to this project will be documented in this file. This p
     - Wallet tab:
         - Payment card top up method. ([#59])
 
+### Changed
+
+- UI:
+    - Home page:
+        - Display balances over wallet and monetization tab icons. ([#61])
+
 ### Fixed
 
 - UI:
@@ -25,6 +31,7 @@ All user visible changes to this project will be documented in this file. This p
 
 [#59]: /../../pull/59
 [#60]: /../../pull/60
+[#61]: /../../pull/61
 
 
 

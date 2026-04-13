@@ -174,21 +174,79 @@ class CustomNavigationBarItem extends StatelessWidget {
         child: const SvgIcon(SvgIcons.contacts, key: Key('ContactsButton')),
       );
 
-  /// Constructs a [CustomNavigationBarItem] for a `HomeTab.wallet`.
-  CustomNavigationBarItem.wallet({Key? key, double balance = 0})
-    : this._(
-        key: key,
-        tab: HomeTab.wallet,
-        child: WalletIcon(key: Key('WalletButton'), balance: balance),
-      );
+  /// Constructs a [CustomNavigationBarItem] for a [HomeTab.wallet].
+  CustomNavigationBarItem.wallet({
+    Key? key,
+    double? balance,
+    GlobalKey? selector,
+    void Function(bool)? onBalance,
+  }) : this._(
+         key: key,
+         tab: HomeTab.wallet,
+         child: ContextMenuRegion(
+           key: const Key('WalletButton'),
+           selector: selector,
+           alignment: Alignment.bottomLeft,
+           margin: const EdgeInsets.only(bottom: 20, right: 42),
+           preventContextMenu: false,
+           actions: [
+             if (balance != null)
+               ContextMenuButton(
+                 key: const Key('HideWalletBalance'),
+                 trailing: SvgIcon(SvgIcons.contextShow),
+                 inverted: SvgIcon(SvgIcons.contextShowWhite),
+                 label: 'btn_hide_balance'.l10n,
+                 onPressed: () => onBalance?.call(false),
+               )
+             else
+               ContextMenuButton(
+                 key: const Key('ShowWalletBalance'),
+                 trailing: SvgIcon(SvgIcons.contextHide),
+                 inverted: SvgIcon(SvgIcons.contextHideWhite),
+                 label: 'btn_show_balance'.l10n,
+                 onPressed: () => onBalance?.call(true),
+               ),
+           ],
+           child: WalletIcon(key: selector, balance: balance),
+         ),
+       );
 
-  /// Constructs a [CustomNavigationBarItem] for a `HomeTab.partner`.
-  CustomNavigationBarItem.partner({Key? key, double balance = 0})
-    : this._(
-        key: key,
-        tab: HomeTab.partner,
-        child: PartnerIcon(key: Key('PartnerButton'), balance: balance),
-      );
+  /// Constructs a [CustomNavigationBarItem] for a [HomeTab.partner].
+  CustomNavigationBarItem.partner({
+    Key? key,
+    double? balance,
+    GlobalKey? selector,
+    void Function(bool)? onBalance,
+  }) : this._(
+         key: key,
+         tab: HomeTab.partner,
+         child: ContextMenuRegion(
+           key: const Key('PartnerButton'),
+           selector: selector,
+           alignment: Alignment.bottomCenter,
+           margin: const EdgeInsets.only(bottom: 20),
+           preventContextMenu: false,
+           actions: [
+             if (balance != null)
+               ContextMenuButton(
+                 key: const Key('HidePartnerBalance'),
+                 trailing: SvgIcon(SvgIcons.contextShow),
+                 inverted: SvgIcon(SvgIcons.contextShowWhite),
+                 label: 'btn_hide_balance'.l10n,
+                 onPressed: () => onBalance?.call(false),
+               )
+             else
+               ContextMenuButton(
+                 key: const Key('ShowPartnerBalance'),
+                 trailing: SvgIcon(SvgIcons.contextHide),
+                 inverted: SvgIcon(SvgIcons.contextHideWhite),
+                 label: 'btn_show_balance'.l10n,
+                 onPressed: () => onBalance?.call(true),
+               ),
+           ],
+           child: PartnerIcon(key: selector, balance: balance),
+         ),
+       );
 
   /// Constructs a [CustomNavigationBarItem] for a [HomeTab.chats].
   CustomNavigationBarItem.chats({

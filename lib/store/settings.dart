@@ -267,6 +267,18 @@ class SettingsRepository extends IdentityDependency
     await _set(settings: (e) => e..logLevel = level);
   }
 
+  @override
+  Future<void> setWalletBalance(bool value) async {
+    Log.debug('setWalletBalance($value)', '$runtimeType');
+    await _set(settings: (e) => e..walletBalance = value);
+  }
+
+  @override
+  Future<void> setPartnerBalance(bool value) async {
+    Log.debug('setPartnerBalance($value)', '$runtimeType');
+    await _set(settings: (e) => e..partnerBalance = value);
+  }
+
   /// Stores the provided [ApplicationSettings] and [MediaSettings] to the local
   /// storage.
   Future<void> _set({

@@ -26,12 +26,15 @@ import 'package:get/get.dart';
 
 import '/api/backend/schema.dart' show UserPresence;
 import '/domain/model/application_settings.dart';
+import '/domain/model/balance.dart';
 import '/domain/model/link.dart';
 import '/domain/model/mute_duration.dart';
 import '/domain/model/my_user.dart';
 import '/domain/repository/settings.dart';
 import '/domain/service/auth.dart';
 import '/domain/service/my_user.dart';
+import '/domain/service/partner.dart';
+import '/domain/service/wallet.dart';
 import '/routes.dart';
 import '/ui/page/home/introduction/view.dart';
 import '/ui/worker/upgrade.dart';
@@ -45,7 +48,9 @@ class HomeController extends GetxController {
     this._auth,
     this._myUserService,
     this._settings,
-    this._upgradeWorker, {
+    this._upgradeWorker,
+    this._partnerService,
+    this._walletService, {
     this.link,
     this.context,
   });
@@ -68,6 +73,12 @@ class HomeController extends GetxController {
   /// Reactive [MyUser.unreadChatsCount] value.
   final RxInt unreadChats = RxInt(0);
 
+  /// [GlobalKey] of a [HomeTab.wallet] button in the navigation bar.
+  final GlobalKey walletKey = GlobalKey();
+
+  /// [GlobalKey] of a [HomeTab.partner] button in the navigation bar.
+  final GlobalKey partnerKey = GlobalKey();
+
   /// [GlobalKey] of a [Chat]s button in the navigation bar.
   final GlobalKey chatsKey = GlobalKey();
 
@@ -85,12 +96,6 @@ class HomeController extends GetxController {
   /// [GlobalKey] of a [AvatarWidget]s button in the navigation bar.
   final GlobalKey avatarKey = GlobalKey();
 
-  /// Balance of [MyUser] to display in [HomeTab.wallet].
-  final RxDouble purse = RxDouble(0);
-
-  /// Balance of [MyUser] to display in [HomeTab.partner].
-  final RxDouble income = RxDouble(0);
-
   /// Authentication service to determine auth status.
   final AuthService _auth;
 
@@ -103,6 +108,12 @@ class HomeController extends GetxController {
 
   /// [UpgradeWorker] for displaying the [UpgradeWorker.scheduled].
   final UpgradeWorker _upgradeWorker;
+
+  /// [PartnerService] for retrieving the monetization [Balance].
+  final PartnerService _partnerService;
+
+  /// [WalletService] for retrieving the wallet [Balance].
+  final WalletService _walletService;
 
   /// Subscription to the [MyUser] changes.
   late final StreamSubscription _myUserSubscription;
@@ -137,6 +148,15 @@ class HomeController extends GetxController {
 
   /// Indicates whether currently authenticated [MyUser] is a support.
   bool get isSupport => _auth.userId.isSupport == true;
+
+  /// Returns the balance [MyUser] has in their wallet.
+  Rx<Balance?> get wallet => _walletService.balance;
+
+  /// Returns the balance [MyUser] has in their partner available wallet.
+  Rx<Balance?> get available => _partnerService.available;
+
+  /// Returns the balance [MyUser] has in their partner hold wallet.
+  Rx<Balance?> get hold => _partnerService.hold;
 
   @override
   void onInit() {
@@ -203,6 +223,14 @@ class HomeController extends GetxController {
   Future<void> updateAvatar() async {
     await _myUserService.refresh();
   }
+
+  /// Sets the current [value] as the [ApplicationSettings.walletBalance].
+  Future<void> setWalletVisible(bool value) =>
+      _settings.setWalletBalance(value);
+
+  /// Sets the current [value] as the [ApplicationSettings.partnerBalance].
+  Future<void> setPartnerVisible(bool value) =>
+      _settings.setPartnerBalance(value);
 
   /// Refreshes the controller on [router] change.
   ///

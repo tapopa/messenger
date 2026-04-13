@@ -28,11 +28,35 @@ All user visible changes to this project will be documented in this file. This p
     - Monetization tab:
         - Balance placeholder skeleton animation. ([#55])
     - Updated default users and groups avatar. ([#57])
+    - Menu tab:
+        - Don't display logout confirmation when e-mail is set. ([team113/messenger#1684])
+    - Media panel:
+        - Low connection icons. ([team113/messenger#1686])
+        - Add member in participants list. ([team113/messenger#1687])
+    - Chats tab:
+        - Display stack when there's multiple attachments in last message. ([team113/messenger#1688])
+        - Service chats context menu submenu option. ([team113/messenger#1689])
+
+### Fixed
+
+- UI:
+    - Profile page:
+        - Invalid keyboard symbols being displayed in hot keys. ([team113/messenger#1680])
+    - Chats tab:
+        - Download update button not being refreshed after successful download. ([team113/messenger#1683])
+        - Empty message preview when reply has no text in last message. ([team113/messenger#1688])
 
 [#54]: /../../pull/54
 [#55]: /../../pull/55
 [#56]: /../../pull/56
 [#57]: /../../pull/57
+[team113/messenger#1680]: https://github.com/team113//pull/1680
+[team113/messenger#1683]: https://github.com/team113//pull/1683
+[team113/messenger#1684]: https://github.com/team113//pull/1684
+[team113/messenger#1686]: https://github.com/team113//pull/1686
+[team113/messenger#1687]: https://github.com/team113//pull/1687
+[team113/messenger#1688]: https://github.com/team113//pull/1688
+[team113/messenger#1689]: https://github.com/team113//pull/1689
 
 
 

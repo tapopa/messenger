@@ -22,16 +22,12 @@ alert_account_will_be_deleted2 = {" "}will be deleted
 alert_by_proceeding_you_accept_terms1 = By proceeding, you agree with the{" "}
 alert_by_proceeding_you_accept_terms2 = Terms & Conditions
 alert_by_proceeding_you_accept_terms3 = .
-alert_chat_will_be_reported1 = Group{" "}
-alert_chat_will_be_reported2 = {" "}will be reported
 alert_email_will_be_deleted1 = E-mail{" "}
 alert_email_will_be_deleted2 = {" "}will be deleted
 alert_user_will_be_blocked1 = User{" "}
 alert_user_will_be_blocked2 = {" "}will be blocked
 alert_user_will_be_removed1 = User{" "}
 alert_user_will_be_removed2 = {" "}will be removed from the group
-alert_user_will_be_reported1 = User{" "}
-alert_user_will_be_reported2 = {" "}will be reported
 alert_you_will_leave_group = You will leave the group
 btn_accept = Accept
 btn_accept_donations = Accept donations
@@ -50,7 +46,6 @@ btn_add_participant_desc =
 btn_add_participants = Add members
 btn_add_to_favorites = Add to favorites
 btn_audio_call = Audio call
-btn_back = Back
 btn_block = Block
 btn_block_user = Block user
 btn_call_answer_with_audio =
@@ -140,7 +135,6 @@ btn_change_status = Change status
 btn_clear = Clear
 btn_clear_cache = Clear cache
 btn_clear_chat = Clear chat
-btn_clear_history = Clear history
 btn_close = Close
 btn_close_button = Close window
 btn_collapse_all = Collapse all
@@ -157,8 +151,8 @@ btn_delete_chat = Delete chat
 btn_delete_from_favorites = Remove from favorites
 btn_delete_message = Delete message
 btn_discard = Discard
-btn_done = Done
 btn_donate = Donation
+btn_done = Done
 btn_download = Download
 btn_download_all = Download all
 btn_download_all_as = Download all as
@@ -169,18 +163,18 @@ btn_download_version = Download {$version}
 btn_edit = Edit
 btn_email = E-mail
 btn_expand_all = Expand all
-btn_file = Select file
-btn_find_in_chat = Find in chat
+btn_file = File
+btn_find_in_chat = Show in chat
 btn_forgot_password = Forgot your password?
 btn_forward = Forward
 btn_forward_message = Forward message
 btn_gallery = Select photo, video
 btn_guest = Guest
 btn_help = Help
-btn_hide = Hide
 btn_hidden_chats = Hidden chats
+btn_hide = Hide
 btn_hide_chat = Hide chat
-btn_hide_interface = Hide interface
+btn_hide_controls = Hide controls
 btn_individual_settings = Individual settings
 btn_info = Information
 btn_install = Install
@@ -214,7 +208,7 @@ btn_read_all = Read all
 btn_reconnect_call = Reconnect call
 btn_refresh_page = Refresh page
 btn_remove = Remove
-btn_remove_account = Remove account from the list
+btn_remove_account = Remove account
 btn_replace_photo = Replace photo
 btn_reply = Reply
 btn_reply_message = Reply to message
@@ -223,19 +217,17 @@ btn_report_a_bug = Report a bug
 btn_resend = Resend
 btn_resend_message = Resend message
 btn_save = Save
-btn_save_all = Save all
 btn_save_and_copy = Save & Copy
-btn_save_my_credentials_for_one_click = Save my credentials for one-click sign in
-btn_save_to_gallery = Save to gallery
-btn_save_to_gallery_all = Save all to galley
 btn_search = Search
 btn_search_chat = Search in chat
 btn_select = Select
 btn_select_currency_of_account = Select currency of account
+btn_select_file = Select file
 btn_select_messages = Select messages
 btn_select_network_type = Select network type
 btn_send_email = Send e-mail
 btn_send_one_time_code = Send one-time code
+btn_service_chats = Service chats
 btn_set_password = Set password
 btn_set_your_prices = Your prices
 btn_set_your_prices_subtitle = Paid communication with you
@@ -246,7 +238,6 @@ btn_show_qr_code = Show QR code
 btn_sign_in = Sign in
 btn_sign_up = Create an account
 btn_skip = Skip
-btn_submit = Submit
 btn_take_photo = Take photo
 btn_take_video = Take video
 btn_terminate = Terminate
@@ -544,11 +535,11 @@ err_donations_has_minimum = User {$user} has set up minimum donation amount: {$a
 err_email_occupied = Specified e-mail is added to another account
 err_incorrect_email = Incorrect e-mail
 err_incorrect_input = Incorrect input
+err_incorrect_link_input = Link should contain alphanumeric characters, and symbols "-" and "_" only.
 err_incorrect_link_too_long = Link cannot exceed 100 characters
 err_incorrect_login_input = Login should contain only alphanumeric characters, "-" and "_". It must start with a letter or number and be at least 3 and max 20 characters long.
 err_incorrect_login_or_password = Incorrect account identifier or password.
 err_input_empty = Field must not be empty
-err_invalid_symbols_in_link = Unacceptable characters. The following characters are allowed: A-z, -, _ and 0-9
 err_login_occupied = The login is taken
 err_media_devices_are_null = Access to media devices is denied. Make sure your browser has permission to use media devices.
 err_media_popup_was_blocked =
@@ -563,7 +554,6 @@ err_popup_call_cant_be_closed = Window cannot be closed automatically. Close the
 err_screen_permission_denied = Access to screen is denied. Make sure application has permission to use screen.
 err_size_too_big = File size exceeds 15 MB
 err_too_many_emails = Reached maximum allowed number of e-mails
-err_unauthorized = Authentication required
 err_uneditable_message = Message can no longer be edited
 err_unknown = Unknown error
 err_unsupported_format = Unsupported format. Supported formats: JPG, PNG, BMP, TIFF, GIF, WEBP, SVG.
@@ -639,7 +629,7 @@ fcm_message =
             }:{" "}
     }{ $donation ->
         [x] {""}
-        *[other] [G{$donation}]{" "}
+        *[other] [τ{$donation}]{" "}
     }{ $attachmentsCount ->
           [0] {""}
           *[other] [{$attachmentsType ->
@@ -718,6 +708,7 @@ label_a_slash_b = {$a} / {$b}
 label_about_you = About you
 label_about_you_description = 4096 characters max
 label_account = Account
+label_account_created = Account is created
 label_account_created_description = You can change your avatar, name, text status, password, login and e-mail in the profile settings.
 label_account_creating_done = Your account is created
 label_account_creating_dots = Creating your account...
@@ -735,7 +726,6 @@ label_account_will_be_removed_from_list1 = Account{" "}
 label_account_will_be_removed_from_list2 = {" "}will be removed from the list.
 label_accounts = Your accounts
 label_actions = Actions
-label_active_account = Online
 label_active_devices = Active sessions
 label_active_sessions = Check account sign-ins
 label_add_account = Add account
@@ -794,6 +784,7 @@ label_ago_date = {$years ->
 label_all_chats_and_groups = All chats and groups
 label_all_links_amount = All links: {$amount}
 label_all_session_except_current_terminated = All sessions except this one will be terminated
+label_allow_popups_for_domain_to_display_calls = Allow pop-up for {$domain} in your browser settings to display calls in a separate window
 label_also_delete_for_everyone = Also delete for everyone
 label_always_muted = Always muted
 label_amount_k = {$amount}k
@@ -806,6 +797,7 @@ label_audio_call = Audio call{$by ->
         [x]{""}
         *[other] {" "}by {$by}
     }
+label_australian_dollar = Australian Dollar
 label_author = Author
 label_auto_gain_control = Automatic gain control
 label_auto_gain_control_subtitle = Automatically adjust microphone volume
@@ -819,6 +811,7 @@ label_avatar_updated = {$author} updated avatar
 label_avatar_updated1 = {$author}
 label_avatar_updated2 = {" "}updated avatar
 label_away = away
+label_b = {$amount} B
 label_background = Background
 label_balance_exceeded = Balance exceeded
 label_base = Base
@@ -841,8 +834,6 @@ label_billing_all_fields_are_latin3 = {" "}the way they are written in the ident
 label_billing_details = Billing details
 label_block = Block
 label_block_date = Block date
-label_block_reason = Block reason
-label_blocked = Blocked
 label_blocked_users = Blocked users
 label_blocked_users_count = Blocked users: {$count}
 label_cache = Cache
@@ -862,12 +853,15 @@ label_call_title =
     }
 label_call_window = Call window
 label_camera = Camera
+label_canadian_dollar = Canadian Dollar
 label_change_password = Change password
 label_chat_call_declined = Declined call
 label_chat_call_ended = Ended call
 label_chat_call_missed = Missed call
 label_chat_call_ongoing = Active call
 label_chat_call_unanswered = Unanswered call
+label_chat_created = Chat created
+label_chat_created_by_link = Chat created via direct link
 label_chat_monolog = Your notes
 label_chat_monolog_description1 = Chat with yourself
 label_chat_monolog_description2 = Features:
@@ -877,6 +871,7 @@ label_chat_monolog_description3 =
     – any content (text, video, pictures).
 label_chats = Chats
 label_chats_and_groups = Chats and groups: {$count}
+label_chinese_yuan_renminbi_offshore = Chinese Yuan Renminbi Offshore
 label_choose_country = Select country
 label_city_country_activated_at = {$city}, {$country} • {$at}
 label_clear_history = Clear chat
@@ -893,7 +888,6 @@ label_connection_lost = Connection lost
 label_connection_restored = Connection restored
 label_contact_us_via_provided_email = Contact us by e-mail {$email}.
 label_copied = Copied
-label_copy = Copy
 label_country = Country
 label_create_group = Group creation
 label_created = Created
@@ -903,6 +897,7 @@ label_currency_of_account = Currency of account
 label_current_account = Current account
 label_current_media = Current media
 label_current_password = Current password
+label_danish_krone = Danish Krone
 label_date_of_birth = Date of birth
 label_date_of_birth_example = dd-mm-yyyy
 label_date_of_birth_in_format1 = Date of birth must be indicated in format{" "}
@@ -918,8 +913,10 @@ label_date_of_expiry_in_format5 = .
 label_days_short = {$days} d
 label_default_price_settings = Default price settings
 label_delete_account = Delete account
-label_delete_chat = Delete chat(s)
-label_delete_chats = Delete chat(s)
+label_delete_chats = {$amount ->
+    [1] Delete chat
+    *[other] Delete chats
+}
 label_delete_email = Delete E-mail
 label_delete_message = Delete message?
 label_delete_messages = Delete messages?
@@ -929,8 +926,6 @@ label_desktop_apps = Desktop apps
 label_details = Details
 label_device_by_default = By default - {$device}
 label_device_settings = Device settings
-label_dialog_created = Dialog created
-label_dialog_created_by_link = Dialog created via direct link
 label_direct_chat_link = Invite to the group
 label_direct_chat_link_in_chat_description = Users, who follow the group link, become full members of the group automatically.
 label_disabled = Disabled
@@ -960,12 +955,12 @@ label_enter_password_or_code = Enter password or code
 label_enter_password_or_one_time_code = Enter your password or one-time code. One-time code has been sent to your e-mails. If you did not receive e-mails, check your spam folder or data entered.
 label_error = Error
 label_ethereum = Ethereum
+label_euro = Euro
 label_expandable_more = more
 label_file_downloaded = File downloaded
 label_files_downloaded = Files downloaded
 label_files_saved_to_gallery = Files are saved to the gallery
 label_forward_message = Forward
-label_forward_subtitle = select chat
 label_forwarded_message = Forwarded message
 label_forwarded_messages = {$count ->
     [1] Forwarded message
@@ -974,6 +969,8 @@ label_forwarded_messages = {$count ->
 label_free = Free
 label_full_name = Full name
 label_full_name_example = JOHN SMITH
+label_gb = {$amount} GB
+label_generating = Generating...
 label_group_created = Group created
 label_group_created_by = {$author} created the group
 label_group_created_by1 = {$author}
@@ -984,8 +981,14 @@ label_hello = Hello!
 label_hello_reply = Yay, hello :)
 label_hidden = Last seen recently
 label_hidden_chats = Hidden chats
-label_hide_chats = Hide chat(s)
-label_hide_chats_modal_description = The chats will be moved to the "Hidden chats" list
+label_hide_chats = {$amount ->
+    [1] Hide chat
+    *[other] Hide chats
+}
+label_hide_chats_modal_description = The {$amount ->
+    [1] chat
+    *[other] chats
+} will be moved to the "Hidden chats" list
 label_high_pass_filter = High-pass filter
 label_high_pass_filter_subtitle = Cuts off low-frequencies to reduce noise level
 label_hold = Hold
@@ -1003,7 +1006,6 @@ label_identification_requirements_description =
 label_identifier = Identifier
 label_identifiers = Identifiers
 label_image_downloaded = Image downloaded
-label_image_saved_to_gallery = Image saved to gallery
 label_important = Important
 label_important_semicolon = Important:
 label_in_case_crypto_platform_no_identifier1 = In case your crypto exchange platform does not require any additional payment and/or recipient identifier write "
@@ -1011,6 +1013,7 @@ label_in_case_crypto_platform_no_identifier2 = NO
 label_in_case_crypto_platform_no_identifier3 = ".
 label_incoming_call = Incoming call
 label_individual_price_settings = Individual price settings
+label_indonesian_rupiah = Indonesian Rupiah
 label_information = Information
 label_install_ios_web_application = Install iOS Web Application
 label_install_ios_web_application1 = To add Tapopa to your iPhone Home Screen:
@@ -1040,6 +1043,14 @@ label_installation_error = Installation error
 label_installation_error_description = Web App is already installed or not available in your browser
 label_instant_top_up = Instant top up
 label_interface = Interface
+label_intermediary_bank_account_number = Intermediary bank account number
+label_intermediary_bank_account_number_example = 0000000000000000000
+label_intermediary_bank_address = Intermediary bank address
+label_intermediary_bank_address_example = Bank address
+label_intermediary_bank_name = Intermediary bank name
+label_intermediary_bank_name_example = Bank name
+label_intermediary_bank_swift_code = Intermediary bank SWIFT-code
+label_intermediary_bank_swift_code_example = SWIFT-code
 label_introduction_description =
     You have access to your account during one year or until:
 
@@ -1051,12 +1062,8 @@ label_introduction_description_email = No e-mail is added. Access to your accoun
 label_introduction_for_one_time = To save access to your account, set a password, login or e-mail in your profile settings.
 label_invite_to_chat_with_you = Invite to chat with you
 label_ios_android_windows_macos_linux = For mobile & desktop
-label_b = {$amount} B
+label_japanese_yen = Japanese Yen
 label_kb = {$amount} KB
-label_mb = {$amount} MB
-label_gb = {$amount} GB
-label_tb = {$amount} TB
-label_pb = {$amount} PB
 label_key_plus_key_by_default = {$modifier} + {$key} (by default)
 label_language = Language
 label_language_and_background = Language, background, ...
@@ -1087,6 +1094,7 @@ label_login_example = your_unique_login
 label_login_optional = Login (optional)
 label_login_options = Sign in options
 label_login_section_hint = Login, password and e-mail
+label_mb = {$amount} MB
 label_media_devices = Media devices
 label_media_microphone = Microphone
 label_media_no_device_available = No device is available
@@ -1102,6 +1110,7 @@ label_messages = Messages
 label_messages_will_deleted_for_you = The messages will be deleted only for you
 label_messenger1 = Messenger
 label_messenger2 = by Tapopa
+label_mexican_peso = Mexican Peso
 label_microphone_changed = Microphone has been changed to {$microphone}
 label_minimum_amount = Minimum amount
 label_minimum_amount_cannot_be_less_than = The minimum amount of donations you accept cannot be less than {$amount}
@@ -1119,13 +1128,10 @@ label_monetization_settings_subtitle_description1 = These settings apply to all 
 label_monetization_settings_subtitle_description2 = individual monetization settings
 label_monetization_settings_subtitle_description3 = .
 label_monobank = Monobank
-label_monolog_created = Chat created
 label_mute_or_unmute_chats = Mute or unmute chats
 label_mute_slash_unmute_microphone = Mute/unmute microphone
 label_muted = Sound off
 label_muted_chats = Muted chats
-label_muted_until_i_turn_on = Muted until: I turn it on
-label_muted_until_period = Muted until: {$period}
 label_n_business_days = {$n} business days
 label_name_hint = Your public name
 label_name_optional = Public name (optional)
@@ -1134,6 +1140,7 @@ label_name_updated1 = {$author}
 label_name_updated2 = {" "}updated group name
 label_network_type = Network type
 label_new_password = New password
+label_new_zealand_dollar = New Zealand Dollar
 label_no_chat_found = Chat not found
 label_no_chats = No chats
 label_no_limit = ∞
@@ -1148,6 +1155,7 @@ label_noise_suppression_low = Low
 label_noise_suppression_medium = Medium
 label_noise_suppression_subtitle = Reduces background noises
 label_noise_suppression_very_high = Very high
+label_norwegian_krone = Norwegian Krone
 label_nothing_found = Not found
 label_notifications = Notifications
 label_num = Tap ID
@@ -1181,8 +1189,8 @@ label_operation_label_cannot_processed_automatically =
     You can check current status of transaction in the section "Wallet", page "Your transactions".
 label_operation_label_completed = Wallet top up completed.
 label_operation_label_failed = An error occurred while processing the transaction.
-label_operation_label_failed_wrong_billing_country = Transaction failed. Billing country you indicated does not correspond to your PayPal account country. The funds will be returned to the sender's account within 24 hours.
 label_operation_label_failed_unknown = Transaction failed. Kindly check the status of your account with your service provider, try another payment option, or try again later.
+label_operation_label_failed_wrong_billing_country = Transaction failed. Billing country you indicated does not correspond to your PayPal account country. The funds will be returned to the sender's account within 24 hours.
 label_operation_label_in_progress = Operation in progress...
 label_operation_label_interrupted = Transaction unfinished.
 label_operation_label_waiting_for_paypal = Waiting response from the PayPal. {$seconds} {$seconds ->
@@ -1214,6 +1222,10 @@ label_partner_program_links_description4 = change where your links lead
 label_partner_program_links_description5 = . To do this, simply copy and paste the link into the "Add link" field in the other user's profile.
 label_partner_program_tapopa_author = Your promotional program Promo+
 label_partner_program_tapopa_partner_description1 = You receive{" "}
+label_partner_program_tapopa_partner_description10 =
+    of the partner invited by you.
+
+    Sooner or later, a user invited by you will send, receive, or earn money.
 label_partner_program_tapopa_partner_description2 = {$percent}%
 label_partner_program_tapopa_partner_description3 = {" "}of the expenses{" "}
 label_partner_program_tapopa_partner_description4 =
@@ -1228,10 +1240,6 @@ label_partner_program_tapopa_partner_description7 =
     You receive{" "}
 label_partner_program_tapopa_partner_description8 = {$percent}%
 label_partner_program_tapopa_partner_description9 = {" "}of the earnings{" "}
-label_partner_program_tapopa_partner_description10 =
-    of the partner invited by you.
-
-    Sooner or later, a user invited by you will send, receive, or earn money.
 label_partner_program_tapopa_partner_number =
     Partner number Tapopa-Partner is a unique ID of the partner who invited a user to create an account.
 
@@ -1257,6 +1265,7 @@ label_paypal_popup_window_instruction =
     To make the payment a pop-up window of the processing service will open.
 
     If the pop-up window does not open, check your browser settings. It's possible that your browser is blocking pop-up windows from opening.
+label_pb = {$amount} PB
 label_per_one_incoming_message = Per 1 incoming message
 label_per_one_message = Per 1 message
 label_personal_data_deletion = Delete account
@@ -1280,6 +1289,7 @@ label_plasma = Plasma
 label_polygon = Polygon
 label_postal_code = Postal code
 label_postal_code_example = 00000
+label_pound_sterling = Pound Sterling
 label_presence_away = Away
 label_presence_present = Online
 label_privacy_policy = Privacy Policy
@@ -1333,6 +1343,7 @@ label_referral_fee_details1 = Promotional percentage Promo+.{" "}
 label_referral_fee_details2 = {$percent}%
 label_referral_honorarium_details1 = Promo+.{" "}
 label_referral_honorarium_details2 = {$percent}%
+label_remove_account = Remove account from the list
 label_remove_member = Remove from the group
 label_repeat_password = Repeat password
 label_repeat_password_optional = Repeat password (optional)
@@ -1340,7 +1351,6 @@ label_replies = [{$count} {$count ->
     [1] reply
     *[other] replies
     }]
-label_report = Report
 label_report_a_problem = Report a problem
 label_report_a_problem_description =
     Tapopa would be very grateful for the information about any encountered inconveniences or problems.
@@ -1390,8 +1400,14 @@ label_set_your_promo_percentage_promo_description =
 label_share_your_links_to_user = Share your links to the user {$user}
 label_share_your_links_to_user_description = You can move a link to another user. To do this, simply copy and paste the link into the "Add link" field in the user's profile.
 label_show_call_window = Show call window
-label_show_chats = Unhide chat(s)
-label_show_chats_modal_description = The chats will be removed from the "Hidden chats" list.
+label_show_chats = {$amount ->
+    [1] Unhide chat
+    *[other] Unhide chats
+}
+label_show_chats_modal_description = The {$amount ->
+    [1] chat
+    *[other] chats
+} will be removed from the "Hidden chats" list.
 label_sign_in = Sign in
 label_sign_in_input = Tap ID, login or e-mail
 label_sign_in_required = Sign in required
@@ -1401,6 +1417,7 @@ label_sign_up = Create account
 label_sign_up_hint = Password or e-mail
 label_sign_up_with_password = Sign up with password
 label_signed_in = Signed in
+label_singapore_dollar = Singapore Dollar
 label_solana = Solana
 label_speaker_changed = Speaker has been changed to {$speaker}
 label_status = Status
@@ -1410,14 +1427,18 @@ label_subtitle_participants = {$count} {$count ->
     *[other] members
 }
 label_support_service = Support service
+label_swedish_krona = Swedish Krona
 label_swift_transfer = SWIFT transfer
+label_swiss_franc = Swiss Franc
 label_synchronization = Synchronization...
 label_tab_chats = Chats
-label_tab_menu = Menu
 label_tab_monetization = Monetization
+label_tab_settings = Settings
 label_tab_wallet = Wallet
+label_tapopa = Tapopa
 label_tapopa_partner = Tapopa-Partner
 label_tapopa_would_be_grateful = Tapopa would be very grateful for the information about any encountered inconveniences or problems.
+label_tb = {$amount} TB
 label_terminate_sessions = Terminate session(s)
 label_terms_and_privacy_policy = Terms & Conditions
 label_text_status = Text status
@@ -1431,7 +1452,10 @@ label_to_be_paid = To be paid
 label_to_confirm_identity_upload_photo = To confirm your identity, upload a photo of your identification document.
 label_to_contact_support_sign_in = To contact Support Service, sign in and send a message to the user Gapopa
 label_to_make_payment_secure_paypal_page_will_open = To make the payment a secure PayPal page will open.
-label_to_restore_chats_use_search = To restore the chats, use the search
+label_to_restore_chats_use_search = To restore the {$amount ->
+    [1] chat
+    *[other] chats
+}, use the search
 label_ton = TON
 label_top_up_bonus_with_id = Top up bonus. Transaction ID: {$id}.
 label_top_up_by_paypal = Top up by PayPal
@@ -1452,14 +1476,16 @@ label_unknown_page = Unknown page
 label_unlink_link = Unlink link
 label_unlink_link_confirm_description1 = Unlinked links still belong to you.
 label_unlinked = Unlinked
+label_unmuted = Sound on
+label_unmuted = Sound on
 label_unread_messages = {$quantity ->
     [1] {$quantity} unread message
     *[other] {$quantity} unread messages
 }
-label_unmuted = Sound on
 label_up_to_amount_usdc = up to {$amount} USDC
 label_up_to_amount_usdt = up to {$amount} USDT
 label_update_available = Update available
+label_us_dollar = US Dollar
 label_usdc = USDC
 label_usdc_base = USDC - Base
 label_usdc_crypto_exchange_platform = Crypto exchange platform
@@ -1507,7 +1533,6 @@ label_video_call = Video call{$by ->
     }
 label_video_downloaded = Video downloaded
 label_video_downloading = Video is downloading...
-label_video_saved_to_gallery = Video saved to gallery
 label_videos_semicolon_amount = Videos: {$amount}
 label_voice_processing = Voice processing
 label_wait_seconds = Wait {$for} s
@@ -1569,27 +1594,3 @@ space = {" "}
 space_or_space = {" "} or {" "}
 space_plus_space = {" "} + {" "}
 space_vertical_space = {" "} | {" "}
-label_tapopa = Tapopa
-label_us_dollar = US Dollar
-label_euro = Euro
-label_australian_dollar = Australian Dollar
-label_canadian_dollar = Canadian Dollar
-label_swiss_franc = Swiss Franc
-label_chinese_yuan_renminbi_offshore = Chinese Yuan Renminbi Offshore
-label_danish_krone = Danish Krone
-label_pound_sterling = Pound Sterling
-label_indonesian_rupiah = Indonesian Rupiah
-label_japanese_yen = Japanese Yen
-label_mexican_peso = Mexican Peso
-label_norwegian_krone = Norwegian Krone
-label_new_zealand_dollar = New Zealand Dollar
-label_swedish_krona = Swedish Krona
-label_singapore_dollar = Singapore Dollar
-label_intermediary_bank_account_number = Intermediary bank account number
-label_intermediary_bank_account_number_example = 0000000000000000000
-label_intermediary_bank_swift_code = Intermediary bank SWIFT-code
-label_intermediary_bank_swift_code_example = SWIFT-code
-label_intermediary_bank_name = Intermediary bank name
-label_intermediary_bank_name_example = Bank name
-label_intermediary_bank_address = Intermediary bank address
-label_intermediary_bank_address_example = Bank address

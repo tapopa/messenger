@@ -2616,6 +2616,11 @@ class ChatRepository extends IdentityDependency
     }
 
     if (paginated.isNotEmpty && !status.value.isSuccess) {
+      Log.debug(
+        '_initLocalPagination() -> status is `loadingMore`',
+        '$runtimeType',
+      );
+
       status.value = RxStatus.loadingMore();
 
       Log.debug(
@@ -2878,9 +2883,11 @@ class ChatRepository extends IdentityDependency
       );
     }
 
-    status.value = RxStatus.success();
-
     Log.debug('_initRemotePagination() -> status is `success`', '$runtimeType');
+    status.value = RxStatus.success();
+    Log.debug('_initRemotePagination() -> status is `success`', '$runtimeType');
+
+    status.refresh();
   }
 
   /// Subscribes to the remote updates of the [chats].

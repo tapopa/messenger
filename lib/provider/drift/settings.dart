@@ -53,6 +53,8 @@ class Settings extends Table {
   TextColumn get muteKeys => text().nullable()();
   RealColumn get videoVolume => real().nullable()();
   IntColumn get logLevel => integer().withDefault(const Constant(0))();
+  BoolColumn get walletBalance => boolean().nullable()();
+  BoolColumn get partnerBalance => boolean().nullable()();
 }
 
 /// [DriftProviderBase] for manipulating the persisted [DtoSettings].
@@ -174,6 +176,8 @@ extension _SettingsDb on DtoSettings {
             .split(', '),
         videoVolume: e.videoVolume ?? 1,
         logLevel: e.logLevel,
+        walletBalance: e.walletBalance ?? true,
+        partnerBalance: e.partnerBalance ?? true,
       ),
       media: MediaSettings(
         audioDevice: e.audioDevice,
@@ -213,6 +217,8 @@ extension _SettingsDb on DtoSettings {
       muteKeys: application.muteKeys?.toString(),
       videoVolume: application.videoVolume,
       logLevel: application.logLevel,
+      walletBalance: application.walletBalance,
+      partnerBalance: application.partnerBalance,
     );
   }
 }

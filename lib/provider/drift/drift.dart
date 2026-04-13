@@ -109,6 +109,12 @@ class CommonDatabase extends _$CommonDatabase {
 
           try {
             if (to >= 9 && from <= 8) {
+              await m.addColumn(settings, settings.walletBalance);
+              await m.addColumn(settings, settings.partnerBalance);
+              migrated = true;
+            }
+
+            if (to >= 9 && from <= 8) {
               try {
                 await m.dropColumn(settings, 'workWithUsTabEnabled');
               } catch (e) {

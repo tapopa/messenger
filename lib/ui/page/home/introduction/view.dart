@@ -168,15 +168,19 @@ class IntroductionView extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       'Messenger',
-                      style: style.fonts.larger.regular.onBackground,
+                      style:
+                          style.fonts.larger.regular.secondaryBackgroundLight,
                     ),
                     Padding(
                       padding: EdgeInsets.only(left: 64, top: 2),
                       child: Text(
                         'by Tapopa',
-                        style: style.fonts.small.regular.onBackground.copyWith(
-                          fontStyle: FontStyle.italic,
-                        ),
+                        style: style
+                            .fonts
+                            .small
+                            .regular
+                            .secondaryBackgroundLight
+                            .copyWith(fontStyle: FontStyle.italic),
                       ),
                     ),
                   ],

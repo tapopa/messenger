@@ -1,4 +1,9 @@
+- Added dummy USDC and SWIFT withdraw methods.
+- Added Progressive Web Application (PWA) installation instructions for macOS and iOS.
+- Added balance placeholder skeleton animation to wallet and monetization tabs.
 - Added "Service chats" context submenu to chats tab.
+- Updated searching and transactions order on transactions page.
+- Updated default avatars of users and groups.
 - Updated low connection icons in call.
 - Updated participants list design in call.
 - Updated last message preview in chats list to display stack of attachments when there's multiple attachments in last message.

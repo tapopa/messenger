@@ -1,4 +1,9 @@
+- Se agregaron métodos ficticios de retiro en USDC y SWIFT.
+- Se agregaron instrucciones de instalación de la aplicación web progresiva (PWA) para macOS e iOS.
+- Se agregó una animación de esqueleto para mostrar el saldo en las pestañas de billetera y monetización.
 - Se agregó el submenú contextual "Chats de servicio" a la pestaña de chats.
+- Se actualizó el orden de búsqueda y transacciones en la página de transacciones.
+- Se actualizaron los avatares predeterminados de usuarios y grupos.
 - Se actualizaron los íconos de conexión baja en las llamadas.
 - Se actualizó el diseño de la lista de participantes en las llamadas.
 - Se actualizó la vista previa del último mensaje en la lista de chats para mostrar una pila de archivos adjuntos cuando hay varios en el último mensaje.

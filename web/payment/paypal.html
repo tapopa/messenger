@@ -54,26 +54,38 @@
     }
 
     /* Modal */
+    @media only screen and (min-width: 600px) {
+      .flex-down {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        padding: 20px;
+      }
+    }
+
     .constrained {
       background: var(--bg);
     }
 
     @media only screen and (max-width: 600px) {
+      body {
+        background: var(--bg);
+      }
+
       .constrained {
         border-radius: 0px;
         width: 100vw;
+        min-height: 100vh;
         height: 100vh;
       }
     }
 
     @media only screen and (min-width: 600px) {
       .constrained {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
+        overflow: auto;
         width: 436px;
-        height: 550px;
         border-radius: 16px;
         display: flex;
         flex-direction: column;
@@ -83,7 +95,6 @@
     }
 
     .block {
-      width: 95%;
       background: var(--white);
       padding: 22px;
       position: relative;
@@ -93,12 +104,6 @@
       align-items: center;
       justify-content: space-between;
       border: 0.5px solid #ddd;
-    }
-
-    @media only screen and (min-width: 600px) {
-      .block {
-        width: 380px;
-      }
     }
 
     h3 {
@@ -123,7 +128,6 @@
       flex-direction: row;
       justify-content: space-between;
       border: 0.5px solid #ddd;
-      box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2);
     }
 
     @media only screen and (min-width: 600px) {
@@ -292,6 +296,11 @@
       width: min(400px, 90vw);
     }
 
+    .card-btn {
+      width: min(400px, 90vw);
+      margin-top: 10px;
+    }
+
     .error {
       color: var(--danger);
       font-size: 13px;
@@ -313,48 +322,53 @@
 
 <body>
   <!-- Pay. -->
-  <div id="view-pay" class="not-hidden">
+  <div id="view-pay" class="flex-down not-hidden">
     <div class="constrained">
       <div class="modal-header">
         <div style="width: 46px;"></div>
-        <span l10n="label_top_up_by_paypal">Top up by PayPal</span>
+        <span l10n="btn_add_funds">Top up wallet</span>
         <img src="/assets/assets/icons/close_primary.svg" width="16px" height="16px" style="margin-right: 24px;"
           onclick="closeModal()">
       </div>
       <div class="gap-h-6"></div>
 
       <div class="space-between">
-        <div class="block">
-          <h3><span l10n="label_details">Details</span></h3>
-          <div class="gap-h-6"></div>
-          <div class="column">
-            <div class="row">
-              <span class="label" l10n="label_name">Tap ID</span>
-              <span class="value" id="name">Alice</span>
-            </div>
+        <div class="column">
+          <div class="block">
+            <h3><span l10n="label_details">Details</span></h3>
+            <div class="gap-h-6"></div>
+            <div class="column">
+              <div class="row">
+                <span class="label" l10n="label_name">Tap ID</span>
+                <span class="value" id="name">Alice</span>
+              </div>
 
-            <div class="row">
-              <span class="label" l10n="label_num">Tap ID</span>
-              <span class="value" id="account"">1111-1111-1111-1111</span>
+              <div class="row">
+                <span class="label" l10n="label_num">Tap ID</span>
+                <span class="value" id="account"">1111-1111-1111-1111</span>
             </div>
 
             <div class=" row">
-                <span class="label" l10n="label_top_up_option">Top up option</span>
-                <span class="value">PayPal</span>
-            </div>
+                  <span class="label" l10n="label_top_up_option">Top up option</span>
+                  <span class="value" id="top_up_option">PayPal</span>
+              </div>
 
-            <div class="row">
-              <span class="label" l10n="label_to_be_paid">To be paid</span>
-              <span class="value" id="price">$6.49</span>
+              <div class="row">
+                <span class="label" l10n="label_to_be_paid">To be paid</span>
+                <span class="value" id="price">$6.49</span>
+              </div>
             </div>
           </div>
+
+          <div id="card-btn" class="card-btn"></div>
         </div>
 
         <div class="centered">
           <div class="gap-h-12"></div>
-          <div>Transaction is ready to begin</div>
+          <div id="view-pay-title" l10n="label_transaction_is_ready_to_begin">Transaction is ready to begin</div>
           <div class="gap-h-6"></div>
-          <div class="subtitle">To make the payment a secure PayPal page will open.</div>
+          <div id="view-pay-subtitle" class="subtitle" l10n="label_to_make_payment_secure_paypal_page_will_open">To make
+            the payment a secure PayPal page will open.</div>
           <div class="gap-h-12"></div>
         </div>
 
@@ -367,11 +381,11 @@
   </div>
 
   <!-- Processing. -->
-  <div id="view-processing" class="hidden">
+  <div id="view-processing" class="flex-down hidden">
     <div class="constrained">
       <div class="modal-header">
         <div style="width: 46px;"></div>
-        <span l10n="label_top_up_by_paypal">Top up by PayPal</span>
+        <span l10n="btn_add_funds">Top up wallet</span>
         <img src="/assets/assets/icons/close_primary.svg" width="16px" height="16px" style="margin-right: 24px;"
           onclick="closeModal()">
       </div>
@@ -383,7 +397,7 @@
           <div class="gap-h-6"></div>
           <div class="column">
             <div class="row">
-              <span class="label" l10n="label_name">Tap ID</span>
+              <span class="label" l10n="label_name">Name</span>
               <span class="value" id="name">Alice</span>
             </div>
 
@@ -424,11 +438,11 @@
   </div>
 
   <!-- Unfinished. -->
-  <div id="view-unfinished" class="hidden">
+  <div id="view-unfinished" class="flex-down hidden">
     <div class="constrained">
       <div class="modal-header">
         <div style="width: 46px;"></div>
-        <span l10n="label_top_up_by_paypal">Top up by PayPal</span>
+        <span l10n="btn_add_funds">Top up wallet</span>
         <img src="/assets/assets/icons/close_primary.svg" width="16px" height="16px" style="margin-right: 24px;"
           onclick="closeModal()">
       </div>
@@ -481,11 +495,11 @@
   </div>
 
   <!-- Error. -->
-  <div id="view-error" class="hidden">
+  <div id="view-error" class="flex-down hidden">
     <div class="constrained">
       <div class="modal-header">
         <div style="width: 46px;"></div>
-        <span l10n="label_top_up_by_paypal">Top up by PayPal</span>
+        <span l10n="btn_add_funds">Top up wallet</span>
         <img src="/assets/assets/icons/close_primary.svg" width="16px" height="16px" style="margin-right: 24px;"
           onclick="closeModal()">
       </div>
@@ -582,6 +596,30 @@
     // Retrieved 2026-02-12, License - CC BY-SA 4.0
     function adjustColor(color, amount) {
       return '#' + color.replace(/^#/, '').replace(/../g, color => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
+    }
+  </script>
+
+  <!-- Initialize sub-kind first, since it may modify the l10n -->
+  <script>
+    const preParams = new URLSearchParams(window.location.search);
+    let subKind = preParams.get('subkind') ?? '';
+
+    switch (subKind) {
+      case 'paymentCard':
+        document.querySelectorAll('[id=top_up_option]').forEach(element => {
+          element.setAttribute('l10n', 'label_payment_card');
+        });
+
+        document.querySelectorAll('[id=view-pay-title]').forEach(element => {
+          element.setAttribute('l10n', 'label_secured_processing');
+        });
+
+        document.querySelectorAll('[id=view-pay-subtitle]').forEach(element => {
+          element.setAttribute('l10n', 'label_card_processing_services_are_provided_by_paypal');
+        });
+        break;
+
+      default: break;
     }
   </script>
 
@@ -819,18 +857,53 @@ mutation DeclineOperationDeposit(
     secret = urlParams.get('secret') ?? '';
     transactionId = urlParams.get('operation-id') ?? '';
 
+    let kind = urlParams.get('subkind');
+    switch (kind) {
+      case 'paymentCard':
+        document.querySelectorAll('[id=paypal-btn]').forEach(element => {
+          element.classList.add('hidden');
+        });
+        break;
+
+      default:
+        document.querySelectorAll('[id=card-btn]').forEach(element => {
+          element.classList.add('hidden');
+        });
+        break;
+    }
+
     // Create the script element.
     const sdk = document.createElement('script');
     let clientId = urlParams.get('client-id');
-    sdk.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD&intent=authorize&disable-funding=card,venmo`;
+    sdk.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD&intent=authorize&components=buttons,funding-eligibility`;
     sdk.type = 'text/javascript';
     sdk.async = true; // Makes the script load without blocking HTML parsing.
 
     sdk.addEventListener('load', () => {
       console.log('SDK loaded successfully!');
 
+      var btnId = '#paypal-btn';
+      var fundingSource = paypal.FUNDING.PAYPAL;
+
+      switch (kind) {
+        case 'paymentCard':
+          btnId = '#card-btn';
+          fundingSource = paypal.FUNDING.CARD;
+          document.querySelectorAll('[id=paypal-btn]').forEach(element => {
+            element.classList.add('hidden');
+          });
+          break;
+
+        default:
+          document.querySelectorAll('[id=card-btn]').forEach(element => {
+            element.classList.add('hidden');
+          });
+          break;
+      }
+
       // Render the PayPal buttons.
       paypal.Buttons({
+        fundingSource: fundingSource,
         createOrder: async (data) => {
           console.log(`createOrder(${data})`);
 
@@ -856,7 +929,7 @@ mutation DeclineOperationDeposit(
           console.log(`onError(${err})`);
           viewError(err);
         },
-      }).render("#paypal-btn");
+      }).render(btnId);
     });
 
     sdk.addEventListener('error', (event) => {

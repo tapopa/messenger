@@ -80,6 +80,7 @@ Future<void> main(List<String> argv) async {
         // Used on `paypal.html` page.
         'btn_close_button',
         'label_account',
+        'label_name',
         'label_operation_label_failed',
         'label_paypal_popup_window_instruction',
         'label_to_be_paid',

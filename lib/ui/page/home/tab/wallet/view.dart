@@ -18,7 +18,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '/api/backend/schema.dart' show OperationDepositKind;
 import '/domain/model/country.dart';
+import '/domain/model/operation_deposit_method.dart';
 import '/l10n/l10n.dart';
 import '/routes.dart';
 import '/themes.dart';
@@ -107,37 +109,20 @@ class WalletTabView extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ...c.methods.map((e) {
-                    return Obx(() {
-                      final bool expanded = c.expanded.contains(e.id);
+                  ...c.methods.expand((e) {
+                    final methodItself = _expandable(c, e);
 
-                      return DepositExpandable(
-                        expanded: expanded,
-                        onPressed: expanded
-                            ? () => c.expanded.remove(e.id)
-                            : () => c.expanded.add(e.id),
-                        provider: e,
-                        fields: c.fields.value,
-                        onCountry: (country) {
-                          c.fields.value.applyCountry(country);
-                          c.setCountry(CountryCode(country.name));
-                        },
-                        onProceed: (nominal, pricing) async {
-                          final country = c.fields.value
-                              .getCountry(e.kind)
-                              .value;
-
-                          if (country != null) {
-                            await c.createDeposit(
-                              e,
-                              CountryCode(country.name),
-                              nominal,
-                              pricing,
-                            );
-                          }
-                        },
-                      );
-                    });
+                    return switch (e.kind) {
+                      OperationDepositKind.paypal => [
+                        methodItself,
+                        _expandable(
+                          c,
+                          e,
+                          subkind: OperationDepositSubKind.paymentCard,
+                        ),
+                      ],
+                      (_) => [methodItself],
+                    };
                   }),
                   const SizedBox(height: 8),
                   Padding(
@@ -153,5 +138,46 @@ class WalletTabView extends StatelessWidget {
         );
       },
     );
+  }
+
+  /// Builds a reactive [DepositExpandable] of the provided
+  /// [OperationDepositMethod] and [OperationDepositSubKind].
+  Widget _expandable(
+    WalletTabController c,
+    OperationDepositMethod e, {
+    OperationDepositSubKind? subkind,
+  }) {
+    final OperationDepositId id = OperationDepositId(e.id, subkind);
+
+    return Obx(() {
+      final bool expanded = c.expanded.contains(id);
+
+      return DepositExpandable(
+        expanded: expanded,
+        onPressed: expanded
+            ? () => c.expanded.remove(id)
+            : () => c.expanded.add(id),
+        provider: e,
+        subkind: subkind,
+        fields: c.fields.value,
+        onCountry: (country) {
+          c.fields.value.applyCountry(country);
+          c.setCountry(CountryCode(country.name));
+        },
+        onProceed: (nominal, pricing) async {
+          final country = c.fields.value.getCountry(e.kind).value;
+
+          if (country != null) {
+            await c.createDeposit(
+              e,
+              subkind,
+              CountryCode(country.name),
+              nominal,
+              pricing,
+            );
+          }
+        },
+      );
+    });
   }
 }

@@ -2569,4 +2569,10 @@ class SvgIcons {
     width: 22,
     height: 22,
   );
+
+  static const SvgData paymentCard = SvgData(
+    'assets/icons/payment_card.svg',
+    width: 50,
+    height: 50,
+  );
 }

@@ -29,6 +29,7 @@ import '/domain/model/price.dart';
 import '/domain/service/my_user.dart';
 import '/domain/service/wallet.dart';
 import '/l10n/l10n.dart';
+import '/ui/page/home/tab/wallet/widget/deposit_expandable.dart';
 import '/ui/widget/primary_button.dart';
 import '/util/log.dart';
 import '/util/message_popup.dart';
@@ -44,6 +45,7 @@ class PayPalDepositController extends GetxController {
     this._walletService,
     this._myUserService, {
     required this.method,
+    this.subkind,
     required this.country,
     required this.nominal,
     this.id,
@@ -51,6 +53,9 @@ class PayPalDepositController extends GetxController {
 
   /// [OperationDepositMethod] to deposit with.
   final OperationDepositMethod method;
+
+  /// [OperationDepositSubKind] of the [method], if any.
+  final OperationDepositSubKind? subkind;
 
   /// [CountryCode] of the deposit.
   final CountryCode country;
@@ -163,6 +168,7 @@ class PayPalDepositController extends GetxController {
         'account': myUser?.num.toString(),
         'name': myUser?.title,
         'client-id': Config.payPalClientId,
+        if (subkind != null) 'subkind': subkind?.name ?? '',
         if (orderId == null) ...{
           'operation-id': operation.value?.value.id.val,
           'secret': _secret?.val,

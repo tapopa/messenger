@@ -6,6 +6,22 @@ All user visible changes to this project will be documented in this file. This p
 
 
 
+## [0.5.0] · 2026-??-??
+[0.5.0]: /../../tree/v0.5.0
+
+[Diff](/../../compare/v0.4.2...v0.5.0) | [Milestone](/../../milestone/15)
+
+### Added
+
+- UI:
+    - Wallet tab:
+        - Payment card top up method. ([#59])
+
+[#59]: /../../pull/59
+
+
+
+
 ## [0.4.2] · 2026-04-13
 [0.4.2]: /../../tree/v0.4.2
 

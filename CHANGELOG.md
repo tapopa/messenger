@@ -21,7 +21,7 @@ All user visible changes to this project will be documented in this file. This p
 
 - UI:
     - Home page:
-        - Display balances over wallet and monetization tab icons. ([#61])
+        - Display balances over wallet and monetization tab icons. ([#63], [#61])
 
 ### Fixed
 

@@ -256,15 +256,21 @@ class DepositExpandable extends StatelessWidget {
                     child: SvgImage.asset(
                       'assets/images/country/${country.value?.name.toLowerCase()}.svg',
                       fit: BoxFit.cover,
+                      width: 24,
+                      height: 24,
                     ),
                   ),
                 ),
                 const SizedBox(width: 8),
               ],
-              Text(
-                country.value == null
-                    ? 'label_choose_country'.l10n
-                    : 'country_${country.value?.name.toLowerCase()}'.l10n,
+              Flexible(
+                child: Text(
+                  country.value == null
+                      ? 'label_choose_country'.l10n
+                      : 'country_${country.value?.name.toLowerCase()}'.l10n,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),

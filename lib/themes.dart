@@ -38,7 +38,7 @@ part 'themes.g.dart';
     'regular': ['onBackground', 'onPrimary', 'secondary'],
   },
   'larger': {
-    'regular': ['onBackground', 'secondary'],
+    'regular': ['onBackground', 'secondary', 'secondaryBackgroundLight'],
   },
   'large': {
     'regular': ['onBackground', 'secondary'],

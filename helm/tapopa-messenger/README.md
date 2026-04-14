@@ -6,6 +6,13 @@ Tapopa Helm chart
 
 
 
+## Status
+
+__PROJECT IS CLOSED. NO MAINTAINING WILL BE CONTINUED.__
+
+
+
+
 ## Installation
 
 Add `@tapopa-messenger` [Helm] charts repository:

@@ -7,7 +7,12 @@ Docs: [main](https://tapopa.github.io/messenger/main/) ([release](https://tapopa
 
 Messenger by Tapopa.
 
-Currently, is under hard development.
+
+
+
+## Status
+
+__PROJECT IS CLOSED. NO MAINTAINING WILL BE CONTINUED.__
 
 
 

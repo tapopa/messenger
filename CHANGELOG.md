@@ -28,10 +28,12 @@ All user visible changes to this project will be documented in this file. This p
 - UI:
     - Links statistics page:
         - Long links being clipped in table. ([#60])
+    - Balances not being updated when multiple instances of application are opened. ([#63])
 
 [#59]: /../../pull/59
 [#60]: /../../pull/60
 [#61]: /../../pull/61
+[#63]: /../../pull/63
 
 
 

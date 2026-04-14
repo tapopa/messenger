@@ -424,14 +424,20 @@ class WalletRepository extends IdentityDependency
       return;
     }
 
-    await WebUtils.protect(() async {
-      if (me.isLocal || isClosed) {
-        return;
-      }
+    await WebUtils.protect(
+      () async {
+        if (me.isLocal || isClosed) {
+          return;
+        }
 
-      _balanceSubscription = StreamQueue(await _balanceUpdates());
-      await _balanceSubscription!.execute(_balanceUpdate);
-    }, tag: 'balanceUpdates()');
+        _balanceSubscription = StreamQueue(await _balanceUpdates());
+        await _balanceSubscription!.execute(_balanceUpdate);
+      },
+
+      // TODO: Shouldn't do runtime tag, instead should be synchronized via
+      //       `drift` local subscription.
+      tag: 'balanceUpdates(${DateTime.now()})',
+    );
   }
 
   /// Returns a [Stream] of [Balance]s of the specified [MyUser]'s purse.
@@ -490,22 +496,28 @@ class WalletRepository extends IdentityDependency
       return;
     }
 
-    await WebUtils.protect(() async {
-      if (me.isLocal || isClosed) {
-        return;
-      }
+    await WebUtils.protect(
+      () async {
+        if (me.isLocal || isClosed) {
+          return;
+        }
 
-      _operationsSubscription = StreamQueue(
-        await operationsEvents(
-          await _graphQlProvider.operationsEvents(
-            OperationOrigin.purse,
-            null,
-            () => null,
+        _operationsSubscription = StreamQueue(
+          await operationsEvents(
+            await _graphQlProvider.operationsEvents(
+              OperationOrigin.purse,
+              null,
+              () => null,
+            ),
           ),
-        ),
-      );
-      await _operationsSubscription!.execute(_operationsEvent);
-    }, tag: 'wallet.operationsEvents()');
+        );
+        await _operationsSubscription!.execute(_operationsEvent);
+      },
+
+      // TODO: Shouldn't do runtime tag, instead should be synchronized via
+      //       `drift` local subscription.
+      tag: 'wallet.operationsEvents(${DateTime.now()})',
+    );
   }
 
   /// Handles [OperationsEvents] from the [operationsEvents] subscription.

@@ -1,0 +1,31 @@
+<item><title>0.4.2</title><description xml:lang="en-US"><![CDATA[- Added dummy USDC and SWIFT withdraw methods.
+- Added Progressive Web Application (PWA) installation instructions for macOS and iOS.
+- Added balance placeholder skeleton animation to wallet and monetization tabs.
+- Added "Service chats" context submenu to chats tab.
+- Updated searching and transactions order on transactions page.
+- Updated default avatars of users and groups.
+- Updated low connection icons in call.
+- Updated participants list design in call.
+- Updated last message preview in chats list to display stack of attachments when there's multiple attachments in last message.
+- Prevent logout confirmation from displaying when any e-mail is set.
+- Bug fixes and performance improvements.]]></description> <description xml:lang="es-ES"><![CDATA[- Se agregaron métodos ficticios de retiro en USDC y SWIFT.
+- Se agregaron instrucciones de instalación de la aplicación web progresiva (PWA) para macOS e iOS.
+- Se agregó una animación de esqueleto para mostrar el saldo en las pestañas de billetera y monetización.
+- Se agregó el submenú contextual "Chats de servicio" a la pestaña de chats.
+- Se actualizó el orden de búsqueda y transacciones en la página de transacciones.
+- Se actualizaron los avatares predeterminados de usuarios y grupos.
+- Se actualizaron los íconos de conexión baja en las llamadas.
+- Se actualizó el diseño de la lista de participantes en las llamadas.
+- Se actualizó la vista previa del último mensaje en la lista de chats para mostrar una pila de archivos adjuntos cuando hay varios en el último mensaje.
+- Se evitó que se mostrara la confirmación de cierre de sesión cuando se configura un correo electrónico.
+- Corrección de errores y mejoras de rendimiento.]]></description> <description xml:lang="ru-RU"><![CDATA[- Добавленные заготовки под USDC и SWIFT способы вывода средств.
+- Добавлены инструкции установки Progressive Web Application (PWA) под macOS и iOS.
+- Добавлена анимация появления баланса на вкладки кошелька и монетизации.
+- Добавлно подменю "Служебные чаты" на вкладке чатов.
+- Обновлён поиск и порядок транзакций на странице транзакций.
+- Обновлены аватары по умолчанию для пользователей и групп.
+- Обновлены иконки плохого соединения в звонке.
+- Обновлён дизайн списка участников звонка.
+- Добавлено отображение стака превью прикрепления в списке чатов при наличии нескольких прикреплений в последнем сообщении.
+- Реализовано скрытие подтверждения выхода из аккаунта при наличии подтверждённых e-mail'ов.
+- Исправления ошибок и улучшения производительности.]]></description><pubDate>Mon, 13 Apr 2026 06:35:43 +0000</pubDate><enclosure sparkle:os="macos" url="tapopa-macos.zip" /><enclosure sparkle:os="windows" url="tapopa-windows.zip" /><enclosure sparkle:os="linux" url="tapopa-linux.zip" /><enclosure sparkle:os="android" url="tapopa-android.apk" /><enclosure sparkle:os="ios" url="tapopa-ios.ipa" /></item>

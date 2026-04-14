@@ -1,0 +1,16 @@
+<item><title>0.3.5</title><description xml:lang="en-US"><![CDATA[- Added help and sign out blocks to profile page.
+- Added avatar for support chat.
+- Updated links block design on chat profile page.
+- Updated links, cache and media devices blocks on profile page.
+- Updated media attachments layout to be column instead of grid in chat.
+- Bug fixes and performance improvements.]]></description> <description xml:lang="es-ES"><![CDATA[- Se agregaron bloques de ayuda y cierre de sesión a la página de perfil.
+- Se agregó un avatar para el chat de soporte.
+- Se actualizó el diseño del bloque de enlaces en la página de perfil del chat.
+- Se actualizaron los bloques de enlaces, caché y dispositivos multimedia en la página de perfil.
+- Se actualizó el diseño de los archivos adjuntos multimedia para que se muestren en columnas en lugar de cuadrícula en el chat.
+- Corrección de errores y mejoras de rendimiento.]]></description> <description xml:lang="ru-RU"><![CDATA[- Добавлены блоки "помощь" и "выход" на страницу профиля.
+- Добавлен аватар чату-поддержке.
+- Обновлён дизайн блока ссылок на странице профиля чата.
+- Обновлены дизайны блоков ссылок, кэша и медиа устройств на странице профиля.
+- Обновлено отображение медиа прикреплений в чате в виде колонки вместо сетки.
+- Исправления ошибок и улучшения производительности.]]></description><pubDate>Mon, 16 Mar 2026 08:45:23 +0000</pubDate><enclosure sparkle:os="macos" url="tapopa-macos.zip" /><enclosure sparkle:os="windows" url="tapopa-windows.zip" /><enclosure sparkle:os="linux" url="tapopa-linux.zip" /><enclosure sparkle:os="android" url="tapopa-android.apk" /><enclosure sparkle:os="ios" url="tapopa-ios.ipa" /></item>

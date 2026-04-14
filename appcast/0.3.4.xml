@@ -1,0 +1,19 @@
+<item><title>0.3.4</title><description xml:lang="en-US"><![CDATA[- Added input volume displaying to microphone switch modal.
+- Added horizontal scrolling of whole application when window is less than 300px wide.
+- Redesigned searching on chats tab.
+- Redesigned attachments picker menu in chat.
+- Redesigned some parts of desktop media player.
+- Increased camera resolution in calls to 960x720.
+- Bug fixes and performance improvements.]]></description> <description xml:lang="es-ES"><![CDATA[- Se añadió la visualización del volumen de entrada al modal del interruptor del micrófono.
+- Se añadió el desplazamiento horizontal de toda la aplicación cuando la ventana tiene menos de 300 px de ancho.
+- Se rediseñó la búsqueda en la pestaña de chats.
+- Se rediseñó el menú de selección de archivos adjuntos en el chat.
+- Se rediseñaron algunas partes del reproductor multimedia de escritorio.
+- Se aumentó la resolución de la cámara en las llamadas a 960x720.
+- Corrección de errores y mejoras de rendimiento.]]></description> <description xml:lang="ru-RU"><![CDATA[- Добавлено отображение громкости микрофона в модальное окно выбора микрофона.
+- Добавлена горизонтальная прокрутка всего приложения при ширине окна менее 300 пикселей.
+- Обновлён дизайн поиска на вкладке чатов.
+- Обновлено меню выбора прикрепления в чате.
+- Обновлён дизайн некоторых частей медиа плеера на десктоп платформах.
+- Увеличено разрешение исходящей камеры до 960x720.
+- Исправления ошибок и улучшения производительности.]]></description><pubDate>Tue, 10 Mar 2026 07:12:07 +0000</pubDate><enclosure sparkle:os="macos" url="tapopa-macos.zip" /><enclosure sparkle:os="windows" url="tapopa-windows.zip" /><enclosure sparkle:os="linux" url="tapopa-linux.zip" /><enclosure sparkle:os="android" url="tapopa-android.apk" /><enclosure sparkle:os="ios" url="tapopa-ios.ipa" /></item>

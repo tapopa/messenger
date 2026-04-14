@@ -1,0 +1,28 @@
+<item><title>0.4.1</title><description xml:lang="en-US"><![CDATA[- Added support service to context menu options on chats tab.
+- Added ability to create multiple direct links to any user.
+- Added links management and statistics page.
+- Updated currency symbol visuals.
+- Updated Tap ID visual appearance.
+- Updated icons and texts on monetization tab.
+- Updated monetization transactions page to display total balance.
+- Updated your prices, your promotion and your partner program pages.
+- Updated users searching to display users' welcome message.
+- Bug fixes and performance improvements.]]></description> <description xml:lang="es-ES"><![CDATA[- Se agregó el servicio de soporte a las opciones del menú contextual en la pestaña de chats.
+- Se agregó la posibilidad de crear múltiples enlaces directos a cualquier usuario.
+- Se agregó la página de administración de enlaces y estadísticas.
+- Se actualizó la apariencia visual de los símbolos de moneda.
+- Se actualizó la apariencia visual del ID de toque.
+- Se actualizaron los íconos y textos en la pestaña de monetización.
+- Se actualizó la página de transacciones de monetización para mostrar el saldo total.
+- Se actualizaron las páginas de precios, promociones y programa de socios.
+- Se actualizó la búsqueda de usuarios para mostrar el mensaje de bienvenida.
+- Corrección de errores y mejoras de rendimiento.]]></description> <description xml:lang="ru-RU"><![CDATA[- Добавлен сервис поддержки в контекстное меню на вкладке чатов.
+- Добавлена возможность создавать несколько прямых ссылок на любого пользователя.
+- Добавлена страница управления и статистики ссылок.
+- Обновлён символ валюты.
+- Обновлён визуал Tap ID.
+- Обновлены иконки и текста вкладки монетизации.
+- Обновлён дизайн транзакций монетизации с отображением балансов.
+- Обновлены страницы установки цен, продвижения и партнёрских программ.
+- Обновлён поиск по пользователям с отображением приветственного сообщения пользователей.
+- Исправления ошибок и улучшения производительности.]]></description><pubDate>Wed, 08 Apr 2026 04:29:12 +0000</pubDate><enclosure sparkle:os="macos" url="tapopa-macos.zip" /><enclosure sparkle:os="windows" url="tapopa-windows.zip" /><enclosure sparkle:os="linux" url="tapopa-linux.zip" /><enclosure sparkle:os="android" url="tapopa-android.apk" /><enclosure sparkle:os="ios" url="tapopa-ios.ipa" /></item>

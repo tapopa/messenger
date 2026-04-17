@@ -486,17 +486,23 @@ class PartnerRepository extends IdentityDependency
       return;
     }
 
-    await WebUtils.protect(() async {
-      if (me.isLocal || isClosed) {
-        return;
-      }
+    await WebUtils.protect(
+      () async {
+        if (me.isLocal || isClosed) {
+          return;
+        }
 
-      _availableSubscription = StreamQueue(
-        await _balanceUpdates(BalanceOrigin.incomeAvailable),
-      );
+        _availableSubscription = StreamQueue(
+          await _balanceUpdates(BalanceOrigin.incomeAvailable),
+        );
 
-      await _availableSubscription!.execute(_availableUpdate);
-    }, tag: 'availableUpdates()');
+        await _availableSubscription!.execute(_availableUpdate);
+      },
+
+      // TODO: Shouldn't do runtime tag, instead should be synchronized via
+      //       `drift` local subscription.
+      tag: 'availableUpdates(${DateTime.now()})',
+    );
   }
 
   /// Handles [BalanceUpdates] from the [_availableUpdate] subscription.
@@ -529,17 +535,23 @@ class PartnerRepository extends IdentityDependency
       return;
     }
 
-    await WebUtils.protect(() async {
-      if (me.isLocal || isClosed) {
-        return;
-      }
+    await WebUtils.protect(
+      () async {
+        if (me.isLocal || isClosed) {
+          return;
+        }
 
-      _holdSubscription = StreamQueue(
-        await _balanceUpdates(BalanceOrigin.incomeHold),
-      );
+        _holdSubscription = StreamQueue(
+          await _balanceUpdates(BalanceOrigin.incomeHold),
+        );
 
-      await _holdSubscription!.execute(_holdUpdate);
-    }, tag: 'holdUpdates()');
+        await _holdSubscription!.execute(_holdUpdate);
+      },
+
+      // TODO: Shouldn't do runtime tag, instead should be synchronized via
+      //       `drift` local subscription.
+      tag: 'holdUpdates(${DateTime.now()})',
+    );
   }
 
   /// Handles [BalanceUpdates] from the [_holdUpdate] subscription.
@@ -598,22 +610,28 @@ class PartnerRepository extends IdentityDependency
       return;
     }
 
-    await WebUtils.protect(() async {
-      if (me.isLocal || isClosed) {
-        return;
-      }
+    await WebUtils.protect(
+      () async {
+        if (me.isLocal || isClosed) {
+          return;
+        }
 
-      _operationsSubscription = StreamQueue(
-        await operationsEvents(
-          await _graphQlProvider.operationsEvents(
-            OperationOrigin.income,
-            null,
-            () => null,
+        _operationsSubscription = StreamQueue(
+          await operationsEvents(
+            await _graphQlProvider.operationsEvents(
+              OperationOrigin.income,
+              null,
+              () => null,
+            ),
           ),
-        ),
-      );
-      await _operationsSubscription!.execute(_operationsEvent);
-    }, tag: 'partner.operationsEvents()');
+        );
+        await _operationsSubscription!.execute(_operationsEvent);
+      },
+
+      // TODO: Shouldn't do runtime tag, instead should be synchronized via
+      //       `drift` local subscription.
+      tag: 'partner.operationsEvents(${DateTime.now()})',
+    );
   }
 
   /// Handles [OperationsEvents] from the [operationsEvents] subscription.
@@ -789,19 +807,25 @@ class PartnerRepository extends IdentityDependency
       return;
     }
 
-    await WebUtils.protect(() async {
-      if (me.isLocal || isClosed) {
-        return;
-      }
+    await WebUtils.protect(
+      () async {
+        if (me.isLocal || isClosed) {
+          return;
+        }
 
-      _myMonetizationSettingsSubscription = StreamQueue(
-        await _myMonetizationSettingsEvents(),
-      );
+        _myMonetizationSettingsSubscription = StreamQueue(
+          await _myMonetizationSettingsEvents(),
+        );
 
-      await _myMonetizationSettingsSubscription!.execute(
-        _myMonetizationSettingsEvent,
-      );
-    }, tag: 'myMonetizationSettingsEvents()');
+        await _myMonetizationSettingsSubscription!.execute(
+          _myMonetizationSettingsEvent,
+        );
+      },
+
+      // TODO: Shouldn't do runtime tag, instead should be synchronized via
+      //       `drift` local subscription.
+      tag: 'myMonetizationSettingsEvents(${DateTime.now()})',
+    );
   }
 
   /// Handles [MonetizationSettingsEvents].
@@ -1161,17 +1185,23 @@ class PartnerRepository extends IdentityDependency
       return;
     }
 
-    await WebUtils.protect(() async {
-      if (me.isLocal || isClosed) {
-        return;
-      }
+    await WebUtils.protect(
+      () async {
+        if (me.isLocal || isClosed) {
+          return;
+        }
 
-      _subscriptions.remove(id)?.close(immediate: true);
-      _subscriptions[id] = StreamQueue(await _monetizationSettingsEvents(id));
-      await _subscriptions[id]?.execute(
-        (e) => _monetizationSettingsEvent(e, id),
-      );
-    }, tag: 'monetizationSettingsEvents($id)');
+        _subscriptions.remove(id)?.close(immediate: true);
+        _subscriptions[id] = StreamQueue(await _monetizationSettingsEvents(id));
+        await _subscriptions[id]?.execute(
+          (e) => _monetizationSettingsEvent(e, id),
+        );
+      },
+
+      // TODO: Shouldn't do runtime tag, instead should be synchronized via
+      //       `drift` local subscription.
+      tag: 'monetizationSettingsEvents($id+${DateTime.now()})',
+    );
   }
 
   /// Returns a [Stream] of [MonetizationSettings] of the currently

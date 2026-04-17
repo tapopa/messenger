@@ -62,14 +62,11 @@ class PartnerIcon extends StatelessWidget {
       overlay = const SizedBox();
     }
 
-    return Transform.translate(
-      offset: Offset(0, -1 + (value ?? 0) > 0 ? -2 : 0),
-      child: Stack(
-        children: [
-          icon,
-          Positioned.fill(child: Center(child: overlay)),
-        ],
-      ),
+    return Stack(
+      children: [
+        icon,
+        Positioned.fill(child: Center(child: overlay)),
+      ],
     );
   }
 
